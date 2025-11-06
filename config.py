@@ -5,7 +5,16 @@ Configuration settings for the STI Analyst-Grade Intelligence System
 including report targets, quality gates, and MCP server configurations.
 """
 
+import os
 from typing import Tuple, List
+
+# Load environment variables from .env file if available
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # dotenv not installed, skip loading
+    pass
 
 
 class STIConfig:
@@ -238,8 +247,10 @@ class STIConfig:
     
     # Authentication: Use OAuth 2.0 (user account) or Service Account
     # OAuth 2.0 (recommended - uses your personal storage quota)
-    GOOGLE_OAUTH_CLIENT_ID = "1089924207547-6tf9r2i3arpahtidr6u8rpefbs8q3ep3.apps.googleusercontent.com"  # OAuth 2.0 Client ID from Google Cloud Console
-    GOOGLE_OAUTH_CLIENT_SECRET = "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"  # OAuth 2.0 Client Secret from Google Cloud Console
+    # SECURITY: These values are read from environment variables to avoid committing secrets
+    # Set GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET in your .env file
+    GOOGLE_OAUTH_CLIENT_ID = os.getenv('GOOGLE_OAUTH_CLIENT_ID', '')  # OAuth 2.0 Client ID from Google Cloud Console
+    GOOGLE_OAUTH_CLIENT_SECRET = os.getenv('GOOGLE_OAUTH_CLIENT_SECRET', '')  # OAuth 2.0 Client Secret from Google Cloud Console
     GOOGLE_OAUTH_TOKEN_FILE = ".google_token.json"  # File to store OAuth refresh token
     
     # Service Account (has storage limitations - only works with Shared Drives)
