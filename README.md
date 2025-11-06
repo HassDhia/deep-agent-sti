@@ -1,5 +1,8 @@
 # STI Intelligence System
 
+[![CI](https://img.shields.io/badge/CI-smoke--tests%20pending-lightgrey.svg)](#)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
+
 A production-ready AI-powered intelligence system that generates comprehensive, analyst-grade research reports with strict date filtering, quality gates, and multi-format outputs (Markdown, HTML, Google Slides, Social Media).
 
 ## 🎯 Overview
@@ -10,6 +13,18 @@ The STI Intelligence System automatically transforms research queries into produ
 - **Quality-assured intelligence**: Strict date filtering, source hygiene, and confidence scoring
 - **Automated workflows**: End-to-end pipeline from query to publication-ready content
 - **Professional design**: Cinematic hero slides, structured HTML templates, and branded social media content
+
+---
+
+## ✅ Quality Gates & Governance
+
+- **Run manifests**: each run persists query, time window, seeds, model versions, and budget slices in `manifest.json`.
+- **Evidence ledger**: claims ship with `evidence_ledger.json` (anchor coverage, support spans, overreach flags) for citation receipts.
+- **Math guard**: quantitative sections trigger deterministic sanity checks and patch suggestions; warnings gate premium spend.
+- **Adversarial reviewer**: thesis reports or low-confidence runs add reviewer objections, boundary conditions, and falsification tests.
+- **Selective premium spend**: advanced model used only when `value_of_information` gates fire, with cache-aware BudgetManager tracking tokens.
+- **Asset governance**: thesis images/social posts auto-skip when anchor coverage is below `ANCHOR_COVERAGE_MIN`.
+- **Confidence transparency**: HTML provenance banner surfaces SourceDiversity, AnchorCoverage, MethodTransparency, and ReplicationReadiness sub-scores.
 
 ---
 
@@ -24,6 +39,15 @@ The STI Intelligence System automatically transforms research queries into produ
 - **Confidence Scoring**: Bounded confidence scores [0.30, 0.85] with vendor source caps
 - **Source Hygiene**: Automatic filtering of sponsored/partner content
 
+### 🛡️ Quality Gates & Governance
+
+- **Evidence Ledger**: Every claim is mapped to anchors and support spans (`evidence_ledger.json`)
+- **Math Guard**: Deterministic vignette checks + worked examples (`vignette_quant_patch.json`)
+- **Adversarial Review**: Steelman objections, boundary conditions, and falsification tests (`adversarial.json`)
+- **Premium Model Policy**: `gpt-5-2025-08-07` allocated only for anchors, math repairs, adversarial reviews, and decision playbooks via deterministic gates
+- **Confidence Breakdown**: Source diversity, anchor coverage, method transparency, and replication readiness surfaced in HTML provenance banner
+- **Asset Gating**: Thesis briefs skip hero/section images and social copy when anchor coverage < 0.70
+
 ### 📄 Output Formats
 
 - **Markdown Reports**: Structured intelligence reports with citations
@@ -31,6 +55,16 @@ The STI Intelligence System automatically transforms research queries into produ
 - **Google Slides**: Automated slide deck generation with cinematic design
 - **Social Media**: 3 formats (Substack/Medium posts, Twitter threads, LinkedIn posts)
 - **JSON-LD**: Machine-readable structured data (Schema.org compliant)
+
+## ✅ Quality Gates & Governance
+
+- **Evidence Ledger**: Every claim fans out to anchors and support spans (`evidence_ledger.json`)
+- **Math Guard**: Deterministic sanity checks plus quantitative patch suggestions when flags trip
+- **Adversarial Reviewer**: Steelman objections, boundary conditions, falsification tests (`adversarial.json`)
+- **Provenance Banner**: Confidence decomposed into Source Diversity, Anchor Coverage, Method Transparency, Replication Readiness
+- **Premium Spend Policy**: `gpt-5-2025-08-07` reserved for anchor alignment, math guard, adversarial review, and decision playbooks
+- **Asset Gating**: Thesis-path skips DALL·E/social assets unless anchor coverage ≥ 0.70
+- **Run Manifests**: `manifest.json` captures query, seed, budgets, models, and metrics for every run
 
 ### 🎨 Visual Assets
 
@@ -733,7 +767,7 @@ agent = EnhancedSTIAgent(
 agent.initialize_analysis_tools()
 
 # Generate comprehensive report
-markdown_report, json_ld = agent.search('AI technology trends', days_back=7)
+markdown_report, json_ld, run_summary = agent.search('AI technology trends', days_back=7)
 
 # Files are automatically saved in sti_reports/
 ```
@@ -1061,7 +1095,7 @@ This system is production-ready with:
 
 ## 📝 License
 
-[Add your license here]
+This project is licensed under the [MIT License](./LICENSE).
 
 ---
 

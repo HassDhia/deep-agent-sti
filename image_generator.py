@@ -6,6 +6,7 @@ for thesis-path vs market-path reports.
 """
 
 import os
+import json
 import base64
 import logging
 from pathlib import Path
@@ -34,6 +35,24 @@ logger = logging.getLogger(__name__)
 
 
 class ImageGenerator:
+    def _record_image_manifest(self, report_path: Path, entry: Dict[str, str]) -> None:
+        manifest_dir = report_path / "images"
+        manifest_dir.mkdir(exist_ok=True, parents=True)
+        manifest_path = manifest_dir / "manifest.json"
+        try:
+            if manifest_path.exists():
+                with open(manifest_path, 'r', encoding='utf-8') as handle:
+                    existing = json.load(handle)
+            else:
+                existing = []
+        except Exception:
+            existing = []
+        existing.append(entry)
+        try:
+            with open(manifest_path, 'w', encoding='utf-8') as handle:
+                json.dump(existing, handle, indent=2, ensure_ascii=False)
+        except Exception as exc:
+            logger.debug(f"Could not write image manifest: {exc}")
     """Generate images using OpenAI gpt-image-1 API with intent-aware prompts"""
     
     # STI brand constants for prompt building
@@ -170,8 +189,14 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
                 if not LANGCHAIN_AVAILABLE:
                     logger.debug("ℹ️ LangChain not available - using hardcoded prompts")
     
-    def generate_hero_image(self, query: str, report_dir: str, intent: str = "market", 
-                           exec_summary: str = None) -> Optional[Tuple[str, str]]:
+    def generate_hero_image(
+        self,
+        query: str,
+        report_dir: str,
+        intent: str = "market",
+        exec_summary: str = None,
+        anchor_coverage: Optional[float] = None,
+    ) -> Optional[Tuple[str, str]]:
         """
         Generate hero image for report.
         
@@ -200,6 +225,14 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
         if not self.client:
             logger.warning("⚠️ OpenAI client not initialized - cannot generate images")
             return None
+
+        if (
+            intent in {"theory", "thesis"}
+            and getattr(STIConfig, 'REQUIRE_ANCHORS_FOR_ASSETS', False)
+        ):
+            if anchor_coverage is not None and anchor_coverage < getattr(STIConfig, 'ANCHOR_COVERAGE_MIN', 0.70):
+                logger.info("Skip images: insufficient anchors for Thesis path.")
+                return None
         
         # Validate report_dir
         report_path = Path(report_dir)
@@ -219,6 +252,7 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
                 prompt = self._build_hero_prompt(query, intent)
             logger.info(f"📝 Generated prompt (length: {len(prompt)}): {prompt[:100]}...")
             logger.debug(f"📝 Full prompt: {prompt}")
+            prompt_used = prompt
             
             # Get model and size, validate based on model
             model = STIConfig.DALL_E_MODEL
@@ -349,6 +383,19 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
             attribution = f"Image generated with OpenAI {model}"
             
             logger.info(f"🎉 Generated hero image successfully: {relative_path}")
+            try:
+                self._record_image_manifest(
+                    report_path,
+                    {
+                        'type': 'hero',
+                        'query': query,
+                        'intent': intent,
+                        'prompt': prompt_used,
+                        'image': relative_path,
+                    },
+                )
+            except Exception as manifest_error:
+                logger.debug(f"Could not record hero image manifest: {manifest_error}")
             return relative_path, attribution
             
         except Exception as e:
@@ -523,8 +570,15 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
         logger.debug(f"✅ Built hero prompt: {prompt[:100]}...")
         return prompt
     
-    def generate_section_image(self, section_name: str, section_content: str, query: str, 
-                               intent: str, report_dir: str) -> Optional[Tuple[str, str]]:
+    def generate_section_image(
+        self,
+        section_name: str,
+        section_content: str,
+        query: str,
+        intent: str,
+        report_dir: str,
+        anchor_coverage: Optional[float] = None,
+    ) -> Optional[Tuple[str, str]]:
         """
         Generate section-specific image for report section.
         
@@ -552,6 +606,14 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
         if not self.client:
             logger.warning("⚠️ OpenAI client not initialized - cannot generate images")
             return None
+
+        if (
+            intent in {"theory", "thesis"}
+            and getattr(STIConfig, 'REQUIRE_ANCHORS_FOR_ASSETS', False)
+        ):
+            if anchor_coverage is not None and anchor_coverage < getattr(STIConfig, 'ANCHOR_COVERAGE_MIN', 0.70):
+                logger.info("Skip section images: insufficient anchors for Thesis path.")
+                return None
         
         # Validate report_dir
         report_path = Path(report_dir)
@@ -570,6 +632,7 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
                 prompt = self._build_section_prompt(section_name, section_content or "", query, intent)
             logger.info(f"📝 Generated section prompt (length: {len(prompt)}): {prompt[:100]}...")
             logger.debug(f"📝 Full prompt: {prompt}")
+            prompt_used = prompt
             
             # Get model and size, validate based on model
             model = STIConfig.DALL_E_MODEL
@@ -682,6 +745,20 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
             attribution = f"Image generated with OpenAI {model}"
             
             logger.info(f"🎉 Generated section image successfully: {relative_path}")
+            try:
+                self._record_image_manifest(
+                    report_path,
+                    {
+                        'type': 'section',
+                        'query': query,
+                        'intent': intent,
+                        'section': section_name,
+                        'prompt': prompt_used,
+                        'image': relative_path,
+                    },
+                )
+            except Exception as manifest_error:
+                logger.debug(f"Could not record section image manifest: {manifest_error}")
             return relative_path, attribution
             
         except Exception as e:

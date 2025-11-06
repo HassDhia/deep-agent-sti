@@ -242,6 +242,8 @@ class SlidesTemplateConfig:
         'Operator Lens',
         'Investor Lens',
         'BD Lens',
+        'Boundary Conditions',
+        'Reviewer Notes',
     ]
     
     # ============================================================================

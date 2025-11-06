@@ -5,11 +5,15 @@ Extends SimpleMCPTimeFilteredAgent to produce comprehensive 3,000-4,000 word
 research reports with specialized analysis sections using MCP tool servers.
 """
 
-import os
+import hashlib
 import json
 import logging
+import os
+import random
+from collections import Counter
 from datetime import datetime, timedelta
-from typing import List, Dict, Any, Tuple
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 from simple_mcp_agent import SimpleMCPTimeFilteredAgent, Source, SourceType
 from models import (
@@ -25,7 +29,13 @@ from analysis_server import (
     analyze_market, analyze_technology, analyze_competitive,
     expand_lenses, write_executive_summary
 )
-from file_utils import save_enhanced_report_auto
+from budget import BudgetManager
+from confidence import ConfidenceBreakdown, headline as confidence_headline
+from file_utils import compute_content_sha, save_enhanced_report_auto, write_json
+from gates import value_of_information
+from servers.anchors import align_claims_to_evidence
+from servers.critic import adversarial_review, decision_playbooks
+from servers.quant import patch_to_dict, suggest_patch_for_vignette
 from langchain.prompts import PromptTemplate
 from langchain.output_parsers import PydanticOutputParser
 from langchain_openai import OpenAIEmbeddings
@@ -60,6 +70,11 @@ class EnhancedSTIAgent(SimpleMCPTimeFilteredAgent):
             'Formation control multi-agent survey',
             'Containment control multi-agent survey'
         ]
+        self._advanced_llm = None
+        self._evidence_cache: Dict[str, Dict[str, Any]] = {}
+        self._quant_cache: Dict[str, Dict[str, Any]] = {}
+        self._adversarial_cache: Dict[str, Dict[str, Any]] = {}
+        self.last_run_status: Dict[str, Any] = {}
     
     def initialize_analysis_tools(self):
         """Initialize analysis tools (simplified version)"""
@@ -94,6 +109,280 @@ class EnhancedSTIAgent(SimpleMCPTimeFilteredAgent):
             logger.warning(f"Uncited sources: {stats['uncited']}")
         
         return stats
+
+    def _ensure_advanced_llm(self):
+        if self._advanced_llm is not None:
+            return self._advanced_llm
+
+        from langchain_openai import ChatOpenAI
+
+        organization = os.getenv("OPENAI_ORGANIZATION") or getattr(STIConfig, 'OPENAI_ORGANIZATION', None)
+        llm_params = {
+            "api_key": self.openai_api_key,
+            "model": getattr(STIConfig, 'ADVANCED_MODEL_NAME', 'gpt-5-2025-08-07'),
+            "temperature": 0.0,
+        }
+        if organization:
+            llm_params["openai_organization"] = organization
+        self._advanced_llm = ChatOpenAI(**llm_params)
+        return self._advanced_llm
+
+    def _premium_call(self, prompt: str, max_tokens: int) -> str:
+        llm = self._ensure_advanced_llm()
+        try:
+            response = llm.invoke(prompt, max_tokens=max_tokens)
+        except TypeError:
+            response = llm.invoke(prompt)
+        return getattr(response, "content", str(response))
+
+    def _make_source_getter(self, sources: List[Source]):
+        lookup = {str(source.id): source.content for source in sources}
+        return lambda source_id: lookup.get(str(source_id), "")
+
+    def _assemble_claims(self,
+                         signals: List[Dict[str, Any]],
+                         market_analysis: str,
+                         tech_deepdive: str,
+                         competitive: str,
+                         expanded_lenses: str,
+                         exec_summary: str) -> List[Dict[str, str]]:
+        claims: List[Dict[str, str]] = []
+        for idx, signal in enumerate(signals, 1):
+            text = signal.get('text', '').strip()
+            if text:
+                claims.append({"id": f"S{idx}", "text": text})
+
+        sections = [
+            ("EXEC", exec_summary),
+            ("MARKET", market_analysis),
+            ("TECH", tech_deepdive),
+            ("COMP", competitive),
+            ("LENS", expanded_lenses),
+        ]
+        for name, section in sections:
+            if not section:
+                continue
+            snippet = section.strip().split('\n')[0][:320]
+            if snippet:
+                claims.append({"id": f"{name}1", "text": snippet})
+        return claims
+
+    def _detect_quant_issues(self, *sections: str) -> int:
+        text_blob = " ".join(section for section in sections if section)
+        lowered = text_blob.lower()
+        flags = 0
+        if "illustrative target" in lowered:
+            flags += 1
+        if "ppv" in lowered and "base rate" not in lowered:
+            flags += 1
+        if "lambda" in lowered and "poisson" not in lowered:
+            flags += 1
+        return flags
+
+    def _infer_vignette_params(self, sections: List[str]) -> Dict[str, Any]:
+        params = {
+            "mu": 120,
+            "alpha": 0.65,
+            "tau": 0.25,
+            "p_conn": 0.6,
+            "kappa": 1.0,
+            "TPR": 0.9,
+            "FPR": 0.08,
+            "base_rate": 0.05,
+            "p_loss": 0.25,
+            "f": 1 / 30,
+            "w_k": 0.02,
+        }
+        text_blob = " ".join(sections).lower()
+        if "ppv" in text_blob and "0.6" in text_blob:
+            params["TPR"] = 0.85
+        if "mtta" in text_blob:
+            params["tau"] = 0.3
+        return params
+
+    def _hash_payload(self, payload: Any) -> str:
+        try:
+            serialized = json.dumps(payload, sort_keys=True, ensure_ascii=False)
+        except TypeError:
+            serialized = str(payload)
+        return hashlib.sha1(serialized.encode('utf-8')).hexdigest()
+
+    def _source_diversity_score(self, sources: List[Source]) -> float:
+        if not sources:
+            return 0.0
+        publishers = [s.publisher or "" for s in sources]
+        counter = Counter(publishers)
+        distinct = len([p for p in counter if p])
+        diversity = distinct / max(1, len(sources))
+        top_fraction = max(counter.values()) / max(1, len(sources)) if counter else 0.0
+        cap = getattr(STIConfig, 'VENDOR_CAP_PCT', 0.4)
+        if top_fraction > cap:
+            diversity *= 0.8
+        return max(0.0, min(1.0, diversity))
+
+    def _confidence_breakdown(self,
+                              sources: List[Source],
+                              anchor_coverage: float,
+                              quant_patch: Optional[Dict[str, Any]],
+                              adversarial_data: Optional[Dict[str, Any]]) -> ConfidenceBreakdown:
+        source_diversity = self._source_diversity_score(sources)
+        method_transparency = 0.45
+        if anchor_coverage >= getattr(STIConfig, 'ANCHOR_COVERAGE_MIN', 0.7):
+            method_transparency += 0.25
+        if quant_patch:
+            method_transparency += 0.15
+        replication_readiness = 0.45
+        if quant_patch:
+            replication_readiness += 0.2
+        if adversarial_data:
+            replication_readiness += 0.2
+        breakdown = ConfidenceBreakdown(
+            source_diversity=source_diversity,
+            anchor_coverage=max(0.0, min(1.0, anchor_coverage)),
+            method_transparency=min(1.0, method_transparency),
+            replication_readiness=min(1.0, replication_readiness),
+        )
+        return breakdown.clamp()
+
+    def _run_auditors(
+        self,
+        *,
+        query: str,
+        intent: str,
+        sources: List[Source],
+        signals: List[Dict[str, Any]],
+        market_analysis: str,
+        tech_deepdive: str,
+        competitive: str,
+        expanded_lenses: str,
+        exec_summary: str,
+        confidence: float,
+        budget: BudgetManager,
+    ) -> Dict[str, Any]:
+        source_records = [
+            {
+                "id": source.id,
+                "title": source.title,
+                "url": source.url,
+                "publisher": source.publisher,
+                "date": source.date,
+            }
+            for source in sources
+        ]
+        claims = self._assemble_claims(
+            signals, market_analysis, tech_deepdive, competitive, expanded_lenses, exec_summary
+        )
+        source_getter = self._make_source_getter(sources)
+        ledger = align_claims_to_evidence(claims, source_records, get_source_text=source_getter)
+        anchor_coverage = ledger.get("anchor_coverage", 0.0)
+        quant_flags = self._detect_quant_issues(
+            market_analysis, tech_deepdive, competitive, expanded_lenses, exec_summary
+        )
+        metrics = {
+            "anchor_coverage": anchor_coverage,
+            "quant_flags": quant_flags,
+            "confidence": float(confidence),
+        }
+        requested_tasks = value_of_information(metrics, intent)
+        task_matrix = {
+            "evidence_alignment": "evidence_alignment" in requested_tasks,
+            "math_guard": "math_guard" in requested_tasks and quant_flags > 0,
+            "adversarial_review": "adversarial_review" in requested_tasks,
+            "decision_playbooks": "decision_playbooks" in requested_tasks,
+        }
+
+        executed_premium_tasks: List[str] = []
+        advanced_tokens = 0
+
+        ledger_key = ledger.get("hash") or self._hash_payload(claims)
+        if task_matrix["evidence_alignment"]:
+            tokens = budget.slice(0.35)
+            if tokens > 0:
+                cache_key = f"{ledger_key}:{intent}"
+                cached = self._evidence_cache.get(cache_key)
+                if cached:
+                    ledger = cached
+                else:
+                    ledger = align_claims_to_evidence(
+                        claims,
+                        source_records,
+                        get_source_text=source_getter,
+                        llm=self._premium_call,
+                        max_tokens=tokens,
+                    )
+                    self._evidence_cache[cache_key] = ledger
+                executed_premium_tasks.append("evidence_alignment")
+                advanced_tokens += tokens
+            else:
+                task_matrix["evidence_alignment"] = False
+        anchor_coverage = ledger.get("anchor_coverage", anchor_coverage)
+        metrics["anchor_coverage"] = anchor_coverage
+
+        quant_patch_dict: Optional[Dict[str, Any]] = None
+        if task_matrix["math_guard"]:
+            params = self._infer_vignette_params(
+                [market_analysis, tech_deepdive, competitive, expanded_lenses, exec_summary]
+            )
+            params_hash = self._hash_payload(params)
+            quant_patch_dict = self._quant_cache.get(params_hash)
+            if quant_patch_dict is None:
+                patch = suggest_patch_for_vignette(params)
+                quant_patch_dict = patch_to_dict(patch)
+                self._quant_cache[params_hash] = quant_patch_dict
+            metrics["quant_flags"] = len(quant_patch_dict.get("warnings", []))
+
+        report_sections = {
+            "market": market_analysis,
+            "technology": tech_deepdive,
+            "competitive": competitive,
+            "lenses": expanded_lenses,
+            "executive_summary": exec_summary,
+        }
+        adversarial_data: Optional[Dict[str, Any]] = None
+        if task_matrix["adversarial_review"]:
+            adv_hash = self._hash_payload(report_sections)
+            adversarial_data = self._adversarial_cache.get(adv_hash)
+            if adversarial_data is None:
+                tokens = budget.slice(0.15)
+                if tokens > 0:
+                    adversarial_data = adversarial_review(
+                        report_sections, llm=self._premium_call, max_tokens=tokens
+                    )
+                    executed_premium_tasks.append("adversarial_review")
+                    advanced_tokens += tokens
+                else:
+                    adversarial_data = adversarial_review(report_sections, llm=None)
+                self._adversarial_cache[adv_hash] = adversarial_data
+
+        playbooks_data: Optional[Dict[str, Any]] = None
+        if task_matrix["decision_playbooks"]:
+            playbooks_data = {"rows": decision_playbooks()}
+
+        anchor_gate = intent == "theory" and anchor_coverage < getattr(
+            STIConfig, 'ANCHOR_COVERAGE_MIN', 0.7
+        )
+        source_sha_map = {source.id: compute_content_sha(source.content) for source in sources}
+
+        breakdown = self._confidence_breakdown(sources, anchor_coverage, quant_patch_dict, adversarial_data)
+        confidence_updated = confidence_headline(breakdown)
+
+        return {
+            "ledger": ledger,
+            "quant_patch": quant_patch_dict,
+            "adversarial": adversarial_data,
+            "playbooks": playbooks_data,
+            "confidence_breakdown": breakdown,
+            "confidence": confidence_updated,
+            "metrics": metrics,
+            "tasks_requested": requested_tasks,
+            "task_matrix": task_matrix,
+            "tasks_executed": executed_premium_tasks,
+            "anchor_gate": anchor_gate,
+            "advanced_tokens": advanced_tokens,
+            "source_sha_map": source_sha_map,
+            "report_sections": report_sections,
+            "claims": claims,
+        }
 
     def _classify_horizon(self, sources: List[Source]) -> str:
         """Rough horizon classification based on source dates."""
@@ -2789,14 +3078,35 @@ Return structured JSON with the refined title:"""
             logger.warning(f"Rubric reranker failed, passing through sources: {str(e)}")
             return sources
 
-    def search(self, query: str, days_back: int = 7) -> Tuple[str, Dict[str, Any]]:
+    def search(
+        self,
+        query: str,
+        days_back: int = 7,
+        seed: Optional[int] = None,
+        budget_advanced: int = 0,
+    ) -> Tuple[str, Dict[str, Any], Dict[str, Any]]:
         """
         Enhanced search that produces 3,000-4,000 word reports
         Uses existing search logic + new analysis tools
         
         Returns:
-            Tuple of (markdown_report, json_ld_artifact)
+            Tuple of (markdown_report, json_ld_artifact, run_summary)
         """
+        self.last_run_status = {}
+        if seed is not None:
+            random.seed(seed)
+            try:
+                np.random.seed(seed)
+            except Exception:
+                pass
+
+        budget = BudgetManager(
+            total_tokens=budget_advanced,
+            pct=getattr(STIConfig, 'ADVANCED_BUDGET_PCT', 0.25),
+        )
+        quality_gates_passed = True
+        audit_outputs: Dict[str, Any] = {}
+
         try:
             # Step 0: Market-first routing approach
             # Always search for market sources first, then check if they adequately reflect the query
@@ -2920,6 +3230,8 @@ Return structured JSON with the refined title:"""
             academic_floor_met = self._check_academic_floor(relevant_sources, intent)
 
             def _write_insufficient_and_return(reason: str = None):
+                nonlocal quality_gates_passed
+                quality_gates_passed = False
                 logger.warning(f"Only {len(relevant_sources)} relevant sources. Writing insufficient evidence report.")
                 if reason:
                     logger.warning(reason)
@@ -2949,7 +3261,41 @@ No signals extracted due to insufficient evidence.
                     query, relevant_sources, [], 0.0, days_back, exec_summary,
                     word_count=len(insufficient_report.split()), final_title=f"Tech Brief — {query}"
                 )
-                return insufficient_report, json_ld
+                fallback_manifest = {
+                    "query": query,
+                    "days": days_back,
+                    "seed": seed,
+                    "budget_advanced": budget_advanced,
+                    "timestamp": datetime.now().isoformat(),
+                    "models": {
+                        "primary": self.model_name,
+                        "advanced": getattr(STIConfig, 'ADVANCED_MODEL_NAME', None),
+                    },
+                    "metrics": {
+                        "confidence": 0.0,
+                        "anchor_coverage": 0.0,
+                        "quant_flags": 0,
+                    },
+                    "advanced_tasks": [],
+                    "advanced_tokens_spent": 0,
+                    "report_title": f"Tech Brief — {query}",
+                    "intent": intent,
+                }
+                self.last_run_status = {
+                    "quality_gates_passed": False,
+                    "report_dir": None,
+                    "run_manifest": fallback_manifest,
+                    "metrics": fallback_manifest["metrics"],
+                    "advanced_tasks": [],
+                    "asset_gated": True,
+                }
+                return insufficient_report, json_ld, {
+                    'intent': intent,
+                    'artifacts': {},
+                    'metrics': {'confidence': 0.0, 'anchor_coverage': 0.0, 'quant_flags': 0},
+                    'confidence_breakdown': {},
+                    'premium': {'requested': [], 'executed': {}},
+                }
 
             # Check for academic floor failure for theory queries (takes precedence over general source count)
             # BUT: if foundational_sources exist, continue to full thesis-path instead of simplified report
@@ -2963,7 +3309,13 @@ No signals extracted due to insufficient evidence.
                     query, relevant_sources, [], 0.0, days_back, exec_summary,
                     word_count=len(thesis_report.split()), final_title=f"Tech Brief — {query}"
                 )
-                return thesis_report, json_ld
+                return thesis_report, json_ld, {
+                    'intent': intent,
+                    'artifacts': {},
+                    'metrics': {'confidence': 0.0, 'anchor_coverage': 0.0, 'quant_flags': 0},
+                    'confidence_breakdown': {},
+                    'premium': {'requested': [], 'executed': {}},
+                }
             elif intent == "theory" and not academic_floor_met and len(foundational_sources) > 0:
                 academic_count = len([s for s in relevant_sources if s.source_type == SourceType.ACADEMIC])
                 logger.info(f"Academic floor unmet ({academic_count}/{STIConfig.MIN_ACADEMIC_SOURCES_THEORY}) but {len(foundational_sources)} foundational sources available. Proceeding to full thesis-path generation.")
@@ -3082,13 +3434,55 @@ No signals extracted due to insufficient evidence.
             
             exec_summary = self._call_analysis_tool("write_executive_summary", all_content_json)
             
+            # Initialize confidence before passing to _run_auditors
+            confidence = self._calculate_confidence_with_intent(signals, relevant_sources, intent)
+            
+            audit_outputs = self._run_auditors(
+                query=query,
+                intent=intent,
+                sources=relevant_sources,
+                signals=signals,
+                market_analysis=market_analysis,
+                tech_deepdive=tech_deepdive,
+                competitive=competitive,
+                expanded_lenses=expanded_lenses,
+                exec_summary=exec_summary,
+                confidence=confidence,
+                budget=budget,
+            )
+            ledger_data = audit_outputs.get("ledger")
+            quant_patch = audit_outputs.get("quant_patch")
+            adversarial_data = audit_outputs.get("adversarial")
+            playbooks_data = audit_outputs.get("playbooks")
+            confidence_breakdown = audit_outputs.get("confidence_breakdown")
+            confidence = audit_outputs.get("confidence", confidence)
+            metrics = audit_outputs.get("metrics", {})
+            anchor_gate = audit_outputs.get("anchor_gate", False)
+            advanced_tokens = audit_outputs.get("advanced_tokens", 0)
+            premium_tasks_run = audit_outputs.get("tasks_executed", [])
+            tasks_requested = audit_outputs.get("tasks_requested", [])
+            task_matrix = audit_outputs.get("task_matrix", {})
+            source_sha_map = audit_outputs.get("source_sha_map", {})
+            report_sections = audit_outputs.get("report_sections", {})
+            claims_snapshot = audit_outputs.get("claims", [])
+
             # Step 8: Track source attribution using relevant sources
             self._calculate_source_attribution_stats(
                 relevant_sources, signals, [market_analysis, tech_deepdive, competitive]
             )
             
             # Step 9: Use confidence calculation with intent-aware penalties
-            confidence = self._calculate_confidence_with_intent(signals, relevant_sources, intent)
+            # Note: confidence is already initialized above, but update from audit_outputs if available
+            if confidence_breakdown:
+                logger.info(
+                    "Confidence breakdown: diversity=%.2f anchor=%.2f method=%.2f replication=%.2f",
+                    confidence_breakdown.source_diversity,
+                    confidence_breakdown.anchor_coverage,
+                    confidence_breakdown.method_transparency,
+                    confidence_breakdown.replication_readiness,
+                )
+                # confidence already updated from audit_outputs at line 3443
+            # else: confidence already initialized above, no need to recalculate
 
             # Build single source-of-truth report model (for reconciliation)
             end_dt = datetime.now()
@@ -3165,7 +3559,11 @@ No signals extracted due to insufficient evidence.
                     'allow_foundational_out_of_window': True,
                     'canonical_hosts': canonical_hosts,
                     'foundational_urls': list(foundational_url_set),
-                    'thesis_io': thesis_io
+                    'thesis_io': thesis_io,
+                    'confidence_breakdown': confidence_breakdown.__dict__ if confidence_breakdown else None,
+                    'metrics': metrics,
+                    'tasks_requested': tasks_requested,
+                    'claims_snapshot': claims_snapshot,
                 }
             )
             
@@ -3372,41 +3770,133 @@ No signals extracted due to insufficient evidence.
             horizon = self._classify_horizon(relevant_sources)
             is_hybrid = self._is_hybrid_thesis_anchored(intent, relevant_sources)
 
+            sources_data_stats: List[Dict[str, Any]] = []
+            for src_model in report_model.sources:
+                record = src_model.model_dump()
+                record["content_sha"] = source_sha_map.get(src_model.id)
+                sources_data_stats.append(record)
+
             agent_stats = {
                 'date_filter_stats': self.get_date_filter_stats() if hasattr(self, 'get_date_filter_stats') else None,
-                'sources_data': [s.model_dump() for s in report_model.sources],
+                'sources_data': sources_data_stats,
                 'validated_sources_count': len(sources),
                 'intent': intent,
                 'horizon': horizon,
                 'hybrid_thesis_anchored': is_hybrid,
-                'thesis_io': report_model.metadata.get('thesis_io', {})  # Include thesis_io for HTML conversion
+                'thesis_io': report_model.metadata.get('thesis_io', {}),
+                'confidence_breakdown': confidence_breakdown.__dict__ if confidence_breakdown else None,
+                'advanced_tasks_requested': tasks_requested,
+                'advanced_tasks_executed': premium_tasks_run,
+                'advanced_tokens_spent': advanced_tokens,
+                'metrics': metrics,
+                'asset_gating': {
+                    'images_enabled': not anchor_gate,
+                    'social_enabled': not anchor_gate,
+                    'reason': 'insufficient anchors' if anchor_gate else ''
+                },
+                'source_sha_map': source_sha_map,
+                'claims_snapshot': claims_snapshot,
+                'report_sections': report_sections,
             }
             
             report_dir = save_enhanced_report_auto(
                 query, report, json_ld, days_back, agent_stats, generate_html=True
             )
-            
-            # Generate social media content automatically
+
+            output_path = Path(report_dir)
             try:
-                from social_media_agent import SocialMediaAgent
-                logger.info("Generating social media content...")
-                social_agent = SocialMediaAgent(self.openai_api_key, self.model_name)
-                social_content = social_agent.generate_all_formats(report)
-                
-                # Save social media content to report directory
-                from file_utils import file_manager
-                file_manager.save_social_media_content(report_dir, social_content)
-                logger.info("📱 Social media content generated and saved")
-                
-            except Exception as e:
-                logger.error(f"Error generating social media content: {str(e)}")
-                logger.info("Continuing without social media content...")
+                if ledger_data:
+                    write_json(output_path / "evidence_ledger.json", ledger_data)
+                if quant_patch:
+                    write_json(output_path / "vignette_quant_patch.json", quant_patch)
+                if adversarial_data:
+                    write_json(output_path / "adversarial.json", adversarial_data)
+                if playbooks_data:
+                    write_json(output_path / "playbooks.json", playbooks_data)
+            except Exception as artifact_err:
+                logger.error(f"Failed to persist auditor artifacts: {artifact_err}")
+
+            run_manifest = {
+                "query": query,
+                "days": days_back,
+                "seed": seed,
+                "budget_advanced": budget_advanced,
+                "timestamp": datetime.now().isoformat(),
+                "models": {
+                    "primary": self.model_name,
+                    "advanced": getattr(STIConfig, 'ADVANCED_MODEL_NAME', None) if premium_tasks_run else None,
+                },
+                "metrics": metrics,
+                "advanced_tasks_requested": tasks_requested,
+                "advanced_tasks_executed": premium_tasks_run,
+                "advanced_tokens_spent": advanced_tokens,
+                "advanced_budget_remaining": budget.left(),
+                "report_title": final_title,
+                "intent": intent,
+                "anchor_gate": anchor_gate,
+            }
+
+            agent_stats['run_manifest'] = run_manifest
+            self.last_run_status = {
+                "quality_gates_passed": quality_gates_passed,
+                "report_dir": report_dir,
+                "run_manifest": run_manifest,
+                "metrics": metrics,
+                "advanced_tasks": premium_tasks_run,
+                "asset_gated": anchor_gate,
+            }
+
+            social_skipped = anchor_gate and intent == "theory"
+            if social_skipped:
+                logger.info("Skipping social copy: insufficient anchors for thesis path.")
+            else:
+                try:
+                    from social_media_agent import SocialMediaAgent
+                    logger.info("Generating social media content...")
+                    social_agent = SocialMediaAgent(self.openai_api_key, self.model_name)
+                    social_context = {
+                        "confidence": confidence,
+                        "title": final_title,
+                        "query": query,
+                        "ledger": ledger_data,
+                        "sources": sources_data_stats,
+                    }
+                    social_content = social_agent.generate_all_formats(report, context=social_context)
+
+                    # Save social media content to report directory
+                    from file_utils import file_manager
+                    file_manager.save_social_media_content(report_dir, social_content)
+                    logger.info("📱 Social media content generated and saved")
+
+                except Exception as e:
+                    logger.error(f"Error generating social media content: {str(e)}")
+                    logger.info("Continuing without social media content...")
             
-            return report, json_ld
+            # Build run_summary for return
+            run_summary = {
+                'intent': intent,
+                'artifacts': {
+                    'report_dir': report_dir,
+                },
+                'metrics': metrics,
+                'confidence_breakdown': confidence_breakdown.__dict__ if confidence_breakdown else {},
+                'premium': {
+                    'requested': tasks_requested,
+                    'executed': {task: task in premium_tasks_run for task in tasks_requested},
+                },
+            }
+            
+            return report, json_ld, run_summary
             
         except Exception as e:
             logger.error(f"Error in enhanced search: {str(e)}")
-            return f"Error performing enhanced search: {str(e)}", {}
+            return f"Error performing enhanced search: {str(e)}", {}, {
+                'intent': 'unknown',
+                'artifacts': {},
+                'metrics': {},
+                'confidence_breakdown': {},
+                'premium': {'requested': [], 'executed': {}},
+            }
     
     def _generate_enhanced_report(self, query: str, sources: List[Source], 
                                  signals: List[Dict[str, Any]], market_analysis: str,
@@ -3624,7 +4114,7 @@ def main():
     print("=== Enhanced MCP Agent Demo ===\n")
     print("Generating enhanced research brief...")
     
-    markdown_report, json_ld_artifact = agent.search(
+    markdown_report, json_ld_artifact, run_summary = agent.search(
         "AI technology trends",
         days_back=7
     )

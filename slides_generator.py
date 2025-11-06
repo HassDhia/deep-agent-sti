@@ -10,6 +10,7 @@ import json
 import logging
 import hashlib
 import math
+import time
 from pathlib import Path
 from typing import Dict, Any, Optional, List, Tuple
 from datetime import datetime
@@ -317,6 +318,25 @@ class SlidesGenerator:
             return None
         
         try:
+            checksum_path = Path(report_dir) / 'slides_checksum.txt'
+            signature = self._compute_slides_signature(query, metadata, json_ld_artifact, markdown_report)
+            if checksum_path.exists():
+                try:
+                    existing_signature = checksum_path.read_text().strip()
+                except Exception:
+                    existing_signature = None
+                if existing_signature and existing_signature == signature:
+                    logger.info("ℹ️ Slides unchanged since last run; skipping regeneration.")
+                    slides_url_file = Path(report_dir) / 'slides_url.txt'
+                    pdf_file = Path(report_dir) / 'slides_export.pdf'
+                    result: Dict[str, str] = {}
+                    if slides_url_file.exists():
+                        result['slides_url'] = slides_url_file.read_text().strip()
+                    if pdf_file.exists():
+                        result['pdf_path'] = str(pdf_file)
+                    if result:
+                        return result
+                    logger.info("ℹ️ No cached slide outputs found; regenerating deck.")
             logger.info(f"🎨 Starting slide deck generation for: {query}")
             
             # Step 1: Create presentation (from template or scratch)
@@ -377,10 +397,13 @@ class SlidesGenerator:
                 if creation_requests:
                     logger.info(f"📄 Creating {len(creation_requests)} slide(s)...")
                     try:
-                        create_response = self.slides_service.presentations().batchUpdate(
-                            presentationId=presentation_id,
-                            body={'requests': creation_requests}
-                        ).execute()
+                        create_response = self._execute_with_backoff(
+                            lambda: self.slides_service.presentations().batchUpdate(
+                                presentationId=presentation_id,
+                                body={'requests': creation_requests}
+                            ).execute(),
+                            description="Create slides batchUpdate",
+                        )
                         
                         # Extract created slide IDs from response
                         if 'replies' in create_response:
@@ -433,10 +456,13 @@ class SlidesGenerator:
                     # Store requests for reply correlation
                     self._last_requests = list(requests)
                     
-                    response = self.slides_service.presentations().batchUpdate(
-                        presentationId=presentation_id,
-                        body={'requests': requests}
-                    ).execute()
+                    response = self._execute_with_backoff(
+                        lambda: self.slides_service.presentations().batchUpdate(
+                            presentationId=presentation_id,
+                            body={'requests': requests}
+                        ).execute(),
+                        description="Populate slides batchUpdate",
+                    )
                     
                     # Debug: Log response details
                     self._log_batch_response(response, len(requests))
@@ -545,6 +571,10 @@ class SlidesGenerator:
             
             # Step 9: Save URLs to report directory (only if QA passed)
             self._save_outputs(report_dir, slides_url, pdf_path, qa_passed=qa_passed)
+            try:
+                checksum_path.write_text(signature)
+            except Exception as checksum_error:
+                logger.warning(f"⚠️ Unable to write slides checksum: {checksum_error}")
             
             logger.info(f"🎉 Slide deck generated successfully: {slides_url}")
             
@@ -759,6 +789,39 @@ class SlidesGenerator:
     def _slugify_query(self, query: str) -> str:
         """Convert query to URL-safe slug."""
         return "".join(c.lower() if c.isalnum() else "_" for c in query)[:30]
+
+    def _compute_slides_signature(
+        self,
+        query: str,
+        metadata: Dict[str, Any],
+        json_ld_artifact: Dict[str, Any],
+        markdown_report: str,
+    ) -> str:
+        metadata_hash = hashlib.sha256(
+            json.dumps(metadata, sort_keys=True, default=str).encode('utf-8')
+        ).hexdigest()
+        jsonld_hash = hashlib.sha256(
+            json.dumps(json_ld_artifact, sort_keys=True, default=str).encode('utf-8')
+        ).hexdigest()
+        report_hash = hashlib.sha256(markdown_report.encode('utf-8')).hexdigest()
+        combined = f"{query}|{metadata_hash}|{jsonld_hash}|{report_hash}"
+        return hashlib.sha256(combined.encode('utf-8')).hexdigest()
+
+    def _execute_with_backoff(self, func, description: str = "API call", max_attempts: int = 5):
+        for attempt in range(max_attempts):
+            try:
+                return func()
+            except HttpError as error:
+                if attempt == max_attempts - 1:
+                    raise
+                sleep_for = 2.0 * (2 ** attempt)
+                logger.warning(
+                    f"⚠️ {description} failed (attempt {attempt + 1}/{max_attempts}): {error}. "
+                    f"Retrying in {sleep_for:.1f}s."
+                )
+                time.sleep(sleep_for)
+            except Exception:
+                raise
     
     def _extract_slide_data(self, report_dir: str, query: str, metadata: Dict[str, Any],
                            json_ld_artifact: Dict[str, Any], markdown_report: str) -> Dict[str, Any]:

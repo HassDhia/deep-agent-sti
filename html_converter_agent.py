@@ -6,6 +6,8 @@ following Bloomberg/FT journalism best practices with clean typography,
 inline data cards, sidebar insights, and minimal STI branding.
 """
 
+import html
+import json
 import os
 import re
 import logging
@@ -44,6 +46,25 @@ class HTMLConverterAgent:
         if not os.path.exists(self.template_path):
             logger.warning(f"Template not found at {self.template_path}, will create basic template")
             self._create_basic_template()
+
+    def _load_json_artifact(self, report_dir: str, filename: str) -> Dict[str, Any]:
+        if not report_dir:
+            return {}
+        path = Path(report_dir) / filename
+        if not path.exists():
+            return {}
+        try:
+            with path.open('r', encoding='utf-8') as handle:
+                return json.load(handle)
+        except Exception as exc:
+            logger.warning(f"Failed to load artifact {filename}: {exc}")
+            return {}
+
+    def _load_evidence_ledger(self, report_dir: str) -> Dict[str, Any]:
+        ledger = self._load_json_artifact(report_dir, "evidence_ledger.json")
+        if ledger:
+            logger.info("Loaded evidence ledger with %d claims", len(ledger.get('claims', [])))
+        return ledger
     
     def convert(self, markdown_report: str, json_ld: Dict[str, Any],
                 metadata: Dict[str, Any], report_dir: str = None) -> str:
@@ -59,10 +80,25 @@ class HTMLConverterAgent:
             Self-contained HTML string
         """
         try:
+            metadata = dict(metadata or {})
             # Detect intent (thesis vs market)
             agent_stats = metadata.get('agent_stats', {})
             intent = agent_stats.get('intent') or metadata.get('intent')
             is_thesis = (intent == 'theory')
+
+            ledger = self._load_evidence_ledger(report_dir)
+            adversarial = self._load_json_artifact(report_dir, "adversarial.json")
+            playbooks = self._load_json_artifact(report_dir, "playbooks.json")
+            quant_patch = self._load_json_artifact(report_dir, "vignette_quant_patch.json")
+
+            if ledger:
+                metadata['evidence_ledger'] = ledger
+            if adversarial:
+                metadata['adversarial_findings'] = adversarial
+            if playbooks:
+                metadata['decision_playbooks'] = playbooks
+            if quant_patch:
+                metadata['quant_patch'] = quant_patch
 
             # If thesis, switch to thesis template
             if is_thesis:
@@ -91,6 +127,18 @@ class HTMLConverterAgent:
             
             # Ensure filtered source count takes precedence over metadata
             template_data['sources_count'] = len(parsed_sections.get('sources', []))
+
+            template_data['evidence_ledger'] = ledger
+            template_data['adversarial_findings'] = adversarial
+            template_data['decision_playbooks'] = playbooks
+            template_data['quant_patch'] = quant_patch
+            template_data['confidence_breakdown'] = agent_stats.get('confidence_breakdown') or metadata.get('confidence_breakdown')
+            template_data['run_manifest'] = agent_stats.get('run_manifest') or metadata.get('run_manifest')
+            template_data['provenance_banner'] = self._render_provenance_banner(template_data)
+            template_data['evidence_ledger_html'] = self._render_evidence_ledger(ledger)
+            template_data['adversarial_html'] = self._render_adversarial_section(adversarial)
+            template_data['playbooks_html'] = self._render_playbooks(playbooks)
+            template_data['quant_patch_html'] = self._render_quant_patch(quant_patch)
             
             # Extract thesis critique scores if available
             if is_thesis:
@@ -217,7 +265,12 @@ class HTMLConverterAgent:
                 enable_gen = getattr(STIConfig, 'ENABLE_IMAGE_GENERATION', None)
                 logger.debug(f"   - ENABLE_IMAGE_GENERATION: {enable_gen}")
             
-            if report_dir and STIConfig and getattr(STIConfig, 'ENABLE_IMAGE_GENERATION', False):
+            asset_gating = agent_stats.get('asset_gating', {}) if isinstance(agent_stats, dict) else {}
+            images_enabled = asset_gating.get('images_enabled', True)
+
+            if not images_enabled:
+                logger.info("🛑 Image generation skipped by asset gate (insufficient anchors).")
+            elif report_dir and STIConfig and getattr(STIConfig, 'ENABLE_IMAGE_GENERATION', False):
                 query = metadata.get('query') or template_data.get('title', 'Technology Intelligence')
                 intent = "theory" if is_thesis else "market"
                 exec_summary = template_data.get('exec_summary', '')  # Extract exec summary for tailored prompts
@@ -381,7 +434,8 @@ class HTMLConverterAgent:
             sections['sources'] = self._parse_sources(
                 sources_text, 
                 signals_html=sections.get('signals_html', ''),
-                raw_markdown=all_raw_sections
+                raw_markdown=all_raw_sections,
+                ledger=metadata.get('evidence_ledger')
             )
             sections['sources_html'] = self._render_source_citations(sections['sources'])
         else:
@@ -1369,9 +1423,10 @@ class HTMLConverterAgent:
             return html
         
         # Build hero image HTML
+        alt_text = html.escape(f"Conceptual illustration for {query}")
         hero_html = f'''
             <div class="hero-image-container">
-                <img src="{img_path}" alt="{query}" loading="lazy">
+                <img src="{img_path}" alt="{alt_text}" loading="lazy">
                 <p class="hero-image-attribution">{attribution}</p>
             </div>
             '''
@@ -1519,9 +1574,10 @@ class HTMLConverterAgent:
                 continue
             
             # Build section image HTML
+            safe_section = html.escape(section_title or "Section illustration")
             section_html = f'''
             <div class="section-image-container">
-                <img src="{img_path}" alt="{section_title}" loading="lazy">
+                <img src="{img_path}" alt="{safe_section}" loading="lazy">
                 <p class="section-image-attribution">{attribution}</p>
             </div>
             '''
@@ -1840,7 +1896,8 @@ class HTMLConverterAgent:
         return signals
     
     def _parse_sources(self, sources_text: str, signals_html: str = "", 
-                       analysis_sections: List[str] = None, raw_markdown: str = "") -> List[Dict[str, Any]]:
+                       analysis_sections: List[str] = None, raw_markdown: str = "",
+                       ledger: Dict[str, Any] = None) -> List[Dict[str, Any]]:
         """Parse sources from markdown text and filter to only cited sources"""
         sources = []
         source_lines = sources_text.strip().split('\n')
@@ -1939,9 +1996,25 @@ class HTMLConverterAgent:
             
             logger.info(f"Source filtering: {len(sources)} total sources, {len(filtered_sources)} cited sources")
             logger.info(f"Cited source IDs: {sorted(cited_source_ids)}")
-            
-            return filtered_sources
-        
+            sources = filtered_sources
+
+        if ledger:
+            support_map: Dict[str, List[Dict[str, Any]]] = {}
+            for claim in ledger.get('claims', []):
+                claim_id = claim.get('id') or claim.get('claim_id')
+                claim_text = claim.get('text') or claim.get('claim_text')
+                for span in claim.get('support_spans', []):
+                    source_key = str(span.get('source_id'))
+                    support_map.setdefault(source_key, []).append({
+                        'claim_id': claim_id,
+                        'claim_text': claim_text,
+                        'text': span.get('text', ''),
+                    })
+            for source in sources:
+                key = str(source.get('id'))
+                if key in support_map:
+                    source['support_spans'] = support_map[key]
+
         return sources
     
     def _extract_json_ld_data(self, json_ld: Dict[str, Any], filtered_sources_count: int = None) -> Dict[str, Any]:
@@ -2017,6 +2090,146 @@ class HTMLConverterAgent:
         html += '</div>'
         return html
     
+    def _render_provenance_banner(self, template_data: Dict[str, Any]) -> str:
+        breakdown = template_data.get('confidence_breakdown')
+        if not breakdown:
+            return ""
+        try:
+            sd = float(breakdown.get('source_diversity', 0.0))
+            ac = float(breakdown.get('anchor_coverage', 0.0))
+            mt = float(breakdown.get('method_transparency', 0.0))
+            rr = float(breakdown.get('replication_readiness', 0.0))
+        except (TypeError, ValueError):
+            return ""
+
+        metrics = template_data.get('metrics') or {}
+        anchor_cov = metrics.get('anchor_coverage', ac)
+        quant_flags = metrics.get('quant_flags', 0)
+        run_manifest = template_data.get('run_manifest') or {}
+        advanced_tasks = run_manifest.get('advanced_tasks_executed') or []
+        advanced_tokens = run_manifest.get('advanced_tokens_spent')
+
+        advanced_sentence = ""
+        if advanced_tasks:
+            tasks_str = ", ".join(advanced_tasks)
+            token_str = f" (~{advanced_tokens} tokens)" if isinstance(advanced_tokens, int) and advanced_tokens > 0 else ""
+            advanced_sentence = f"Premium model auditors: {tasks_str}{token_str}."
+
+        quant_sentence = ""
+        if quant_flags:
+            quant_sentence = f"Math guard flagged {quant_flags} issue(s); see quantitative appendix."
+
+        description_parts = [part for part in [advanced_sentence, quant_sentence] if part]
+        description = " ".join(description_parts)
+
+        return f'''
+        <section class="provenance-banner">
+            <h2>Confidence Provenance</h2>
+            <div class="provenance-grid">
+                <div><span>Source Diversity</span><strong>{sd:.2f}</strong></div>
+                <div><span>Anchor Coverage</span><strong>{ac:.2f}</strong></div>
+                <div><span>Method Transparency</span><strong>{mt:.2f}</strong></div>
+                <div><span>Replication Readiness</span><strong>{rr:.2f}</strong></div>
+            </div>
+            <p class="provenance-notes">Anchor coverage enforced at {anchor_cov:.2f}. {description}</p>
+        </section>
+        '''
+
+    def _render_evidence_ledger(self, ledger: Dict[str, Any]) -> str:
+        if not ledger or not ledger.get('claims'):
+            return ""
+        parts = ['<section class="evidence-ledger"><h2>Evidence Ledger</h2>']
+        for claim in ledger.get('claims', []):
+            claim_id = html.escape(str(claim.get('claim_id') or claim.get('id') or 'Claim'))
+            claim_text = html.escape(claim.get('claim_text') or claim.get('text') or '')
+            overreach = claim.get('overreach')
+            wrapper_class = 'ledger-claim overreach' if overreach else 'ledger-claim'
+            parts.append(f'<div class="{wrapper_class}"><h3>{claim_id}</h3><p>{claim_text}</p>')
+            anchors = claim.get('anchors') or []
+            if anchors:
+                anchor_items = ''.join(
+                    f"<li>{html.escape(a.get('title', ''))}"
+                    f"{' — ' + html.escape(a.get('why_relevant', '')) if a.get('why_relevant') else ''}" \
+                    f"{' (<code>' + html.escape(a.get('doi', '')) + '</code>)' if a.get('doi') else ''}" \
+                    f"</li>"
+                    for a in anchors
+                )
+                parts.append(f'<div class="ledger-anchors"><strong>Anchors</strong><ul>{anchor_items}</ul></div>')
+            spans = claim.get('support_spans') or []
+            if spans:
+                span_items = ''.join(
+                    f"<li>Source {html.escape(str(span.get('source_id')))} — {html.escape(span.get('text', '') )}</li>"
+                    for span in spans[:3]
+                )
+                if len(spans) > 3:
+                    span_items += f"<li>… {len(spans) - 3} more excerpts</li>"
+                parts.append(f'<div class="ledger-support"><strong>Support</strong><ul>{span_items}</ul></div>')
+            notes = claim.get('notes')
+            if notes:
+                parts.append(f'<p class="ledger-notes">{html.escape(notes)}</p>')
+            parts.append('</div>')
+        parts.append('</section>')
+        return ''.join(parts)
+
+    def _render_adversarial_section(self, adversarial: Dict[str, Any]) -> str:
+        if not adversarial:
+            return ""
+        objections = adversarial.get('objections') or []
+        boundaries = adversarial.get('boundary_conditions') or []
+        tests = adversarial.get('falsification_tests') or []
+        if not any([objections, boundaries, tests]):
+            return ""
+        parts = ['<section class="adversarial-review"><h2>Adversarial Review</h2>']
+        if objections:
+            items = ''.join(f'<li>{html.escape(item)}</li>' for item in objections)
+            parts.append(f'<div><h3>Steelman Objections</h3><ul>{items}</ul></div>')
+        if boundaries:
+            items = ''.join(f'<li>{html.escape(item)}</li>' for item in boundaries)
+            parts.append(f'<div><h3>Boundary Conditions</h3><ul>{items}</ul></div>')
+        if tests:
+            items = ''.join(f'<li>{html.escape(item)}</li>' for item in tests)
+            parts.append(f'<div><h3>Falsification Tests</h3><ul>{items}</ul></div>')
+        parts.append('</section>')
+        return ''.join(parts)
+
+    def _render_playbooks(self, playbooks: Dict[str, Any]) -> str:
+        rows = playbooks.get('rows') if isinstance(playbooks, dict) else None
+        if not rows:
+            return ""
+        header = "<tr><th>KPI</th><th>Threshold</th><th>Action</th><th>Risk Delta</th><th>Monitoring Lag</th></tr>"
+        body = ''.join(
+            f"<tr><td>{html.escape(row.get('kpi', ''))}</td>"
+            f"<td>{html.escape(row.get('threshold', ''))}</td>"
+            f"<td>{html.escape(row.get('action', ''))}</td>"
+            f"<td>{html.escape(row.get('expected_delta_risk', ''))}</td>"
+            f"<td>{html.escape(row.get('monitoring_lag', ''))}</td></tr>"
+            for row in rows
+        )
+        return f'<section class="decision-playbooks"><h2>Decision Playbooks</h2><table>{header}{body}</table></section>'
+
+    def _render_quant_patch(self, quant_patch: Dict[str, Any]) -> str:
+        if not quant_patch:
+            return ""
+        warnings = quant_patch.get('warnings') or []
+        equations = quant_patch.get('latex_equations') or []
+        examples = quant_patch.get('examples') or []
+        parts = ['<section class="quant-guard"><h2>Quantitative Guardrail</h2>']
+        if warnings:
+            warn_items = ''.join(f"<li>{html.escape(str(w.get('message') or w))}</li>" for w in warnings)
+            parts.append(f'<div class="quant-warnings"><strong>Warnings</strong><ul>{warn_items}</ul></div>')
+        if equations:
+            eq_items = ''.join(f"<li><code>{html.escape(eq)}</code></li>" for eq in equations[:4])
+            parts.append(f'<div class="quant-equations"><strong>Equations</strong><ul>{eq_items}</ul></div>')
+        if examples:
+            first = examples[0]
+            rows = ''.join(
+                f"<tr><td>{html.escape(str(k))}</td><td>{html.escape(f'{v}')}</td></tr>"
+                for k, v in first.items()
+            )
+            parts.append(f'<div class="quant-examples"><strong>Worked Example</strong><table>{rows}</table></div>')
+        parts.append('</section>')
+        return ''.join(parts)
+
     def _render_source_citations(self, sources: List[Dict[str, Any]]) -> str:
         """Render sources - flag any invalid URLs as system errors"""
         if not sources:
@@ -2056,8 +2269,28 @@ class HTMLConverterAgent:
                 '''
                 continue
             
+            support_spans = source.get('support_spans', [])
+            support_class = " has-support" if support_spans else ""
+            support_html = ""
+            if support_spans:
+                tooltip_text = " | ".join(
+                    f"{str(span.get('claim_id') or '')}: {span.get('text', '')}" for span in support_spans
+                )
+                list_items = []
+                for span in support_spans[:2]:
+                    claim_label = html.escape(str(span.get('claim_id') or ''))
+                    excerpt = html.escape((span.get('text', '') or '')[:160])
+                    list_items.append(f"<li><strong>{claim_label}</strong> {excerpt}</li>")
+                if len(support_spans) > 2:
+                    list_items.append(f"<li>… {len(support_spans) - 2} more excerpts in ledger</li>")
+                support_html = (
+                    f'<div class="source-support" title="{html.escape(tooltip_text)}">'
+                    f'<ul>{"".join(list_items)}</ul>'
+                    f'</div>'
+                )
+
             html += f'''
-            <div class="source-item" id="source-{source['id']}">
+            <div class="source-item{support_class}" id="source-{source['id']}">
                 <span class="source-number">[{source['id']}{type_display}]</span>
                 <div class="source-content">
                     <div class="source-title">{source['title']}</div>
@@ -2065,6 +2298,7 @@ class HTMLConverterAgent:
                     <div class="source-url">
                         <a href="{url}" target="_blank" rel="noopener">{url}</a>
                     </div>
+                    {support_html}
                 </div>
             </div>
             '''
@@ -2370,6 +2604,45 @@ class HTMLConverterAgent:
             margin: 2rem 0; 
             border-radius: 4px;
         }
+        .provenance-banner {
+            background: #eef2ff;
+            border-left: 4px solid #4338ca;
+            padding: 1.25rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+        .provenance-banner h2 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+        .provenance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.75rem;
+            margin: 0.75rem 0;
+        }
+        .provenance-grid div {
+            background: #fff;
+            border: 1px solid #dbeafe;
+            border-radius: 4px;
+            padding: 0.75rem;
+            text-align: center;
+        }
+        .provenance-grid span {
+            display: block;
+            font-size: 0.85em;
+            color: #475569;
+            margin-bottom: 0.25rem;
+        }
+        .provenance-grid strong {
+            font-size: 1.2em;
+            color: #111827;
+        }
+        .provenance-notes {
+            font-size: 0.9em;
+            color: #475569;
+            margin: 0;
+        }
         .topline { 
             font-size: 1.1em; 
             margin: 1.5rem 0; 
@@ -2404,6 +2677,10 @@ class HTMLConverterAgent:
             border-left: 3px solid #e1e4e8;
             background: #f8f9fa;
         }
+        .source-item.has-support {
+            border-left-color: #2563eb;
+            background: #f0f6ff;
+        }
         .source-number { 
             font-weight: bold; 
             color: #0066cc; 
@@ -2414,6 +2691,9 @@ class HTMLConverterAgent:
         .source-url a { color: #0066cc; text-decoration: none; }
         .source-url a:hover { text-decoration: underline; }
         .credibility { color: #999; font-size: 0.8em; margin-left: 0.5rem; }
+        .source-support { font-size: 0.85em; color: #334155; margin-top: 0.5rem; }
+        .source-support ul { margin: 0.3rem 0 0 1.1rem; padding: 0; }
+        .source-support li { margin-bottom: 0.2rem; line-height: 1.3; }
         
         @media print {
             body { max-width: none; padding: 1rem; }

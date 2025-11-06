@@ -5,16 +5,39 @@ Provides automatic nested file saving functionality for all intelligence reports
 with organized directory structure and comprehensive metadata tracking.
 """
 
-import os
+import hashlib
 import json
 import logging
+import os
 from datetime import datetime
-from typing import Dict, Any, Optional, List
 from pathlib import Path
+from tempfile import NamedTemporaryFile
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+def compute_content_sha(content: str) -> str:
+    return hashlib.sha256((content or "").encode("utf-8")).hexdigest()
+
+
+def _atomic_write_text(path: Path, data: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with NamedTemporaryFile("w", delete=False, encoding="utf-8", dir=str(path.parent)) as tmp:
+        tmp.write(data)
+        tmp_name = tmp.name
+    os.replace(tmp_name, path)
+
+
+def write_text(path: Path, content: str) -> None:
+    _atomic_write_text(path, content)
+
+
+def write_json(path: Path, payload: Any) -> None:
+    serialized = json.dumps(payload, indent=2, ensure_ascii=False)
+    _atomic_write_text(path, serialized)
 
 
 class STIFileManager:
@@ -82,39 +105,39 @@ class STIFileManager:
         
         # Save markdown report
         markdown_file = os.path.join(report_dir, 'intelligence_report.md')
-        with open(markdown_file, 'w', encoding='utf-8') as f:
-            f.write(markdown_report)
+        write_text(Path(markdown_file), markdown_report)
         logger.info(f"💾 Saved markdown report: {markdown_file}")
         
         # Save JSON-LD artifact
         jsonld_file = os.path.join(report_dir, 'intelligence_report.jsonld')
-        with open(jsonld_file, 'w', encoding='utf-8') as f:
-            json.dump(json_ld_artifact, f, indent=2, ensure_ascii=False)
+        write_json(Path(jsonld_file), json_ld_artifact)
         logger.info(f"💾 Saved JSON-LD artifact: {jsonld_file}")
         
         # Extract and save executive summary
         exec_summary = json_ld_artifact.get('abstract', 'Executive summary not available')
         summary_file = os.path.join(report_dir, 'executive_summary.txt')
-        with open(summary_file, 'w', encoding='utf-8') as f:
-            f.write(exec_summary)
+        write_text(Path(summary_file), exec_summary)
         logger.info(f"💾 Saved executive summary: {summary_file}")
         
         # Extract and save sources/parts data (fallback to agent_stats if provided)
-        sources_data = []
+        sources_data: List[Dict[str, Any]] = []
         if 'hasPart' in json_ld_artifact:
             for i, part in enumerate(json_ld_artifact['hasPart'], 1):
                 sources_data.append({
                     'id': i,
                     'headline': part.get('headline', ''),
                     'confidence': part.get('confidence', 0),
-                    'citations': part.get('citation', [])
+                    'citations': part.get('citation', []),
+                    'content_sha': part.get('content_sha')
                 })
         elif agent_stats and isinstance(agent_stats.get('sources_data'), list):
             sources_data = agent_stats['sources_data']
+
+        if agent_stats and isinstance(agent_stats.get('sources_data'), list):
+            sources_data = agent_stats['sources_data']
         
         sources_file = os.path.join(report_dir, 'sources.json')
-        with open(sources_file, 'w', encoding='utf-8') as f:
-            json.dump(sources_data, f, indent=2, ensure_ascii=False)
+        write_json(Path(sources_file), sources_data)
         logger.info(f"💾 Saved sources data: {sources_file}")
         
         # Create comprehensive metadata
@@ -142,8 +165,7 @@ class STIFileManager:
             metadata['agent_stats'] = agent_stats
         
         metadata_file = os.path.join(report_dir, 'metadata.json')
-        with open(metadata_file, 'w', encoding='utf-8') as f:
-            json.dump(metadata, f, indent=2, ensure_ascii=False)
+        write_json(Path(metadata_file), metadata)
         logger.info(f"💾 Saved metadata: {metadata_file}")
         
         # Generate HTML version if requested
@@ -154,8 +176,7 @@ class STIFileManager:
                 html_report = converter.convert(markdown_report, json_ld_artifact, metadata, report_dir=report_dir)
                 
                 html_file = os.path.join(report_dir, 'intelligence_report.html')
-                with open(html_file, 'w', encoding='utf-8') as f:
-                    f.write(html_report)
+                write_text(Path(html_file), html_report)
                 logger.info(f"💾 Saved HTML report: {html_file}")
                 
             except Exception as e:
@@ -209,22 +230,23 @@ class STIFileManager:
         try:
             # Save long-form post
             long_form_file = os.path.join(report_dir, 'social_media_post.md')
-            with open(long_form_file, 'w', encoding='utf-8') as f:
-                f.write(social_content.get('long_form', ''))
+            write_text(Path(long_form_file), social_content.get('long_form', ''))
             logger.info(f"💾 Saved social media post: {long_form_file}")
             
             # Save Twitter thread
             twitter_thread = social_content.get('twitter_thread', [])
             twitter_file = os.path.join(report_dir, 'social_media_thread.txt')
-            with open(twitter_file, 'w', encoding='utf-8') as f:
-                for i, tweet in enumerate(twitter_thread, 1):
-                    f.write(f"{i}/{len(twitter_thread)} {tweet}\n")
+            write_text(
+                Path(twitter_file),
+                "\n".join(
+                    [f"{i}/{len(twitter_thread)} {tweet}" for i, tweet in enumerate(twitter_thread, 1)]
+                ) + ("\n" if twitter_thread else ""),
+            )
             logger.info(f"💾 Saved Twitter thread: {twitter_file}")
             
             # Save LinkedIn post
             linkedin_file = os.path.join(report_dir, 'social_media_linkedin.txt')
-            with open(linkedin_file, 'w', encoding='utf-8') as f:
-                f.write(social_content.get('linkedin_post', ''))
+            write_text(Path(linkedin_file), social_content.get('linkedin_post', ''))
             logger.info(f"💾 Saved LinkedIn post: {linkedin_file}")
             
             # Update metadata to include social media content info
@@ -242,8 +264,7 @@ class STIFileManager:
                         'generation_timestamp': social_content.get('metadata', {}).get('generation_timestamp', '')
                     }
                     
-                    with open(metadata_file, 'w', encoding='utf-8') as f:
-                        json.dump(metadata, f, indent=2, ensure_ascii=False)
+                    write_json(Path(metadata_file), metadata)
                     logger.info(f"💾 Updated metadata with social media content info")
                     
                 except Exception as e:
@@ -443,3 +464,8 @@ def list_all_reports(agent_type: str = None) -> List[str]:
         List of report directory paths
     """
     return file_manager.list_reports(agent_type)
+
+
+def save_run_manifest(report_dir: str, manifest: Dict[str, Any]) -> None:
+    """Persist run manifest alongside report outputs."""
+    write_json(Path(report_dir) / "manifest.json", manifest)

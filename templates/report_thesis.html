@@ -42,6 +42,50 @@
             border-bottom: 1px solid #e1e4e8;
             padding-bottom: 1rem;
         }
+        .provenance-banner {
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        }
+        .prov-headline {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #0a1f44;
+            margin-bottom: 0.35rem;
+        }
+        .prov-subtext {
+            font-size: 0.85rem;
+            color: #57606a;
+            margin-bottom: 0.75rem;
+        }
+        .prov-metric-grid {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .prov-metric {
+            background: #fff;
+            border: 1px solid #d0d7de;
+            border-radius: 4px;
+            padding: 0.65rem 0.75rem;
+            flex: 1 1 140px;
+            text-align: center;
+        }
+        .metric-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #57606a;
+            margin-bottom: 0.25rem;
+        }
+        .metric-value {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #0a1f44;
+        }
         .toc { 
             background: #f8f9fa; 
             padding: 1rem; 
@@ -116,6 +160,30 @@
         .source-url a:hover { 
             text-decoration: underline; 
         }
+        .source-support {
+            margin-top: 0.5rem;
+            background: #f6f8fa;
+            border-left: 3px solid #0066cc;
+            border-radius: 4px;
+            padding: 0.6rem 0.8rem;
+        }
+        .support-title {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #57606a;
+            margin-bottom: 0.3rem;
+        }
+        .source-support ul {
+            margin-left: 1.25rem;
+            color: #333;
+        }
+        .support-claim {
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            margin-right: 0.3rem;
+        }
         .citation-link { 
             color: #0066cc; 
             text-decoration: none; 
@@ -148,6 +216,44 @@
         }
         table tr:hover {
             background: #f8f9fa;
+        }
+        .adversarial-section {
+            margin-top: 2rem;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 1rem 1.25rem;
+            background: #fefefe;
+        }
+        .adversarial-section h2 {
+            margin-top: 0;
+        }
+        .adversarial-block {
+            margin-top: 0.85rem;
+        }
+        .adversarial-block ul {
+            margin-left: 1.25rem;
+        }
+        .playbooks-section {
+            margin-top: 2rem;
+        }
+        .playbooks-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .playbooks-table th,
+        .playbooks-table td {
+            border: 1px solid #d0d7de;
+            padding: 0.6rem;
+            text-align: left;
+            vertical-align: top;
+        }
+        .playbooks-table th {
+            background: #f6f8fa;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.75rem;
+            color: #57606a;
         }
         /* Code blocks */
         code {
@@ -189,6 +295,8 @@
             Theory Depth: <span class="badge badge-theory">{{thesis_theory_depth}}</span>
             Clarity: <span class="badge badge-clarity">{{thesis_clarity}}</span>
             {{rubric_display}}</div>
+
+        {{provenance_banner_html}}
         
         <div class="disclosure-box" style="margin-top: 1rem; padding: 0.75rem; background: #f8f9fa; border-left: 3px solid #0066cc; font-size: 0.85em; color: #666; border-radius: 4px;">
             <strong>Disclosure & Method Note:</strong> This is a <em>theory-first</em> brief. Claims are mapped to evidence using a CEM grid; quantitative effects marked <strong>Illustrative Target</strong> will be validated via the evaluation plan. {{disclosure_anchor_text}}
@@ -205,6 +313,9 @@
     </nav>
 
     {{all_sections_html}}
+
+    {{adversarial_html}}
+    {{playbooks_html}}
 
     <footer id="sources">
         <h2>Sources</h2>

@@ -1,0 +1,75 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Report",
+  "name": "Tech Brief — AI Agents and Robotics",
+  "author": {
+    "@type": "Organization",
+    "name": "Smart Technology Investments LLC",
+    "url": "https://sti.ai"
+  },
+  "datePublished": "2025-11-06T11:59:20.574519",
+  "about": "Cognitive Wars: The AI Industrialization of Influence",
+  "abstract": "Review of five years of ML research in cyberattack detection identifies three unsolved gaps: drive‑by download detection, Naive Bayes mixture‑performance failures, and detection of SQL‑injection on already‑compromised databases. These blind spots create operational risk (false negatives, persistent compromise), technical debt (insufficient telemetry and benchmarks), and market opportunity for specialist vendors. Operators should instrument richer behavioral telemetry (browser/JS execution graphs, process-parent chains, DB transaction provenance), deploy staged pipelines (lightweight screening followed by sequence/forensic analyzers), and run red/blue tests focused on these attack classes while integrating federated update schemes with privacy protections. Investors should overweight niche cybersecurity ML startups, cloud providers enabling secure federated training, and edge-accelerator suppliers; prioritize companies with proprietary datasets, published benchmarks, and validated pilots, while watching acquisition activity by incumbents. For business development, productize POC bundles: telemetry integration, staged detection stack, and third‑party red‑team validation; partner with academia and incumbent SIEM/EDR vendors to co‑brand benchmark suites and accelerate adoption. Near‑term priorities are creating standardized labeled datasets and metrics for the three gaps, integrating ADMM/consensus primitives safely into federated detection workflows, and operationalizing model governance, observability, and incident playbooks to convert research into deployable, revenue‑generating solutions. Measure ROI via reduced dwell time and demonstrable breach prevention metrics and audits.",
+  "hasPart": [
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": "2025-11-03 — Research authors (arXiv/DOI paper) reported that, after reviewing the past 5 years of machine-learning literature for cyberattack detection, they identified 3 distinct research gaps (drive-by downloads, Naive Bayes mix-performance, and SQLi detection on compromised DBs).",
+      "confidence": 0.88,
+      "citation": [
+        "http://arxiv.org/abs/1904.04098v4",
+        "http://arxiv.org/abs/2402.17045v2"
+      ]
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": "2025-11-04 — The paper's authors flagged drive-by download attacks as requiring further research, explicitly calling out drive-by download detection as an outstanding gap in existing ML approaches after their 5-year review.",
+      "confidence": 0.82,
+      "citation": [
+        "http://arxiv.org/abs/2402.17045v2",
+        "https://doi.org/10.1111/trf.52_17554"
+      ]
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": "2025-11-05 — The same review identified limitations in Naive Bayes classifiers and recommended investigation into Naive Bayes mix-performance as a measurable research direction.",
+      "confidence": 0.78,
+      "citation": [
+        "https://doi.org/10.1111/trf.52_17554",
+        "http://arxiv.org/abs/0902.4218v1"
+      ]
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": "2025-11-06 — The review reported that current machine-learning approaches cannot detect an already compromised database with an SQL injection (SQLi) attack, highlighting this as a specific detection limitation.",
+      "confidence": 0.86,
+      "citation": [
+        "http://arxiv.org/abs/0902.4218v1",
+        "http://arxiv.org/abs/2410.03753v1"
+      ]
+    }
+  ],
+  "temporalCoverage": "2025-10-30/2025-11-06",
+  "keywords": [
+    "AI",
+    "Cybersecurity",
+    "AR/VR"
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": 0.651,
+    "worstRating": 0.3,
+    "bestRating": 0.85
+  },
+  "entities": {
+    "ORG": [
+      "Arxiv.Org",
+      "Doi.Org"
+    ],
+    "PERSON": [],
+    "PRODUCT": [],
+    "TICKER": [],
+    "GEO": []
+  },
+  "wordCount": 3253,
+  "reportType": "Technology Intelligence Brief"
+}

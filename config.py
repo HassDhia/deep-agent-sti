@@ -24,6 +24,9 @@ class STIConfig:
     MIN_INDEPENDENT_SOURCES = 2
     MIN_PRIMARY_SOURCES = 0      # Changed from 1 to 0
     MIN_TOTAL_SOURCES = 2        # Changed from 3 to 2
+    ANCHOR_COVERAGE_MIN = 0.70
+    VENDOR_CAP_PCT = 0.40
+    REQUIRE_ANCHORS_FOR_ASSETS = True
     
     # New section requirements
     REQUIRE_MARKET_ANALYSIS = True
@@ -88,6 +91,8 @@ class STIConfig:
     
     # LLM settings
     DEFAULT_MODEL = "gpt-5-mini-2025-08-07"
+    ADVANCED_MODEL_NAME = "gpt-5-2025-08-07"
+    ADVANCED_BUDGET_PCT = 0.25
     TEMPERATURE = 0.1
     RESPONSE_FORMAT = {"type": "json_object"}
     
@@ -210,6 +215,7 @@ class STIConfig:
     # Market-path diversity controls
     MIN_DISTINCT_PUBLISHERS_MARKET = 2     # Require at least N distinct publishers
     SINGLE_DOMAIN_MAX_FRACTION = 0.6       # No more than 60% from any single domain
+    VENDOR_CAP_PCT = 0.40                  # Max share from a single vendor domain
     
     # Market title relevance threshold (slightly more permissive than theory)
     MARKET_TITLE_RELEVANCE_THRESHOLD = 0.5
@@ -262,6 +268,8 @@ class STIConfig:
     THESIS_MIN_ANCHOR_SOURCES = 5  # Minimum anchor (non-preprint) sources
     THESIS_SOURCE_DIVERSITY_TARGET = 0.40  # 40%+ anchor sources
     THESIS_SINGLE_DOMAIN_THRESHOLD = 0.80  # Flag if >80% from single domain
+    ANCHOR_COVERAGE_MIN = 0.70
+    REQUIRE_ANCHORS_FOR_ASSETS = True
     
     @classmethod
     def get_total_target_words(cls) -> int:
