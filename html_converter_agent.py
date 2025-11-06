@@ -111,9 +111,6 @@ class HTMLConverterAgent:
             # Extract additional data from JSON-LD
             json_data = self._extract_json_ld_data(json_ld, len(parsed_sections.get('sources', [])))
             
-            # Override sources_count with filtered count
-            json_data['sources_count'] = len(parsed_sections.get('sources', []))
-            
             # Combine parsed and JSON data
             template_data = {**parsed_sections, **json_data, **metadata}
             # Surface horizon and hybrid flags from agent_stats for UI injection
@@ -121,12 +118,17 @@ class HTMLConverterAgent:
                 _as = metadata.get('agent_stats', {})
                 template_data['horizon'] = _as.get('horizon', 'Near-term')
                 template_data['hybrid_thesis_anchored'] = _as.get('hybrid_thesis_anchored', False)
+                # Use validated_sources_count from agent_stats if available (matches manifest)
+                validated_count = _as.get('validated_sources_count')
+                if validated_count is not None:
+                    template_data['sources_count'] = validated_count
+                else:
+                    # Fallback to parsed sources count
+                    template_data['sources_count'] = len(parsed_sections.get('sources', []))
             except Exception:
                 template_data['horizon'] = template_data.get('horizon', 'Near-term')
                 template_data['hybrid_thesis_anchored'] = template_data.get('hybrid_thesis_anchored', False)
-            
-            # Ensure filtered source count takes precedence over metadata
-            template_data['sources_count'] = len(parsed_sections.get('sources', []))
+                template_data['sources_count'] = len(parsed_sections.get('sources', []))
 
             template_data['evidence_ledger'] = ledger
             template_data['adversarial_findings'] = adversarial
@@ -185,30 +187,42 @@ class HTMLConverterAgent:
                 # Extract diversity score
                 template_data['diversity_score'] = thesis_io.get('diversity_score', 1.0)
                 
-                # Extract anchor_status (from metadata or compute)
-                anchor_status = thesis_io.get('anchor_status')
-                if not anchor_status:
-                    # Try to compute from sources if available
-                    sources = parsed_sections.get('sources', [])
-                    if sources:
-                        # Simple computation: check for anchor domains
-                        anchor_domains = (
-                            getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [])
-                            if STIConfig else []
-                        )
-                        anchor_count = sum(
-                            1 for s in sources
-                            if any(domain in s.get('url', '').lower()
-                                   for domain in anchor_domains)
-                        )
-                        if anchor_count >= 2:
-                            anchor_status = "Anchored"
-                        elif anchor_count == 1:
-                            anchor_status = "Anchor-Sparse"
-                        else:
-                            anchor_status = "Anchor-Absent"
+                # Derive anchor_status from ledger coverage (not domain heuristics)
+                anchor_status = None
+                if ledger and ledger.get('anchor_coverage') is not None:
+                    # Use ledger's anchor_coverage metric
+                    anchor_coverage = float(ledger.get('anchor_coverage', 0.0))
+                    anchor_coverage_min = getattr(STIConfig, 'ANCHOR_COVERAGE_MIN', 0.70)
+                    if anchor_coverage >= anchor_coverage_min:
+                        anchor_status = "Anchored"
+                    elif anchor_coverage >= 0.30:  # Partial coverage
+                        anchor_status = "Anchor-Sparse"
                     else:
                         anchor_status = "Anchor-Absent"
+                else:
+                    # Fallback: try metadata or domain-based computation
+                    anchor_status = thesis_io.get('anchor_status')
+                    if not anchor_status:
+                        # Last resort: compute from sources (domain heuristics)
+                        sources = parsed_sections.get('sources', [])
+                        if sources:
+                            anchor_domains = (
+                                getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [])
+                                if STIConfig else []
+                            )
+                            anchor_count = sum(
+                                1 for s in sources
+                                if any(domain in s.get('url', '').lower()
+                                       for domain in anchor_domains)
+                            )
+                            if anchor_count >= 2:
+                                anchor_status = "Anchored"
+                            elif anchor_count == 1:
+                                anchor_status = "Anchor-Sparse"
+                            else:
+                                anchor_status = "Anchor-Absent"
+                        else:
+                            anchor_status = "Anchor-Absent"
                 template_data['anchor_status'] = anchor_status
                 
                 # Extract confidence (use playbook formula if available, otherwise fallback)

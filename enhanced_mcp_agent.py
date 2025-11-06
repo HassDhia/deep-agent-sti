@@ -3100,10 +3100,8 @@ Return structured JSON with the refined title:"""
             except Exception:
                 pass
 
-        budget = BudgetManager(
-            total_tokens=budget_advanced,
-            pct=getattr(STIConfig, 'ADVANCED_BUDGET_PCT', 0.25),
-        )
+        # BudgetManager will be created after intent is determined
+        # to allow auto-allocation for thesis runs
         quality_gates_passed = True
         audit_outputs: Dict[str, Any] = {}
 
@@ -3138,7 +3136,20 @@ Return structured JSON with the refined title:"""
                 # Thesis-path: Query is likely theoretical, not yet commercialized
                 logger.info("Market sources do not adequately reflect query. Using thesis-path.")
                 intent = "theory"
-                
+            
+            # Auto-allocate premium budget for thesis runs if budget_advanced is 0
+            effective_budget = budget_advanced
+            if intent == "theory" and budget_advanced == 0:
+                effective_budget = 10000  # Safe floor: 10k tokens for thesis runs
+                logger.info(f"Auto-allocating {effective_budget} tokens for thesis run (budget_advanced was 0)")
+            
+            # Create BudgetManager with effective budget
+            budget = BudgetManager(
+                total_tokens=effective_budget,
+                pct=getattr(STIConfig, 'ADVANCED_BUDGET_PCT', 0.25),
+            )
+            
+            if intent == "theory":
                 # Expand query for theoretical search
                 expanded_query = self._expand_theoretical_query(query)
                 logger.info(f"Theory query expanded: '{query}' → '{expanded_query}'")
@@ -3846,9 +3857,11 @@ No signals extracted due to insufficient evidence.
                 "asset_gated": anchor_gate,
             }
 
-            social_skipped = anchor_gate and intent == "theory"
+            # Social gating: respect social_enabled flag from asset_gating
+            social_enabled = agent_stats.get('asset_gating', {}).get('social_enabled', True)
+            social_skipped = not social_enabled or (anchor_gate and intent == "theory")
             if social_skipped:
-                logger.info("Skipping social copy: insufficient anchors for thesis path.")
+                logger.info("Skipping social copy: insufficient anchors for thesis path or social_enabled=False.")
             else:
                 try:
                     from social_media_agent import SocialMediaAgent

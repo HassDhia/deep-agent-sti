@@ -56,7 +56,7 @@ def main():
         '--budget-advanced',
         type=int,
         default=0,
-        help='Token budget reserved for premium model usage (default: 0)'
+        help='Token budget reserved for premium model usage (default: 0, auto-allocates 10k for thesis runs)'
     )
     parser.add_argument(
         '--seed',
