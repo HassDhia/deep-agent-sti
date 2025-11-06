@@ -282,13 +282,15 @@ class HTMLConverterAgent:
             
             asset_gating = agent_stats.get('asset_gating', {}) if isinstance(agent_stats, dict) else {}
             images_enabled = asset_gating.get('images_enabled', True)
+            social_enabled = asset_gating.get('social_enabled', True)
             
             # Explicit thesis asset gating: if thesis and anchors are weak, skip aesthetics
             if is_thesis and getattr(STIConfig, 'REQUIRE_ANCHORS_FOR_ASSETS', False):
                 anchor_status = template_data.get('anchor_status', '')
                 if anchor_status in ("Anchor-Absent", "Anchor-Sparse"):
                     images_enabled = False
-                    logger.info(f"🛑 Image generation skipped for thesis: anchor_status={anchor_status} (insufficient anchors).")
+                    social_enabled = False
+                    logger.info(f"🛑 Asset generation skipped for thesis: anchor_status={anchor_status} (insufficient anchors). Images and social disabled.")
 
             if not images_enabled:
                 logger.info("🛑 Image generation skipped by asset gate (insufficient anchors).")
@@ -2191,18 +2193,32 @@ class HTMLConverterAgent:
             parts.append(f'<div class="{wrapper_class}"><h3>{claim_id}</h3><p>{claim_text}</p>')
             anchors = claim.get('anchors') or []
             if anchors:
-                anchor_items = ''.join(
-                    f"<li>{html.escape(a.get('title', ''))}"
-                    f"{' — ' + html.escape(a.get('why_relevant', '')) if a.get('why_relevant') else ''}" \
-                    f"{' (<code>' + html.escape(a.get('doi', '')) + '</code>)' if a.get('doi') else ''}" \
-                    f"</li>"
-                    for a in anchors
-                )
-                parts.append(f'<div class="ledger-anchors"><strong>Anchors</strong><ul>{anchor_items}</ul></div>')
+                anchor_items = []
+                for a in anchors:
+                    title = html.escape(a.get('title', ''))
+                    why_relevant = a.get('why_relevant', '')
+                    doi = a.get('doi', '')
+                    venue = a.get('venue', '')
+                    
+                    item = f"<li>{title}"
+                    if why_relevant:
+                        item += f" — {html.escape(why_relevant)}"
+                    
+                    # Render DOI as clickable link if available
+                    if doi:
+                        # Format DOI as link (e.g., https://doi.org/10.1234/example)
+                        doi_url = doi if doi.startswith('http') else f"https://doi.org/{doi.lstrip('doi:').lstrip('/')}"
+                        item += f' (<a href="{html.escape(doi_url)}" target="_blank" rel="noopener">DOI</a>)'
+                    elif venue:
+                        item += f' ({html.escape(venue)})'
+                    
+                    item += "</li>"
+                    anchor_items.append(item)
+                parts.append(f'<div class="ledger-anchors"><strong>Anchors</strong><ul>{"".join(anchor_items)}</ul></div>')
             spans = claim.get('support_spans') or []
             if spans:
                 span_items = ''.join(
-                    f"<li>Source {html.escape(str(span.get('source_id')))} — {html.escape(span.get('text', '') )}</li>"
+                    f"<li>Source {html.escape(str(span.get('source_id')))} — {html.escape(span.get('text', '')[:200])}{'...' if len(span.get('text', '')) > 200 else ''}</li>"
                     for span in spans[:3]
                 )
                 if len(spans) > 3:
