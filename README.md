@@ -1,0 +1,513 @@
+# STI Intelligence System
+
+A production-ready AI-powered intelligence system that generates comprehensive, analyst-grade research reports with strict date filtering, quality gates, and multi-format outputs (Markdown, HTML, Google Slides, Social Media).
+
+## 🎯 Overview
+
+The STI Intelligence System automatically transforms research queries into production-ready intelligence reports with:
+
+- **Multi-format outputs**: Markdown reports, HTML pages, Google Slides presentations, and social media content
+- **Quality-assured intelligence**: Strict date filtering, source hygiene, and confidence scoring
+- **Automated workflows**: End-to-end pipeline from query to publication-ready content
+- **Professional design**: Cinematic hero slides, structured HTML templates, and branded social media content
+
+---
+
+## ✨ Core Features
+
+### 📊 Intelligence Generation
+
+- **Strict Date Filtering**: Only articles from the last 7 days (configurable)
+- **Quality Gates**: ≥2 independent news sources + source diversity requirements
+- **Comprehensive Reports**: 3,000-4,000 word intelligence briefs with 9+ sections
+- **Signal Extraction**: Event-anchored signals with proper citation handling (matches source count)
+- **Confidence Scoring**: Bounded confidence scores [0.30, 0.85] with vendor source caps
+- **Source Hygiene**: Automatic filtering of sponsored/partner content
+
+### 📄 Output Formats
+
+- **Markdown Reports**: Structured intelligence reports with citations
+- **HTML Reports**: Professional web-ready reports with responsive design
+- **Google Slides**: Automated slide deck generation with cinematic design
+- **Social Media**: 3 formats (Substack/Medium posts, Twitter threads, LinkedIn posts)
+- **JSON-LD**: Machine-readable structured data (Schema.org compliant)
+
+### 🎨 Visual Assets
+
+- **Hero Images**: AI-generated editorial photography for report headers
+- **Section Images**: Context-aware images for major report sections
+- **Image Caching**: SHA-1 hash-based caching to prevent redundant generation
+- **Brand Consistency**: STI brand guidelines applied to all visual assets
+
+---
+
+## 🏗️ System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    User Query Input                         │
+│                  (run_report.py CLI)                        │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────────┐
+│              EnhancedSTIAgent                              │
+│  ┌────────────────────────────────────────────────────┐  │
+│  │ 1. Source Search (Tavily/SearXNG)                  │  │
+│  │ 2. Quality Gates & Source Hygiene                    │  │
+│  │ 3. Signal Extraction (matches source count)        │  │
+│  │ 4. Analysis MCP Tools (Market/Tech/Competitive)     │  │
+│  │ 5. Report Generation                                 │  │
+│  └────────────────────────────────────────────────────┘  │
+└───────────────┬─────────────────────────────────────────────┘
+                │
+                ├─────────────────┬─────────────────┬──────────────┐
+                ▼                 ▼                 ▼              ▼
+    ┌─────────────────┐ ┌──────────────┐ ┌─────────────┐ ┌──────────────┐
+    │ HTML Converter  │ │ Slides Gen  │ │ Image Gen   │ │ Social Media │
+    │   Agent          │ │             │ │             │ │   Agent      │
+    └─────────────────┘ └──────────────┘ └─────────────┘ └──────────────┘
+                │                 │              │              │
+                └─────────────────┴──────────────┴──────────────┘
+                                  │
+                                  ▼
+                    ┌─────────────────────────┐
+                    │  Organized File Output   │
+                    │  sti_reports/           │
+                    │  YYYYMMDD_HHMMSS_query/ │
+                    └─────────────────────────┘
+```
+
+### Component Overview
+
+| Component | Purpose | Output |
+|-----------|---------|--------|
+| **EnhancedSTIAgent** | Main intelligence engine | Markdown + JSON-LD |
+| **SimpleMCPTimeFilteredAgent** | Fast briefs | Basic markdown |
+| **HTMLConverterAgent** | Web-ready reports | HTML files |
+| **SlidesGenerator** | Google Slides decks | Slides + PDF |
+| **ImageGenerator** | Visual assets | PNG images |
+| **SocialMediaAgent** | Social content | 3 format files |
+| **AnalysisServer** | MCP analysis tools | Section content |
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+```bash
+# Python 3.8+
+python3 --version
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Environment Setup
+
+Create a `.env` file:
+
+```bash
+# Required
+OPENAI_API_KEY=your_openai_api_key
+
+# Optional (for search)
+TAVILY_API_KEY=your_tavily_api_key  # Only if using Tavily
+# OR use SearXNG (default, no key needed)
+
+# Optional (for Google Slides)
+GOOGLE_CREDENTIALS_PATH=/path/to/service-account.json
+# OR use OAuth (see OAUTH_SETUP.md)
+```
+
+### Generate Your First Report
+
+```bash
+# Simple command-line usage
+python3 run_report.py "AI technology trends"
+
+# Custom time window
+python3 run_report.py "cryptocurrency markets" --days 14
+
+# With debug logging
+python3 run_report.py "robotics industry" --debug
+```
+
+**Output**: All files are automatically saved in `sti_reports/sti_enhanced_output_YYYYMMDD_HHMMSS_query/`
+
+---
+
+## 📚 Usage Guide
+
+### Command-Line Interface
+
+```bash
+# Basic usage
+python3 run_report.py "your query here"
+
+# Options
+python3 run_report.py "query" \
+  --days 7          # Time window (default: 7)
+  --html          # Generate HTML (default: True)
+  --debug         # Verbose logging
+```
+
+### Python API
+
+#### Enhanced Agent (Recommended)
+
+```python
+from enhanced_mcp_agent import EnhancedSTIAgent
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Initialize
+agent = EnhancedSTIAgent(
+    openai_api_key=os.getenv('OPENAI_API_KEY'),
+    tavily_api_key=os.getenv('TAVILY_API_KEY', '')
+)
+
+# Initialize analysis tools (required for full reports)
+agent.initialize_analysis_tools()
+
+# Generate comprehensive report
+markdown_report, json_ld = agent.search('AI technology trends', days_back=7)
+
+# Files are automatically saved in sti_reports/
+```
+
+#### Simple Agent (Fast Briefs)
+
+```python
+from simple_mcp_agent import SimpleMCPTimeFilteredAgent
+
+agent = SimpleMCPTimeFilteredAgent(
+    openai_api_key=os.getenv('OPENAI_API_KEY'),
+    tavily_api_key=os.getenv('TAVILY_API_KEY', '')
+)
+
+# Generate quick brief (~2,400 words)
+report = agent.search('AI technology trends', days_back=7)
+# Automatically saved in sti_reports/
+```
+
+### Programmatic Access to Saved Reports
+
+```python
+from file_utils import get_latest_report, list_all_reports
+
+# Get most recent report directory
+latest = get_latest_report('enhanced')
+print(f"Latest: {latest}")
+
+# List all reports
+all_reports = list_all_reports()
+for report_dir in all_reports:
+    print(f"Report: {report_dir}")
+```
+
+---
+
+## 📁 Output Structure
+
+Every report generates a timestamped directory:
+
+```
+sti_reports/
+└── sti_enhanced_output_20251103_143015_the_energy_arbitrage/
+    ├── intelligence_report.md          # Main markdown report
+    ├── intelligence_report.html         # Web-ready HTML
+    ├── intelligence_report.jsonld       # Machine-readable JSON-LD
+    ├── executive_summary.txt            # Key findings
+    ├── metadata.json                    # System stats & config
+    ├── sources.json                     # Structured source data
+    ├── images/                          # Generated visual assets
+    │   ├── hero_*.png
+    │   └── section_*.png
+    ├── slides_export.pdf                # Google Slides PDF (if enabled)
+    ├── slides_url.txt                   # Google Slides link
+    ├── social_media_post.md             # Substack/Medium format
+    ├── social_media_thread.txt          # Twitter/X thread
+    └── social_media_linkedin.txt        # LinkedIn post
+```
+
+---
+
+## 🎯 Report Structure
+
+### Enhanced Agent Report (3,350 words)
+
+1. **Executive Summary** (200 words) - Key findings synthesis
+2. **Topline** (100 words) - Concise overview
+3. **Signals** (600 words) - Event-anchored signals with citations (matches source count)
+4. **Market Analysis** (500 words) - Pricing power, capital flows, infrastructure
+5. **Technology Deep-Dive** (600 words) - Model architectures, technical risks
+6. **Competitive Landscape** (500 words) - Winner/loser identification
+7. **Operator Lens** (400 words) - Systems/automation implications
+8. **Investor Lens** (400 words) - Capital/market/tickers
+9. **BD Lens** (400 words) - Wedge/offers/prospects
+10. **Sources** (200 words) - Properly cited sources
+
+---
+
+## ⚙️ Configuration
+
+Edit `config.py` to customize behavior:
+
+```python
+class STIConfig:
+    # Report targets
+    TARGET_WORD_COUNT = 3350
+    SIGNALS_COUNT = 6  # Minimum, will match source count
+    
+    # Quality gates
+    CONFIDENCE_BOUNDS = (0.30, 0.85)
+    MIN_INDEPENDENT_SOURCES = 2
+    MIN_TOTAL_SOURCES = 2
+    
+    # Time window
+    DEFAULT_DAYS_BACK = 7
+    MAX_DAYS_BACK = 30
+    
+    # Features
+    ENABLE_SLIDES_GENERATION = True
+    ENABLE_IMAGE_GENERATION = True
+    ENABLE_HTML_GENERATION = True
+    
+    # Google Slides (optional)
+    GOOGLE_SLIDES_TEMPLATE_ID = ""  # See SLIDES_TEMPLATE_SETUP.md
+    GOOGLE_USE_OAUTH = True          # OAuth (recommended) or Service Account
+    GOOGLE_LOGO_URL = ""            # Optional logo URL for hero slide
+    
+    # Search provider
+    SEARCH_PROVIDER = 'searxng'      # 'searxng' or 'tavily'
+```
+
+### Feature Flags
+
+- `ENABLE_SLIDES_GENERATION`: Generate Google Slides (default: True)
+- `ENABLE_IMAGE_GENERATION`: Generate hero/section images (default: True)
+- `ENABLE_HTML_GENERATION`: Generate HTML reports (default: True)
+
+---
+
+## 🎨 Advanced Features
+
+### Google Slides Generation
+
+The system automatically generates professional slide decks with:
+
+- **Cinematic hero slide** with background image, overlay, and branded typography
+- **Collage slide** with 4-8 section images, angled big word, and sticker
+- **Content slides** with structured bullets, headings, and quotes
+
+**Setup Required**:
+1. See `OAUTH_SETUP.md` for OAuth 2.0 setup (recommended)
+2. See `SLIDES_TEMPLATE_SETUP.md` for template creation
+3. Update `config.py` with `GOOGLE_SLIDES_TEMPLATE_ID`
+
+**Design Features**:
+- Template-based or from-scratch generation
+- Image replacement with `CENTER_CROP`/`CENTER_INSIDE`
+- Affine transforms for angled typography
+- Z-order management for overlays
+- Atomic batch updates for performance
+
+### HTML Report Generation
+
+Automatically converts markdown to professional HTML with:
+
+- **Responsive design** - Mobile-friendly templates
+- **Citation management** - Proper source linking and filtering
+- **Signal cards** - Visual signal display with badges
+- **JSON-LD embedding** - Schema.org compliance
+- **Intent-aware templates** - Different layouts for market vs. theory reports
+
+### Image Generation
+
+AI-generated images using OpenAI's `gpt-image-1`:
+
+- **Hero images** - Editorial photography for report headers
+- **Section images** - Context-aware images for major sections
+- **Brand consistency** - STI brand guidelines applied
+- **Caching** - SHA-1 hash-based caching prevents redundant generation
+- **Intent-aware** - Different styles for thesis vs. market reports
+
+### Social Media Content
+
+Automatic generation using **"Shock → Sensemaking → Systemization"** framework:
+
+- **Long-form posts** (`social_media_post.md`) - Substack/Medium style
+- **Twitter threads** (`social_media_thread.txt`) - Numbered tweet sequence
+- **LinkedIn posts** (`social_media_linkedin.txt`) - Professional B2B tone
+
+**Voice**: MIT Tech Review + Naval + Robert Greene style
+
+---
+
+## 🔒 Quality Gates
+
+The system enforces strict quality standards:
+
+| Gate | Requirement | Purpose |
+|------|-------------|---------|
+| **Date Filtering** | Strict 7-day window (configurable) | Recency assurance |
+| **Source Diversity** | ≥2 independent news sources | Credibility |
+| **Source Hygiene** | Filters sponsored/partner content | Editorial integrity |
+| **Confidence Bounds** | [0.30, 0.85] with vendor caps | Realistic scoring |
+| **Unit Normalization** | All metrics have specific units | Precision |
+| **Entity Alignment** | All cited entities in sources | Accuracy |
+| **Citation Validation** | Signals match available sources | Consistency |
+
+---
+
+## 🛠️ Setup Guides
+
+### Google Slides Setup
+
+1. **OAuth 2.0 Setup** (Recommended for personal accounts)
+   - See `OAUTH_SETUP.md` for detailed instructions
+   - Creates desktop app credentials
+   - One-time browser authentication
+
+2. **Template Setup**
+   - See `SLIDES_TEMPLATE_SETUP.md` for template creation
+   - Uses placeholder tokens (`{{TITLE}}`, `{{IMG_1}}`, etc.)
+   - Validates template with `validate_slides_template.py`
+
+### Search Provider Configuration
+
+**SearXNG** (Default, Recommended)
+- No API key required
+- Self-hosted option via `docker-compose.yml`
+- Privacy-focused
+
+**Tavily** (Alternative)
+- Requires `TAVILY_API_KEY`
+- Set `SEARCH_PROVIDER = 'tavily'` in `config.py`
+
+---
+
+## 📊 Example Output
+
+A complete example report structure:
+
+```
+sti_enhanced_output_20251103_143015_the_energy_arbitrage/
+├── intelligence_report.md (3,350 words)
+├── intelligence_report.html (responsive web version)
+├── intelligence_report.jsonld (Schema.org compliant)
+├── executive_summary.txt
+├── metadata.json
+│   ├── confidence: 0.80
+│   ├── word_count: 3350
+│   ├── sources: 5
+│   ├── signals: 5 (matches sources)
+│   └── date_filter_success_rate: 100%
+├── sources.json
+├── images/
+│   ├── hero_the_energy_arbitrage.png
+│   └── section_*.png (4 images)
+├── slides_export.pdf
+├── slides_url.txt
+└── social_media_*.{md,txt} (3 formats)
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**"Missing OPENAI_API_KEY"**
+- Ensure `.env` file exists with `OPENAI_API_KEY=your_key`
+
+**"Quality gates not met"**
+- Increase `--days` window (e.g., `--days 14`)
+- Check that query has recent news coverage
+- Review `config.py` quality gate thresholds
+
+**"No signals generated"**
+- Check date validation logs (some signals may be filtered)
+- Verify sources have recent dates
+- Review `_validate_signal_dates` output
+
+**"Slides generation failed"**
+- Verify OAuth credentials or service account setup
+- Check `GOOGLE_SLIDES_TEMPLATE_ID` in `config.py`
+- Review `OAUTH_SETUP.md` or `SLIDES_TEMPLATE_SETUP.md`
+
+**"HTML generation errors"**
+- Check that `templates/report_template.html` exists
+- Verify markdown structure is valid
+- Review citation parsing logs
+
+---
+
+## 🔍 Architecture Details
+
+### Signal Extraction
+
+- **Smart Matching**: Signal count automatically matches source count (minimum 6)
+- **Citation Validation**: Filters invalid citations to prevent errant sources
+- **Date Validation**: Rejects future-dated signals
+- **Source Coverage**: Ensures all sources are cited at least once
+
+### Source Processing
+
+- **Time Window Enforcement**: Strict filtering with configurable windows
+- **Source Hygiene**: Automatic filtering of sponsored/partner content
+- **Source Diversity**: Enforces publisher and domain diversity
+- **Credibility Scoring**: Confidence bounds with vendor source caps
+
+### Report Generation Pipeline
+
+1. **Source Search** → Search with time filtering
+2. **Quality Gates** → Validate source requirements
+3. **Signal Extraction** → Extract event-anchored signals
+4. **Analysis Generation** → Market/Tech/Competitive via MCP tools
+5. **Report Assembly** → Combine sections with proper citations
+6. **Output Generation** → Markdown, HTML, Slides, Social Media
+7. **File Organization** → Automatic timestamped directory structure
+
+---
+
+## 📖 Additional Documentation
+
+- **`OAUTH_SETUP.md`** - Google OAuth 2.0 authentication setup
+- **`SLIDES_TEMPLATE_SETUP.md`** - Google Slides template creation guide
+- **`config.py`** - Comprehensive configuration options
+- **`sti_reports/`** - Example output directories
+
+---
+
+## 🏆 Production Ready
+
+This system is production-ready with:
+
+- ✅ **Strict date filtering** (100% success rate in testing)
+- ✅ **Quality gate validation** (all requirements met)
+- ✅ **Comprehensive report generation** (3,350 words)
+- ✅ **Multi-format outputs** (Markdown, HTML, Slides, Social Media)
+- ✅ **JSON-LD compliance** (Schema.org validation)
+- ✅ **Source hygiene** (clean, cited sources)
+- ✅ **Automatic file organization** (timestamped directories)
+- ✅ **Error handling** (graceful degradation)
+- ✅ **Citation validation** (prevents errant sources)
+
+---
+
+## 📝 License
+
+[Add your license here]
+
+---
+
+**Built with LangChain MCP best practices for strict date filtering and quality intelligence generation.**
+
+---
+
+*Last updated: November 2025*

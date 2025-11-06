@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Environment variables
+.env
+.env.local
+
+# Google Service Account credentials (SECURITY: Do not commit!)
+*credentials*.json
+*service-account*.json
+*Slides Generator.json
+STI Slides Generator.json
+
+# Google OAuth tokens (SECURITY: Do not commit!)
+.google_token.json
+*_token.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+

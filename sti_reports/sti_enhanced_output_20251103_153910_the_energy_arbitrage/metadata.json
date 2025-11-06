@@ -1,0 +1,98 @@
+{
+  "generation_timestamp": "2025-11-03T15:39:10.901598",
+  "query": "The Energy Arbitrage Behind AI",
+  "days_back": 7,
+  "report_stats": {
+    "character_count": 28819,
+    "word_count": 3707,
+    "jsonld_size": 6480
+  },
+  "confidence_score": 0.7999999999999999,
+  "sources_count": 6,
+  "system_info": {
+    "agent_type": "Enhanced STI Agent",
+    "version": "1.0.0",
+    "model": "gpt-5-mini-2025-08-07",
+    "date_filtering": "Strict 7-day window enforced"
+  },
+  "agent_stats": {
+    "date_filter_stats": {
+      "total_processed": 6,
+      "within_window": 6,
+      "outside_window": 0,
+      "parse_failed": 0,
+      "success_rate": 1.0,
+      "parse_success_rate": 1.0
+    },
+    "sources_data": [
+      {
+        "id": 1,
+        "title": "US nuclear generation to grow 27% post 2035, as data centers fuel power demand: WoodMac",
+        "url": "https://www.reuters.com/business/energy/us-nuclear-generation-grow-27-post-2035-data-centers-fuel-power-demand-woodmac-2025-10-29/",
+        "publisher": "Reuters",
+        "date": "2025-11-03",
+        "credibility": 0.8
+      },
+      {
+        "id": 2,
+        "title": "Utility NiSource ramps up spending to tap rising data center demand",
+        "url": "https://www.reuters.com/business/energy/utility-nisource-ramps-up-spending-tap-rising-data-center-demand-2025-10-29/",
+        "publisher": "Reuters",
+        "date": "2025-11-03",
+        "credibility": 0.8
+      },
+      {
+        "id": 3,
+        "title": "Saudi Arabia may cut December crude prices to Asia to multi-month lows",
+        "url": "https://www.reuters.com/business/energy/saudi-arabia-may-cut-december-crude-prices-asia-multi-month-lows-2025-10-31/",
+        "publisher": "Reuters",
+        "date": "2025-11-03",
+        "credibility": 0.8
+      },
+      {
+        "id": 4,
+        "title": "Lagarde Says Capital Markets Union Is Key for Energy Transition",
+        "url": "https://www.bloomberg.com/news/articles/2025-10-21/lagarde-says-capital-markets-union-is-key-for-energy-transition",
+        "publisher": "Bloomberg",
+        "date": "2025-11-03",
+        "credibility": 0.8
+      },
+      {
+        "id": 5,
+        "title": "How AI Influences US Data Center Power Demand",
+        "url": "https://www.bloomberg.com/professional/insights/webinar/bnef-data-centers-webinar/",
+        "publisher": "Bloomberg",
+        "date": "2025-11-03",
+        "credibility": 0.8
+      },
+      {
+        "id": 6,
+        "title": "How is investment research transformed by AI?",
+        "url": "https://www.bloomberg.com/professional/insights/markets/how-is-investment-research-transformed-by-ai/",
+        "publisher": "Bloomberg",
+        "date": "2025-11-03",
+        "credibility": 0.8
+      }
+    ],
+    "validated_sources_count": 6,
+    "intent": "market",
+    "horizon": "Near-term",
+    "hybrid_thesis_anchored": false
+  },
+  "slides": {
+    "generated": true,
+    "slides_url": "https://docs.google.com/presentation/d/1mufr4UhG9S6O1uPWnoiFOtaKYcQqVMWMUjLvWwDD4Fo",
+    "pdf_path": "sti_reports/sti_enhanced_output_20251103_153910_the_energy_arbitrage/slides_export.pdf",
+    "generation_timestamp": "2025-11-04T18:14:30.884654"
+  },
+  "social_media_content": {
+    "generated": true,
+    "formats": [
+      "long_form",
+      "twitter_thread",
+      "linkedin_post"
+    ],
+    "metadata": {},
+    "generation_timestamp": ""
+  }
+}

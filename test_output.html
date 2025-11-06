@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Brief — AI Technology Trends - STI Intelligence</title>
+    <style>
+        /* Bloomberg/FT inspired typography and layout */
+        
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 18px;
+            line-height: 1.6;
+            color: #333;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #fff;
+        }
+        
+        /* Typography scale */
+        h1 {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #0066cc;
+            border-bottom: 3px solid #e1e4e8;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+        
+        h2 {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+        }
+        
+        h3 {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #666;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1.25rem;
+            text-align: justify;
+        }
+        
+        /* Header and branding */
+        .sti-branding {
+            color: #999;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .metadata-bar {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e1e4e8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        }
+        
+        /* Executive summary card */
+        .exec-summary-card {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-left: 4px solid #0066cc;
+            margin: 2.5rem 0;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .exec-summary-card h2 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #0066cc;
+            font-size: 1.3rem;
+        }
+        
+        .exec-summary-card p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 0;
+        }
+        
+        /* Topline section */
+        .topline {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: #fafbfc;
+            border-radius: 4px;
+            border: 1px solid #e1e4e8;
+        }
+        
+        /* Signal cards */
+        .signals-container {
+            margin: 2rem 0;
+        }
+        
+        .signal-card {
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.25rem 0;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: box-shadow 0.2s ease;
+        }
+        
+        .signal-card:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .signal-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+        
+        .signal-metadata {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .badge-high {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .badge-medium {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .badge-low {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .trend-indicator {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #0066cc;
+            margin-left: 0.5rem;
+        }
+        
+        .citation-link {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .citation-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Analysis sections */
+        .analysis-section {
+            margin: 2.5rem 0;
+        }
+        
+        .analysis-section h2 {
+            border-bottom: 2px solid #e1e4e8;
+            padding-bottom: 0.5rem;
+        }
+        
+        .analysis-section p {
+            text-align: justify;
+            hyphens: auto;
+        }
+        
+        /* Lenses layout */
+        .lenses-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+            margin: 2.5rem 0;
+        }
+        
+        .lens-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 6px;
+            border: 1px solid #e1e4e8;
+        }
+        
+        .lens-card h3 {
+            color: #0066cc;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .lens-card p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+        
+        /* Sources section */
+        .sources-container {
+            margin: 3rem 0;
+            padding-top: 2rem;
+            border-top: 2px solid #e1e4e8;
+        }
+        
+        .sources-container h2 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+        
+        .source-item {
+            margin: 1.5rem 0;
+            padding: 1.25rem;
+            border-left: 3px solid #e1e4e8;
+            background: #f8f9fa;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .source-number {
+            font-weight: bold;
+            color: #0066cc;
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+        
+        .source-content {
+            display: inline-block;
+            vertical-align: top;
+            max-width: calc(100% - 3rem);
+        }
+        
+        .source-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            color: #333;
+        }
+        
+        .source-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .source-url {
+            font-size: 0.85rem;
+        }
+        
+        .source-url a {
+            color: #0066cc;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        
+        .source-url a:hover {
+            text-decoration: underline;
+        }
+        
+        .credibility {
+            color: #999;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+        
+        /* Footer metadata */
+        .footer-metadata {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e1e4e8;
+            color: #999;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                max-width: none;
+                padding: 1rem;
+                font-size: 12pt;
+                line-height: 1.4;
+            }
+            
+            h1 {
+                font-size: 18pt;
+                page-break-after: avoid;
+            }
+            
+            h2 {
+                font-size: 14pt;
+                page-break-after: avoid;
+            }
+            
+            h3 {
+                font-size: 12pt;
+                page-break-after: avoid;
+            }
+            
+            .signal-card {
+                break-inside: avoid;
+                margin: 0.5rem 0;
+                padding: 0.75rem;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            
+            .source-item {
+                break-inside: avoid;
+                margin: 0.5rem 0;
+                padding: 0.75rem;
+            }
+            
+            .exec-summary-card {
+                break-inside: avoid;
+                margin: 1rem 0;
+                padding: 1rem;
+            }
+            
+            .lenses-container {
+                display: block;
+            }
+            
+            .lens-card {
+                break-inside: avoid;
+                margin: 0.5rem 0;
+                padding: 0.75rem;
+            }
+            
+            .citation-link {
+                color: #000;
+            }
+            
+            .source-url a {
+                color: #000;
+            }
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+                font-size: 16px;
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            h2 {
+                font-size: 1.25rem;
+            }
+            
+            .exec-summary-card {
+                padding: 1.5rem;
+            }
+            
+            .signal-card {
+                padding: 1rem;
+            }
+            
+            .lenses-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .signal-metadata {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .source-content {
+                max-width: calc(100% - 2rem);
+            }
+        }
+        
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            .signal-card {
+                transition: none;
+            }
+        }
+        
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .signal-card {
+                border: 2px solid #000;
+            }
+            
+            .badge {
+                border: 1px solid #000;
+            }
+            
+            .exec-summary-card {
+                border-left: 6px solid #000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="sti-branding">Smart Technology Investments</div>
+        <h1>Tech Brief — AI Technology Trends</h1>
+        <div class="metadata-bar">Oct 21–Oct 28, 2025 | Sources: 5 | Confidence: 0.80 | Sources: {{sources_count}} | Confidence: 0.8</div>
+    </header>
+    
+    <article>
+        <section class="exec-summary-card">
+            <h2>Executive Summary</h2>
+            <p>AI infrastructure is shifting from model-first to governed, orchestrated stacks.</p>
+        </section>
+        
+        <section class="topline">
+            <h2>Topline</h2>
+            <p>Elloe AI fact-checked 100% of LLM outputs via an SDK/API layer.</p>
+        </section>
+        
+        <section class="signals">
+            <h2>Signals</h2>
+            <div class="signals-container">
+            <div class="signal-card">
+                <div class="signal-content">
+                    2025-10-27 — Elloe AI fact-checked 100% of LLM responses — strength: High | impact: High | trend: ↗︎ <sup><a href="#source-1" class="citation-link">[1]</a></sup>
+                </div>
+                <div class="signal-metadata">
+                    <span class="badge badge-high">High</span>
+                    <span class="badge badge-high">High</span>
+                    <span class="trend-indicator">↗</span>
+                </div>
+            </div>
+            
+            <div class="signal-card">
+                <div class="signal-content">
+                    2025-10-28 — Nexos.ai raised $8,000,000 in funding — strength: High | impact: Medium | trend: ↗︎ <sup><a href="#source-2" class="citation-link">[2]</a></sup>
+                </div>
+                <div class="signal-metadata">
+                    <span class="badge badge-high">High</span>
+                    <span class="badge badge-medium">Medium</span>
+                    <span class="trend-indicator">↗</span>
+                </div>
+            </div>
+            </div>
+        </section>
+        
+        <section class="analysis-section">
+            <h2>Market Analysis</h2>
+            <p>The recent wave of startups signals a maturation of AI infrastructure.</p>
+        </section>
+        
+        <section class="analysis-section">
+            <h2>Technology Deep-Dive</h2>
+            <p>The recent set of products points to a maturing stack.</p>
+        </section>
+        
+        <section class="analysis-section">
+            <h2>Competitive Landscape</h2>
+            <p>Winners/Losers Identification: The near-term winners are startups.</p>
+        </section>
+        
+        <section class="lenses-container">
+            <div class="lens-card">
+                <h3>Operator Lens</h3>
+                <p>Operators should view the recent announcements as a call to re-architect.</p>
+            </div>
+            <div class="lens-card">
+                <h3>Investor Lens</h3>
+                <p>The flow of product announcements signals a capital reallocation.</p>
+            </div>
+            <div class="lens-card">
+                <h3>BD Lens</h3>
+                <p>The current landscape creates a clear BD playbook.</p>
+            </div>
+        </section>
+    </article>
+    
+    <footer class="sources-container">
+        <h2>Sources</h2>
+        <div class="sources-container">
+            <div class="source-item" id="source-1">
+                <span class="source-number">[1]</span>
+                <div class="source-content">
+                    <div class="source-title">Elloe AI wants to be the 'immune system' for AI</div>
+                    <div class="source-meta">TechCrunch, 2025-10-28. (cred: 0.90)</div>
+                    <div class="source-url">
+                        <a href="https://techcrunch.com/2025/10/28/elloe-ai-wants-to-be-the-immune-system-for-ai-check-it-out-at-disrupt-2025/" target="_blank" rel="noopener">https://techcrunch.com/2025/10/28/elloe-ai-wants-to-be-the-immune-system-for-ai-check-it-out-at-disrupt-2025/</a>
+                        <span class="credibility">(cred: 0.50)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="source-item" id="source-2">
+                <span class="source-number">[2]</span>
+                <div class="source-content">
+                    <div class="source-title">Meet the AI Disruptors 60</div>
+                    <div class="source-meta">TechCrunch, 2025-10-28. (cred: 0.90)</div>
+                    <div class="source-url">
+                        <a href="https://techcrunch.com/sponsor/greenfield-partners/meet-the-ai-disruptors-60-the-startups-defining-ais-future/" target="_blank" rel="noopener">https://techcrunch.com/sponsor/greenfield-partners/meet-the-ai-disruptors-60-the-startups-defining-ais-future/</a>
+                        <span class="credibility">(cred: 0.50)</span>
+                    </div>
+                </div>
+            </div>
+            </div>
+    </footer>
+    
+    <div class="footer-metadata">
+        Generated: 2025-10-28T12:43:25.494472 | Word Count: 1200
+    </div>
+</body>
+</html>

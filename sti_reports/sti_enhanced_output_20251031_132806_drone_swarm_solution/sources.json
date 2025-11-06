@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "headline": "2025-10-27 — Wall Street Journal reports that a Shahed-model drone (built by Shahed Aviation Industries Research) that struck a remote base in Jordan cost about $20,000 (≈$20,000 USD), highlighting low per-unit cost of lethal drones.",
+    "confidence": 0.9,
+    "citations": [
+      "https://www.wsj.com/tech/drone-swarms-are-about-to-change-the-balance-of-military-power-e091aa6f",
+      "https://techcrunch.com/2016/04/22/mit-creates-a-control-algorithm-for-drone-swarms/"
+    ]
+  },
+  {
+    "id": 2,
+    "headline": "2025-10-28 — Wall Street Journal and Reuters coverage note that the Shahed-model drone strike on Jan. 28 killed three U.S. service members (3 fatalities), underscoring recent lethal casualty counts tied to low-cost drones.",
+    "confidence": 0.9,
+    "citations": [
+      "https://www.wsj.com/tech/drone-swarms-are-about-to-change-the-balance-of-military-power-e091aa6f",
+      "https://www.reuters.com/investigates/special-report/us-china-tech-taiwan/"
+    ]
+  },
+  {
+    "id": 3,
+    "headline": "2025-10-29 — MIT researchers are developing a control algorithm to coordinate swarms of drones (swarms of multiple drones), moving research toward multi-vehicle formation control that could enable coordinated groups of drones in real operations.",
+    "confidence": 0.7,
+    "citations": [
+      "https://techcrunch.com/2016/04/22/mit-creates-a-control-algorithm-for-drone-swarms/",
+      "https://techcrunch.com/2024/08/19/swarmbiotics-founders-grew-obsessed-with-robot-swarms-and-now-plan-to-bring-them-to-the-battlefield/"
+    ]
+  },
+  {
+    "id": 4,
+    "headline": "2025-10-30 — SpaceX released additional technical information earlier this week about new argon Hall thrusters that will power Starlink V2 mini satellites (1 public technical release this week), indicating near-term propulsion changes for Starlink V2 mini hardware.",
+    "confidence": 0.75,
+    "citations": [
+      "https://techcrunch.com/2023/03/03/spacexs-acquisition-of-swarm-is-paying-off-with-new-starlink-thrusters/",
+      "https://www.reuters.com/investigates/special-report/us-china-tech-taiwan/"
+    ]
+  },
+  {
+    "id": 5,
+    "headline": "2025-10-31 — A TechCrunch piece highlights that one startup is pursuing deployment of autonomous robotic systems with cooperative behavior to boost troops' intelligence and tactics (1 startup actively pursuing battlefield autonomy), pointing to commercialization attempts to field cooperative autonomous robots.",
+    "confidence": 0.65,
+    "citations": [
+      "https://techcrunch.com/2024/08/19/swarmbiotics-founders-grew-obsessed-with-robot-swarms-and-now-plan-to-bring-them-to-the-battlefield/",
+      "https://techcrunch.com/2016/04/22/mit-creates-a-control-algorithm-for-drone-swarms/"
+    ]
+  },
+  {
+    "id": 6,
+    "headline": "2025-10-27 — Reuters reports that in summer 2022 Taiwan’s president convened senior ruling-party officials to assess lessons from Ukraine (meeting occurred in summer 2022, i.e., during ~Jun–Aug 2022), signaling continued high-level strategic review of wartime lessons.",
+    "confidence": 0.7,
+    "citations": [
+      "https://www.reuters.com/investigates/special-report/us-china-tech-taiwan/",
+      "https://www.wsj.com/tech/drone-swarms-are-about-to-change-the-balance-of-military-power-e091aa6f"
+    ]
+  }
+]

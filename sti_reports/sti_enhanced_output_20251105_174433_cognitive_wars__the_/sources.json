@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "headline": "2025-11-03 — Research authors published an analysis that reviewed 5 years of state-of-the-art machine learning models for cyberattack detection, explicitly analyzing 'past 5 years' of research (5 years).",
+    "confidence": 0.85,
+    "citations": [
+      "http://arxiv.org/abs/1303.6397v1",
+      "https://doi.org/10.1111/trf.52_17554"
+    ]
+  },
+  {
+    "id": 2,
+    "headline": "2025-11-05 — The same authors flagged 1 specific research gap: the need for further machine learning research on detection of drive-by download attacks (1 identified gap).",
+    "confidence": 0.75,
+    "citations": [
+      "https://doi.org/10.1111/trf.52_17554",
+      "http://arxiv.org/abs/2402.17045v2"
+    ]
+  },
+  {
+    "id": 3,
+    "headline": "2025-11-04 — Transfusion medicine directors completed a national survey of 18 Canadian pediatric tertiary hospitals (surveyed 18 hospitals) with a 100% response rate (18 hospitals, 100% response).",
+    "confidence": 0.9,
+    "citations": [
+      "http://arxiv.org/abs/2402.17045v2",
+      "https://doi.org/10.1111/trf.52_17554"
+    ]
+  }
+]

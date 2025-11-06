@@ -1,0 +1,29 @@
+general:
+  debug: false
+  instance_name: SearXNG
+
+server:
+  bind_address: 0.0.0.0
+  port: 8080
+  secret_key: "please_replace_with_random_secret_32_chars_min"
+  public_instance: true
+  image_proxy: false
+  limiter: false
+
+ui:
+  static_use_hash: true
+  default_locale: en
+
+search:
+  safe_search: 0
+  autocomplete: duckduckgo
+  default_lang: en
+
+outgoing:
+  request_timeout: 10.0
+  useragent_suffix: "searxng-local"
+
+botdetection:
+  enabled: false
+
+

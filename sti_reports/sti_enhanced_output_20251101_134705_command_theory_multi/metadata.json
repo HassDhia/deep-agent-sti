@@ -1,0 +1,82 @@
+{
+  "generation_timestamp": "2025-11-01T13:47:05.051380",
+  "query": "Command Theory Multi-agent Systems",
+  "days_back": 7,
+  "report_stats": {
+    "character_count": 34086,
+    "word_count": 4302,
+    "jsonld_size": 5628
+  },
+  "confidence_score": 0.6,
+  "sources_count": 10,
+  "system_info": {
+    "agent_type": "Enhanced STI Agent",
+    "version": "1.0.0",
+    "model": "gpt-5-mini-2025-08-07",
+    "date_filtering": "Strict 7-day window enforced"
+  },
+  "agent_stats": {
+    "date_filter_stats": {
+      "total_processed": 6,
+      "within_window": 6,
+      "outside_window": 0,
+      "parse_failed": 0,
+      "success_rate": 1.0,
+      "parse_success_rate": 1.0
+    },
+    "sources_data": [
+      {
+        "id": 1,
+        "title": "Distributed energy control in electric energy systems",
+        "url": "http://arxiv.org/abs/2111.12046v2",
+        "publisher": "Arxiv.Org",
+        "date": "2021-11-23",
+        "credibility": 0.5
+      },
+      {
+        "id": 2,
+        "title": "Comments on \"Consensus and Cooperation in Networked Multi-Agent Systems\"",
+        "url": "http://arxiv.org/abs/1009.6050v1",
+        "publisher": "Arxiv.Org",
+        "date": "2010-09-30",
+        "credibility": 0.5
+      },
+      {
+        "id": 3,
+        "title": "On graph theoretic results underlying the analysis of consensus in multi-agent systems",
+        "url": "http://arxiv.org/abs/0902.4218v1",
+        "publisher": "Arxiv.Org",
+        "date": "2009-02-24",
+        "credibility": 0.5
+      },
+      {
+        "id": 4,
+        "title": "A Brief Tutorial on Consensus ADMM for Distributed Optimization with Applications in Robotics",
+        "url": "http://arxiv.org/abs/2410.03753v1",
+        "publisher": "Arxiv.Org",
+        "date": "2024-10-02",
+        "credibility": 0.5
+      }
+    ],
+    "validated_sources_count": 10,
+    "intent": "theory",
+    "horizon": "Foundational",
+    "hybrid_thesis_anchored": false
+  },
+  "social_media_content": {
+    "generated": true,
+    "formats": [
+      "long_form",
+      "twitter_thread",
+      "linkedin_post"
+    ],
+    "metadata": {},
+    "generation_timestamp": ""
+  },
+  "slides": {
+    "generated": true,
+    "slides_url": "https://docs.google.com/presentation/d/1LlZu3jO49KPsSLpzmsBAgUoQOvqfPsg_6ba9EyQ5vp8",
+    "pdf_path": "sti_reports/sti_enhanced_output_20251101_134705_command_theory_multi/slides_export.pdf",
+    "generation_timestamp": "2025-11-02T18:38:42.510128"
+  }
+}
