@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "title": "An Investigation into the Performances of the State-of-the-art Machine Learning Approaches for Various Cyber-attack Detection: A Survey",
+    "url": "http://arxiv.org/abs/2402.17045v2",
+    "publisher": "Arxiv.Org",
+    "date": "2024-02-26",
+    "credibility": 0.5,
+    "content_sha": null
+  },
+  {
+    "id": 2,
+    "title": "OA1‐AM23‐SN‐05 | Canadian Pediatric Massive Hemorrhage Protocols: A Survey of National Practice and State‐of‐the‐Art Review",
+    "url": "https://doi.org/10.1111/trf.52_17554",
+    "publisher": "Doi.Org",
+    "date": "2023-10-01",
+    "credibility": 0.5,
+    "content_sha": null
+  },
+  {
+    "id": 3,
+    "title": "Conditions for detectability in distributed consensus-based observer networks",
+    "url": "http://arxiv.org/abs/1303.6397v1",
+    "publisher": "Arxiv.Org",
+    "date": "2013-03-26",
+    "credibility": 0.5,
+    "content_sha": null
+  }
+]

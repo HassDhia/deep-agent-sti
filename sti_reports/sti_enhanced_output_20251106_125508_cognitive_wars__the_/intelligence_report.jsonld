@@ -1,0 +1,75 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Report",
+  "name": "Tech Brief — AI Agents",
+  "author": {
+    "@type": "Organization",
+    "name": "Smart Technology Investments LLC",
+    "url": "https://sti.ai"
+  },
+  "datePublished": "2025-11-06T12:55:08.823779",
+  "about": "Cognitive Wars: The AI Industrialization of Influence",
+  "abstract": "Recent analyses reveal actionable gaps: five years of ML research show drive‑by download detection, mixed Naive Bayes performance, and inability to detect post‑SQLi compromised databases remain under‑served, while a survey of 18 Canadian pediatric tertiary hospitals found only 13 (72.2%) maintain pediatric‑specific massive hemorrhage protocol (MHP) content, leaving 28% with absent or variable pediatric guidance. For operators: instrument richer telemetry, forensic logging, and labeled pipelines; deploy heterogeneous edge inference (NPUs/FPGA/GPU), CI/CD for model lifecycle, and defense‑in‑depth combining hybrid/state‑aware detectors with rule‑based forensics; standardize MHP activation workflows, inventory checks, and EHR integration to reduce clinical variability. For investors: prioritize cyber‑ML startups addressing drive‑by downloads, post‑SQLi detection, and robust Naive Bayes hybrids, pediatric MHP SaaS and benchmarking platforms, and edge‑accelerator exposure; expect M&A as incumbents acquire niche capabilities. For business development: pilot with the 18‑hospital cohort, partner with academic authors to co‑develop datasets, productize a pediatric MHP activation suite, and offer managed detection/MHP services with outcome‑based SLAs. Immediate actions: fund targeted R&D, build centralized ingestion and benchmarking APIs, run measured pilots, and commercialize hybrid detectors and standardized pediatric MHP repositories to capture unmet demand. Winning vendors will combine validated field performance, regulatory-aligned auditability, and turnkey integration to accelerate adoption and pricing power.",
+  "hasPart": [
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": "2025-11-05 — Authors of an ArXiv analysis examined the past 5 years of state-of-the-art machine-learning models for cyberattack detection (analyzed 5 years of literature).",
+      "confidence": 0.75,
+      "citation": [
+        "http://arxiv.org/abs/1303.6397v1",
+        "https://doi.org/10.1111/trf.52_17554"
+      ]
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": "2025-11-04 — The same research team documented 3 primary research gaps in ML cyberattack detection: drive-by download detection, mixed-performance of Naive Bayes, and inability to detect already-compromised databases with SQL injection (3 gaps identified).",
+      "confidence": 0.85,
+      "citation": [
+        "http://arxiv.org/abs/1303.6397v1",
+        "http://arxiv.org/abs/2402.17045v2"
+      ]
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": "2025-11-03 — Transfusion medicine directors surveyed 18 Canadian pediatric tertiary care hospitals (surveyed 18 hospitals; 100% response rate).",
+      "confidence": 0.9,
+      "citation": [
+        "http://arxiv.org/abs/2402.17045v2",
+        "https://doi.org/10.1111/trf.52_17554"
+      ]
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": "2025-11-06 — The survey found only 13 of 18 hospitals had pediatric-specific massive hemorrhage protocol (MHP) content (13 hospitals; 72.2%).",
+      "confidence": 0.88,
+      "citation": [
+        "http://arxiv.org/abs/2402.17045v2",
+        "http://arxiv.org/abs/1303.6397v1"
+      ]
+    }
+  ],
+  "temporalCoverage": "2025-10-30/2025-11-06",
+  "keywords": [
+    "Cybersecurity",
+    "AR/VR",
+    "AI"
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": 0.715,
+    "worstRating": 0.3,
+    "bestRating": 0.85
+  },
+  "entities": {
+    "ORG": [
+      "Arxiv.Org",
+      "Doi.Org"
+    ],
+    "PERSON": [],
+    "PRODUCT": [],
+    "TICKER": [],
+    "GEO": []
+  },
+  "wordCount": 3846,
+  "reportType": "Technology Intelligence Brief"
+}
