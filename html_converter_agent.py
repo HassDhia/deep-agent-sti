@@ -135,6 +135,7 @@ class HTMLConverterAgent:
             template_data['confidence_breakdown'] = agent_stats.get('confidence_breakdown') or metadata.get('confidence_breakdown')
             template_data['run_manifest'] = agent_stats.get('run_manifest') or metadata.get('run_manifest')
             template_data['provenance_banner'] = self._render_provenance_banner(template_data)
+            template_data['confidence_dials'] = self._render_confidence_dials(template_data)
             template_data['evidence_ledger_html'] = self._render_evidence_ledger(ledger)
             template_data['adversarial_html'] = self._render_adversarial_section(adversarial)
             template_data['playbooks_html'] = self._render_playbooks(playbooks)
@@ -267,6 +268,13 @@ class HTMLConverterAgent:
             
             asset_gating = agent_stats.get('asset_gating', {}) if isinstance(agent_stats, dict) else {}
             images_enabled = asset_gating.get('images_enabled', True)
+            
+            # Explicit thesis asset gating: if thesis and anchors are weak, skip aesthetics
+            if is_thesis and getattr(STIConfig, 'REQUIRE_ANCHORS_FOR_ASSETS', False):
+                anchor_status = template_data.get('anchor_status', '')
+                if anchor_status in ("Anchor-Absent", "Anchor-Sparse"):
+                    images_enabled = False
+                    logger.info(f"🛑 Image generation skipped for thesis: anchor_status={anchor_status} (insufficient anchors).")
 
             if not images_enabled:
                 logger.info("🛑 Image generation skipped by asset gate (insufficient anchors).")
@@ -2133,6 +2141,28 @@ class HTMLConverterAgent:
             </div>
             <p class="provenance-notes">Anchor coverage enforced at {anchor_cov:.2f}. {description}</p>
         </section>
+        '''
+    
+    def _render_confidence_dials(self, template_data: Dict[str, Any]) -> str:
+        """Render confidence breakdown sub-score dials for header."""
+        breakdown = template_data.get('confidence_breakdown')
+        if not breakdown:
+            return ""
+        try:
+            sd = float(breakdown.get('source_diversity', 0.0))
+            ac = float(breakdown.get('anchor_coverage', 0.0))
+            mt = float(breakdown.get('method_transparency', 0.0))
+            rr = float(breakdown.get('replication_readiness', 0.0))
+        except (TypeError, ValueError):
+            return ""
+        
+        return f'''
+        <div class="confidence-dials">
+            <span class="dial-item" title="Source Diversity: {sd:.2f}"><span class="dial-label">SD</span><span class="dial-value">{sd:.2f}</span></span>
+            <span class="dial-item" title="Anchor Coverage: {ac:.2f}"><span class="dial-label">AC</span><span class="dial-value">{ac:.2f}</span></span>
+            <span class="dial-item" title="Method Transparency: {mt:.2f}"><span class="dial-label">MT</span><span class="dial-value">{mt:.2f}</span></span>
+            <span class="dial-item" title="Replication Readiness: {rr:.2f}"><span class="dial-label">RR</span><span class="dial-value">{rr:.2f}</span></span>
+        </div>
         '''
 
     def _render_evidence_ledger(self, ledger: Dict[str, Any]) -> str:

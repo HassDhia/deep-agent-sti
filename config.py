@@ -6,7 +6,7 @@ including report targets, quality gates, and MCP server configurations.
 """
 
 import os
-from typing import Tuple, List
+from typing import Tuple
 
 # Load environment variables from .env file if available
 try:
@@ -247,8 +247,10 @@ class STIConfig:
     
     # Authentication: Use OAuth 2.0 (user account) or Service Account
     # OAuth 2.0 (recommended - uses your personal storage quota)
-    # SECURITY: These values are read from environment variables to avoid committing secrets
-    # Set GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET in your .env file
+    # SECURITY: These values MUST be read from environment variables to avoid committing secrets
+    # NEVER hardcode secrets in this file. Set GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET
+    # in your .env file (which is gitignored). If secrets were previously committed, rotate them
+    # immediately in Google Cloud Console.
     GOOGLE_OAUTH_CLIENT_ID = os.getenv('GOOGLE_OAUTH_CLIENT_ID', '')  # OAuth 2.0 Client ID from Google Cloud Console
     GOOGLE_OAUTH_CLIENT_SECRET = os.getenv('GOOGLE_OAUTH_CLIENT_SECRET', '')  # OAuth 2.0 Client Secret from Google Cloud Console
     GOOGLE_OAUTH_TOKEN_FILE = ".google_token.json"  # File to store OAuth refresh token
@@ -316,7 +318,7 @@ class STIConfig:
 if not STIConfig.validate_config():
     print("Configuration validation failed!")
 else:
-    print(f"✅ STI Configuration loaded successfully")
+    print("✅ STI Configuration loaded successfully")
     print(f"📊 Target word count: {STIConfig.get_total_target_words()}")
     print(f"🎯 Signals count: {STIConfig.SIGNALS_COUNT}")
     print(f"📈 Confidence bounds: {STIConfig.CONFIDENCE_BOUNDS}")
