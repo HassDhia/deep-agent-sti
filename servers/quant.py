@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import asdict, dataclass
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 
 @dataclass
@@ -77,6 +77,75 @@ def sanity(params: Dict[str, Any]) -> List[QuantWarning]:
         warn("MISSING", "base_rate required when using TPR/FPR")
 
     return warnings
+
+
+def monotonicity_linter(
+    eqn: Callable,
+    param: str,
+    regime: Dict[str, Tuple[float, float]],
+    expectation: str
+) -> Optional[QuantWarning]:
+    """
+    Check if equation's behavior matches expected monotonicity/U-shape.
+    
+    Args:
+        eqn: Function f(param, **other_params) to test
+        param: Parameter name to vary
+        regime: Dict mapping other param names to (min, max) ranges
+        expectation: "increasing", "decreasing", "u_shaped", or "monotonic"
+    
+    Returns:
+        QuantWarning if behavior doesn't match expectation, None otherwise
+    """
+    try:
+        import numpy as np
+    except ImportError:
+        # If numpy not available, skip monotonicity check
+        return None
+    
+    # Sample parameter across a grid
+    param_range = regime.get(param, (0.0, 1.0))
+    param_values = np.linspace(param_range[0], param_range[1], 20)
+    other_params = {k: (v[0] + v[1]) / 2 for k, v in regime.items() if k != param}
+    
+    try:
+        outputs = [eqn(p, **other_params) for p in param_values]
+        derivatives = np.diff(outputs)
+        
+        if expectation == "increasing":
+            if np.any(derivatives < -1e-6):  # Allow small numerical noise
+                return QuantWarning(
+                    code="MONOTONICITY",
+                    message=f"Expected {param} to be increasing, but function decreases in some regions"
+                )
+        elif expectation == "decreasing":
+            if np.any(derivatives > 1e-6):
+                return QuantWarning(
+                    code="MONOTONICITY",
+                    message=f"Expected {param} to be decreasing, but function increases in some regions"
+                )
+        elif expectation == "u_shaped":
+            # Check for U-shape: decreasing then increasing (or vice versa)
+            sign_changes = np.sum(np.diff(np.sign(derivatives)) != 0)
+            if sign_changes < 1:
+                return QuantWarning(
+                    code="MONOTONICITY",
+                    message=f"Expected U-shaped behavior for {param}, but function appears monotonic"
+                )
+        elif expectation == "monotonic":
+            # Should be either all increasing or all decreasing
+            if np.any(derivatives > 1e-6) and np.any(derivatives < -1e-6):
+                return QuantWarning(
+                    code="MONOTONICITY",
+                    message=f"Expected monotonic behavior for {param}, but function has both increasing and decreasing regions"
+                )
+    except Exception as e:
+        return QuantWarning(
+            code="MONOTONICITY",
+            message=f"Could not verify monotonicity for {param}: {str(e)}"
+        )
+    
+    return None
 
 
 def suggest_patch_for_vignette(params: Dict[str, Any], horizon_hours: float = 6.0) -> QuantPatch:

@@ -1,0 +1,32 @@
+{
+  "rows": [
+    {
+      "kpi": "MTTA_p95",
+      "threshold": "<= 10 min",
+      "action": "Automate detection and pre-authorize counter messaging",
+      "expected_delta_risk": "Decrease cascade risk",
+      "monitoring_lag": "near-real-time"
+    },
+    {
+      "kpi": "PPV(min)",
+      "threshold": ">= 0.85",
+      "action": "Raise decision threshold; require dual-sensor corroboration",
+      "expected_delta_risk": "Decrease false-trigger kinetic",
+      "monitoring_lag": "per alert"
+    },
+    {
+      "kpi": "t_half(persistence)",
+      "threshold": "<= 7 days",
+      "action": "Throttling + labeling + counter-speech",
+      "expected_delta_risk": "Shorten long-tail belief",
+      "monitoring_lag": "daily"
+    },
+    {
+      "kpi": "Amplification Gain (G)",
+      "threshold": "<= 1.2x",
+      "action": "Ranking demotion for low-trust narratives",
+      "expected_delta_risk": "Limit reach",
+      "monitoring_lag": "weekly"
+    }
+  ]
+}

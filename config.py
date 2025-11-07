@@ -264,6 +264,8 @@ class STIConfig:
     THESIS_MAX_REPAIRS = 2
     THEORY_CONFIDENCE_CAP = 0.60
     CANONICAL_SEMANTIC_FLOOR = 0.70
+    # Confidence cap for theory reports with weak anchors
+    CONFIDENCE_CAP_THEORY_ANCHOR_ABSENT = 0.55
     
     # Thesis anchor source settings
     THESIS_ANCHOR_DOMAINS = [

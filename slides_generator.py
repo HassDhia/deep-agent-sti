@@ -655,21 +655,19 @@ class SlidesGenerator:
             presentation_id: Google Slides presentation ID
         """
         try:
-            request = {
-                'updatePresentationProperties': {
-                    'presentationProperties': {
-                        'pageSize': {
-                            'width': {'magnitude': 9144000, 'unit': 'EMU'},  # 10in (widescreen)
-                            'height': {'magnitude': 5143500, 'unit': 'EMU'}  # 5.625in
-                        }
-                    },
-                    'fields': 'pageSize'
+            # Use presentations().update() for presentation-level properties, not batchUpdate()
+            body = {
+                'presentationProperties': {
+                    'pageSize': {
+                        'width': {'magnitude': 9144000, 'unit': 'EMU'},  # 10in (widescreen)
+                        'height': {'magnitude': 5143500, 'unit': 'EMU'}  # 5.625in
+                    }
                 }
             }
             
-            self.slides_service.presentations().batchUpdate(
+            self.slides_service.presentations().update(
                 presentationId=presentation_id,
-                body={'requests': [request]}
+                body=body
             ).execute()
             
             logger.debug("✅ Set presentation page size to widescreen (16:9)")

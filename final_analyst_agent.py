@@ -306,12 +306,17 @@ class FinalAnalystGradeAgent:
                         if not validated_url:
                             continue  # Skip this source
                         
+                        date_str = self._extract_date(result)
+                        if not date_str:
+                            # STRICT: Reject source if no date found
+                            logger.warning(f"✗ Rejecting source '{result.get('title', 'No title')}' - no publication date found")
+                            continue
                         source = Source(
                             id=0,  # Will be set later
                             title=result.get('title', 'No title'),
                             url=validated_url,  # ← GUARANTEED VALID
                             publisher=self._extract_publisher(validated_url),
-                            date=self._extract_date(result),
+                            date=date_str,
                             credibility=self._calculate_source_credibility(result, source_type),
                             content=result.get('content', ''),
                             source_type=source_type,
@@ -347,12 +352,17 @@ class FinalAnalystGradeAgent:
                     # Apply strict hygiene filters
                     if self._passes_strict_hygiene_filters(result):
                         source_type = self._classify_source_type(result.get('url', ''))
+                        date_str = self._extract_date(result)
+                        if not date_str:
+                            # STRICT: Reject source if no date found
+                            logger.warning(f"✗ Rejecting source '{result.get('title', 'No title')}' - no publication date found")
+                            continue
                         source = Source(
                             id=0,  # Will be set later
                             title=result.get('title', 'No title'),
                             url=self._clean_url(result.get('url', '')),
                             publisher=self._extract_publisher(result.get('url', '')),
-                            date=self._extract_date(result),
+                            date=date_str,
                             credibility=self._calculate_source_credibility(result, source_type),
                             content=result.get('content', ''),
                             source_type=source_type,
@@ -478,8 +488,12 @@ class FinalAnalystGradeAgent:
                     if source_type is None:
                         source_type = self._classify_source_type(validated_url)
                     publisher = self._extract_publisher(validated_url)
-                    date_str = r.get('pubdate') or r.get('published') or r.get('date') or datetime.now().strftime('%Y-%m-%d')
-                    date_str = str(date_str)[:10]
+                    # STRICT: Extract and validate date - reject if missing
+                    date_str = self._extract_date(r)
+                    if not date_str:
+                        # STRICT: Reject source if no date found
+                        logger.warning(f"✗ Rejecting source '{t}' - no publication date found")
+                        continue
                     # Calculate credibility
                     result_for_cred = {'url': validated_url, 'title': t, 'content': r.get('content') or r.get('snippet') or ''}
                     credibility = self._calculate_source_credibility(result_for_cred, source_type)
@@ -1094,15 +1108,29 @@ Topics:
         
         return publisher_map.get(domain, domain.title())
     
-    def _extract_date(self, result: Dict[str, Any]) -> str:
-        """Extract date from search result"""
-        date_fields = ['published_date', 'date', 'created_at', 'updated_at']
+    def _extract_date(self, result: Dict[str, Any]) -> Optional[str]:
+        """
+        Extract date from search result. Returns None if no date found.
+        STRICT: Never defaults to now() - caller must handle None.
+        """
+        date_fields = ['published_date', 'date', 'created_at', 'updated_at', 'pubdate']
         
         for field in date_fields:
             if field in result and result[field]:
-                return result[field]
+                date_str = str(result[field])
+                # Try to parse and normalize
+                try:
+                    for fmt in ['%Y-%m-%d', '%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%SZ', '%m/%d/%Y', '%d/%m/%Y']:
+                        try:
+                            parsed_date = datetime.strptime(date_str[:10], fmt)
+                            return parsed_date.strftime('%Y-%m-%d')
+                        except ValueError:
+                            continue
+                except Exception:
+                    pass
         
-        return datetime.now().strftime('%Y-%m-%d')
+        # STRICT: Return None instead of defaulting to now()
+        return None
     
     def _calculate_source_credibility(self, result: Dict[str, Any], source_type: SourceType) -> float:
         """Calculate source credibility based on type and content"""

@@ -284,16 +284,11 @@ class HTMLConverterAgent:
             images_enabled = asset_gating.get('images_enabled', True)
             social_enabled = asset_gating.get('social_enabled', True)
             
-            # Explicit thesis asset gating: if thesis and anchors are weak, skip aesthetics
-            if is_thesis and getattr(STIConfig, 'REQUIRE_ANCHORS_FOR_ASSETS', False):
-                anchor_status = template_data.get('anchor_status', '')
-                if anchor_status in ("Anchor-Absent", "Anchor-Sparse"):
-                    images_enabled = False
-                    social_enabled = False
-                    logger.info(f"🛑 Asset generation skipped for thesis: anchor_status={anchor_status} (insufficient anchors). Images and social disabled.")
+            # Note: Image generation now works for all reports regardless of anchor status
+            # Removed anchor requirement gating to ensure images are generated for every report
 
             if not images_enabled:
-                logger.info("🛑 Image generation skipped by asset gate (insufficient anchors).")
+                logger.info("🛑 Image generation skipped by asset gate.")
             elif report_dir and STIConfig and getattr(STIConfig, 'ENABLE_IMAGE_GENERATION', False):
                 query = metadata.get('query') or template_data.get('title', 'Technology Intelligence')
                 intent = "theory" if is_thesis else "market"
@@ -1338,8 +1333,7 @@ class HTMLConverterAgent:
         
         # 4) Metadata tell in header line
         type_line = "Report Type: Theoretical Research" if is_thesis else "Report Type: Market Intelligence"
-        if is_thesis and anchor_status:
-            type_line += f" | Anchor Status: {anchor_status}"
+        # Note: Anchor Status is already in template, don't duplicate here
         # Include horizon in metadata line if available
         if "| Confidence:" in html:
             html = html.replace("| Confidence:", f"| {type_line} | Horizon: {{horizon}} | Confidence:", 1)

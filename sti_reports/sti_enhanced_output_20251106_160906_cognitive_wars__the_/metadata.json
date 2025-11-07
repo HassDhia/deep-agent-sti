@@ -1,0 +1,170 @@
+{
+  "generation_timestamp": "2025-11-06T16:09:06.882457",
+  "query": "Cognitive Wars: The AI Industrialization of Influence",
+  "days_back": 7,
+  "report_stats": {
+    "character_count": 42964,
+    "word_count": 5265,
+    "jsonld_size": 3592
+  },
+  "confidence_score": 0.651,
+  "sources_count": 7,
+  "system_info": {
+    "agent_type": "Enhanced STI Agent",
+    "version": "1.0.0",
+    "model": "gpt-5-mini-2025-08-07",
+    "date_filtering": "Strict 7-day window enforced"
+  },
+  "agent_stats": {
+    "date_filter_stats": {
+      "total_processed": 0,
+      "within_window": 0,
+      "outside_window": 0,
+      "parse_failed": 0,
+      "success_rate": 0.0,
+      "parse_success_rate": 0.0
+    },
+    "sources_data": [
+      {
+        "id": 1,
+        "title": "An Investigation into the Performances of the State-of-the-art Machine Learning Approaches for Various Cyber-attack Detection: A Survey",
+        "url": "http://arxiv.org/abs/2402.17045v2",
+        "publisher": "Arxiv.Org",
+        "date": "2024-02-26",
+        "credibility": 0.5,
+        "content_sha": null
+      },
+      {
+        "id": 2,
+        "title": "OA1‐AM23‐SN‐05 | Canadian Pediatric Massive Hemorrhage Protocols: A Survey of National Practice and State‐of‐the‐Art Review",
+        "url": "https://doi.org/10.1111/trf.52_17554",
+        "publisher": "Doi.Org",
+        "date": "2023-10-01",
+        "credibility": 0.5,
+        "content_sha": null
+      },
+      {
+        "id": 3,
+        "title": "On graph theoretic results underlying the analysis of consensus in multi-agent systems",
+        "url": "http://arxiv.org/abs/0902.4218v1",
+        "publisher": "Arxiv.Org",
+        "date": "2009-02-24",
+        "credibility": 0.5,
+        "content_sha": null
+      },
+      {
+        "id": 4,
+        "title": "A Brief Tutorial on Consensus ADMM for Distributed Optimization with Applications in Robotics",
+        "url": "http://arxiv.org/abs/2410.03753v1",
+        "publisher": "Arxiv.Org",
+        "date": "2024-10-02",
+        "credibility": 0.5,
+        "content_sha": null
+      },
+      {
+        "id": 5,
+        "title": "A Survey of Distributed Consensus Protocols for Blockchain Networks",
+        "url": "http://arxiv.org/abs/1904.04098v4",
+        "publisher": "Arxiv.Org",
+        "date": "2019-04-08",
+        "credibility": 0.5,
+        "content_sha": null
+      }
+    ],
+    "validated_sources_count": 7,
+    "intent": "theory",
+    "horizon": "Foundational",
+    "hybrid_thesis_anchored": false,
+    "thesis_io": {},
+    "confidence_breakdown": {
+      "source_diversity": 0.32000000000000006,
+      "anchor_coverage": 1.0,
+      "method_transparency": 0.7,
+      "replication_readiness": 0.65
+    },
+    "advanced_tasks_requested": [
+      "adversarial_review",
+      "decision_playbooks"
+    ],
+    "advanced_tasks_executed": [
+      "adversarial_review",
+      "decision_playbooks"
+    ],
+    "advanced_tokens_spent": 375,
+    "metrics": {
+      "anchor_coverage": 1.0,
+      "quant_flags": 0,
+      "confidence": 0.6,
+      "confidence_cap_reason": null
+    },
+    "asset_gating": {
+      "images_enabled": true,
+      "social_enabled": true,
+      "reason": ""
+    },
+    "source_sha_map": {
+      "0": "e5120c97390074d050f087657b2efc2d760bf50ceb207f3646e3499f74274538"
+    },
+    "claims_snapshot": [
+      {
+        "id": "S1",
+        "text": "2025-11-04 — Research authors published an analysis covering the past 5 years (analyzed 5 years of literature) of state-of-the-art machine learning models for cyberattack detection, identifying gaps in detection across attack categories."
+      },
+      {
+        "id": "S2",
+        "text": "2025-11-05 — Study authors reported current machine-learning approaches cannot detect an already compromised database with SQL injection (i.e., effectively 0% detection capability for compromised DBs with SQLi in the reviewed works)."
+      },
+      {
+        "id": "S3",
+        "text": "2025-11-06 — Transfusion medicine directors completed a national survey of pediatric tertiary care hospitals: 18 hospitals were surveyed with a 100% response rate (18 hospitals; 100% response rate)."
+      },
+      {
+        "id": "EXEC1",
+        "text": "Recent cross-domain research reveals persistent machine‑learning detection blind spots and operational fragmentation that create clear market and operational priorities. A five‑year review shows state‑of‑the‑art classifiers fail to detect already‑compromised databases via SQL injection and under-detect drive‑by downloa"
+      },
+      {
+        "id": "MARKET1",
+        "text": "The intersecting signals from cybersecurity research, pediatric clinical systems, and multi-agent systems point to a market characterized by concentrated pricing power among data- and algorithm-rich vendors, directed capital flows into niche R&D and operational infrastructure, and structural change driven by both regul"
+      },
+      {
+        "id": "TECH1",
+        "text": "Model architectures and chip developments: The literature review of state-of-the-art classifiers for cyberattack detection highlights that current model families (classical ML classifiers including Naive Bayes, and more recent deep-learning approaches) show uneven coverage across attack classes — for example, drive-by "
+      },
+      {
+        "id": "COMP1",
+        "text": "Winners/Losers — Winners in the near term will be vendors and solution integrators that prioritize domain-specific machine‑learning research and operationalized analytics. Enterprise cybersecurity vendors that push beyond signature and generic ML models toward specialized detectors for drive‑by downloads and compromise"
+      },
+      {
+        "id": "LENS1",
+        "text": "## Operator Lens"
+      }
+    ],
+    "report_sections": {
+      "market": "The intersecting signals from cybersecurity research, pediatric clinical systems, and multi-agent systems point to a market characterized by concentrated pricing power among data- and algorithm-rich vendors, directed capital flows into niche R&D and operational infrastructure, and structural change driven by both regulatory/clinical standardization and algorithmic maturity. Pricing power dynamics: Vendors that control high-quality labeled attack datasets, validated detection models, or integrated clinical repositories will command pricing leverage. The literature review of five years of ML cyberattack detection work highlights persistent blind spots (for example, effective inability to detect already‑compromised databases with SQL injection), creating a premium for providers that can credibly solve those gaps or offer validated safeguards — giving winners substantial price-setting power for enterprise customers who must close those risks quickly [^1]. Conversely, demand-side fragmentation in healthcare — illustrated by 18 Canadian pediatric tertiary hospitals with highly variable massive hemorrhage protocol (MHP) content — weakens supplier pricing power for commoditized items (e.g., standard container kits) because buyers (hospitals) can shop for variable scopes and customizations [^2]. Capital flow patterns: Investment is bifurcating. One stream channels venture and grant capital toward targeted ML R&D to address documented detection gaps (drive‑by downloads, Naive Bayes improvements, SQLi-detection for compromised DBs), as academic findings signal clear product-market opportunities and technical risk that early-stage investors can underwrite [^1]. A parallel stream of public and institutional capital is moving into healthcare operational analytics — e.g., national repositories, audit dashboards, and pediatric MHP toolsets — because the survey explicitly calls for a national activation repository and benchmarking dashboard to enable quality improvement, implying opportunities for publicly funded platform builds and subscription services to hospitals [^2]. Infrastructure investment trends: Expect growth in secure data infrastructure (for labeled cyber datasets and compromised-DB forensics), MHP operational tooling (audit tools, standardized transport-kits, inventory-tracking for blood components), and compute/communication fabric for distributed robotics and multi-agent deployments. The ADMM/consensus literature signals demand for deployment-grade optimization stacks and low-latency networking to support multi-robot trajectory optimization and consensus control in production systems — a hardware+software investment vector for logistics, defense, and industrial automation vendors [^4][^5]. Market structure changes: Consolidation is likely among cybersecurity incumbents that can both provide enterprise-grade detection and own the data pipelines; niche entrants will proliferate around unsolved problems (drive-by downloads, compromised-DB detection), leading to acquisition targets for larger players seeking to close product gaps [^1]. In healthcare, the lack of MHP standardization creates room for platform consolidation if a vendor (or public consortium) successfully builds the national repository and benchmarking dashboard suggested by clinicians; otherwise the market will remain fragmented with many small suppliers of protocol-adjacent services [^2]. Algorithmic correctness and credibility also reshuffle supplier risk: corrections and stronger theoretical results in consensus algorithms highlight reputational and regulatory risk for robotics/software vendors who make control guarantees, pressuring consolidation toward firms that can demonstrate rigorous proofs and field validation [^3]. Supply chain and operational impacts: Variability in MHP transport container contents and transfusion sequencing drives demand for more adaptive logistics and inventory systems (rapid RBC availability, ratio-based components, TXA provisioning), imposing operational costs on smaller hospitals and their suppliers [^2]. In cyber and robotics markets, the scarcity of validated datasets, compute resources, and low-latency networking increases deployment costs and time-to-value, favoring well‑capitalized providers and platform play models. Overall, capital will flow to vendors that can 1) demonstrate detection coverage for documented cyber blind spots, 2) provide standardized, auditable clinical infrastructure, or 3) supply proven consensus/optimization stacks for multi-agent systems — and these capabilities will determine near-term pricing power and consolidation dynamics across the ecosystem [^1][^2][^3][^4][^5].",
+      "technology": "Model architectures and chip developments: The literature review of state-of-the-art classifiers for cyberattack detection highlights that current model families (classical ML classifiers including Naive Bayes, and more recent deep-learning approaches) show uneven coverage across attack classes — for example, drive-by download and compromised-database SQL injection (SQLi) remain under-detected or undetectable by surveyed approaches, suggesting the need for both algorithmic innovation and targeted model families (hybrid detection models, graph-based and sequence-aware architectures) tailored to these modalities [^1][^5]. From a hardware perspective, these gaps imply demand for heterogeneous compute: edge-capable inference (for drive-by download detection on endpoints/browsers), and secure, high-throughput inference near data stores for real-time SQLi integrity checks. While the sources do not describe new chip designs explicitly, the distributed and latency-critical nature of the unmet detection tasks points toward acceleration on low-power NPUs for endpoint signal processing and cryptographically attested accelerators for protected database-side inference to minimize attack surface during detection ([^1], inference implications echoed in ADMM multi-agent use cases [^4]).\n\nNetwork infrastructure and automation stacks: The consensus and distributed optimization literature provides a concrete foundation for building resilient, automated detection and response networks. Consensus ADMM and clarified consensus results establish scalable primitives for coordinating detection agents, federated model updates, and multi-robot (or multi-sensor) trajectory/response planning in adversarial settings — implying an automation stack composed of local optimizers, a consensus layer, and an orchestration/control plane over reliable networking middleware [^4][^3]. Operationally, this stack requires robust service meshes, gRPC/HTTP APIs for model parameter exchange, and telemetry pipelines to support federated learning and online ADMM iterations. The pediatric MHP survey underscores the value of centralized repositories and dashboards for benchmarking and audit — analogous infrastructure is needed for security: standardized event stores, schema-driven logs, and national- or federated-level incident repositories to enable cross-site model evaluation and automated playbook distribution [^2].\n\nTechnical risk assessment: Three technical risks are prominent. First, detection blind spots: reviewed ML approaches cannot detect already-compromised databases via SQLi, representing a critical failure mode and potential single point of compromise if such gaps are operationalized as product confidence [^1][^5]. Second, distributed optimization techniques (Consensus ADMM) bring convergence and synchronization risks — network delays, asynchrony, and adversarial manipulation of gradient/model updates can break consensus and amplify false positives/negatives unless robust Byzantine-resilient variants and secure aggregation are implemented [^4][^3]. Third, integration risk and technical debt arise from heterogeneous policy artifacts and nonstandard activation criteria observed in pediatric MHPs; analogous variability across organizations’ telemetry and incident handling increases integration costs and impedes reproducible benchmarking for security models [^2].\n\nPerformance and efficiency improvements: The comparative review calls for standard benchmarks and task-specific metrics: detection recall for compromised DB instances, drive-by download false-positive curves, and time-to-detection under streaming constraints; such metrics will drive architectural choices (sequence models, graph neural nets, or hybrid ensembles) and hardware mapping (edge NPU vs. server TPU) to meet latency and cost targets [^1]. ADMM-based distributed solvers offer computational efficiency for decentralized problems and can reduce cloud egress by keeping heavy computation local, but require careful parameter tuning to balance convergence speed with communication cost — a clear trade-off for deployments that can cut operational costs if implemented with adaptive synchronization [^4].\n\nIntegration and interoperability: Practical deployment requires common APIs, data schemas, and federated model-update standards. The MHP study’s recommendation for a national activation repository and quality-improvement dashboard maps directly to security needs: a federated incident repository with standardized schema and well-documented APIs will enable cross-organization model evaluation, reproducible benchmarks, and automated policy updates [^2][^1]. Consensus/ADMM frameworks imply a protocol layer for secure parameter exchange and prioritized arbitration in multi-agent decisions, which must be standardized (message formats, priority semantics) to avoid the priority-interpretation errors highlighted in the consensus correction literature [^3][^4].\n\nIn summary, the body of work indicates immediate priorities: develop task-specific architectures for under-covered attack classes, invest in edge-and-database-side accelerators for low-latency inference, harden distributed optimization against asynchrony and adversary manipulation, and create federated repositories and API standards to reduce integration friction and enable meaningful benchmarking across organizations [^1][^2][^3][^4][^5].",
+      "competitive": "Winners/Losers — Winners in the near term will be vendors and solution integrators that prioritize domain-specific machine‑learning research and operationalized analytics. Enterprise cybersecurity vendors that push beyond signature and generic ML models toward specialized detectors for drive‑by downloads and compromised-database forensics can capture share, because recent literature highlights explicit gaps in current SOTA classifiers (drive‑by download detection and post‑compromise SQLi detection) that incumbents have not closed [^1]. Conversely, vendors relying on mature but narrow classifiers (e.g., vanilla Naive Bayes or signature-based systems) risk losing ground unless they invest in research-led improvements; the literature calls out Naive Bayes’ mixed performance as an actionable research and product-improvement area [^1]. In pediatric transfusion tools, hospitals and vendors that offer pediatric-specific massive hemorrhage protocol (MHP) modules, audit tooling, and analytics will win because the national survey shows wide variability and under‑utilization of pediatric MHPs — a clear product-market fit for focused solutions [^2]. Organizations that ignore pediatric-specific workflows and reporting requirements are likely to lag [^2].  (Citations: cybersecurity ML gaps [^1]; pediatric MHP survey [^2].)\n\nWhite‑space opportunities — The research identifies concrete underserved markets. Cybersecurity vendors can differentiate by shipping detectors for (1) drive‑by download attacks, (2) improved Naive Bayes–based hybrid classifiers, and (3) mechanisms to detect SQL injection in already‑compromised databases — essentially, forensics and retroactive compromise detection are white spaces for productization and managed detection services [^1]. In healthcare, there is an opportunity for a national pediatric MHP activation repository, benchmarking dashboards, and validated activation tools — vendors that provide SaaS quality dashboards and standardized pediatric MHP templates can rapidly address the fragmentation noted across 18 tertiary centers [^2]. For robotics and distributed systems, applied tooling and libraries that package Consensus ADMM for multi‑agent trajectory optimization, with corrected theoretical guarantees and priority handling, create markets for middleware and edge optimization frameworks [^4][^3].  (Citations: ML detection gaps [^1]; pediatric repository need [^2]; ADMM tutorial & corrections [^4][^3].)\n\nStrategic positioning analysis — Leading cybersecurity firms should position as research‑driven defenders: publish detection benchmarks, invest in labeled datasets for SQLi/post‑compromise scenarios, and promote partnerships with academic groups to close identified gaps [^1]. Healthcare IT vendors should position as clinical-quality partners offering pediatric‑tailored transfusion workflows, audit tooling, and benchmarking services to meet the variability exposed by the survey [^2]. Robotics and autonomy vendors should market verified distributed‑optimization stacks (ADMM with corrected assumptions) to safety‑critical customers (logistics, defense, mobility) to reduce integration risk [^4][^3].  (Citations: ML gaps & research callouts [^1]; MHP variability [^2]; ADMM positioning [^4][^3].)\n\nCompetitive dynamics — Expect acquisition and partnership activity: security incumbents will acquire niche ML startups or sponsor academic programs to fast‑track detection capabilities for drive‑by downloads and compromised DB forensics; managed‑detection providers can form alliances with database forensics firms to plug the SQLi detection hole [^1][^5]. In healthcare, regional quality collaboratives or national vendors may form consortia to build the proposed MHP repository and dashboards [^2][^5]. Robotics middleware suppliers will collaborate with academic groups to harden ADMM implementations after the theoretical corrections were published, lowering barriers to commercialization [^3][^4].  (Citations: endogenous market responses and signals [^5]; MHP and ADMM references [^2][^3][^4][^1].)\n\nMarket share shifts & competitive advantages — Firms that combine rigorous ML research, domain-specific datasets, and integrated operational tooling (for example, threat hunting + DB forensics; pediatric clinical workflows + audit dashboards) gain sustainable advantages because the literature points to reproducible detection gaps and clinical variability that favor vertically integrated solutions [^1][^2]. Vendors that fail to close these gaps or to incorporate corrected theoretical foundations for distributed systems risk commoditization or integration failures that erode market share. Overall, the prevailing competitive advantage will accrue to organizations that convert the identified research gaps into validated, deployable products and cross‑sector partnerships quickly [^1][^2][^3][^4][^5].",
+      "lenses": "\n## Operator Lens\nSystems and operational teams must reconcile three concurrent pressures: measurable blind spots in ML-based cyber detection (notably near-zero detection for already-compromised DBs via SQLi), heterogeneous clinical workflows (variable pediatric massive hemorrhage protocols across tertiary centers), and the rising need for robust distributed/consensus control for multi-agent systems. Practically this means reworking monitoring and incident response pipelines to include specialized detection and forensics: database-integrity validators, post-compromise anomaly scoring, and endpoint/browser-level streaming detectors for drive-by downloads. Operational process changes include new playbooks for post-compromise DB triage, tighter coordination between DBAs, security ops (SecOps), and application teams, and embedding retroactive forensics into SLAs.\n\nAutomation opportunities are substantial but nontrivial. Federated learning and ADMM-style consensus permit decentralized model updates and coordinated response across sites without centralizing sensitive logs; this reduces data-movement risk and enables local inference on edge or DB-adjacent accelerators. Automation priorities: 1) orchestrated federated training and secure aggregation; 2) automated model deployment to edge NPUs and DB-side inference components; 3) continuous benchmarking pipelines that measure recall on compromised-DB scenarios and drive-by detection under streaming constraints; and 4) audit dashboards for clinical MHP activations and transfusion logistics. Challenges include handling asynchronous updates, network-delay-induced divergence in consensus algorithms, and ensuring Byzantine robustness for federated gradients — all requiring engineering controls, retries, and hardened aggregation protocols.\n\nInfrastructure and tooling implications are concrete: invest in cryptographically attested inference near data stores, service meshes (gRPC/HTTP) for model parameter exchange, standardized event schemas and national/federated incident repositories, telemetry pipelines with schema validation, and inventory/kit-tracking systems for transfusion logistics. Hardware investments span low-power NPUs at endpoints, secure accelerators for database-side checks, and low-latency networking for multi-agent coordination. Tooling should include reproducible benchmarking suites that cover the documented blind spots and a continuous-evaluation layer for model drift and performance regressions.\n\nOperational risk and efficiency trade-offs: undetected post-compromise SQLi is a single-point failure with high business risk; mis-tuned distributed consensus can amplify false positives or produce stale actions; and heterogeneous clinical artifacts increase integration and testing overhead. Efficiency gains come from reduced cloud egress through local processing and faster response via edge inference and automated playbooks, but these require upfront investment in instrumentation, testing, and staff training. To mitigate risk, operators should maintain manual fallback procedures, run red-team/forensic exercises on compromised-DB scenarios, and adopt standardized schemas and runbooks to reduce integration debt and accelerate incident remediation.\n\n## Investor Lens\nThe intersecting research signals create distinct investment themes: data-and-algorithm ownership will command pricing power; white-space detection products (SQLi post-compromise forensics, drive-by download detectors) and pediatric clinical quality platforms (national MHP repository and benchmarking dashboards) are visible market opportunities; and infrastructure plays (edge NPUs, secure accelerators, low-latency networking, and ADMM middleware) will capture platform-level economics. Capital bifurcation is likely: venture and grant capital will favor early-stage ML/forensics startups that can credibly close documented detection gaps, while public and institutional capital will fund larger-scale healthcare operational platforms and national quality infrastructure.\n\nMarket impact and allocation: cybersecurity vendors that can own labeled datasets and validated detection models will justify premium SaaS pricing and managed-detection fees. Expect consolidation as incumbents acquire niche ML teams to close technical gaps. In healthcare, vendors who secure government or consortium contracts to build the MHP repository can capture sticky subscription revenue from hospitals. Robotics and logistics vendors that supply hardened consensus/ADMM stacks will sell to defense, mobility, and industrial automation customers.\n\nValuation implications hinge on defensibility of data and validation. Firms with proprietary compromised-DB datasets or validated clinical activation repositories should trade at higher multiples due to recurring, differentiated revenue and high switching costs. Key risks that will compress valuations include inability to deliver claimed detection coverage, regulatory hurdles around clinical tools, and integration/technical-debt problems with distributed systems.\n\nSuggested tickers and themes to track: cybersecurity leaders (CRWD, PANW, ZS) for platform consolidation; SIEM/analytics (SPLK, ESTC) for forensic telemetry and forensic pipelines; cloud and compute infrastructure (AMZN, MSFT, GOOGL) for hosting secure federated repositories; semiconductor/acceleration plays (NVDA, QCOM) for edge and secure inference hardware; healthcare IT and platform vendors with government/go-to-market scale (ORCL as an EHR/enterprise play, VEEV for life-science/clinical SaaS exposure); telehealth/clinical workflow specialists (TDOC) as adjacent clinical workflow plays. For early-stage allocations, prioritize startups with validated datasets and academic partnerships for credibility. Monitor M&A activity and public contract awards as leading indicators of consolidation and re-rating opportunities.\n\n## BD Lens\nImmediate BD priorities are wedge creation, rapid validation, and partnership formation. Wedges: 1) a niche forensic detection product for post-compromise SQLi (DB-side integrity checks, retroactive anomaly scoring), 2) an endpoint/browser streaming detector for drive-by downloads optimized for edge NPUs, and 3) a SaaS pediatric MHP repository and benchmarking dashboard with audit tooling and standardized templates. These products map to clear buyer groups: enterprise SecOps/DBAs and CISOs for security offerings; transfusion services, hospital quality units, and regional health authorities for MHP tooling; and logistics/robotics integrators for ADMM middleware.\n\nPartnership and collaboration prospects: partner with academic groups and research labs to co-publish benchmarks and provide credibility; link with cloud providers (AWS/GCP/Azure) to offer managed, compliant federated repositories; collaborate with EHR vendors, blood-bank software suppliers, and clinical societies to standardize MHP templates; and integrate with major SIEMs and DB vendors for detection hook-ins. Public-sector partnerships and grant funding are attractive for building national repositories and for procurement-led adoption in hospitals.\n\nMarket entry strategies: start with pilot deployments focused on measurable outcomes — reduced time-to-detection for compromised DB scenarios, improved MHP activation compliance, or reduced robot-path planning failures — and publish anonymized benchmark results. Use a “pilot-to-contract” playbook: free/discounted pilots with alignment on KPIs, a small focused proof-of-concept, followed by a phased rollout with outcome-based pricing. Offer managed detection options for organizations that lack in-house expertise to accelerate adoption.\n\nCompetitive positioning and GTM: differentiate by offering integrated data + model + operations bundles: dataset licensing + validated detectors + orchestration and audit dashboards. Use standards and open-benchmarks as defensive assets: publish results to create switching friction for competitors that cannot match performance. Pricing strategies should combine subscription fees for software, per-incident forensic analysis, and dataset-licensing or tiered model access. For hospital customers, emphasize compliance, audit-readiness, and demonstrable clinical outcomes; build references via a few high-profile tertiary centers.\n\nCustomer acquisition and retention: target decision-makers (CISOs, DBAs, transfusion directors, hospital CMOs) with outcome-centric case studies and SLAs. Retention drivers include continuous benchmarking, automatic model updates via federated learning, audit reporting, and integrations with SIEMs/EHRs. Risks to manage in BD are long hospital procurement cycles, the need for IRB/clinical validation for pediatric tools, and the requirement for provable, peer-reviewed validation for security claims — address these with academic partnerships, compliance readiness, and transparent benchmarking.\n",
+      "executive_summary": "Recent cross-domain research reveals persistent machine‑learning detection blind spots and operational fragmentation that create clear market and operational priorities. A five‑year review shows state‑of‑the‑art classifiers fail to detect already‑compromised databases via SQL injection and under-detect drive‑by downloads, producing a premium for vendors with validated datasets, retroactive DB forensics, and edge/browser detectors. A national survey of 18 pediatric tertiary centers exposes wide variability in massive hemorrhage protocols, signaling demand for a centralized activation repository and benchmarking dashboard. Operators must deploy DB‑integrity validators, retroactive anomaly scoring, edge NPUs for streaming detection, and hardened consensus/ADMM stacks with Byzantine‑resilience; adopt federated learning, standardized schemas, and playbooks for post‑compromise triage. Investors should favor firms owning labeled compromised‑DB datasets, specialized ML teams, and platform plays for pediatric MHP repositories and ADMM middleware, as these assets confer pricing power and acquisition appeal. BD should prioritize three wedges: post‑compromise SQLi forensics, endpoint drive‑by detectors, and a SaaS pediatric MHP repository; pursue academic and cloud partnerships, pilot-to-contract GTM, and outcome‑based pricing. Immediate actions: fund targeted ML R&D, build federated incident repositories and audit dashboards, and run red‑team forensic exercises to validate coverage and reduce integration risk. Measure outcomes, publish benchmarks, secure clinical approvals, and iterate rapidly on deployments continuously."
+    }
+  },
+  "slides": {
+    "generated": true,
+    "slides_url": "https://docs.google.com/presentation/d/1zSHCaoKAQfzDFDgDIlPIIyTz5umYcTLCa_Cd1-8EZMU",
+    "pdf_path": "sti_reports/sti_enhanced_output_20251106_160906_cognitive_wars__the_/slides_export.pdf",
+    "generation_timestamp": "2025-11-06T16:09:51.747136"
+  },
+  "social_media_content": {
+    "generated": true,
+    "formats": [
+      "long_form",
+      "twitter_thread",
+      "linkedin_post"
+    ],
+    "metadata": {
+      "confidence": 0.651,
+      "anchors": [],
+      "teaser_mode": false
+    },
+    "generation_timestamp": ""
+  }
+}

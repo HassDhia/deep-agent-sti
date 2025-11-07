@@ -357,6 +357,7 @@ class EnhancedSTIAgent(SimpleMCPTimeFilteredAgent):
         playbooks_data: Optional[Dict[str, Any]] = None
         if task_matrix["decision_playbooks"]:
             playbooks_data = {"rows": decision_playbooks()}
+            executed_premium_tasks.append("decision_playbooks")
 
         anchor_gate = intent == "theory" and anchor_coverage < getattr(
             STIConfig, 'ANCHOR_COVERAGE_MIN', 0.7
@@ -365,6 +366,16 @@ class EnhancedSTIAgent(SimpleMCPTimeFilteredAgent):
 
         breakdown = self._confidence_breakdown(sources, anchor_coverage, quant_patch_dict, adversarial_data)
         confidence_updated = confidence_headline(breakdown)
+        
+        # Hard caps by path + anchors
+        cap_applied = False
+        cap_reason = None
+        if intent == "theory" and anchor_coverage < getattr(STIConfig, 'ANCHOR_COVERAGE_MIN', 0.70):
+            cap = getattr(STIConfig, 'CONFIDENCE_CAP_THEORY_ANCHOR_ABSENT', 0.55)
+            if confidence_updated > cap:
+                confidence_updated = cap
+                cap_applied = True
+                cap_reason = "theory|anchor_absent"
 
         return {
             "ledger": ledger,
@@ -373,7 +384,7 @@ class EnhancedSTIAgent(SimpleMCPTimeFilteredAgent):
             "playbooks": playbooks_data,
             "confidence_breakdown": breakdown,
             "confidence": confidence_updated,
-            "metrics": metrics,
+            "metrics": {**metrics, "confidence_cap_reason": cap_reason if cap_applied else None},
             "tasks_requested": requested_tasks,
             "task_matrix": task_matrix,
             "tasks_executed": executed_premium_tasks,
@@ -1807,8 +1818,14 @@ Return your classification:"""
     def _generate_assumptions_ledger(self, draft: ThesisDraft) -> List[AssumptionsLedgerRow]:
         """Generate Assumptions Ledger from thesis draft - thesis only"""
         import re
+        from pydantic import BaseModel, Field
+        
+        # Create a wrapper model for the list since PydanticOutputParser doesn't work with List directly
+        class AssumptionsLedgerList(BaseModel):
+            assumptions: List[AssumptionsLedgerRow] = Field(description="List of assumptions")
+        
         try:
-            parser = PydanticOutputParser(pydantic_object=List[AssumptionsLedgerRow])
+            parser = PydanticOutputParser(pydantic_object=AssumptionsLedgerList)
             
             prompt = PromptTemplate(
                 input_variables=["markdown", "format_instructions"],
@@ -1836,10 +1853,25 @@ Return your classification:"""
             content = resp.content.strip()
             if "```json" in content:
                 content = content.split("```json")[1].split("```")[0].strip()
-            return [AssumptionsLedgerRow(**row) for row in json.loads(content)]
+            parsed = parser.parse(content)
+            return parsed.assumptions if hasattr(parsed, 'assumptions') else []
         except Exception as e:
             logger.warning(f"Assumptions ledger generation fallback: {str(e)}")
-            # Fallback: return empty list (can be populated later)
+            # Fallback: try direct JSON parsing
+            try:
+                content = resp.content.strip() if 'resp' in locals() else ""
+                if "```json" in content:
+                    content = content.split("```json")[1].split("```")[0].strip()
+                elif "```" in content:
+                    content = content.split("```")[1].split("```")[0].strip()
+                data = json.loads(content)
+                if isinstance(data, dict) and 'assumptions' in data:
+                    return [AssumptionsLedgerRow(**row) for row in data['assumptions']]
+                elif isinstance(data, list):
+                    return [AssumptionsLedgerRow(**row) for row in data]
+            except Exception:
+                pass
+            # Final fallback: return empty list (can be populated later)
             return []
     
     def _format_assumptions_ledger_markdown(self, ledger: List[AssumptionsLedgerRow]) -> str:

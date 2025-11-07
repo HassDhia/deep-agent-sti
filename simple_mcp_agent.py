@@ -474,7 +474,29 @@ class SimpleMCPTimeFilteredAgent:
                             continue
                     except Exception:
                         pass
-                    date = r.get('pubdate') or r.get('published') or r.get('date') or datetime.now().strftime('%Y-%m-%d')
+                    # STRICT: Extract and validate date - reject if missing
+                    date = r.get('pubdate') or r.get('published') or r.get('date')
+                    if not date:
+                        # STRICT: Reject source if no date found (don't default to now())
+                        logger.warning(f"✗ Rejecting source '{t}' - no publication date found")
+                        continue
+                    # Normalize date format
+                    try:
+                        # Try parsing common formats
+                        for fmt in ['%Y-%m-%d', '%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%SZ', '%m/%d/%Y', '%d/%m/%Y']:
+                            try:
+                                parsed_date = datetime.strptime(str(date)[:10], fmt)
+                                date = parsed_date.strftime('%Y-%m-%d')
+                                break
+                            except ValueError:
+                                continue
+                        else:
+                            # If no format matches, reject
+                            logger.warning(f"✗ Rejecting source '{t}' - unparseable date: {date}")
+                            continue
+                    except Exception as e:
+                        logger.warning(f"✗ Rejecting source '{t}' - date parsing error: {e}")
+                        continue
                     source = Source(
                         id=0,
                         title=t,
@@ -826,9 +848,53 @@ Insufficient evidence found for reliable analysis. Quality gates require ≥2 in
             url = url.split('?')[0]
         return url
     
+    def _is_article_url(self, url: str) -> bool:
+        """
+        Check if URL is a specific article (not an index/category page).
+        Publisher-specific rules to reject generic paths.
+        """
+        import re
+        from urllib.parse import urlparse
+        
+        url_lower = url.lower()
+        
+        # Publisher-specific article path patterns
+        article_patterns = {
+            'reuters.com': [
+                r'/technology/\d{4}/\d{2}/\d{2}/',  # /technology/2025/10/13/...
+                r'/article/',  # /article/...
+                r'/world/',  # /world/...
+                r'/business/',  # /business/...
+            ],
+            'bloomberg.com': [
+                r'/news/articles/',  # /news/articles/...
+                r'/news/features/',  # /news/features/...
+            ],
+            'ft.com': [
+                r'/content/',  # /content/...
+            ],
+            'wsj.com': [
+                r'/articles/',  # /articles/...
+            ],
+            'sec.gov': [
+                r'/Archives/edgar/data/',  # SEC filings
+            ],
+        }
+        
+        # Check if URL matches any article pattern for its domain
+        for domain, patterns in article_patterns.items():
+            if domain in url_lower:
+                return any(re.search(pattern, url_lower) for pattern in patterns)
+        
+        # For other domains, require path depth > 1 (reject root/index pages)
+        parsed = urlparse(url)
+        path_parts = [p for p in parsed.path.split('/') if p]
+        return len(path_parts) > 1
+    
     def _validate_url(self, raw_url: str, title: str) -> Optional[str]:
         """
         Validate and clean URL. Returns cleaned URL if valid, None if invalid.
+        Rejects index pages and generic category pages.
         Logs rejection reasons and tracks statistics.
         """
         self.url_validation_stats['total_checked'] += 1
@@ -850,6 +916,12 @@ Insufficient evidence found for reliable analysis. Quality gates require ≥2 in
         if not (cleaned_url.startswith('http://') or cleaned_url.startswith('https://')):
             self.url_validation_stats['invalid_format'] += 1
             logger.warning(f"✗ Rejecting source '{title}' - invalid URL protocol: {cleaned_url}")
+            return None
+        
+        # NEW: Reject index/category pages (not specific articles)
+        if not self._is_article_url(cleaned_url):
+            self.url_validation_stats['invalid_format'] += 1
+            logger.warning(f"✗ Rejecting source '{title}' - index/category page (not article): {cleaned_url}")
             return None
         
         self.url_validation_stats['valid_urls'] += 1

@@ -9,7 +9,7 @@ import logging
 import os
 import random
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Configure logging FIRST, before any other imports that might set it
 logging.basicConfig(
@@ -174,7 +174,7 @@ def main():
             'days': args.days,
             'seed': args.seed,
             'budget_advanced': args.budget_advanced,
-            'generated_at': datetime.utcnow().isoformat() + 'Z',
+            'generated_at': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
             'models': model_versions,
             'metrics': run_summary.get('metrics', {}),
             'confidence_breakdown': run_summary.get('confidence_breakdown', {}),

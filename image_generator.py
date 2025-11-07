@@ -10,7 +10,7 @@ import json
 import base64
 import logging
 from pathlib import Path
-from typing import Optional, Tuple, Dict
+from typing import Optional, Tuple, Dict, List
 from openai import OpenAI
 from config import STIConfig
 
@@ -544,23 +544,80 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
             logger.warning("   Falling back to hardcoded prompt")
             return self._build_hero_prompt(query, intent)
     
+    def _extract_key_subjects_from_query(self, query: str) -> str:
+        """Extract key subjects/technologies from query for visual interpretation"""
+        if not query:
+            return "technology or concept"
+        
+        query_lower = query.lower()
+        
+        # Extract technology/domain keywords that suggest visual subjects
+        tech_subjects = {
+            'ai': 'artificial intelligence system',
+            'machine learning': 'machine learning infrastructure',
+            'drone': 'autonomous aerial vehicle',
+            'swarm': 'coordinated autonomous systems',
+            'quantum': 'quantum computing hardware',
+            'blockchain': 'blockchain infrastructure',
+            'crypto': 'cryptocurrency technology',
+            'neural': 'neural network architecture',
+            'robotic': 'robotic system',
+            'sensor': 'sensor network',
+            'satellite': 'satellite system',
+            'semiconductor': 'semiconductor technology',
+            'chip': 'semiconductor chip',
+            'processor': 'processor technology',
+            'cloud': 'cloud infrastructure',
+            'edge': 'edge computing device',
+            '5g': '5G network infrastructure',
+            'iot': 'IoT device',
+            'autonomous': 'autonomous system',
+            'cognitive': 'cognitive computing system',
+            'industrialization': 'industrial technology system'
+        }
+        
+        # Find matching subjects
+        found_subjects = []
+        for keyword, subject in tech_subjects.items():
+            if keyword in query_lower:
+                found_subjects.append(subject)
+        
+        # Return first match or generic description based on query
+        if found_subjects:
+            return found_subjects[0]
+        
+        # Fallback: extract key nouns from query
+        import re
+        words = re.findall(r'\b[A-Z][a-z]+\b|\b[a-z]+\b', query)
+        if words:
+            # Return first significant word (skip common words)
+            skip_words = {'the', 'of', 'and', 'or', 'for', 'in', 'on', 'at', 'to', 'a', 'an'}
+            for word in words:
+                if word.lower() not in skip_words and len(word) > 3:
+                    return f"{word.lower()} technology or system"
+        
+        return "technology or concept"
+    
     def _build_hero_prompt(self, query: str, intent: str) -> str:
-        """Build intent-aware prompt for hero image - minimal editorial style"""
+        """Build intent-aware prompt for hero image - minimal editorial style, content-driven"""
         logger.debug(f"🎨 Building hero prompt: query='{query}', intent='{intent}'")
+        
+        # Extract key subject from query dynamically
+        key_subject = self._extract_key_subjects_from_query(query)
         
         if intent == "thesis":
             # Thesis hero: abstract conceptual, minimal
             core = (
                 f"Editorial hero image for '{query}'. "
-                f"Abstract conceptual motif suggesting theoretical frameworks, "
+                f"Abstract conceptual motif suggesting theoretical frameworks related to {key_subject}, "
                 f"minimal composition, soft geometric shapes, scholarly aesthetic, "
                 f"20-30% empty space at top for header, shallow depth-of-field"
             )
         else:
-            # Market hero: single subject, corporate editorial
+            # Market hero: single subject, corporate editorial - use dynamic subject from query
             core = (
                 f"Editorial hero image for '{query}'. "
-                f"Single drone in a spacious, glass corporate atrium, mid-frame, "
+                f"Single {key_subject} in a spacious, modern corporate setting, mid-frame, "
                 f"20-30% empty space above for header, soft daylight, "
                 f"cool slate/steel palette with a discreet blue accent, "
                 f"shallow depth-of-field"
@@ -607,13 +664,8 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
             logger.warning("⚠️ OpenAI client not initialized - cannot generate images")
             return None
 
-        if (
-            intent in {"theory", "thesis"}
-            and getattr(STIConfig, 'REQUIRE_ANCHORS_FOR_ASSETS', False)
-        ):
-            if anchor_coverage is not None and anchor_coverage < getattr(STIConfig, 'ANCHOR_COVERAGE_MIN', 0.70):
-                logger.info("Skip section images: insufficient anchors for Thesis path.")
-                return None
+        # Note: Image generation now works for all reports regardless of anchor status
+        # Removed anchor requirement check to ensure images are generated for every report
         
         # Validate report_dir
         report_path = Path(report_dir)
@@ -819,84 +871,130 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
             logger.warning("   Falling back to hardcoded prompt")
             return self._build_section_prompt(section_name, section_content, query, intent)
     
+    def _extract_key_terms_from_content(self, content: str, max_terms: int = 3) -> List[str]:
+        """Extract key technical terms or concepts from content for visual interpretation"""
+        if not content:
+            return []
+        
+        import re
+        
+        # Technical/domain keywords that suggest visual concepts
+        tech_keywords = [
+            'ai', 'artificial intelligence', 'machine learning', 'neural', 'algorithm',
+            'drone', 'swarm', 'autonomous', 'robotic', 'sensor', 'satellite',
+            'quantum', 'blockchain', 'crypto', 'semiconductor', 'chip', 'processor',
+            'cloud', 'edge', '5g', 'iot', 'network', 'system', 'infrastructure',
+            'cognitive', 'industrialization', 'coordination', 'framework', 'model'
+        ]
+        
+        content_lower = content.lower()
+        found_terms = []
+        
+        # Find matching keywords
+        for keyword in tech_keywords:
+            if keyword in content_lower and keyword not in found_terms:
+                found_terms.append(keyword)
+                if len(found_terms) >= max_terms:
+                    break
+        
+        # If no keywords found, extract capitalized words (likely proper nouns/technologies)
+        if not found_terms:
+            capitalized = re.findall(r'\b[A-Z][a-z]+\b', content)
+            # Filter out common words and take unique ones
+            skip_words = {'The', 'This', 'That', 'These', 'Those', 'For', 'And', 'With', 'From'}
+            found_terms = [w for w in capitalized if w not in skip_words][:max_terms]
+        
+        return found_terms
+    
     def _build_section_prompt(self, section_name: str, section_content: str, query: str, intent: str) -> str:
-        """Build section-specific prompt - minimal, abstract, editorial style (not infographics)"""
+        """Build section-specific prompt - minimal, abstract, editorial style, content-driven"""
         logger.debug(f"🎨 Building section prompt: section='{section_name}', intent='{intent}'")
+        
+        # Extract key terms from section content
+        key_terms = self._extract_key_terms_from_content(section_content, max_terms=2)
+        key_subject = self._extract_key_subjects_from_query(query)
+        
+        # Build content-aware description
+        content_context = ""
+        if key_terms:
+            content_context = f" related to {', '.join(key_terms)}"
+        elif key_subject:
+            content_context = f" related to {key_subject}"
         
         # Normalize section name for matching
         section_lower = section_name.lower()
         
         if intent == "theory" or intent == "thesis":
-            # Thesis-path section prompts: abstract, minimal
+            # Thesis-path section prompts: abstract, minimal, content-driven
             if "foundational" in section_lower or "foundation" in section_lower:
                 core = (
-                    f"Abstract systems motif suggesting theoretical frameworks for '{query}': "
+                    f"Abstract systems motif suggesting theoretical frameworks for '{query}'{content_context}: "
                     f"minimal geometric patterns, soft gradients, restrained geometry, "
                     f"quiet editorial illustration, negative space emphasized"
                 )
             elif "mechanism" in section_lower or "formalization" in section_lower:
                 core = (
-                    f"Minimal process visualization for '{query}': "
+                    f"Minimal process visualization for '{query}'{content_context}: "
                     f"simple flow lines and nodes, muted tones, "
                     f"quiet editorial illustration, ample whitespace"
                 )
             elif "application" in section_lower or "synthesis" in section_lower:
                 core = (
-                    f"Abstract motif suggesting practical implementation for '{query}': "
+                    f"Abstract motif suggesting practical implementation for '{query}'{content_context}: "
                     f"minimal composition, soft gradients, restrained geometry, "
                     f"editorial illustration style, negative space emphasized"
                 )
             else:
-                # Generic thesis section
+                # Generic thesis section - use content context
                 core = (
-                    f"Abstract conceptual motif for '{query}' in context of {section_name}: "
+                    f"Abstract conceptual motif for '{query}'{content_context} in context of {section_name}: "
                     f"minimal composition, soft tones, quiet editorial illustration, "
                     f"generous negative space"
                 )
         else:
-            # Market-path section prompts: abstract, not dashboards/infographics
+            # Market-path section prompts: abstract, not dashboards/infographics, content-driven
             if "market analysis" in section_lower or "market" in section_lower:
                 core = (
-                    f"Abstract systems motif suggesting airspace coordination for '{query}': "
-                    f"minimal network of a few arcs and nodes on a light background, "
+                    f"Abstract systems motif suggesting market dynamics for '{query}'{content_context}: "
+                    f"minimal network of arcs and nodes on a light background, "
                     f"soft gradients, restrained geometry, "
                     f"quiet editorial illustration, negative space emphasized"
                 )
             elif "technology" in section_lower or "deep" in section_lower or "tech" in section_lower:
                 core = (
-                    f"Isometric technical line-drawing of a modern quadcopter assembly "
+                    f"Isometric technical line-drawing of {key_subject} "
                     f"on a clean light backdrop for '{query}': "
                     f"thin ink lines, a few shaded surfaces, muted slate/ink tones, "
                     f"minimalist blueprint aesthetic"
                 )
             elif "competitive" in section_lower or "landscape" in section_lower:
                 core = (
-                    f"Balanced radial diagram with 6 neutral nodes connected to a central hub "
-                    f"for '{query}': plain geometric shapes only, soft shadows, "
+                    f"Balanced radial diagram suggesting competitive dynamics for '{query}'{content_context}: "
+                    f"neutral nodes connected to a central hub, plain geometric shapes only, soft shadows, "
                     f"ample whitespace, corporate editorial graphic"
                 )
             elif "operator" in section_lower:
                 core = (
-                    f"Abstract operational motif for '{query}': "
+                    f"Abstract operational motif for '{query}'{content_context}: "
                     f"minimal workflow lines, restrained geometry, soft tones, "
                     f"quiet editorial illustration, negative space"
                 )
             elif "investor" in section_lower:
                 core = (
-                    f"Abstract investment flow motif for '{query}': "
+                    f"Abstract investment flow motif for '{query}'{content_context}: "
                     f"minimal directional lines, simple nodes, soft gradients, "
                     f"quiet editorial illustration, negative space emphasized"
                 )
             elif "bd" in section_lower or "business development" in section_lower:
                 core = (
-                    f"Abstract partnership network motif for '{query}': "
+                    f"Abstract partnership network motif for '{query}'{content_context}: "
                     f"minimal connected nodes, restrained geometry, soft tones, "
                     f"quiet editorial illustration, ample whitespace"
                 )
             else:
-                # Generic market section
+                # Generic market section - use content context
                 core = (
-                    f"Abstract editorial motif for '{query}' in context of {section_name}: "
+                    f"Abstract editorial motif for '{query}'{content_context} in context of {section_name}: "
                     f"minimal composition, soft tones, quiet illustration, "
                     f"generous negative space"
                 )
