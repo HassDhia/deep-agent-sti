@@ -1,0 +1,38 @@
+{
+  "query": "Cognitive Wars: The AI Industrialization of Influence",
+  "days": 7,
+  "seed": 42,
+  "budget_advanced": 0,
+  "generated_at": "2025-11-09T00:23:31.569520Z",
+  "models": {
+    "primary": "gpt-5-mini-2025-08-07",
+    "advanced": "gpt-5-2025-08-07"
+  },
+  "metrics": {
+    "anchor_coverage": 1.0,
+    "quant_flags": 0,
+    "confidence": 0.6,
+    "confidence_cap_reason": null,
+    "cap_applied": false
+  },
+  "confidence_breakdown": {
+    "source_diversity": 0.8,
+    "anchor_coverage": 1.0,
+    "method_transparency": 0.7,
+    "replication_readiness": 0.65
+  },
+  "premium": {
+    "requested": [
+      "adversarial_review",
+      "decision_playbooks"
+    ],
+    "executed": {
+      "adversarial_review": true,
+      "decision_playbooks": true
+    }
+  },
+  "artifacts": {
+    "report_dir": "sti_reports/sti_enhanced_output_20251108_162249_cognitive_wars__the_"
+  },
+  "log_file": "sti_reports/sti_enhanced_output_20251108_155415_cognitive_wars__the_/run_log_20251108_155415.log"
+}

@@ -10,6 +10,7 @@ import json
 import logging
 import os
 import random
+import traceback
 from collections import Counter
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -17,9 +18,10 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from simple_mcp_agent import SimpleMCPTimeFilteredAgent, Source, SourceType
 from models import (
-    ReportModel, SourceModel, SignalModel, SourceRelevanceScore, TitleRefinement, QueryIntent,
+    ReportModel, SourceModel, SignalModel, SourceRelevanceScore, TitleRefinement, QueryIntent, QueryDomain,
     ConceptList, ThesisOutline, ThesisDraft, ThesisCritique,
-    PublicationRubric, CEMGrid, CEMRow, SourceType as ThesisSourceType, AssumptionsLedgerRow
+    PublicationRubric, CEMGrid, CEMRow, SourceType as ThesisSourceType, AssumptionsLedgerRow, SearchQueries,
+    AbstractionLayers, CanonicalPapers
 )
 from config import STIConfig
 # from langchain_mcp_adapters.client import MultiServerMCPClient
@@ -41,8 +43,9 @@ from langchain.output_parsers import PydanticOutputParser
 from langchain_openai import OpenAIEmbeddings
 import numpy as np
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Configure logging - only if root logger has no handlers (avoid conflicts)
+if not logging.getLogger().handlers:
+    logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -74,6 +77,7 @@ class EnhancedSTIAgent(SimpleMCPTimeFilteredAgent):
         self._evidence_cache: Dict[str, Dict[str, Any]] = {}
         self._quant_cache: Dict[str, Dict[str, Any]] = {}
         self._adversarial_cache: Dict[str, Dict[str, Any]] = {}
+        self._query_cache: Dict[str, List[str]] = {}  # Cache for LLM-generated search queries
         self.last_run_status: Dict[str, Any] = {}
     
     def initialize_analysis_tools(self):
@@ -121,6 +125,7 @@ class EnhancedSTIAgent(SimpleMCPTimeFilteredAgent):
             "api_key": self.openai_api_key,
             "model": getattr(STIConfig, 'ADVANCED_MODEL_NAME', 'gpt-5-2025-08-07'),
             "temperature": 0.0,
+            "timeout": 120.0  # 120 second timeout to prevent hanging
         }
         if organization:
             llm_params["openai_organization"] = organization
@@ -315,7 +320,8 @@ class EnhancedSTIAgent(SimpleMCPTimeFilteredAgent):
                 advanced_tokens += tokens
             else:
                 task_matrix["evidence_alignment"] = False
-        anchor_coverage = ledger.get("anchor_coverage", anchor_coverage)
+        # Use strict coverage for cap decision if available, fallback to any
+        anchor_coverage = ledger.get("anchor_coverage_strict", ledger.get("anchor_coverage_any", ledger.get("anchor_coverage", anchor_coverage)))
         metrics["anchor_coverage"] = anchor_coverage
 
         quant_patch_dict: Optional[Dict[str, Any]] = None
@@ -371,11 +377,11 @@ class EnhancedSTIAgent(SimpleMCPTimeFilteredAgent):
         cap_applied = False
         cap_reason = None
         if intent == "theory" and anchor_coverage < getattr(STIConfig, 'ANCHOR_COVERAGE_MIN', 0.70):
-            cap = getattr(STIConfig, 'CONFIDENCE_CAP_THEORY_ANCHOR_ABSENT', 0.55)
+            cap = getattr(STIConfig, 'THEORY_CONFIDENCE_CAP', 0.60)
             if confidence_updated > cap:
                 confidence_updated = cap
                 cap_applied = True
-                cap_reason = "theory|anchor_absent"
+                cap_reason = "theory|anchor_coverage<min"
 
         return {
             "ledger": ledger,
@@ -384,7 +390,7 @@ class EnhancedSTIAgent(SimpleMCPTimeFilteredAgent):
             "playbooks": playbooks_data,
             "confidence_breakdown": breakdown,
             "confidence": confidence_updated,
-            "metrics": {**metrics, "confidence_cap_reason": cap_reason if cap_applied else None},
+            "metrics": {**metrics, "confidence_cap_reason": cap_reason if cap_applied else None, "cap_applied": cap_applied},
             "tasks_requested": requested_tasks,
             "task_matrix": task_matrix,
             "tasks_executed": executed_premium_tasks,
@@ -464,8 +470,9 @@ CONTEXT: The user wants to generate a report with a specific title, but the quer
 TASK: Analyze the original query and create a refined version that:
 1. Focuses on the specific topic mentioned in the query
 2. Uses domain-specific terminology
-3. Includes relevant keywords for better source matching
+3. Includes relevant keywords for better source matching (limit to 10-15 key terms maximum)
 4. Maintains the original intent while being more precise
+5. Keep the refined query concise (under 150 words) - prioritize the most important terms
 
 EXAMPLES:
 - Original: "AI technology trends" → Refined: "artificial intelligence technology trends machine learning developments"
@@ -473,6 +480,8 @@ EXAMPLES:
 - Original: "cybersecurity developments" → Refined: "cybersecurity developments security threats vulnerability management enterprise security"
 
 Original Query: {original_query}
+
+IMPORTANT: Keep the refined query concise and focused. Do not create an exhaustive list of all possible related terms. Limit to the 10-15 most relevant keywords and phrases.
 
 Return only the refined query as plain text, no JSON formatting, no additional text:"""
             )
@@ -499,7 +508,21 @@ Return only the refined query as plain text, no JSON formatting, no additional t
                 except (json.JSONDecodeError, KeyError):
                     pass
             
-            logger.info(f"Query refined: '{original_query}' → '{refined_query}'")
+            # Limit refined query length to prevent extremely long queries that slow down searches
+            # Most search engines have query length limits, and very long queries are less effective
+            MAX_REFINED_QUERY_LENGTH = 200  # Reasonable limit for search queries
+            if len(refined_query) > MAX_REFINED_QUERY_LENGTH:
+                logger.warning(f"Refined query too long ({len(refined_query)} chars), truncating to {MAX_REFINED_QUERY_LENGTH} chars")
+                # Truncate intelligently - try to cut at word boundary
+                truncated = refined_query[:MAX_REFINED_QUERY_LENGTH]
+                last_space = truncated.rfind(' ')
+                if last_space > MAX_REFINED_QUERY_LENGTH * 0.8:  # Only truncate at word boundary if reasonable
+                    refined_query = truncated[:last_space]
+                else:
+                    refined_query = truncated
+                logger.info(f"Truncated refined query: '{refined_query[:100]}...'")
+            
+            logger.info(f"Query refined: '{original_query}' → '{refined_query[:100]}{'...' if len(refined_query) > 100 else ''}'")
             return refined_query
             
         except Exception as e:
@@ -574,7 +597,9 @@ Return only the refined query as plain text, no JSON formatting, no additional t
             
         except Exception as e:
             logger.error(f"Error in semantic similarity filter: {str(e)}")
-            return sources  # Return all sources if filtering fails
+            # Fail closed: return empty list instead of all sources
+            # Upstream retry logic will handle empty result
+            return []
     
     def _classify_query_intent(self, query: str) -> str:
         """Classify query as 'theory' or 'market' using LLM with examples"""
@@ -632,10 +657,10 @@ Return your classification:"""
                 return "theory"
             return "market"
     
-    def _expand_theoretical_query(self, query: str) -> str:
+    def _expand_theoretical_query(self, query: str, refined_query: Optional[str] = None, query_domain: Optional[str] = None, domain_keywords: Optional[List[str]] = None) -> str:
         """Expand theory queries with synonyms, domain terms, and first-principles terms"""
         try:
-            # Domain-specific expansions
+            # Domain-specific expansions (for backward compatibility with control theory queries)
             expansions = {
                 'command theory': ['command theory', 'control theory', 'coordination mechanisms', 'multi-agent consensus', 'distributed control', 'hierarchical control', 'command and control', 'supervisory control'],
                 'control theory': ['control theory', 'Lyapunov stability', 'feedback control', 'adaptive control', 'optimal control', 'robust control', 'stability analysis'],
@@ -649,17 +674,76 @@ Return your classification:"""
             
             query_lower = query.lower()
             expanded_terms = [query]
+            matched_expansion = False
             
+            # Check for hardcoded expansions first (backward compatibility)
+            matched_key = None
             for key, synonyms in expansions.items():
                 if key in query_lower:
                     expanded_terms.extend(synonyms[:6])  # Add top synonyms
+                    matched_expansion = True
+                    matched_key = key
+                    logger.debug(f"Using hardcoded expansion for query (matched key: {key})")
+                    break
+            
+            # If no hardcoded expansion matched, use LLM to generate expansion terms
+            if not matched_expansion and (refined_query or query_domain or domain_keywords):
+                try:
+                    # Use LLM to generate expansion terms for general theory queries
+                    effective_query = refined_query or query
+                    domain_context = f"Domain: {query_domain}" if query_domain else ""
+                    keywords_context = f"Domain keywords: {', '.join(domain_keywords)}" if domain_keywords else ""
+                    
+                    prompt = f"""Generate 8-10 expansion terms for this theoretical query. These terms should be synonyms, related concepts, and domain-specific terminology that will help find relevant academic sources.
+
+Query: {effective_query}
+{domain_context}
+{keywords_context}
+
+Return a JSON array of expansion terms (strings only, no explanations):
+["term1", "term2", "term3", ...]"""
+                    
+                    logger.debug(f"Calling LLM for query expansion (query: {effective_query[:50]}...)")
+                    response = self.llm.invoke(prompt)
+                    content = response.content.strip()
+                    logger.debug(f"LLM query expansion completed successfully")
+                    
+                    # Extract JSON array
+                    if "```json" in content:
+                        content = content.split("```json")[1].split("```")[0].strip()
+                    elif "```" in content:
+                        content = content.split("```")[1].split("```")[0].strip()
+                    
+                    llm_terms = json.loads(content)
+                    if isinstance(llm_terms, list):
+                        expanded_terms.extend(llm_terms[:10])
+                        logger.info(f"LLM expansion strategy used: generated {len(llm_terms)} terms for query")
+                        logger.debug(f"LLM expansion terms (sample): {llm_terms[:5] if len(llm_terms) >= 5 else llm_terms}")
+                except json.JSONDecodeError as e:
+                    logger.warning(f"LLM expansion JSON parse error: {e}, using fallback")
+                    logger.debug(f"Failed to parse LLM expansion response: {content[:200] if 'content' in locals() else 'N/A'}...")
+                    # Fallback: extract key terms from query
+                    words = query_lower.split()
+                    significant_words = [w for w in words if len(w) > 4 and w not in ['the', 'and', 'or', 'for', 'with', 'from']]
+                    expanded_terms.extend(significant_words[:5])
+                except (TimeoutError, Exception) as e:
+                    # Catch timeout errors and other exceptions
+                    error_type = type(e).__name__
+                    if 'timeout' in str(e).lower() or 'Timeout' in error_type:
+                        logger.error(f"LLM expansion timed out after 120 seconds: {e}, using fallback")
+                    else:
+                        logger.warning(f"LLM expansion failed ({error_type}): {e}, using fallback")
+                    logger.debug(f"Exception traceback: {traceback.format_exc()}")
+                    # Fallback: extract key terms from query
+                    words = query_lower.split()
+                    significant_words = [w for w in words if len(w) > 4 and w not in ['the', 'and', 'or', 'for', 'with', 'from']]
+                    expanded_terms.extend(significant_words[:5])
             
             # Add first-principles and foundational terms for theoretical queries
             foundational_terms = [
                 'theoretical foundations', 'mathematical foundations', 'first principles',
                 'survey', 'state of the art', 'comprehensive review', 'systematic review',
-                'highly cited', 'seminal', 'foundational', 'theoretical framework',
-                'Lyapunov', 'stability', 'graph Laplacian', 'command and control', 'supervisory control'
+                'highly cited', 'seminal', 'foundational', 'theoretical framework'
             ]
             
             # Add foundational terms if query contains theoretical keywords
@@ -668,7 +752,7 @@ Return your classification:"""
                 expanded_terms.extend(foundational_terms[:8])
             
             # Combine original query with expanded terms
-            expanded_query = " OR ".join(set(expanded_terms[:12]))  # Limit to 12 terms
+            expanded_query = " OR ".join(set(expanded_terms[:15]))  # Limit to 15 terms
             
             logger.info(f"Expanded theory query: {expanded_query}")
             return expanded_query
@@ -748,7 +832,7 @@ Return your classification:"""
             # Fallback: return the original query as a single concept
             return [query]
     
-    def _search_foundational_sources(self, concepts: List[str], days_back: int = 180) -> List[Source]:
+    def _search_foundational_sources(self, concepts: List[str], days_back: int = 180, query_domain: Optional[str] = None, domain_keywords: Optional[List[str]] = None) -> List[Source]:
         """Search for foundational/seminal papers and survey papers for theoretical concepts with caps and guards"""
         try:
             foundational_sources: List[Source] = []
@@ -813,6 +897,16 @@ Return your classification:"""
                     f'"{concept}" "highly cited" seminal',
                     f'"{concept}" "theoretical framework"',
                 ]
+                # Add domain keyword queries if available
+                if domain_keywords:
+                    domain_keyword_queries_added = 0
+                    for keyword in domain_keywords[:3]:  # Use top 3 domain keywords
+                        if keyword.lower() not in concept.lower():
+                            foundational_queries.append(f'"{concept}" {keyword}')
+                            foundational_queries.append(f'"{concept}" {keyword} survey')
+                            domain_keyword_queries_added += 2
+                    if domain_keyword_queries_added > 0:
+                        logger.debug(f"Added {domain_keyword_queries_added} domain keyword queries for concept '{concept}' (domain: {query_domain})")
                 anchor_titles = [
                     '"Consensus and Cooperation in Networked Multi-Agent Systems"',
                     '"Distributed consensus in multi-agent systems"',
@@ -877,8 +971,17 @@ Return your classification:"""
             logger.error(f"Error in foundational search: {str(e)}")
             return []
     
-    def _search_thesis_anchor_sources(self, query: str, days_back: int = 1825) -> List[Source]:
-        """Search specifically for anchor (peer-reviewed) sources for thesis reports"""
+    def _search_thesis_anchor_sources(
+        self,
+        query: str,
+        days_back: int = 1825,
+        refined_query: Optional[str] = None,
+        query_domain: Optional[str] = None,
+        domain_keywords: Optional[List[str]] = None,
+        concepts: Optional[List[str]] = None,
+        retry_attempt: int = 0
+    ) -> List[Source]:
+        """Search specifically for anchor (peer-reviewed) sources for thesis reports using LLM-generated queries"""
         try:
             anchor_sources: List[Source] = []
             seen_urls = set()
@@ -888,23 +991,48 @@ Return your classification:"""
             
             anchor_domains = getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [])
             
-            # Control/C2 doctrine queries
-            control_c2_queries = [
-                f'"{query}" "command and control" doctrine',
-                f'"{query}" "C2 architecture"',
-                f'"{query}" hierarchical distributed control',
-            ]
+            # Check if query is explicitly about control theory (use control-specific queries for backward compatibility)
+            query_lower = query.lower()
+            is_control_theory = any(term in query_lower for term in [
+                'control theory', 'command and control', 'consensus', 'formation control',
+                'containment control', 'leader-follower', 'multi-agent', 'distributed control'
+            ])
             
-            # Distributed systems queries
-            distributed_queries = [
-                f'"{query}" distributed systems',
-                f'"{query}" multi-agent coordination',
-                f'"{query}" consensus protocols',
-            ]
+            if is_control_theory:
+                # Control/C2 doctrine queries (original behavior for control theory queries)
+                control_c2_queries = [
+                    f'"{query}" "command and control" doctrine',
+                    f'"{query}" "C2 architecture"',
+                    f'"{query}" hierarchical distributed control',
+                ]
+                distributed_queries = [
+                    f'"{query}" distributed systems',
+                    f'"{query}" multi-agent coordination',
+                    f'"{query}" consensus protocols',
+                ]
+                all_queries = control_c2_queries + distributed_queries
+            else:
+                # Use LLM-generated queries for general theory queries
+                try:
+                    all_queries = self._generate_topic_search_queries(
+                        query=query,
+                        refined_query=refined_query,
+                        query_domain=query_domain,
+                        domain_keywords=domain_keywords,
+                        concepts=concepts,
+                        retry_attempt=retry_attempt
+                    )
+                    logger.info(f"Using LLM-generated queries for anchor search: {len(all_queries)} queries")
+                    logger.debug(f"LLM-generated queries for anchor search (sample): {all_queries[:5] if len(all_queries) >= 5 else all_queries}")
+                except Exception as e:
+                    logger.warning(f"LLM query generation failed, using fallback: {e}")
+                    logger.debug(f"Exception traceback: {traceback.format_exc()}")
+                    # Fallback to improved phrase extraction
+                    all_queries = self._fallback_query_generation(
+                        query, refined_query, domain_keywords, concepts, retry_attempt
+                    )
             
-            all_queries = control_c2_queries + distributed_queries
-            
-            for q in all_queries[:6]:  # Limit to 6 queries
+            for q in all_queries[:10]:  # Use up to 10 queries (LLM generates 8-10)
                 if total_calls >= max_calls or len(anchor_sources) >= min_anchors:
                     break
                 for site in anchor_domains[:5]:  # Limit to 5 anchor domains
@@ -912,7 +1040,9 @@ Return your classification:"""
                         break
                     try:
                         total_calls += 1
-                        sources = self._search_by_domain_type(f'{q} site:{site}', [], SourceType.ACADEMIC, max_results=2, days_back=days_back)
+                        # Use the query directly (LLM-generated queries are already optimized)
+                        search_query = f'{q} site:{site}' if site else q
+                        sources = self._search_by_domain_type(search_query, [], SourceType.ACADEMIC, max_results=2, days_back=days_back)
                         for s in sources:
                             if s.url in seen_urls:
                                 continue
@@ -922,6 +1052,7 @@ Return your classification:"""
                                 seen_urls.add(s.url)
                     except Exception as e:
                         logger.warning(f"Anchor query failed '{q} site:{site}': {str(e)}")
+                        logger.debug(f"Query failure traceback: {traceback.format_exc()}")
                         continue
             
             logger.info(f"Thesis anchor search: {len(anchor_sources)} anchor sources, calls={total_calls}")
@@ -1248,7 +1379,15 @@ Return your classification:"""
                 claims_by_section={'Foundations': concepts.concepts[:5] or ['control theory','consensus']}
             )
 
-    def _thesis_compose(self, outline: ThesisOutline, sources: List[Source], query: str) -> ThesisDraft:
+    def _thesis_compose(
+        self, 
+        outline: ThesisOutline, 
+        sources: List[Source], 
+        query: str,
+        abstraction_layers: Optional[Dict[str, List[str]]] = None,
+        conceptual_map: Optional[str] = None,
+        canonical_papers: Optional[Dict[str, List[str]]] = None
+    ) -> ThesisDraft:
         try:
             parser = PydanticOutputParser(pydantic_object=ThesisDraft)
             # Prepare compact sources payload
@@ -1267,32 +1406,110 @@ Return your classification:"""
             preprint_sources = [s for s in sources if 'arxiv.org' in s.url]
             anchor_count = len(anchor_sources_list)
             
+            # Prepare abstraction layer context for prompt
+            has_abstraction_layers = abstraction_layers and len(abstraction_layers) > 0
+            abstraction_context = ""
+            if has_abstraction_layers:
+                layers_text = "\n".join([
+                    f"- **{layer_name}**: {', '.join(concepts[:5])}" 
+                    for layer_name, concepts in abstraction_layers.items()
+                ])
+                abstraction_context = f"""
+ABSTRACTION LAYER CONTEXT:
+This analysis uses a multi-layer abstraction approach to ground the thesis in foundational theory:
+
+{layers_text}
+
+When direct research on the specific topic is limited, canonical papers from broader abstraction layers provide foundational concepts that ground first-principles reasoning. These papers, while tangentially related to the specific topic, establish theoretical foundations that connect to the query through conceptual reasoning chains.
+
+"""
+                if canonical_papers and len(canonical_papers) > 0:
+                    canonical_text = "\n".join([
+                        f"- **{layer_name}**: {', '.join(papers[:3])}" 
+                        for layer_name, papers in canonical_papers.items()
+                    ])
+                    abstraction_context += f"""
+CANONICAL PAPERS IDENTIFIED:
+{canonical_text}
+
+"""
+                if conceptual_map:
+                    abstraction_context += f"""
+CONCEPTUAL MAP:
+{conceptual_map}
+
+"""
+            
+            # Build prompt template with conditional abstraction layer context
+            prompt_variables = ["query","outline","sources","format_instructions","anchor_count"]
+            if has_abstraction_layers:
+                prompt_variables.append("abstraction_context")
+            
+            prompt_template_str = (
+                "Compose a thesis-style brief (markdown) with sections from the outline.\n"
+                "Cite sources as [^id] where appropriate. Keep rigorous, concise.\n\n"
+            )
+            
+            if has_abstraction_layers:
+                prompt_template_str += "{abstraction_context}\n"
+            
+            prompt_template_str += (
+                "REQUIREMENTS:\n"
+                "- Foundations section: Include a 'Why these anchors?' paragraph explaining the selection of anchor (peer-reviewed, non-preprint) sources. Currently {anchor_count} anchor sources are included."
+            )
+            
+            if has_abstraction_layers:
+                prompt_template_str += (
+                    " When abstraction layers are provided, explain the multi-layer selection strategy:\n"
+                    "  * Direct Sources (Layer 1): Sources that directly address the specific topic\n"
+                    "  * Domain Sources (Layer 2): Sources from the broader domain providing context\n"
+                    "  * Foundational Sources (Layer 3-4): Canonical papers that ground first-principles reasoning\n"
+                    "  Explain how canonical papers from broader layers, while tangentially related, provide foundational concepts that connect to the query topic through conceptual reasoning chains.\n"
+                )
+            else:
+                prompt_template_str += "\n"
+            
+            prompt_template_str += (
+                "- Applications section: Include 2+ parameterized vignettes (e.g., disaster response under intermittent comms; autonomous ISR swarm with contested spectrum) with metrics (MTTA, failure prob) and failure modes. Minimum 400 words.\n"
+                "- Limits & Open Questions: Include 'Operational Assumptions & Diagnostics' subsection with bounded-rationality assumption and adversarial comms model, each with concrete triggers and delegation policies. Move human-in-loop and adversarial from future work to present assumptions. Minimum 300 words.\n"
+                "- Mechanisms section: Ensure unique content, do not repeat Executive Summary.\n"
+                "- Synthesis section: Ensure unique synthesis, do not repeat Executive Summary.\n"
+            )
+            
+            if has_abstraction_layers:
+                prompt_template_str += (
+                    "\n- Include a 'Theoretical Grounding and Conceptual Framework' section after the Foundations section that:\n"
+                    "  * Presents the abstraction layers and their concepts\n"
+                    "  * Shows how canonical papers from broader layers ground first-principles reasoning\n"
+                    "  * Documents the reasoning chain from foundational principles to the specific topic\n"
+                    "  * Explains how tangentially related canonical papers provide theoretical foundations\n"
+                    "  * References the conceptual map when available\n"
+                )
+            
+            prompt_template_str += (
+                "\nQuery: {query}\n"
+                "Outline: {outline}\n"
+                "Sources: {sources}\n\n"
+                "Return JSON per schema.\n{format_instructions}"
+            )
+            
             prompt = PromptTemplate(
-                input_variables=["query","outline","sources","format_instructions","anchor_count"],
-                template=(
-                    "Compose a thesis-style brief (markdown) with sections from the outline.\n"
-                    "Cite sources as [^id] where appropriate. Keep rigorous, concise.\n\n"
-                    "REQUIREMENTS:\n"
-                    "- Foundations section: Include a 'Why these anchors?' paragraph explaining the selection of anchor (peer-reviewed, non-preprint) sources. Currently {anchor_count} anchor sources are included.\n"
-                    "- Applications section: Include 2+ parameterized vignettes (e.g., disaster response under intermittent comms; autonomous ISR swarm with contested spectrum) with metrics (MTTA, failure prob) and failure modes. Minimum 400 words.\n"
-                    "- Limits & Open Questions: Include 'Operational Assumptions & Diagnostics' subsection with bounded-rationality assumption and adversarial comms model, each with concrete triggers and delegation policies. Move human-in-loop and adversarial from future work to present assumptions. Minimum 300 words.\n"
-                    "- Mechanisms section: Ensure unique content, do not repeat Executive Summary.\n"
-                    "- Synthesis section: Ensure unique synthesis, do not repeat Executive Summary.\n\n"
-                    "Query: {query}\n"
-                    "Outline: {outline}\n"
-                    "Sources: {sources}\n\n"
-                    "Return JSON per schema.\n{format_instructions}"
-                )
+                input_variables=prompt_variables,
+                template=prompt_template_str
             )
-            resp = self.llm.invoke(
-                prompt.format(
-                    query=query,
-                    outline=json.dumps(outline.model_dump()),
-                    sources=json.dumps(src_payload[:15]),  # Increased from 12 to 15
-                    format_instructions=parser.get_format_instructions(),
-                    anchor_count=anchor_count
-                )
-            )
+            
+            # Prepare format arguments
+            format_args = {
+                'query': query,
+                'outline': json.dumps(outline.model_dump()),
+                'sources': json.dumps(src_payload[:15]),  # Increased from 12 to 15
+                'format_instructions': parser.get_format_instructions(),
+                'anchor_count': anchor_count
+            }
+            if has_abstraction_layers:
+                format_args['abstraction_context'] = abstraction_context
+            
+            resp = self.llm.invoke(prompt.format(**format_args))
             content = resp.content.strip()
             if "```json" in content:
                 content = content.split("```json")[1].split("```")[0].strip()
@@ -2611,11 +2828,870 @@ Return your assessment:"""
             logger.error(f"Error re-weighting by source type: {str(e)}")
             return sources
     
-    def _filter_sources_by_title_relevance(self, sources: List[Source], title: str, foundational_urls: set = None, min_score: float = None) -> List[Source]:
-        """Filter sources using PydanticOutputParser for structured relevance scoring"""
+    def _extract_query_domain(self, query: str, title: str) -> QueryDomain:
+        """
+        Use LLM to dynamically extract the primary domain/field of the query.
+        Returns a QueryDomain object with primary_domain, domain_keywords, and confidence.
+        """
+        try:
+            parser = PydanticOutputParser(pydantic_object=QueryDomain)
+            prompt_template = PromptTemplate(
+                input_variables=["query", "title"],
+                template="""Identify the primary domain or field of study for this query/title.
+
+Query: {query}
+Title: {title}
+
+Determine the main domain/field this query belongs to. Examples:
+- "Cognitive Wars: The AI Industrialization of Influence" → primary_domain: "technology/artificial intelligence/cognitive science", domain_keywords: ["AI", "cognitive", "influence", "warfare"]
+- "Quantum Computing Breakthroughs" → primary_domain: "technology/physics/quantum computing", domain_keywords: ["quantum", "computing", "physics"]
+- "Pediatric Medical Protocols" → primary_domain: "healthcare/medicine/pediatrics", domain_keywords: ["pediatric", "medical", "healthcare", "protocols"]
+- "Financial Market Analysis" → primary_domain: "finance/economics/markets", domain_keywords: ["finance", "market", "economics"]
+- "Distributed Consensus Algorithms" → primary_domain: "technology/computer science/distributed systems", domain_keywords: ["distributed", "consensus", "algorithms", "systems"]
+
+Return the primary domain as a concise description (2-4 words) and list key domain keywords.
+
+{format_instructions}"""
+            )
+            
+            prompt = prompt_template.format(
+                query=query,
+                title=title,
+                format_instructions=parser.get_format_instructions()
+            )
+            
+            response = self.llm.invoke(prompt)
+            content = response.content.strip()
+            
+            # Extract JSON from markdown if needed
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+            
+            domain_data = json.loads(content)
+            if isinstance(domain_data, dict):
+                query_domain_obj = QueryDomain(**domain_data)
+                logger.info(f"Extracted query domain: {query_domain_obj.primary_domain} (confidence: {query_domain_obj.confidence:.2f}, keywords: {query_domain_obj.domain_keywords})")
+                return query_domain_obj
+            else:
+                raise ValueError(f"Unexpected domain extraction format: {type(domain_data)}")
+                
+        except json.JSONDecodeError as e:
+            logger.warning(f"Domain extraction JSON parse error: {e}, using fallback domain detection")
+            logger.debug(f"Failed to parse domain extraction response: {content[:200]}...")
+        except ValueError as e:
+            logger.warning(f"Domain extraction validation error: {e}, using fallback domain detection")
+            logger.debug(f"Domain extraction response: {content[:200]}...")
+        except Exception as e:
+            logger.warning(f"Domain extraction failed: {e}, using fallback domain detection")
+            logger.debug(f"Exception traceback: {traceback.format_exc()}")
+            # Fallback: simple keyword-based detection
+            query_lower = (query or title).lower()
+            domain_keywords = []
+            
+            if any(kw in query_lower for kw in ['ai', 'artificial intelligence', 'cognitive', 'machine learning', 'technology', 'tech']):
+                primary_domain = "technology/artificial intelligence"
+                domain_keywords = ['AI', 'artificial intelligence', 'technology', 'cognitive', 'machine learning']
+            elif any(kw in query_lower for kw in ['medical', 'healthcare', 'hospital', 'patient', 'clinical', 'pediatric']):
+                primary_domain = "healthcare/medicine"
+                domain_keywords = ['medical', 'healthcare', 'clinical', 'patient']
+            elif any(kw in query_lower for kw in ['finance', 'financial', 'market', 'economic', 'trading']):
+                primary_domain = "finance/economics"
+                domain_keywords = ['finance', 'financial', 'market', 'economics']
+            elif any(kw in query_lower for kw in ['legal', 'law', 'regulation', 'policy', 'government']):
+                primary_domain = "legal/policy"
+                domain_keywords = ['legal', 'law', 'regulation', 'policy']
+            else:
+                primary_domain = "general"
+                # Extract significant words as keywords
+                words = query_lower.split()
+                domain_keywords = [w for w in words if len(w) > 4][:5]
+            
+            fallback_domain = QueryDomain(
+                primary_domain=primary_domain,
+                domain_keywords=domain_keywords,
+                confidence=0.5  # Lower confidence for fallback
+            )
+            logger.info(f"Fallback domain selected: {primary_domain} (keywords: {domain_keywords}, confidence: 0.5)")
+            return fallback_domain
+    
+    def _identify_abstraction_layers(self, query: str, query_domain: QueryDomain) -> Dict[str, List[str]]:
+        """
+        Use LLM to identify 3-5 conceptual abstraction layers from most specific to most general.
+        Returns a dictionary mapping layer names to lists of concepts/keywords.
+        """
+        try:
+            parser = PydanticOutputParser(pydantic_object=AbstractionLayers)
+            prompt_template = PromptTemplate(
+                input_variables=["query", "query_domain", "domain_keywords"],
+                template="""Identify 3-5 conceptual abstraction layers for this query, from most specific to most general.
+
+PURPOSE: Break down the query into abstraction layers that can help find foundational sources even when direct research is limited.
+
+QUERY: {query}
+Domain: {query_domain}
+Domain Keywords: {domain_keywords}
+
+INSTRUCTIONS:
+1. Identify 3-5 layers from most specific (Layer 1) to most general/foundational (Layer 4-5)
+2. Each layer should contain 3-5 related concepts/keywords
+3. Layers should progressively abstract from the specific topic to foundational principles
+4. Layer names should be descriptive (e.g., "Layer 1: Specific", "Layer 2: Domain", "Layer 3: Abstract", "Layer 4: Foundational")
+
+EXAMPLE for "Cognitive Wars: The AI Industrialization of Influence":
+- Layer 1: Specific: ["cognitive warfare", "AI influence operations", "computational propaganda", "automated disinformation"]
+- Layer 2: Domain: ["information warfare", "psychological operations", "influence campaigns", "propaganda"]
+- Layer 3: Abstract: ["social influence", "persuasion", "communication theory", "behavioral manipulation"]
+- Layer 4: Foundational: ["game theory", "social psychology", "information theory", "collective behavior"]
+
+Generate abstraction layers that will help find canonical papers at each level of abstraction.
+
+{format_instructions}"""
+            )
+            
+            prompt = prompt_template.format(
+                query=query,
+                query_domain=query_domain.primary_domain,
+                domain_keywords=", ".join(query_domain.domain_keywords),
+                format_instructions=parser.get_format_instructions()
+            )
+            
+            response = self.llm.invoke(prompt)
+            content = response.content.strip()
+            
+            # Extract JSON from markdown if needed
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+            
+            layers_data = json.loads(content)
+            if isinstance(layers_data, dict):
+                if "layers" in layers_data:
+                    abstraction_layers_obj = AbstractionLayers(**layers_data)
+                    logger.info(f"Identified {len(abstraction_layers_obj.layers)} abstraction layers")
+                    for layer_name, concepts in abstraction_layers_obj.layers.items():
+                        logger.debug(f"  {layer_name}: {concepts}")
+                    return abstraction_layers_obj.layers
+                else:
+                    # Handle case where layers dict is at top level
+                    abstraction_layers_obj = AbstractionLayers(layers=layers_data)
+                    logger.info(f"Identified {len(abstraction_layers_obj.layers)} abstraction layers")
+                    return abstraction_layers_obj.layers
+            else:
+                raise ValueError(f"Unexpected abstraction layers format: {type(layers_data)}")
+                
+        except json.JSONDecodeError as e:
+            logger.warning(f"Abstraction layers JSON parse error: {e}, using fallback")
+            logger.debug(f"Failed to parse abstraction layers response: {content[:200] if 'content' in locals() else 'N/A'}...")
+        except ValueError as e:
+            logger.warning(f"Abstraction layers validation error: {e}, using fallback")
+            logger.debug(f"Abstraction layers response: {content[:200] if 'content' in locals() else 'N/A'}...")
+        except Exception as e:
+            logger.warning(f"Abstraction layers identification failed: {e}, using fallback")
+            logger.debug(f"Exception traceback: {traceback.format_exc()}")
+        
+        # Fallback: create simple abstraction layers from query and domain
+        query_lower = query.lower()
+        fallback_layers = {
+            "Layer 1: Specific": [query],
+            "Layer 2: Domain": query_domain.domain_keywords[:4] if query_domain.domain_keywords else [query_domain.primary_domain.split('/')[-1]],
+            "Layer 3: Abstract": ["theory", "framework", "principles", "foundations"]
+        }
+        logger.info(f"Fallback abstraction layers: {list(fallback_layers.keys())}")
+        return fallback_layers
+    
+    def _identify_canonical_papers(self, abstraction_layers: Dict[str, List[str]], query_domain: QueryDomain) -> Dict[str, List[str]]:
+        """
+        For each abstraction layer, use LLM to identify 3-5 canonical/seminal papers.
+        Returns a dictionary mapping layer names to lists of canonical paper titles/authors.
+        """
+        try:
+            parser = PydanticOutputParser(pydantic_object=CanonicalPapers)
+            
+            # Build layers description for prompt
+            layers_description = "\n".join([f"- {layer_name}: {', '.join(concepts)}" 
+                                           for layer_name, concepts in abstraction_layers.items()])
+            
+            prompt_template = PromptTemplate(
+                input_variables=["query_domain", "domain_keywords", "layers_description"],
+                template="""Identify 3-5 canonical/seminal papers for each abstraction layer that could ground first-principles reasoning.
+
+PURPOSE: Find foundational papers at each abstraction level that can support thesis development even when direct research is limited.
+
+Domain: {query_domain}
+Domain Keywords: {domain_keywords}
+
+Abstraction Layers:
+{layers_description}
+
+INSTRUCTIONS:
+1. For each layer, identify 3-5 highly cited, seminal papers
+2. Papers should be foundational works that could ground first-principles reasoning
+3. Include paper titles and authors (e.g., "Consensus and Cooperation in Networked Multi-Agent Systems (Olfati-Saber et al.)")
+4. Prioritize papers from canonical academic domains (IEEE, ACM, Springer, etc.)
+5. Papers can be tangentially related if they provide foundational concepts
+
+EXAMPLE for Layer 4: Foundational ["game theory", "social psychology"]:
+- "The Theory of Games and Economic Behavior" (von Neumann & Morgenstern)
+- "Social Influence: Compliance and Conformity" (Cialdini)
+- "Information Theory of Communication" (Shannon)
+
+Generate canonical papers for each layer that will help ground the thesis in first principles.
+
+{format_instructions}"""
+            )
+            
+            prompt = prompt_template.format(
+                query_domain=query_domain.primary_domain,
+                domain_keywords=", ".join(query_domain.domain_keywords),
+                layers_description=layers_description,
+                format_instructions=parser.get_format_instructions()
+            )
+            
+            response = self.llm.invoke(prompt)
+            content = response.content.strip()
+            
+            # Extract JSON from markdown if needed
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+            
+            papers_data = json.loads(content)
+            if isinstance(papers_data, dict):
+                if "papers" in papers_data:
+                    canonical_papers_obj = CanonicalPapers(**papers_data)
+                    logger.info(f"Identified canonical papers for {len(canonical_papers_obj.papers)} layers")
+                    for layer_name, papers in canonical_papers_obj.papers.items():
+                        logger.debug(f"  {layer_name}: {papers[:2]}...")  # Log first 2 papers
+                    return canonical_papers_obj.papers
+                else:
+                    # Handle case where papers dict is at top level
+                    canonical_papers_obj = CanonicalPapers(papers=papers_data)
+                    logger.info(f"Identified canonical papers for {len(canonical_papers_obj.papers)} layers")
+                    return canonical_papers_obj.papers
+            else:
+                raise ValueError(f"Unexpected canonical papers format: {type(papers_data)}")
+                
+        except json.JSONDecodeError as e:
+            logger.warning(f"Canonical papers JSON parse error: {e}, using fallback")
+            logger.debug(f"Failed to parse canonical papers response: {content[:200] if 'content' in locals() else 'N/A'}...")
+        except ValueError as e:
+            logger.warning(f"Canonical papers validation error: {e}, using fallback")
+            logger.debug(f"Canonical papers response: {content[:200] if 'content' in locals() else 'N/A'}...")
+        except Exception as e:
+            logger.warning(f"Canonical papers identification failed: {e}, using fallback")
+            logger.debug(f"Exception traceback: {traceback.format_exc()}")
+        
+        # Fallback: return empty dict (will rely on search queries instead)
+        logger.info("Fallback: No canonical papers identified, will rely on search queries")
+        return {}
+    
+    def _search_abstraction_layers(
+        self,
+        query: str,
+        abstraction_layers: Dict[str, List[str]],
+        canonical_papers: Dict[str, List[str]],
+        days_back: int,
+        query_domain: Optional[str] = None,
+        domain_keywords: Optional[List[str]] = None
+    ) -> List[Source]:
+        """
+        Search at each abstraction layer with layer-specific queries.
+        Also search for identified canonical papers by title/author.
+        Combine results from all layers and deduplicate.
+        """
+        all_sources: List[Source] = []
+        seen_urls = set()
+        anchor_domains = getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [
+            'ieeexplore.ieee.org', 'dl.acm.org', 'link.springer.com', 'sciencedirect.com'
+        ])
+        
+        def add_sources(found: List[Source], layer_name: str = ""):
+            nonlocal all_sources, seen_urls
+            for s in found:
+                if s.url not in seen_urls:
+                    all_sources.append(s)
+                    seen_urls.add(s.url)
+                    if layer_name:
+                        logger.debug(f"Found source from {layer_name}: {s.title[:60]}...")
+        
+        # Search at each abstraction layer
+        for layer_name, concepts in abstraction_layers.items():
+            logger.info(f"Searching abstraction layer: {layer_name} ({len(concepts)} concepts)")
+            
+            # Search for each concept in this layer
+            for concept in concepts[:5]:  # Limit to 5 concepts per layer
+                # Create layer-specific queries
+                layer_queries = [
+                    f'"{concept}" survey review',
+                    f'"{concept}" "state of the art"',
+                    f'"{concept}" foundational seminal',
+                    f'"{concept}" theoretical framework'
+                ]
+                
+                # Add domain keywords if available
+                if domain_keywords:
+                    for keyword in domain_keywords[:2]:  # Top 2 domain keywords
+                        if keyword.lower() not in concept.lower():
+                            layer_queries.append(f'"{concept}" {keyword}')
+                
+                # Search across anchor domains
+                for q in layer_queries[:4]:  # Limit to 4 queries per concept
+                    for site in anchor_domains[:5]:  # Limit to 5 domains
+                        try:
+                            sources = self._search_by_domain_type(
+                                f'{q} site:{site}',
+                                [],
+                                SourceType.ACADEMIC,
+                                max_results=2,
+                                days_back=days_back
+                            )
+                            add_sources(sources, layer_name)
+                        except Exception as e:
+                            logger.debug(f"Layer search query failed '{q} site:{site}': {str(e)}")
+                            continue
+        
+        # Search for canonical papers by title
+        for layer_name, papers in canonical_papers.items():
+            logger.info(f"Searching for canonical papers in {layer_name} ({len(papers)} papers)")
+            
+            for paper_ref in papers[:5]:  # Limit to 5 papers per layer
+                # Extract paper title (before parentheses if author info present)
+                paper_title = paper_ref.split('(')[0].strip().strip('"')
+                
+                # Search for paper by title
+                for site in anchor_domains[:3]:  # Limit to 3 domains for canonical papers
+                    try:
+                        # Search with quoted title
+                        sources = self._search_by_domain_type(
+                            f'"{paper_title}" site:{site}',
+                            [],
+                            SourceType.ACADEMIC,
+                            max_results=1,
+                            days_back=days_back * 2  # Wider time window for canonical papers
+                        )
+                        add_sources(sources, f"{layer_name} (canonical)")
+                    except Exception as e:
+                        logger.debug(f"Canonical paper search failed '{paper_title} site:{site}': {str(e)}")
+                        continue
+                
+                # Also try searching without quotes (partial match)
+                try:
+                    # Extract key words from title
+                    title_words = [w for w in paper_title.split() if len(w) > 4][:4]
+                    if title_words:
+                        partial_query = ' '.join(title_words)
+                        sources = self._search_by_domain_type(
+                            f'{partial_query} site:arxiv.org',  # Try arxiv for broader search
+                            [],
+                            SourceType.ACADEMIC,
+                            max_results=1,
+                            days_back=days_back * 2
+                        )
+                        add_sources(sources, f"{layer_name} (canonical partial)")
+                except Exception as e:
+                    logger.debug(f"Canonical paper partial search failed: {str(e)}")
+                    continue
+        
+        logger.info(f"Abstraction layer search: found {len(all_sources)} unique sources across {len(abstraction_layers)} layers")
+        return all_sources
+    
+    def _generate_conceptual_map(self, query: str, sources: List[Source], abstraction_layers: Dict[str, List[str]]) -> str:
+        """
+        Use LLM to create a conceptual map showing how foundational sources connect to the specific topic.
+        Documents the reasoning chain from first principles to the query topic.
+        """
+        try:
+            # Prepare sources summary
+            sources_summary = "\n".join([
+                f"- {s.title} ({s.publisher})"
+                for s in sources[:10]  # Limit to top 10 sources
+            ])
+            
+            # Prepare layers summary
+            layers_summary = "\n".join([
+                f"- {layer_name}: {', '.join(concepts[:3])}..."
+                for layer_name, concepts in abstraction_layers.items()
+            ])
+            
+            prompt = f"""Create a conceptual map showing how foundational sources connect to the specific query topic.
+
+PURPOSE: Document the reasoning chain from first principles to the specific topic, showing how canonical papers ground the thesis.
+
+QUERY: {query}
+
+ABSTRACTION LAYERS:
+{layers_summary}
+
+SOURCES FOUND:
+{sources_summary}
+
+TASK:
+1. Identify which sources connect to which abstraction layers
+2. Explain how foundational sources (from broader layers) ground first-principles reasoning
+3. Show the conceptual path from foundational principles to the specific query topic
+4. Document how tangentially related canonical papers can still support the thesis
+
+OUTPUT FORMAT:
+- Start with foundational principles (Layer 4-5)
+- Show how these connect to domain concepts (Layer 2-3)
+- Finally connect to the specific topic (Layer 1)
+- For each connection, cite relevant sources
+
+Return a clear, structured conceptual map as plain text (no JSON)."""
+            
+            response = self.llm.invoke(prompt)
+            conceptual_map = response.content.strip()
+            
+            logger.info(f"Generated conceptual map ({len(conceptual_map)} chars)")
+            logger.debug(f"Conceptual map preview: {conceptual_map[:200]}...")
+            
+            return conceptual_map
+            
+        except Exception as e:
+            logger.warning(f"Conceptual map generation failed: {e}, using fallback")
+            logger.debug(f"Exception traceback: {traceback.format_exc()}")
+            
+            # Fallback: simple conceptual map
+            fallback_map = f"""Conceptual Map for: {query}
+
+Foundational Principles:
+- Sources from broader abstraction layers provide theoretical foundations
+
+Domain Concepts:
+- Sources connect foundational principles to domain-specific concepts
+
+Specific Topic:
+- Sources directly address the query topic
+
+This analysis builds from first principles to ground the thesis in established theory."""
+            
+            return fallback_map
+    
+    def _generate_topic_search_queries(
+        self,
+        query: str,
+        refined_query: Optional[str] = None,
+        query_domain: Optional[str] = None,
+        domain_keywords: Optional[List[str]] = None,
+        concepts: Optional[List[str]] = None,
+        retry_attempt: int = 0
+    ) -> List[str]:
+        """
+        Generate diverse, topic-relevant search queries using LLM.
+        
+        Args:
+            query: Original query
+            refined_query: Refined query from _refine_query_for_title()
+            query_domain: Primary domain (e.g., "technology/artificial intelligence")
+            domain_keywords: List of domain-specific keywords
+            concepts: List of extracted concepts
+            retry_attempt: Retry attempt number (0 = first attempt, higher = broader queries)
+            
+        Returns:
+            List of search query strings optimized for academic source discovery
+        """
+        # Create cache key
+        cache_key = f"{query}_{refined_query}_{query_domain}_{retry_attempt}"
+        if cache_key in self._query_cache:
+            logger.debug(f"Using cached search queries for retry attempt {retry_attempt} (cache size: {len(self._query_cache)})")
+            return self._query_cache[cache_key]
+        else:
+            logger.debug(f"Cache miss for query generation (cache size: {len(self._query_cache)}, key: {cache_key[:50]}...)")
+        
+        try:
+            # Use refined query if available, otherwise use original
+            effective_query = refined_query or query
+            
+            # Prepare context for LLM
+            domain_context = f"Domain: {query_domain}" if query_domain else "Domain: general"
+            keywords_context = f"Domain keywords: {', '.join(domain_keywords)}" if domain_keywords else ""
+            concepts_context = f"Related concepts: {', '.join(concepts[:5])}" if concepts else ""
+            
+            # Determine query strategy based on retry attempt
+            if retry_attempt == 0:
+                strategy_note = "Generate focused, specific queries using exact phrases and domain terminology."
+            elif retry_attempt == 1:
+                strategy_note = "Generate broader queries using synonyms and related concepts."
+            else:
+                strategy_note = "Generate very broad queries using general terms and alternative phrasings."
+            
+            parser = PydanticOutputParser(pydantic_object=SearchQueries)
+            prompt_template = PromptTemplate(
+                input_variables=["query", "refined_query", "domain_context", "keywords_context", "concepts_context", "strategy_note"],
+                template="""You are an expert at generating academic search queries. Your task is to create diverse, effective search queries that will find relevant academic sources.
+
+PURPOSE: Generate 8-10 diverse search queries optimized for finding academic papers and sources related to the given topic.
+
+QUERY INFORMATION:
+Original Query: {query}
+Refined Query: {refined_query}
+{domain_context}
+{keywords_context}
+{concepts_context}
+
+STRATEGY: {strategy_note}
+
+QUERY GENERATION GUIDELINES:
+1. Use exact phrases from the query when they are specific and meaningful
+2. Incorporate domain keywords naturally into queries
+3. Use academic search modifiers: "survey", "review", "framework", "analysis", "state of the art", "systematic review"
+4. Create variations: broader terms, synonyms, related concepts
+5. Include both specific queries (exact phrases) and broader queries (general terms)
+6. Avoid overly narrow queries that might miss relevant sources
+7. Each query should be 3-8 words, optimized for academic search engines
+
+EXAMPLES:
+- Query: "Cognitive Wars: The AI Industrialization of Influence"
+  Domain: "technology/artificial intelligence/information warfare"
+  Domain keywords: ["AI", "cognitive", "influence", "warfare"]
+  Good queries:
+    - "cognitive warfare artificial intelligence"
+    - "AI influence operations information warfare"
+    - "cognitive warfare survey review"
+    - "artificial intelligence psychological operations"
+    - "information warfare AI cognitive"
+    - "influence operations AI framework"
+    - "cognitive warfare state of the art"
+    - "AI disinformation cognitive science"
+
+- Query: "Distributed Consensus Algorithms"
+  Domain: "technology/computer science/distributed systems"
+  Domain keywords: ["distributed", "consensus", "algorithms"]
+  Good queries:
+    - "distributed consensus algorithms survey"
+    - "consensus protocols distributed systems"
+    - "distributed agreement algorithms review"
+    - "Byzantine consensus distributed systems"
+    - "consensus algorithms state of the art"
+
+Generate 8-10 diverse search queries that will effectively find relevant academic sources.
+
+{format_instructions}"""
+            )
+            
+            prompt = prompt_template.format(
+                query=query,
+                refined_query=effective_query,
+                domain_context=domain_context,
+                keywords_context=keywords_context,
+                concepts_context=concepts_context,
+                strategy_note=strategy_note,
+                format_instructions=parser.get_format_instructions()
+            )
+            
+            response = self.llm.invoke(prompt)
+            content = response.content.strip()
+            
+            # Extract JSON from markdown if needed
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+            
+            queries_data = json.loads(content)
+            if isinstance(queries_data, dict):
+                search_queries_obj = SearchQueries(**queries_data)
+                queries = search_queries_obj.queries
+                logger.info(f"Generated {len(queries)} search queries for retry attempt {retry_attempt}")
+                logger.debug(f"Generated queries (sample): {queries[:3] if len(queries) >= 3 else queries}")
+                # Cache the results
+                self._query_cache[cache_key] = queries
+                return queries
+            else:
+                raise ValueError(f"Unexpected query generation format: {type(queries_data)}")
+                
+        except json.JSONDecodeError as e:
+            logger.error(f"LLM query generation JSON parse error: {e}. Response content: {content[:200]}...")
+            logger.debug(f"Full response content: {content}")
+            return self._fallback_query_generation(query, refined_query, domain_keywords, concepts, retry_attempt)
+        except ValueError as e:
+            logger.error(f"LLM query generation validation error: {e}. Response: {content[:200]}...")
+            logger.debug(f"Full response content: {content}")
+            return self._fallback_query_generation(query, refined_query, domain_keywords, concepts, retry_attempt)
+        except Exception as e:
+            logger.warning(f"LLM query generation failed: {e}, using fallback phrase extraction")
+            logger.debug(f"Exception traceback: {traceback.format_exc()}")
+            return self._fallback_query_generation(query, refined_query, domain_keywords, concepts, retry_attempt)
+    
+    def _fallback_query_generation(
+        self,
+        query: str,
+        refined_query: Optional[str] = None,
+        domain_keywords: Optional[List[str]] = None,
+        concepts: Optional[List[str]] = None,
+        retry_attempt: int = 0
+    ) -> List[str]:
+        """Fallback query generation using phrase extraction when LLM fails"""
+        effective_query = refined_query or query
+        queries = []
+        
+        # Extract key phrases
+        key_phrases = []
+        for separator in [':', ',', ' and ', ' of ', ' in ', ' for ']:
+            if separator in effective_query:
+                parts = effective_query.split(separator)
+                key_phrases.extend([p.strip() for p in parts if len(p.strip()) > 5])
+        
+        if not key_phrases:
+            words = effective_query.split()
+            # Take 2-4 word chunks
+            for i in range(len(words) - 1):
+                if i + 3 <= len(words):
+                    phrase = ' '.join(words[i:i+3])
+                    if len(phrase) > 10:
+                        key_phrases.append(phrase)
+        
+        # Remove duplicates and short phrases
+        key_phrases = list(dict.fromkeys([p for p in key_phrases if len(p) > 5]))[:5]
+        
+        # Build queries
+        academic_modifiers = ['survey', 'review', 'framework', 'analysis', 'state of the art']
+        
+        for phrase in key_phrases[:3]:
+            queries.append(phrase)
+            for modifier in academic_modifiers[:2]:
+                queries.append(f"{phrase} {modifier}")
+        
+        # Add domain keyword queries if available
+        if domain_keywords:
+            for keyword in domain_keywords[:3]:
+                if keyword.lower() not in effective_query.lower():
+                    queries.append(f"{effective_query} {keyword}")
+        
+        # Add concept queries if available
+        if concepts:
+            for concept in concepts[:2]:
+                queries.append(f"{effective_query} {concept}")
+        
+        # Limit to 8 queries
+        queries = queries[:8]
+        logger.info(f"Fallback generated {len(queries)} queries")
+        logger.debug(f"Fallback queries: {queries[:5] if len(queries) >= 5 else queries}")
+        if domain_keywords:
+            domain_query_count = len([q for q in queries if any(kw.lower() in q.lower() for kw in domain_keywords)])
+            logger.debug(f"Fallback used {domain_query_count} domain keyword queries")
+        return queries
+    
+    def _process_relevance_batch(self, batch_sources: List[Source], title: str, query: str, query_domain: str, 
+                                  min_threshold: float, foundational_urls: set, prompt_template: PromptTemplate, 
+                                  parser: PydanticOutputParser) -> Optional[Tuple[List[Source], Dict[str, Any]]]:
+        """
+        Process a single batch of sources for relevance evaluation using sequential IDs.
+        
+        Args:
+            batch_sources: List of sources to evaluate in this batch
+            title: Report title
+            query: Query string
+            query_domain: Query domain string
+            min_threshold: Minimum relevance score threshold
+            foundational_urls: Set of foundational URLs
+            prompt_template: Prompt template for LLM evaluation
+            parser: Pydantic parser for structured output
+            
+        Returns:
+            Tuple of (filtered_sources, metadata) or None if processing failed
+        """
+        batch_metadata = {
+            'evaluation_success': False,
+            'scores_received': 0,
+            'sources_rejected_by_llm': 0,
+            'sources_rejected_by_score': 0,
+            'sources_passed': 0
+        }
+        
+        # Create sequential ID mapping: {0: source0, 1: source1, ...}
+        sequential_id_to_source = {seq_id: source for seq_id, source in enumerate(batch_sources)}
+        
+        # Prepare sources text with sequential IDs (0, 1, 2, ...)
+        sources_text = "\n\n".join([
+            f"Source {seq_id}: {source.title}\nPublisher: {source.publisher}\nDate: {source.date}\nContent: {source.content[:500]}..."
+            for seq_id, source in sequential_id_to_source.items()
+        ])
+        
+        # Create prompt with format instructions
+        prompt = prompt_template.format(
+            title=title,
+            query=query,
+            query_domain=query_domain,
+            sources_text=sources_text,
+            min_threshold=f"{min_threshold:.2f}",
+            format_instructions=parser.get_format_instructions()
+        )
+        
+        # Get structured response from LLM
+        try:
+            response = self.llm.invoke(prompt)
+        except Exception as e:
+            logger.error(f"LLM invocation failed for batch: {str(e)}")
+            logger.debug(f"LLM invocation error traceback:\n{traceback.format_exc()}")
+            return None
+        
+        # Parse the response
+        try:
+            content = response.content.strip()
+            
+            # Extract JSON from markdown if needed
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+            
+            relevance_data = json.loads(content)
+            if isinstance(relevance_data, list):
+                relevance_scores = [SourceRelevanceScore(**item) for item in relevance_data]
+            elif isinstance(relevance_data, dict):
+                # Handle dict with numeric string keys (common LLM format mistake)
+                if all(k.isdigit() for k in relevance_data.keys()):
+                    relevance_scores = [SourceRelevanceScore(**item) for item in relevance_data.values()]
+                elif "results" in relevance_data:
+                    relevance_scores = [SourceRelevanceScore(**item) for item in relevance_data["results"]]
+                elif "items" in relevance_data:
+                    relevance_scores = [SourceRelevanceScore(**item) for item in relevance_data["items"]]
+                else:
+                    relevance_scores = [SourceRelevanceScore(**relevance_data)]
+            else:
+                raise ValueError(f"Unexpected response format: {type(relevance_data)}")
+            
+            batch_metadata['evaluation_success'] = True
+            batch_metadata['scores_received'] = len(relevance_scores)
+            
+            logger.debug(f"Batch LLM evaluation: {len(relevance_scores)} scores received")
+            for rs in relevance_scores:
+                logger.debug(f"  Source {rs.source_id}: score={rs.relevance_score:.2f}, "
+                           f"relevant={rs.is_relevant}, reason='{rs.relevance_reason}'")
+            
+        except (ValueError, KeyError, json.JSONDecodeError) as e:
+            # FAIL CLOSED: If we can't parse LLM response, reject all sources in this batch
+            logger.error(f"Failed to parse relevance scores for batch: {str(e)}. Rejecting all sources in batch (fail-closed).")
+            logger.error(f"Parse error traceback:\n{traceback.format_exc()}")
+            logger.debug(f"Response content: {response.content[:500]}...")
+            return None
+        
+        # Filter sources based on relevance scores using sequential IDs
+        score_map = {rs.source_id: rs for rs in relevance_scores}
+        
+        # Canonical anchor override: if title is thematic, force-include consensus/control anchors from canonical hosts
+        # BUT: Only override if LLM marked it as relevant (respect LLM's judgment)
+        # Use sequential IDs for matching
+        try:
+            canonical_hosts = ('ieeexplore.ieee.org', 'dl.acm.org', 'link.springer.com', 'sciencedirect.com', 'arxiv.org')
+            anchor_keywords = ('consensus', 'multi-agent', 'cooperation', 'leader', 'formation', 'containment')
+            themed = any(t in title.lower() for t in ('command','control','consensus','coordination','hierarchical'))
+            if themed:
+                for seq_id, source in sequential_id_to_source.items():
+                    if any(h in (source.url or '') for h in canonical_hosts):
+                        st = (source.title or '').lower()
+                        if any(k in st for k in anchor_keywords):
+                            existing = score_map.get(seq_id)  # Use sequential ID
+                            # Only override if LLM didn't explicitly reject it
+                            if existing and existing.is_relevant:
+                                score_map[seq_id] = SourceRelevanceScore(
+                                    source_id=seq_id,  # Use sequential ID
+                                    relevance_score=max(0.5, existing.relevance_score),
+                                    relevance_reason='canonical anchor override (consensus/control)',
+                                    is_relevant=True
+                                )
+        except Exception as _:
+            pass
+        
+        relevant_sources = []
+        theme_terms = ('command', 'control', 'consensus', 'coordination', 'hierarchical')
+        title_lower = title.lower()
+        
+        # Filter sources using sequential IDs
+        for seq_id, source in sequential_id_to_source.items():
+            rs = score_map.get(seq_id)  # Use sequential ID for matching
+            if not rs:
+                logger.warning(f"Source {seq_id} '{source.title}' missing from LLM scores - rejecting")
+                continue
+            
+            # CRITICAL: Respect LLM's is_relevant flag - if LLM says not relevant, reject regardless of score
+            if not rs.is_relevant:
+                batch_metadata['sources_rejected_by_llm'] += 1
+                logger.debug(f"✗ Source '{source.title}' rejected by LLM (is_relevant=False, score: {rs.relevance_score:.2f}, reason: '{rs.relevance_reason}')")
+                continue
+            
+            # Apply threshold logic
+            base_thresh = min_threshold
+            if source.url in foundational_urls:
+                eff_thresh = STIConfig.MIN_TITLE_RELEVANCE_SCORE_FOUNDATIONAL
+            else:
+                eff_thresh = base_thresh
+            
+            # Check if source is from canonical academic domain
+            canonical_hosts = ('ieeexplore.ieee.org', 'dl.acm.org', 'link.springer.com', 'sciencedirect.com', 'arxiv.org', 'jstor.org')
+            is_canonical_domain = any(h in (source.url or '') for h in canonical_hosts)
+            
+            # Lower threshold for canonical papers that can ground first-principles reasoning
+            if is_canonical_domain and rs.is_relevant:
+                canonical_thresh = getattr(STIConfig, 'CANONICAL_RELEVANCE_THRESHOLD', 0.50)
+                eff_thresh = min(eff_thresh, canonical_thresh)
+                logger.debug(f"Applying canonical threshold ({canonical_thresh:.2f}) for source from canonical domain: {source.title[:50]}...")
+            
+            # Further relax for canonical academic hosts on themed titles (but still require LLM approval)
+            if (is_canonical_domain and any(t in title_lower for t in theme_terms)):
+                eff_thresh = min(eff_thresh, STIConfig.MIN_TITLE_RELEVANCE_SCORE_FOUNDATIONAL)
+            
+            if rs.relevance_score >= eff_thresh:
+                relevant_sources.append(source)
+                batch_metadata['sources_passed'] += 1
+                logger.debug(f"✓ Source '{source.title}' deemed relevant (score: {rs.relevance_score:.2f}, thresh: {eff_thresh:.2f})")
+            else:
+                batch_metadata['sources_rejected_by_score'] += 1
+                logger.debug(f"✗ Source '{source.title}' filtered out (score: {rs.relevance_score:.2f}, thresh: {eff_thresh:.2f})")
+        
+        return relevant_sources, batch_metadata
+    
+    def _filter_sources_by_title_relevance(self, sources: List[Source], title: str, query: str = None, foundational_urls: set = None, min_score: float = None, query_domain: str = None) -> Tuple[List[Source], Dict[str, Any]]:
+        """
+        Filter sources using LLM-based relevance scoring.
+        
+        This is the PRIMARY gate for ensuring ALL sources are relevant to the query topic.
+        Sources that pass this gate will be cited in the report.
+        
+        Returns:
+            Tuple of (filtered_sources, metadata) where metadata contains:
+            - 'evaluation_success': bool - whether LLM evaluation succeeded
+            - 'failure_reason': str - reason if evaluation failed
+            - 'scores_received': int - number of scores from LLM
+            - 'sources_rejected_by_llm': int - sources LLM marked as not relevant
+            - 'sources_rejected_by_score': int - sources below threshold
+            - 'sources_passed': int - sources that passed all checks
+        """
+        metadata = {
+            'evaluation_success': False,
+            'failure_reason': None,
+            'scores_received': 0,
+            'sources_rejected_by_llm': 0,
+            'sources_rejected_by_score': 0,
+            'sources_passed': 0
+        }
+        
         if not sources:
-            return sources
+            # Nothing to validate = success (not a failure)
+            metadata['evaluation_success'] = True
+            metadata['scores_received'] = 0
+            return sources, metadata
+        
         foundational_urls = foundational_urls or set()
+        query = query or title  # Use query if provided, otherwise use title
+        
+        # Extract query domain if not provided (Stage 1: Domain Extraction)
+        query_domain_obj = None
+        if not query_domain:
+            query_domain_obj = self._extract_query_domain(query, title)
+            query_domain = query_domain_obj.primary_domain  # Extract string for backward compatibility
+        else:
+            # If query_domain was provided as string, create minimal QueryDomain object
+            query_domain_obj = QueryDomain(
+                primary_domain=query_domain,
+                domain_keywords=[],
+                confidence=0.7
+            )
         
         # First pass: filter out obviously irrelevant sources
         pre_filtered_sources = []
@@ -2625,155 +3701,181 @@ Return your assessment:"""
         
         if not pre_filtered_sources:
             logger.warning("All sources filtered out in pre-filtering stage")
-            return sources  # Return original sources if all filtered out
+            metadata['failure_reason'] = 'pre_filter_rejected_all'
+            return [], metadata
         
         try:
             # Create Pydantic output parser for structured relevance scoring
             parser = PydanticOutputParser(pydantic_object=SourceRelevanceScore)
             
-            # Create prompt template for relevance scoring
+            # Create prompt template with comprehensive relevance evaluation and domain comparison (Stage 2: Domain-Aware Evaluation)
             prompt_template = PromptTemplate(
-                input_variables=["title", "sources_text", "min_threshold"],
-                template="""You are a source relevance expert. Your task is to score how relevant each source is to the specific report title.
+                input_variables=["title", "query", "query_domain", "sources_text", "min_threshold"],
+                template="""You are a source relevance expert. Your task is to score how relevant each source is to the specific report title and query topic.
 
-PURPOSE: Determine which sources are actually relevant to the report title's specific topic.
+PURPOSE: Determine which sources are actually relevant to the report title's specific topic. A source must be DIRECTLY relevant to the query topic to be included.
 
-CONTEXT: We have a report title and multiple sources. Some sources may be tangentially related but not directly relevant to the title's specific focus.
+QUERY DOMAIN ANALYSIS:
+Query Domain: {query_domain}
+(This query is primarily about: {query_domain})
 
-TASK: For each source, provide:
-1. A relevance score (0.0 to 1.0) where 1.0 = highly relevant to the title's specific topic
-2. A brief reason explaining why the source is or isn't relevant
-3. Whether the source meets the relevance threshold (≥{min_threshold})
+CRITICAL EVALUATION CRITERIA (IN ORDER OF PRIORITY):
+1. **Domain Alignment (MOST IMPORTANT - CHECK FIRST)**: 
+   - FIRST: Identify what domain/field the SOURCE is about (e.g., medical/healthcare, technology/AI, finance, legal, etc.)
+   - SECOND: Compare the source's domain to the query's domain ({query_domain})
+   - If domains don't match (e.g., medical source for technology query), IMMEDIATELY mark is_relevant=False and score <0.3
+   - Domain mismatches are AUTOMATIC REJECTION - no exceptions, regardless of keyword overlap
+   - Example: "Canadian Pediatric Massive Hemorrhage Protocols" (medical/healthcare) for "Cognitive Wars: AI Industrialization" (technology/AI) → REJECT with score 0.1
 
-EVALUATION CRITERIA:
-- Does the source directly address the specific topic in the title?
-- Is the source content focused on the title's domain/field?
-- Would this source be cited in a report about this specific title?
+2. **Topic Relevance**: Does the source directly address the specific topic in the title/query? Sources that are tangentially related but not directly on-topic should be rejected.
+
+3. **Content Focus**: Does the source's actual content match the query topic, or is it only superficially related? Sources that share keywords but discuss different topics should be rejected.
+
+4. **Citation Appropriateness**: Would this source be cited in a report about this specific title? If you wouldn't cite it, mark it as not relevant.
+
+EXAMPLES OF DOMAIN MISMATCHES TO REJECT:
+- Medical/healthcare source (pediatric protocols, hospital procedures, clinical trials) for technology query (AI, cognitive warfare, algorithms) → REJECT with score 0.1, is_relevant=False
+- Finance/economics source for healthcare query → REJECT with score 0.1, is_relevant=False  
+- Legal/policy source for technical engineering query → REJECT with score 0.1, is_relevant=False
+- Sports/entertainment source for business/technology query → REJECT with score 0.1, is_relevant=False
+
+EVALUATION WORKFLOW:
+For EACH source:
+1. FIRST: Identify the source's domain (what field is it about? medical? technology? finance? etc.)
+2. SECOND: Compare source domain to query domain ({query_domain})
+3. If domains don't match → Score 0.1, is_relevant=False, reason="Domain mismatch: [source domain] source for [query domain] query"
+4. If domains match → Continue with topic relevance evaluation
+
+EVALUATION INSTRUCTIONS:
+- Score 0.0-0.3: Completely irrelevant or wrong domain - mark is_relevant=False
+- Score 0.3-0.5: Tangentially related but not directly relevant - mark is_relevant=False  
+- Score 0.5-0.7: Somewhat relevant but not directly on-topic - mark is_relevant=False if threshold is {min_threshold}
+- Score 0.7-1.0: Directly relevant and appropriate - mark is_relevant=True
+
+CANONICAL PAPER EVALUATION (for sources from canonical academic domains):
+For sources from IEEE, ACM, Springer, ScienceDirect, arXiv, etc.:
+- If the source is a canonical/seminal paper (highly cited, foundational work)
+- AND the source domain aligns with query domain (even if topic is tangential)
+- AND the source can ground first-principles reasoning about the query topic
+- THEN: Score 0.5-0.6 and mark is_relevant=True (lower threshold for canonical papers)
+- Example: A foundational paper on "multi-agent consensus" for a query about "cognitive warfare coordination" 
+  → Score 0.55, is_relevant=True, reason="Canonical paper on multi-agent coordination that can ground first-principles reasoning about coordination mechanisms in cognitive warfare"
 
 Report Title: {title}
+Query Topic: {query}
+Query Domain: {query_domain}
 
 Sources to evaluate:
 {sources_text}
 
 {format_instructions}
 
-IMPORTANT: Return a JSON array where each element is a SourceRelevanceScore object for each source."""
+IMPORTANT: 
+- Be EXTREMELY strict about domain alignment - this is the primary filter
+- Domain mismatch = automatic rejection regardless of keyword overlap
+- Always state the source's domain in your relevance_reason
+- For canonical papers: Accept tangentially related papers if they can ground first-principles reasoning
+- Be strict about relevance - it's better to reject a source than include an irrelevant one
+- Return a JSON array where each element is a SourceRelevanceScore object for each source
+- For each source, provide a clear reason explaining why it is or isn't relevant
+- Mark is_relevant=False for any source that wouldn't be appropriate to cite in a report about this specific title/query"""
             )
             
-            # Prepare sources text for evaluation using pre-filtered sources
-            sources_text = "\n\n".join([
-                f"Source {s.id}: {s.title}\nPublisher: {s.publisher}\nContent: {s.content[:500]}..."
-                for s in pre_filtered_sources
-            ])
-            
-            # Choose threshold for display (logic below uses per-source thresholds). If caller provided min_score, use it.
             min_threshold = (min_score if min_score is not None else STIConfig.MIN_TITLE_RELEVANCE_SCORE)
+            batch_size = getattr(STIConfig, 'MAX_SOURCES_PER_LLM_BATCH', 20)
             
-            # Create prompt with format instructions
-            prompt = prompt_template.format(
-                title=title,
-                sources_text=sources_text,
-                min_threshold=f"{min_threshold:.2f}",
-                format_instructions=parser.get_format_instructions()
-            )
-            
-            # Get structured response from LLM
-            response = self.llm.invoke(prompt)
-            
-            # Parse the response (expecting multiple SourceRelevanceScore objects)
-            # The LLM should return a JSON array of relevance scores
-            try:
-                # Clean up the response content
-                content = response.content.strip()
+            # Check if batching is needed
+            if len(pre_filtered_sources) <= batch_size:
+                # Process single batch (no batching needed)
+                batch_results = self._process_relevance_batch(
+                    pre_filtered_sources, title, query, query_domain, min_threshold,
+                    foundational_urls, prompt_template, parser
+                )
+                if batch_results is None:
+                    # Batch processing failed
+                    metadata['failure_reason'] = 'batch_processing_failed'
+                    return [], metadata
                 
-                # Try to extract JSON from the response if it's wrapped in markdown
-                if "```json" in content:
-                    content = content.split("```json")[1].split("```")[0].strip()
-                elif "```" in content:
-                    content = content.split("```")[1].split("```")[0].strip()
+                batch_relevant_sources, batch_metadata = batch_results
+                metadata.update(batch_metadata)
+                return batch_relevant_sources, metadata
+            else:
+                # Process in batches
+                total_batches = (len(pre_filtered_sources) + batch_size - 1) // batch_size
+                logger.info(f"Processing {len(pre_filtered_sources)} sources in {total_batches} batches of up to {batch_size} sources")
                 
-                # Try to parse as JSON array first
-                relevance_data = json.loads(content)
-                if isinstance(relevance_data, list):
-                    relevance_scores = [SourceRelevanceScore(**item) for item in relevance_data]
-                elif isinstance(relevance_data, dict) and "results" in relevance_data:
-                    # Handle case where LLM returns {"results": [...]}
-                    relevance_scores = [SourceRelevanceScore(**item) for item in relevance_data["results"]]
-                else:
-                    # Fallback: try to parse as single object
-                    relevance_scores = [SourceRelevanceScore(**relevance_data)]
+                all_relevant_sources = []
+                all_batch_success = True
+                
+                for batch_idx in range(total_batches):
+                    start_idx = batch_idx * batch_size
+                    end_idx = min(start_idx + batch_size, len(pre_filtered_sources))
+                    batch_sources = pre_filtered_sources[start_idx:end_idx]
                     
-                logger.info(f"Successfully parsed {len(relevance_scores)} relevance scores")
+                    logger.info(f"Batch {batch_idx + 1}/{total_batches}: Processing {len(batch_sources)} sources...")
+                    
+                    try:
+                        batch_results = self._process_relevance_batch(
+                            batch_sources, title, query, query_domain, min_threshold,
+                            foundational_urls, prompt_template, parser
+                        )
+                        
+                        if batch_results is None:
+                            logger.warning(f"Batch {batch_idx + 1} processing failed, continuing with other batches")
+                            all_batch_success = False
+                            continue
+                        
+                        batch_relevant_sources, batch_metadata = batch_results
+                        all_relevant_sources.extend(batch_relevant_sources)
+                        
+                        # Aggregate metadata
+                        metadata['scores_received'] += batch_metadata.get('scores_received', 0)
+                        metadata['sources_rejected_by_llm'] += batch_metadata.get('sources_rejected_by_llm', 0)
+                        metadata['sources_rejected_by_score'] += batch_metadata.get('sources_rejected_by_score', 0)
+                        metadata['sources_passed'] += batch_metadata.get('sources_passed', 0)
+                        
+                        logger.info(f"Batch {batch_idx + 1}: {batch_metadata.get('sources_passed', 0)} passed, "
+                                   f"{batch_metadata.get('sources_rejected_by_llm', 0)} rejected by LLM, "
+                                   f"{batch_metadata.get('sources_rejected_by_score', 0)} rejected by score")
+                        
+                    except Exception as e:
+                        logger.error(f"Error processing batch {batch_idx + 1}: {str(e)}")
+                        logger.debug(f"Batch error traceback:\n{traceback.format_exc()}")
+                        all_batch_success = False
+                        continue
                 
-            except (ValueError, KeyError, json.JSONDecodeError) as e:
-                # Fallback: create default scores if parsing fails
-                logger.warning(f"Failed to parse relevance scores: {str(e)}. Using default values.")
-                logger.debug(f"Response content: {response.content[:500]}...")
-                relevance_scores = [
-                    SourceRelevanceScore(
-                        source_id=s.id,
-                        relevance_score=float(min_threshold),
-                        relevance_reason="Heuristic fallback (parse failure)",
-                        is_relevant=True
-                    ) for s in pre_filtered_sources
-                ]
-            
-            # Filter sources based on relevance scores with foundational relax
-            score_map = {rs.source_id: rs for rs in relevance_scores}
-
-            # Canonical anchor override: if title is thematic, force-include consensus/control anchors from canonical hosts
-            try:
-                canonical_hosts = ('ieeexplore.ieee.org', 'dl.acm.org', 'link.springer.com', 'sciencedirect.com', 'arxiv.org')
-                anchor_keywords = ('consensus', 'multi-agent', 'cooperation', 'leader', 'formation', 'containment')
-                themed = any(t in title.lower() for t in ('command','control','consensus','coordination','hierarchical'))
-                if themed:
-                    for s in pre_filtered_sources:
-                        if any(h in (s.url or '') for h in canonical_hosts):
-                            st = (s.title or '').lower()
-                            if any(k in st for k in anchor_keywords):
-                                existing = score_map.get(s.id)
-                                score_map[s.id] = SourceRelevanceScore(
-                                    source_id=s.id,
-                                    relevance_score=max(0.5, getattr(existing, 'relevance_score', 0.5)),
-                                    relevance_reason='canonical anchor override (consensus/control)',
-                                    is_relevant=True
-                                )
-            except Exception as _:
-                pass
-            relevant_sources = []
-            canonical_publishers = {
-                'ieeexplore.ieee.org', 'dl.acm.org', 'link.springer.com', 'sciencedirect.com'
-            }
-            theme_terms = ('command', 'control', 'consensus', 'coordination', 'hierarchical')
-            title_lower = title.lower()
-            for source in pre_filtered_sources:
-                rs = score_map.get(source.id)
-                if not rs:
-                    continue
-                base_thresh = (min_score if min_score is not None else STIConfig.MIN_TITLE_RELEVANCE_SCORE)
-                if source.url in foundational_urls:
-                    eff_thresh = STIConfig.MIN_TITLE_RELEVANCE_SCORE_FOUNDATIONAL
-                else:
-                    eff_thresh = base_thresh
-                # Further relax for canonical academic hosts on themed titles
-                if (any(h in (source.url or '') for h in ('ieeexplore.ieee.org','dl.acm.org','link.springer.com','sciencedirect.com','arxiv.org'))
-                    and any(t in title_lower for t in theme_terms)):
-                    eff_thresh = min(eff_thresh, STIConfig.MIN_TITLE_RELEVANCE_SCORE_FOUNDATIONAL)
-                if rs.relevance_score >= eff_thresh:
-                    relevant_sources.append(source)
-                    logger.info(f"✓ Source '{source.title}' deemed relevant (score: {rs.relevance_score:.2f}, thresh: {eff_thresh})")
-                else:
-                    logger.info(f"✗ Source '{source.title}' filtered out (score: {rs.relevance_score:.2f}, thresh: {eff_thresh})")
-            
-            logger.info(f"Filtered {len(pre_filtered_sources)} pre-filtered sources down to {len(relevant_sources)} relevant sources")
-            return relevant_sources
+                # Set evaluation_success based on whether all batches succeeded
+                metadata['evaluation_success'] = all_batch_success
+                if not all_batch_success:
+                    metadata['failure_reason'] = 'some_batches_failed'
+                
+                logger.info(f"LLM relevance filtering (batched): {len(pre_filtered_sources)} → {len(all_relevant_sources)} sources "
+                           f"(rejected by LLM: {metadata['sources_rejected_by_llm']}, "
+                           f"rejected by score: {metadata['sources_rejected_by_score']}, "
+                           f"passed: {metadata['sources_passed']})")
+                
+                return all_relevant_sources, metadata
             
         except Exception as e:
             logger.error(f"Error filtering sources by relevance: {str(e)}")
-            return sources  # Return all sources if filtering fails
+            logger.error(f"Filter error traceback:\n{traceback.format_exc()}")
+            logger.error(f"Query: {query}, Title: {title}, Query Domain: {query_domain}")
+            logger.error(f"Sources count: {len(sources)}")
+            logger.error(f"Pre-filtered sources count: {len(pre_filtered_sources) if 'pre_filtered_sources' in locals() else 'N/A'}")
+            metadata['failure_reason'] = f'exception: {str(e)}'
+            # FAIL CLOSED: Return empty list, trigger retry logic upstream
+            return [], metadata
     
-    def _derive_title_from_content(self, signals: List[Dict], sources: List[Source], original_query: str, intent: str = "market") -> str:
-        """Derive title using structured output to ensure consistent format (intent-aware)"""
+    def _derive_title_from_content(self, signals: List[Dict], sources: List[Source], original_query: str, intent: str = "market", thesis_content: Optional[str] = None) -> str:
+        """Derive title using structured output to ensure consistent format (intent-aware)
+        
+        Args:
+            signals: List of extracted signals
+            sources: List of validated sources
+            original_query: Original query string
+            intent: Query intent ("market" or "theory")
+            thesis_content: Optional thesis report content (for thesis-path, refines title based on actual thesis)
+        """
         if not STIConfig.ENABLE_TITLE_REFINEMENT:
             return f"Tech Brief — {original_query}"
             
@@ -2782,9 +3884,55 @@ IMPORTANT: Return a JSON array where each element is a SourceRelevanceScore obje
             parser = PydanticOutputParser(pydantic_object=TitleRefinement)
             
             # Create prompt template for title derivation
-            prompt_template = PromptTemplate(
-                input_variables=["signals", "sources", "original_query", "guardrails"],
-                template="""You are a title refinement expert. Your task is to derive a more accurate report title based on the actual content found.
+            if thesis_content:
+                # Enhanced prompt for thesis-path: include generated thesis content
+                prompt_template = PromptTemplate(
+                    input_variables=["signals", "sources", "original_query", "thesis_content", "guardrails"],
+                    template="""You are a title refinement expert. Your task is to derive a more accurate report title based on the actual content found AND the generated thesis.
+
+PURPOSE: Create a title that accurately represents both the original query intent AND the actual thesis content generated from first-principles reasoning.
+
+CONTEXT: We have signals, sources, and a generated thesis report. The title should reflect:
+1. The original query topic
+2. The actual thesis arguments and conclusions generated
+3. The first-principles reasoning path taken
+
+TASK: Analyze the signals, sources, and generated thesis to:
+1. Identify the main topic/theme from the original query
+2. Identify the key arguments and conclusions from the generated thesis
+3. Create a title that bridges the query intent with the thesis conclusions
+4. Ensure the title reflects the first-principles reasoning approach taken
+5. Score how well the new title aligns with the original query
+6. Determine if the title should be updated
+
+{guardrails}
+
+EVALUATION CRITERIA:
+- Does the new title accurately reflect both the query intent AND the thesis content?
+- Does it capture the first-principles reasoning path taken?
+- Is it more specific and descriptive than the original?
+- Would someone reading this title expect to find this thesis content?
+
+Signals found:
+{signals}
+
+Sources found:
+{sources}
+
+Generated Thesis (key sections):
+{thesis_content}
+
+Original Query: {original_query}
+
+{format_instructions}
+
+Return structured JSON with the refined title:"""
+                )
+            else:
+                # Standard prompt for market-path
+                prompt_template = PromptTemplate(
+                    input_variables=["signals", "sources", "original_query", "guardrails"],
+                    template="""You are a title refinement expert. Your task is to derive a more accurate report title based on the actual content found.
 
 PURPOSE: Create a title that accurately represents the content that was actually found, rather than the original query.
 
@@ -2814,11 +3962,34 @@ Original Query: {original_query}
 {format_instructions}
 
 Return structured JSON with the refined title:"""
-            )
+                )
             
             # Prepare signals and sources text
             signals_text = "\n".join([f"- {s.get('text', '')}" for s in signals[:3]])  # Top 3 signals
             sources_text = "\n".join([f"- {s.title} ({s.publisher})" for s in sources[:5]])  # Top 5 sources
+            
+            # Prepare thesis content text if provided (extract key sections)
+            thesis_content_text = ""
+            if thesis_content:
+                # Extract key sections: Abstract, Executive Summary, Introduction, and first 2000 chars of main content
+                import re
+                abstract_match = re.search(r'^#+\s+Abstract\s*\n+(.+?)(?=\n#+\s+|$)', thesis_content, re.MULTILINE | re.DOTALL | re.IGNORECASE)
+                exec_summary_match = re.search(r'^#+\s+Executive Summary\s*\n+(.+?)(?=\n#+\s+|$)', thesis_content, re.MULTILINE | re.DOTALL | re.IGNORECASE)
+                intro_match = re.search(r'^#+\s+Introduction\s*\n+(.+?)(?=\n#+\s+|$)', thesis_content, re.MULTILINE | re.DOTALL | re.IGNORECASE)
+                
+                thesis_parts = []
+                if abstract_match:
+                    thesis_parts.append(f"Abstract: {abstract_match.group(1)[:500]}")
+                if exec_summary_match:
+                    thesis_parts.append(f"Executive Summary: {exec_summary_match.group(1)[:500]}")
+                if intro_match:
+                    thesis_parts.append(f"Introduction: {intro_match.group(1)[:500]}")
+                
+                # Add first section of main content if available
+                if not thesis_parts:
+                    thesis_parts.append(f"Main Content (excerpt): {thesis_content[:1000]}")
+                
+                thesis_content_text = "\n\n".join(thesis_parts)
             
             # Market-specific guardrails
             guardrails = ""
@@ -2836,15 +4007,34 @@ Return structured JSON with the refined title:"""
                     f"- Alignment to original query must be >= {min_align:.2f}.\n"
                     "- Format example: 'Market Brief — <Specific Topic>: <Concrete Angle>'\n"
                 )
+            elif intent == "theory" and thesis_content:
+                # Theory-specific guardrails when thesis content is available
+                guardrails = (
+                    "CONSTRAINTS (THEORY):\n"
+                    "- Title should reflect both the original query AND the thesis conclusions\n"
+                    "- Ensure title captures the first-principles reasoning approach\n"
+                    "- Maintain connection to original query topic while reflecting thesis depth\n"
+                    "- Prefer titles that indicate theoretical/foundational analysis\n"
+                )
 
             # Create prompt with format instructions
-            prompt = prompt_template.format(
-                signals=signals_text,
-                sources=sources_text,
-                original_query=original_query,
-                guardrails=guardrails,
-                format_instructions=parser.get_format_instructions()
-            )
+            if thesis_content:
+                prompt = prompt_template.format(
+                    signals=signals_text,
+                    sources=sources_text,
+                    original_query=original_query,
+                    thesis_content=thesis_content_text,
+                    guardrails=guardrails,
+                    format_instructions=parser.get_format_instructions()
+                )
+            else:
+                prompt = prompt_template.format(
+                    signals=signals_text,
+                    sources=sources_text,
+                    original_query=original_query,
+                    guardrails=guardrails,
+                    format_instructions=parser.get_format_instructions()
+                )
             
             # Get structured response from LLM
             response = self.llm.invoke(prompt)
@@ -3182,16 +4372,23 @@ Return structured JSON with the refined title:"""
             )
             
             if intent == "theory":
-                # Expand query for theoretical search
-                expanded_query = self._expand_theoretical_query(query)
+                # Extract query domain for use in searches
+                original_title = f"Tech Brief — {query}"
+                query_domain_obj = self._extract_query_domain(query, original_title)
+                query_domain = query_domain_obj.primary_domain
+                domain_keywords = query_domain_obj.domain_keywords
+                logger.info(f"Extracted domain: {query_domain}, keywords: {domain_keywords}")
+                
+                # Expand query for theoretical search (now with domain info)
+                expanded_query = self._expand_theoretical_query(query, refined_query, query_domain, domain_keywords)
                 logger.info(f"Theory query expanded: '{query}' → '{expanded_query}'")
                 
                 # Decompose query into core concepts
                 concepts = self._decompose_theory_query(query)
                 logger.info(f"Decomposed query into concepts: {concepts}")
                 
-                # Search for foundational sources with extended time window
-                foundational_sources = self._search_foundational_sources(concepts, STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK)
+                # Search for foundational sources with extended time window (now with domain info)
+                foundational_sources = self._search_foundational_sources(concepts, STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK, query_domain, domain_keywords)
                 logger.info(f"Found {len(foundational_sources)} foundational sources")
                 
                 # Search recent academic sources
@@ -3244,6 +4441,22 @@ Return structured JSON with the refined title:"""
             concepts_for_filter = concepts if intent == "theory" else None
             semantically_relevant_sources = self._semantic_similarity_filter(sources, query, threshold=threshold, concepts=concepts_for_filter)
             
+            # NEW: Retry logic if semantic filter returns empty for thesis-path
+            if not semantically_relevant_sources and intent == "theory":
+                logger.info("Semantic filter returned empty for theory query, retrying with expanded search...")
+                # Retry 1: Expand query with more foundational terms
+                expanded_query_retry = self._expand_theoretical_query(query)
+                retry_sources = self._search_theoretical_concepts(expanded_query_retry, days_back)
+                retry_sources.extend(self._search_foundational_sources(concepts or [query], STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK))
+                # Re-apply semantic filter with slightly lower threshold for retry
+                semantically_relevant_sources = self._semantic_similarity_filter(
+                    retry_sources, query, threshold=threshold * 0.9, concepts=concepts_for_filter
+                )
+                if semantically_relevant_sources:
+                    logger.info(f"Retry successful: found {len(semantically_relevant_sources)} semantically relevant sources")
+                else:
+                    logger.warning("Retry still returned empty, will proceed with thesis-path using first-principles")
+            
             # Apply rubric reranker for theory intent
             if intent == "theory":
                 semantically_relevant_sources = self._rubric_rerank(semantically_relevant_sources, query, concepts or [])
@@ -3253,18 +4466,275 @@ Return structured JSON with the refined title:"""
             foundational_urls = set(s.url for s in foundational_sources) if intent == "theory" else set()
             market_thresh = getattr(STIConfig, 'MARKET_TITLE_RELEVANCE_THRESHOLD', 0.5)
             if intent == "theory":
-                relevant_sources = self._filter_sources_by_title_relevance(
+                relevant_sources, filter_metadata = self._filter_sources_by_title_relevance(
                     semantically_relevant_sources,
                     original_title,
+                    query=query,
                     foundational_urls=foundational_urls,
                 )
             else:
-                relevant_sources = self._filter_sources_by_title_relevance(
+                logger.debug(f"Skipping retry loop for intent={intent} (market-path)")
+                relevant_sources, filter_metadata = self._filter_sources_by_title_relevance(
                     semantically_relevant_sources,
                     original_title,
+                    query=query,
                     foundational_urls=set(),
                     min_score=market_thresh,
                 )
+            
+            # Log metadata for debugging
+            if filter_metadata['evaluation_success']:
+                logger.info(f"LLM evaluation: {filter_metadata['scores_received']} scores, "
+                           f"{filter_metadata['sources_rejected_by_llm']} rejected by LLM, "
+                           f"{filter_metadata['sources_rejected_by_score']} rejected by score, "
+                           f"{filter_metadata['sources_passed']} passed")
+            else:
+                logger.warning(f"LLM evaluation failed: {filter_metadata['failure_reason']}")
+            
+            # NEW: Retry loop for theory queries to gather 10 LLM-validated sources
+            if intent == "theory":
+                logger.debug("Entering theory-path retry loop")
+                min_required_thesis = getattr(STIConfig, 'MIN_SOURCES_THESIS_PATH', 10)
+                total_validated = len(relevant_sources) + len(foundational_sources)
+                
+                # Ensure domain info is available (should have been extracted earlier, but ensure it exists)
+                if 'query_domain_obj' not in locals() or query_domain_obj is None:
+                    if 'query_domain' not in locals() or query_domain is None:
+                        original_title = f"Tech Brief — {query}"
+                        query_domain_obj = self._extract_query_domain(query, original_title)
+                        query_domain = query_domain_obj.primary_domain
+                        domain_keywords = query_domain_obj.domain_keywords
+                        logger.info(f"Extracted domain in retry loop: {query_domain}, keywords: {domain_keywords}")
+                    else:
+                        # query_domain exists as string, create QueryDomain object
+                        query_domain_obj = QueryDomain(
+                            primary_domain=query_domain,
+                            domain_keywords=domain_keywords or [],
+                            confidence=0.7
+                        )
+                else:
+                    # query_domain_obj exists, ensure query_domain string is set
+                    if 'query_domain' not in locals() or query_domain is None:
+                        query_domain = query_domain_obj.primary_domain
+                        domain_keywords = query_domain_obj.domain_keywords
+                
+                # Identify abstraction layers and canonical papers before retry loop
+                abstraction_layers = {}
+                canonical_papers = {}
+                try:
+                    logger.info("Identifying abstraction layers for multi-layer search...")
+                    abstraction_layers = self._identify_abstraction_layers(query, query_domain_obj)
+                    logger.info(f"Identified {len(abstraction_layers)} abstraction layers")
+                    
+                    logger.info("Identifying canonical papers for each abstraction layer...")
+                    canonical_papers = self._identify_canonical_papers(abstraction_layers, query_domain_obj)
+                    logger.info(f"Identified canonical papers for {len(canonical_papers)} layers")
+                except Exception as e:
+                    logger.warning(f"Abstraction layer/canonical paper identification failed: {e}, continuing without them")
+                    logger.debug(f"Exception traceback: {traceback.format_exc()}")
+                
+                # ADD: Diagnostic logging
+                logger.info(f"Retry loop check: intent={intent}, total_validated={total_validated}, "
+                           f"min_required={min_required_thesis}, relevant={len(relevant_sources)}, "
+                           f"foundational={len(foundational_sources)}")
+                
+                # Retry loop: keep searching until we have 10 LLM-validated sources
+                max_retry_attempts = 5  # Allow more retries for theory queries
+                retry_attempt = 0
+                
+                should_retry = total_validated < min_required_thesis
+                logger.info(f"Retry loop condition: {should_retry} (total_validated={total_validated} < min_required={min_required_thesis})")
+                
+                while should_retry and retry_attempt < max_retry_attempts:
+                    retry_attempt += 1
+                    logger.warning(
+                        f"Thesis-path: Only {total_validated} LLM-validated sources "
+                        f"(required: {min_required_thesis}). Retry attempt {retry_attempt}/{max_retry_attempts} "
+                        f"to gather more sources..."
+                    )
+                    
+                    # Use LLM-generated queries for retry searches
+                    search_concepts = concepts or [query]
+                    
+                    # Strategy 1: Search for more anchor sources using LLM-generated queries
+                    additional_anchors_raw = []
+                    try:
+                        logger.info(f"Retry {retry_attempt}: Strategy 1 - Anchor search with {len(search_concepts)} concepts, domain: {query_domain}")
+                        additional_anchors_raw = self._search_thesis_anchor_sources(
+                            query,
+                            STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK,
+                            refined_query=refined_query,
+                            query_domain=query_domain,
+                            domain_keywords=domain_keywords,
+                            concepts=search_concepts,
+                            retry_attempt=retry_attempt
+                        )
+                        logger.info(f"Found {len(additional_anchors_raw)} anchor sources")
+                    except Exception as e:
+                        logger.warning(f"Anchor source search failed: {str(e)}")
+                        logger.debug(f"Exception traceback: {traceback.format_exc()}")
+                    
+                    # Strategy 2: Search for more foundational sources (with domain keywords)
+                    additional_foundational_raw = []
+                    try:
+                        logger.info(f"Retry {retry_attempt}: Strategy 2 - Foundational search with domain keywords: {domain_keywords[:3] if domain_keywords else 'none'}")
+                        additional_foundational_raw = self._search_foundational_sources(
+                            search_concepts,
+                            STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK,
+                            query_domain=query_domain,
+                            domain_keywords=domain_keywords
+                        )
+                        logger.info(f"Found {len(additional_foundational_raw)} foundational sources")
+                    except Exception as e:
+                        logger.warning(f"Foundational source search failed: {str(e)}")
+                        logger.debug(f"Exception traceback: {traceback.format_exc()}")
+                    
+                    # Strategy 3: Search with theoretical concepts using refined/expanded query
+                    additional_theoretical_raw = []
+                    if concepts or retry_attempt > 1:  # Also try on later retries even without concepts
+                        try:
+                            widened_days = min(days_back * (retry_attempt + 1), STIConfig.MAX_DAYS_BACK)
+                            logger.info(f"Retry {retry_attempt}: Strategy 3 - Theoretical concepts search with widened window: {widened_days} days")
+                            # Use expanded query with domain info for retries
+                            retry_expanded_query = self._expand_theoretical_query(query, refined_query, query_domain, domain_keywords)
+                            additional_theoretical_raw = self._search_theoretical_concepts(retry_expanded_query, widened_days)
+                            logger.info(f"Found {len(additional_theoretical_raw)} theoretical sources")
+                        except Exception as e:
+                            logger.warning(f"Theoretical concepts search failed: {str(e)}")
+                            logger.debug(f"Exception traceback: {traceback.format_exc()}")
+                    
+                    # Strategy 4: Search across abstraction layers (progressive broadening)
+                    additional_abstraction_raw = []
+                    if abstraction_layers and retry_attempt >= 2:  # Use abstraction layers on retry 2+
+                        try:
+                            # Search progressively broader layers as retry attempts increase
+                            layers_to_search = list(abstraction_layers.items())
+                            # On retry 2: search Layer 2-3, on retry 3+: search all layers
+                            if retry_attempt == 2:
+                                layers_to_search = layers_to_search[1:3] if len(layers_to_search) >= 3 else layers_to_search[1:]
+                            widened_days_abstraction = min(STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK * (retry_attempt - 1), STIConfig.MAX_DAYS_BACK)
+                            
+                            logger.info(f"Retry {retry_attempt}: Strategy 4 - Abstraction layer search across {len(layers_to_search)} layers with {widened_days_abstraction} days window")
+                            additional_abstraction_raw = self._search_abstraction_layers(
+                                query,
+                                dict(layers_to_search),  # Convert back to dict
+                                canonical_papers,
+                                widened_days_abstraction,
+                                query_domain=query_domain,
+                                domain_keywords=domain_keywords
+                            )
+                            logger.info(f"Found {len(additional_abstraction_raw)} sources from abstraction layers")
+                        except Exception as e:
+                            logger.warning(f"Abstraction layer search failed: {str(e)}")
+                            logger.debug(f"Exception traceback: {traceback.format_exc()}")
+                    
+                    # Combine all new sources
+                    all_new_sources = additional_anchors_raw + additional_foundational_raw + additional_theoretical_raw + additional_abstraction_raw
+                    logger.info(f"Retry {retry_attempt} summary: anchors={len(additional_anchors_raw)}, "
+                               f"foundational={len(additional_foundational_raw)}, "
+                               f"theoretical={len(additional_theoretical_raw)}, "
+                               f"abstraction={len(additional_abstraction_raw)}, "
+                               f"total_new={len(all_new_sources)}")
+                    
+                    if not all_new_sources:
+                        # Don't break immediately - try different strategies or widen parameters
+                        logger.warning(f"No new sources found in retry {retry_attempt} - trying different search strategies")
+                        
+                        # On later retries, try searching with extracted key terms instead of full query
+                        if retry_attempt < max_retry_attempts:
+                            # Extract main topic (before colon if present) for next attempt
+                            main_topic = query.split(':')[0].strip() if ':' in query else query
+                            if main_topic != query:
+                                logger.info(f"Will try searching with main topic '{main_topic}' on next retry")
+                            # Continue to next retry attempt instead of breaking
+                            continue
+                        else:
+                            logger.warning("Max retries reached - stopping retry loop")
+                            break
+                    
+                    # CRITICAL: Apply LLM validation to new sources (not just semantic similarity)
+                    logger.info(f"Applying LLM relevance validation to {len(all_new_sources)} new sources...")
+                    foundational_urls_retry = set(s.url for s in foundational_sources)
+                    validated_new_sources, retry_filter_metadata = self._filter_sources_by_title_relevance(
+                        all_new_sources, original_title, query=query, foundational_urls=foundational_urls_retry
+                    )
+                    
+                    if not retry_filter_metadata['evaluation_success']:
+                        logger.warning(f"LLM validation failed in retry: {retry_filter_metadata['failure_reason']}")
+                        # Continue to next retry attempt
+                        continue
+                    
+                    logger.info(f"Retry {retry_attempt}: LLM validated {len(validated_new_sources)} new sources "
+                               f"({retry_filter_metadata['sources_passed']} passed, "
+                               f"{retry_filter_metadata['sources_rejected_by_llm']} rejected by LLM, "
+                               f"{retry_filter_metadata['sources_rejected_by_score']} rejected by score)")
+                    
+                    # Merge validated sources, avoiding duplicates
+                    seen_urls = set(s.url for s in relevant_sources + foundational_sources)
+                    new_count = 0
+                    
+                    for source in validated_new_sources:
+                        if source.url not in seen_urls:
+                            # Determine if foundational or regular based on URL/domain
+                            # Check if source came from foundational search or is from canonical academic domain
+                            is_foundational = (
+                                source.url in foundational_urls_retry or 
+                                any(h in source.url for h in (
+                                    'ieeexplore.ieee.org', 'dl.acm.org', 
+                                    'link.springer.com', 'sciencedirect.com', 'arxiv.org'
+                                ))
+                            )
+                            
+                            if is_foundational:
+                                foundational_sources.append(source)
+                            else:
+                                relevant_sources.append(source)
+                            seen_urls.add(source.url)
+                            new_count += 1
+                    
+                    total_validated = len(relevant_sources) + len(foundational_sources)
+                    logger.info(f"After retry {retry_attempt}: {total_validated} total validated sources "
+                               f"({len(relevant_sources)} relevant + {len(foundational_sources)} foundational), "
+                               f"{new_count} new sources added")
+                    
+                    # Update condition for while loop
+                    should_retry = total_validated < min_required_thesis
+                    
+                    # CRITICAL FIX: Break immediately if we have enough sources
+                    if not should_retry:
+                        logger.info(f"Sufficient sources found ({total_validated} >= {min_required_thesis}) - exiting retry loop")
+                        break
+                    
+                    # If we found new sources, continue retrying; otherwise break
+                    if new_count == 0:
+                        logger.warning(f"No new validated sources found in retry {retry_attempt}")
+                        # Only break if we've exhausted retries OR tried multiple times with no results
+                        if retry_attempt >= max_retry_attempts:
+                            logger.warning("Max retries reached with no new sources - stopping retry loop")
+                            break
+                        # Otherwise continue to next retry attempt
+                        continue
+                
+                # After retry loop, generate conceptual map if we have abstraction layers
+                conceptual_map = None
+                if abstraction_layers and (relevant_sources or foundational_sources):
+                    try:
+                        logger.info("Generating conceptual map from abstraction layers and sources...")
+                        all_sources_for_map = relevant_sources + foundational_sources
+                        conceptual_map = self._generate_conceptual_map(query, all_sources_for_map, abstraction_layers)
+                        logger.info(f"Conceptual map generated ({len(conceptual_map)} chars)")
+                    except Exception as e:
+                        logger.warning(f"Conceptual map generation failed: {e}")
+                        logger.debug(f"Exception traceback: {traceback.format_exc()}")
+                
+                # After retry loop, check if we have enough sources
+                if total_validated < min_required_thesis:
+                    logger.error(
+                        f"Thesis-path source gate FAILED after {retry_attempt} retries: "
+                        f"{total_validated} sources (required: {min_required_thesis})"
+                    )
+                    # Don't return here - let it continue to the general insufficient evidence check below
+                    # This allows the system to still try to generate a report if possible
             
             # Step 9: Early insufficient-evidence write and adaptive fallback
             MIN_REQUIRED_SOURCES = 3
@@ -3343,6 +4813,47 @@ No signals extracted due to insufficient evidence.
             # Check for academic floor failure for theory queries (takes precedence over general source count)
             # BUT: if foundational_sources exist, continue to full thesis-path instead of simplified report
             if intent == "theory" and not academic_floor_met and len(foundational_sources) == 0:
+                # Apply 10-source gate even for simplified thesis path
+                total_sources_count = len(relevant_sources) + len(foundational_sources)
+                min_required = getattr(STIConfig, 'MIN_SOURCES_THESIS_PATH', 10)
+                
+                if total_sources_count < min_required:
+                    logger.warning(
+                        f"Thesis-path source gate: {total_sources_count} sources "
+                        f"(required: {min_required}). Attempting to gather more sources..."
+                    )
+                    
+                    # Try to gather more foundational sources
+                    additional_foundational_raw = self._search_foundational_sources(
+                        concepts or [query], STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK
+                    )
+                    # Filter for relevance using proper theory threshold
+                    additional_foundational = self._semantic_similarity_filter(
+                        additional_foundational_raw, query, 
+                        threshold=STIConfig.SEMANTIC_THRESHOLD_THEORY, concepts=concepts
+                    )
+                    logger.info(f"Found {len(additional_foundational)} relevant foundational sources (from {len(additional_foundational_raw)} total)")
+                    
+                    # Merge
+                    seen_urls = set(s.url for s in relevant_sources + foundational_sources)
+                    for source in additional_foundational:
+                        if source.url not in seen_urls:
+                            foundational_sources.append(source)
+                            seen_urls.add(source.url)
+                    
+                    total_sources_count = len(relevant_sources) + len(foundational_sources)
+                    
+                    if total_sources_count < min_required:
+                        logger.error(
+                            f"Thesis-path source gate FAILED: {total_sources_count} sources "
+                            f"(required: {min_required}). Cannot proceed with thesis-path generation."
+                        )
+                        return _write_insufficient_and_return(
+                            f"Insufficient sources for thesis-path: {total_sources_count}/{min_required}. "
+                            f"Thesis-path requires at least {min_required} sources to ensure adequate "
+                            f"evidence depth and anchor coverage."
+                        )
+                
                 academic_count = len([s for s in relevant_sources if s.source_type == SourceType.ACADEMIC])
                 logger.warning(f"Academic floor unmet ({academic_count}/{STIConfig.MIN_ACADEMIC_SOURCES_THEORY}); generating simplified thesis-style report (no foundational sources available).")
                 # Generate simplified thesis-style report when no foundational sources
@@ -3365,19 +4876,19 @@ No signals extracted due to insufficient evidence.
                 # Continue processing to allow full thesis-path generation (don't return early)
 
             if len(relevant_sources) < MIN_REQUIRED_SOURCES:
-                # Relax filtering based on top scores (fallback)
-                logger.info("Relaxing relevance threshold for fallback selection")
-                # Use pre-filter set as the pool; select top 3 by score regardless of boolean cutoff
-                try:
-                    # We reconstruct scores from known pool by issuing a smaller structured prompt (best-effort)
-                    # If not available, simply keep the first N to ensure a write
-                    pool = sources
-                    if len(pool) >= MIN_REQUIRED_SOURCES:
-                        relevant_sources = pool[:MIN_REQUIRED_SOURCES]
-                except Exception as e:
-                    logger.warning(f"Fallback selection failed: {str(e)}")
-                    # Ensure we at least keep some sources for artifact write
-                    relevant_sources = sources[:MIN_REQUIRED_SOURCES] if sources else []
+                # Only proceed if LLM evaluation succeeded but we need more sources
+                if not filter_metadata['evaluation_success']:
+                    # LLM evaluation failed technically - this is an error, don't bypass
+                    logger.error("LLM evaluation failed - cannot proceed without relevance validation")
+                    return _write_insufficient_and_return(
+                        f"Source relevance evaluation failed: {filter_metadata['failure_reason']}. "
+                        "Cannot generate report without validated sources."
+                    )
+                elif filter_metadata['evaluation_success']:
+                    # LLM correctly evaluated - sources were legitimately rejected
+                    logger.info(f"LLM correctly evaluated sources but only {len(relevant_sources)} passed. "
+                               "Proceeding to retry logic to find more relevant sources.")
+                    # Continue to retry logic below - don't bypass LLM
 
             if len(relevant_sources) < MIN_REQUIRED_SOURCES and days_back < STIConfig.MAX_DAYS_BACK:
                 widened_days = min(days_back * 2, STIConfig.MAX_DAYS_BACK)
@@ -3386,7 +4897,11 @@ No signals extracted due to insufficient evidence.
                 # Only search academic sources for theory queries
                 if intent == "theory":
                     wider_sources.extend(self._search_theoretical_concepts(refined_query, widened_days))
-                relevant_sources = self._filter_sources_by_title_relevance(wider_sources, original_title)
+                relevant_sources, retry_filter_metadata = self._filter_sources_by_title_relevance(
+                    wider_sources, original_title, query=query
+                )
+                # Update metadata
+                filter_metadata = retry_filter_metadata
 
             if len(relevant_sources) < MIN_REQUIRED_SOURCES:
                 # Market fallback: if we have enough in-window independent news, proceed anyway
@@ -3409,10 +4924,16 @@ No signals extracted due to insufficient evidence.
                             return _write_insufficient_and_return()
                     except Exception:
                         return _write_insufficient_and_return()
-                elif intent == "theory" and len(foundational_sources) > 0:
-                    # Theory query with foundational sources: proceed to thesis-path generation
-                    logger.info(f"Only {len(relevant_sources)} relevant sources but {len(foundational_sources)} foundational sources available. Proceeding with thesis-path generation.")
-                    # Continue processing - don't return early
+                elif intent == "theory":
+                    # NEW: Thesis-path always generates a report using first-principles
+                    logger.info(f"Thesis-path: Only {len(relevant_sources)} relevant sources, but proceeding with first-principles thesis generation")
+                    # Ensure we have at least foundational sources or use first-principles
+                    if not foundational_sources:
+                        # Search for foundational sources if we don't have any
+                        logger.info("No foundational sources found, searching for foundational theory...")
+                        foundational_sources = self._search_foundational_sources(concepts or [query], STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK)
+                    # Continue to thesis-path generation (don't return insufficient evidence)
+                    # The thesis structure can work with minimal sources using first-principles
                 else:
                     return _write_insufficient_and_return()
             
@@ -3452,8 +4973,34 @@ No signals extracted due to insufficient evidence.
             signal_count = max(len(relevant_sources), STIConfig.SIGNALS_COUNT)
             signals = self._extract_signals_enhanced(relevant_sources, count=signal_count)
             
-            # Step 6: Derive title from actual content found (intent-aware)
-            final_title = self._derive_title_from_content(signals, relevant_sources, query, intent=intent)
+            # Step 6: Final relevance validation gate - ensure ALL sources are relevant before citation
+            # NOTE: Title refinement happens AFTER report generation to reflect actual content
+            # Use original query for validation to avoid false rejections from poor title refinement
+            original_title_for_validation = f"Tech Brief — {query}"
+            
+            if not relevant_sources:
+                # No sources to validate - this should have been caught earlier, but handle gracefully
+                logger.warning("No sources available for final validation - returning insufficient evidence")
+                return _write_insufficient_and_return(
+                    "No relevant sources found after LLM evaluation. Cannot generate report without validated sources."
+                )
+            
+            logger.info("Applying final relevance validation gate before report generation...")
+            final_relevant_sources, final_metadata = self._filter_sources_by_title_relevance(
+                relevant_sources, original_title_for_validation, query=query
+            )
+            
+            if not final_metadata['evaluation_success']:
+                logger.error("Final relevance validation failed - cannot generate report")
+                return _write_insufficient_and_return(
+                    f"Final source relevance validation failed: {final_metadata['failure_reason']}"
+                )
+            
+            if len(final_relevant_sources) < len(relevant_sources):
+                logger.warning(f"Final validation filtered out {len(relevant_sources) - len(final_relevant_sources)} sources")
+                relevant_sources = final_relevant_sources
+            
+            logger.info(f"Final validation complete: {len(relevant_sources)} sources validated for citation")
             
             # Step 7: NEW - Call analysis MCP tools for deep sections using relevant sources
             sources_json = self._serialize_sources_to_json(relevant_sources)
@@ -3589,6 +5136,9 @@ No signals extracted due to insufficient evidence.
             # Note: thesis_confidence is calculated later in thesis path, so we'll update this below
             final_confidence = float(confidence)
             
+            # Initialize final_title with original query (will be refined after report generation)
+            final_title = f"Tech Brief — {query}"
+            
             report_model = ReportModel(
                 title=final_title,
                 query=query,
@@ -3612,28 +5162,242 @@ No signals extracted due to insufficient evidence.
             
             # Step 10: Generate enhanced report (3,000-4,000 words) using final title and relevant sources
             if intent == "theory" and len(foundational_sources) > 0:
-                # Thesis subgraph: outline -> compose -> critique (bounded repair)
-                logger.info("Generating thesis-style report for theory query (LangGraph-style path)")
-                
                 # Step 10.1: Search for anchor sources (peer-reviewed, non-preprint) for thesis reports
                 anchor_sources = self._search_thesis_anchor_sources(query, STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK)
                 logger.info(f"Found {len(anchor_sources)} anchor sources for thesis report")
                 
                 # Merge anchor sources with relevant sources, prioritizing anchors
-                if anchor_sources:
-                    seen_urls = set(s.url for s in relevant_sources)
-                    for anchor in anchor_sources:
-                        if anchor.url not in seen_urls:
-                            relevant_sources.insert(0, anchor)  # Insert at beginning to prioritize
-                            seen_urls.add(anchor.url)
-                    logger.info(f"Total sources after anchor merge: {len(relevant_sources)}")
+                seen_urls = set(s.url for s in relevant_sources)
+                for anchor in anchor_sources:
+                    if anchor.url not in seen_urls:
+                        relevant_sources.insert(0, anchor)  # Insert at beginning to prioritize
+                        seen_urls.add(anchor.url)
                 
-                # Step 10.2: Calculate source diversity score
-                diversity_score = self._calculate_thesis_source_diversity(relevant_sources)
+                # Thesis-path source gate: require minimum 10 sources before proceeding
+                total_sources_count = len(relevant_sources) + len(foundational_sources)
+                min_required = getattr(STIConfig, 'MIN_SOURCES_THESIS_PATH', 10)
+                
+                # Retry loop to gather more sources if below minimum
+                max_retry_attempts = 3
+                retry_attempt = 0
+                
+                while total_sources_count < min_required and retry_attempt < max_retry_attempts:
+                    retry_attempt += 1
+                    logger.warning(
+                        f"Thesis-path source gate: {total_sources_count} sources "
+                        f"(required: {min_required}). Retry attempt {retry_attempt}/{max_retry_attempts} "
+                        f"to gather more sources..."
+                    )
+                    
+                    # Use proper theory threshold for all retry strategies
+                    retry_threshold = STIConfig.SEMANTIC_THRESHOLD_THEORY
+                    logger.info(f"Retry loop using semantic threshold: {retry_threshold}")
+                    
+                    # Strategy 1: Search for more anchor sources
+                    additional_anchors_raw = self._search_thesis_anchor_sources(
+                        query, STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK
+                    )
+                    # Filter for relevance to query using proper threshold
+                    additional_anchors = self._semantic_similarity_filter(
+                        additional_anchors_raw, query, 
+                        threshold=retry_threshold, concepts=concepts
+                    )
+                    logger.info(f"Found {len(additional_anchors)} relevant anchor sources (from {len(additional_anchors_raw)} total, threshold: {retry_threshold})")
+                    
+                    # Strategy 2: Search for more foundational sources
+                    additional_foundational_raw = self._search_foundational_sources(
+                        concepts or [query], STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK
+                    )
+                    # Filter for relevance to query using proper threshold
+                    additional_foundational = self._semantic_similarity_filter(
+                        additional_foundational_raw, query,
+                        threshold=retry_threshold, concepts=concepts
+                    )
+                    logger.info(f"Found {len(additional_foundational)} relevant foundational sources (from {len(additional_foundational_raw)} total, threshold: {retry_threshold})")
+                    
+                    # Strategy 3: Search with theoretical concepts (if we have concepts)
+                    additional_theoretical = []
+                    if concepts:
+                        try:
+                            # Try with widened time window for theoretical concepts
+                            widened_days = min(days_back * 2, STIConfig.MAX_DAYS_BACK)
+                            additional_theoretical_raw = self._search_theoretical_concepts(
+                                query, widened_days
+                            )
+                            # Filter for relevance to query using proper threshold
+                            additional_theoretical = self._semantic_similarity_filter(
+                                additional_theoretical_raw, query,
+                                threshold=retry_threshold, concepts=concepts
+                            )
+                            logger.info(f"Found {len(additional_theoretical)} relevant theoretical sources (from {len(additional_theoretical_raw)} total, threshold: {retry_threshold})")
+                        except Exception as e:
+                            logger.warning(f"Theoretical concepts search failed: {str(e)}")
+                    
+                    # Merge all new sources, avoiding duplicates
+                    seen_urls = set(s.url for s in relevant_sources + foundational_sources)
+                    new_sources_count = 0
+                    
+                    # Merge anchor sources (prioritize in relevant_sources)
+                    for source in additional_anchors:
+                        if source.url not in seen_urls:
+                            relevant_sources.insert(0, source)
+                            seen_urls.add(source.url)
+                            new_sources_count += 1
+                    
+                    # Merge foundational sources (add to foundational_sources list)
+                    for source in additional_foundational:
+                        if source.url not in seen_urls:
+                            foundational_sources.append(source)
+                            seen_urls.add(source.url)
+                            new_sources_count += 1
+                    
+                    # Merge theoretical sources (add to relevant_sources)
+                    for source in additional_theoretical:
+                        if source.url not in seen_urls:
+                            relevant_sources.append(source)
+                            seen_urls.add(source.url)
+                            new_sources_count += 1
+                    
+                    logger.info(f"Merged {new_sources_count} new relevant sources")
+                    
+                    # Final semantic validation gate: re-filter all merged sources to ensure quality
+                    logger.info("Applying final semantic validation gate after merge...")
+                    final_threshold = STIConfig.SEMANTIC_THRESHOLD_THEORY
+                    relevant_sources_filtered = self._semantic_similarity_filter(
+                        relevant_sources, query, threshold=final_threshold, concepts=concepts
+                    )
+                    foundational_sources_filtered = self._semantic_similarity_filter(
+                        foundational_sources, query, threshold=final_threshold, concepts=concepts
+                    )
+                    
+                    # Log any sources that were filtered out
+                    filtered_out_relevant = len(relevant_sources) - len(relevant_sources_filtered)
+                    filtered_out_foundational = len(foundational_sources) - len(foundational_sources_filtered)
+                    if filtered_out_relevant > 0 or filtered_out_foundational > 0:
+                        logger.warning(
+                            f"Final validation filtered out {filtered_out_relevant} relevant + "
+                            f"{filtered_out_foundational} foundational sources (threshold: {final_threshold})"
+                        )
+                    
+                    # Update lists with filtered sources
+                    relevant_sources = relevant_sources_filtered
+                    foundational_sources = foundational_sources_filtered
+                    
+                    # Recalculate total
+                    total_sources_count = len(relevant_sources) + len(foundational_sources)
+                    
+                    if total_sources_count >= min_required:
+                        logger.info(
+                            f"Thesis-path source gate PASSED after retry {retry_attempt}: "
+                            f"{total_sources_count} sources (required: {min_required})"
+                        )
+                        break
+                
+                # Final check: fail if still below minimum after retries
+                if total_sources_count < min_required:
+                    logger.error(
+                        f"Thesis-path source gate FAILED after {max_retry_attempts} retries: "
+                        f"{total_sources_count} sources (required: {min_required}). "
+                        f"Cannot proceed with thesis-path generation."
+                    )
+                    return _write_insufficient_and_return(
+                        f"Insufficient sources for thesis-path: {total_sources_count}/{min_required} "
+                        f"after {max_retry_attempts} retry attempts. Thesis-path requires at least "
+                        f"{min_required} sources to ensure adequate evidence depth and anchor coverage."
+                    )
+                
+                logger.info(
+                    f"Thesis-path source gate PASSED: {total_sources_count} sources "
+                    f"(required: {min_required}). Proceeding with thesis generation."
+                )
+                
+                # Final LLM-based relevance validation gate before report generation (catch any sources that slipped through)
+                final_title = f"Tech Brief — {query}"
+                final_foundational_urls = set(s.url for s in foundational_sources)
+                
+                # Validate relevant sources
+                if not relevant_sources:
+                    logger.warning("No relevant sources available for final validation - returning insufficient evidence")
+                    return _write_insufficient_and_return(
+                        "No relevant sources found after LLM evaluation. Cannot generate report without validated sources."
+                    )
+                
+                logger.info("Applying final LLM relevance validation gate before report generation...")
+                relevant_sources, final_metadata = self._filter_sources_by_title_relevance(
+                    relevant_sources, final_title, query=query, foundational_urls=final_foundational_urls
+                )
+                
+                if not final_metadata['evaluation_success']:
+                    logger.error("Final relevance validation failed for thesis-path - cannot generate report")
+                    return _write_insufficient_and_return(
+                        f"Final source relevance validation failed: {final_metadata['failure_reason']}"
+                    )
+                
+                # Also validate foundational sources
+                if foundational_sources:
+                    foundational_sources, foundational_metadata = self._filter_sources_by_title_relevance(
+                        foundational_sources, final_title, query=query, foundational_urls=final_foundational_urls
+                    )
+                    if not foundational_metadata['evaluation_success']:
+                        logger.warning(f"Foundational sources validation failed: {foundational_metadata['failure_reason']}")
+                        foundational_sources = []  # Remove invalid foundational sources
+                
+                logger.info(
+                    f"Final LLM validation complete: {len(relevant_sources)} relevant + "
+                    f"{len(foundational_sources)} foundational sources validated for citation"
+                )
+                
+                # Fix 1: Combine all validated sources and re-index sequentially
+                all_validated_sources = relevant_sources + foundational_sources
+                logger.info(f"Combined {len(relevant_sources)} relevant + {len(foundational_sources)} foundational = {len(all_validated_sources)} total sources")
+                
+                # Fix 2: Update ReportModel sources with combined, filtered, re-indexed sources
+                # Create new source_models from all_validated_sources with sequential IDs (1, 2, 3...)
+                updated_source_models = [
+                    SourceModel(
+                        id=i + 1,
+                        title=s.title,
+                        url=s.url,
+                        publisher=s.publisher,
+                        date=s.date,
+                        credibility=s.credibility,
+                    )
+                    for i, s in enumerate(all_validated_sources)
+                ]
+                report_model.sources = updated_source_models
+                logger.info(f"Updated report_model.sources with {len(updated_source_models)} combined sources")
+                
+                # Update foundational_url_set to reflect filtered foundational sources
+                foundational_url_set = set(s.url for s in foundational_sources)
+                report_model.metadata['foundational_urls'] = list(foundational_url_set)
+                
+                # Thesis subgraph: outline -> compose -> critique (bounded repair)
+                logger.info("Generating thesis-style report for theory query (LangGraph-style path)")
+                
+                logger.info(f"Total sources after combination: {len(all_validated_sources)}")
+                
+                # Fix 3: Pass combined sources to thesis generation functions
+                # Step 10.2: Calculate source diversity score using combined sources
+                diversity_score = self._calculate_thesis_source_diversity(all_validated_sources)
                 logger.info(f"Thesis source diversity score: {diversity_score:.2f}")
                 
-                outline = self._thesis_outline(ConceptList(concepts=concepts or []), relevant_sources)
-                draft = self._thesis_compose(outline, relevant_sources, query)
+                # Ensure abstraction layers variables are accessible (may be empty dict/None if not generated)
+                # These are initialized before the retry loop, so they should always exist in this scope
+                # Convert empty dicts to None for cleaner handling
+                abstraction_layers_for_compose = abstraction_layers if (abstraction_layers and len(abstraction_layers) > 0) else None
+                conceptual_map_for_compose = conceptual_map if conceptual_map else None
+                canonical_papers_for_compose = canonical_papers if (canonical_papers and len(canonical_papers) > 0) else None
+                
+                # Use combined sources for thesis generation
+                outline = self._thesis_outline(ConceptList(concepts=concepts or []), all_validated_sources)
+                draft = self._thesis_compose(
+                    outline, 
+                    all_validated_sources, 
+                    query,
+                    abstraction_layers=abstraction_layers_for_compose,
+                    conceptual_map=conceptual_map_for_compose,
+                    canonical_papers=canonical_papers_for_compose
+                )
                 thesis_report = draft.markdown
                 
                 # Step 10.3: Validate section completeness and detect repetition (thesis only)
@@ -3650,14 +5414,15 @@ No signals extracted due to insufficient evidence.
                 if repetition['repetition_detected']:
                     logger.warning(f"Thesis section repetition detected: {[o['warning'] for o in repetition['overlaps']]}")
                 
-                critique = self._thesis_critique(draft, query, relevant_sources)
+                # Use combined sources for critique
+                critique = self._thesis_critique(draft, query, all_validated_sources)
                 
-                # Step 10.4: Calculate full publication rubric (thesis only)
-                publication_rubric = self._calculate_thesis_publication_rubric(draft, query, relevant_sources, diversity_score)
+                # Step 10.4: Calculate full publication rubric (thesis only) using combined sources
+                publication_rubric = self._calculate_thesis_publication_rubric(draft, query, all_validated_sources, diversity_score)
                 logger.info(f"Thesis publication rubric: {publication_rubric.total_score:.1f}/100")
                 
-                # Step 10.5: Generate CEM grid (thesis only)
-                cem_grid = self._generate_cem_grid(draft, relevant_sources)
+                # Step 10.5: Generate CEM grid (thesis only) using combined sources
+                cem_grid = self._generate_cem_grid(draft, all_validated_sources)
                 logger.info(f"Generated CEM grid with {len(cem_grid.rows)} rows")
                 
                 # Insert CEM grid into markdown after Formal Models section
@@ -3777,30 +5542,98 @@ No signals extracted due to insufficient evidence.
                     logger.info(f"Updated report confidence to thesis confidence: {thesis_confidence:.3f}")
                 
                 repairs = 0
+                # Use original query for repair loop (title refinement happens after repairs)
+                original_title_for_repair = f"Tech Brief — {query}"
                 while max(critique.alignment, critique.theory_depth, critique.clarity) < STIConfig.THESIS_CRITIQUE_MIN_SCORE and repairs < STIConfig.THESIS_MAX_REPAIRS:
                     logger.info(f"Thesis critique below threshold; repair_action={critique.repair_action}")
                     if critique.repair_action == 'expand_anchors':
                         # attempt small anchor expansion using existing anchors
-                        more_academic = self._search_theoretical_concepts(final_title, STIConfig.THEORY_EXTENDED_DAYS_BACK)
-                        relevant_sources = self._filter_sources_by_title_relevance(relevant_sources + more_academic, original_title)
+                        more_academic = self._search_theoretical_concepts(query, STIConfig.THEORY_EXTENDED_DAYS_BACK)
+                        # Filter new sources and add to all_validated_sources
+                        new_relevant_sources, _ = self._filter_sources_by_title_relevance(
+                            relevant_sources + more_academic, original_title_for_repair, query=query
+                        )
+                        # Update relevant_sources and rebuild all_validated_sources
+                        relevant_sources = new_relevant_sources
+                        all_validated_sources = relevant_sources + foundational_sources
+                        # Re-index and update report_model.sources
+                        updated_source_models = [
+                            SourceModel(
+                                id=i + 1,
+                                title=s.title,
+                                url=s.url,
+                                publisher=s.publisher,
+                                date=s.date,
+                                credibility=s.credibility,
+                            )
+                            for i, s in enumerate(all_validated_sources)
+                        ]
+                        report_model.sources = updated_source_models
+                        logger.info(f"Repair loop: Updated sources to {len(all_validated_sources)} total after anchor expansion")
                     elif critique.repair_action == 'adjust_outline':
                         # adjust outline by adding 'Formalization' and 'Limits'
                         if 'Formalization' not in outline.sections:
                             outline.sections.append('Formalization')
                         if 'Limits and Open Questions' not in outline.sections:
                             outline.sections.append('Limits and Open Questions')
-                    draft = self._thesis_compose(outline, relevant_sources, query)
+                    # Pass abstraction layers to repair loop compose call (may be empty dict/None if not generated)
+                    # These are initialized at line 4320-4321, so they should always exist in this scope
+                    # Convert empty dicts to None for cleaner handling
+                    abstraction_layers_for_repair = abstraction_layers if (abstraction_layers and len(abstraction_layers) > 0) else None
+                    conceptual_map_for_repair = conceptual_map if conceptual_map else None
+                    canonical_papers_for_repair = canonical_papers if (canonical_papers and len(canonical_papers) > 0) else None
+                    # Use combined sources for repair loop
+                    draft = self._thesis_compose(
+                        outline, 
+                        all_validated_sources, 
+                        query,
+                        abstraction_layers=abstraction_layers_for_repair,
+                        conceptual_map=conceptual_map_for_repair,
+                        canonical_papers=canonical_papers_for_repair
+                    )
                     thesis_report = draft.markdown
-                    critique = self._thesis_critique(draft, query)
+                    critique = self._thesis_critique(draft, query, all_validated_sources)
                     repairs += 1
+                
+                # Step 10.8: Refine title based on actual thesis content generated
+                # This happens AFTER thesis generation and repair loop so title reflects both query intent and actual thesis
+                logger.info("Refining title based on generated thesis content...")
+                try:
+                    final_title = self._derive_title_from_content(
+                        signals, relevant_sources, query, intent="theory", thesis_content=thesis_report
+                    )
+                    logger.info(f"Title refined for thesis-path: '{final_title}'")
+                    # Update report_model title with refined title
+                    report_model.title = final_title
+                except Exception as e:
+                    logger.warning(f"Title refinement failed: {e}, using original query")
+                    logger.debug(f"Title refinement error traceback:\n{traceback.format_exc()}")
+                    final_title = f"Tech Brief — {query}"
+                
                 report = thesis_report
             else:
                 # Use standard enhanced report for market queries or theory without foundational sources
+                # Generate report first, then refine title based on actual content
+                temp_title = f"Tech Brief — {query}"
                 report = self._generate_enhanced_report(
                     query, relevant_sources, signals, market_analysis, tech_deepdive,
                     competitive, expanded_lenses, exec_summary,
-                    confidence, days_back, final_title
+                    confidence, days_back, temp_title
                 )
+                
+                # Refine title based on actual report content (after generation)
+                logger.info("Refining title based on generated report content...")
+                try:
+                    final_title = self._derive_title_from_content(
+                        signals, relevant_sources, query, intent=intent, thesis_content=None
+                    )
+                    logger.info(f"Title refined for market-path: '{final_title}'")
+                    # Update report_model title with refined title
+                    report_model.title = final_title
+                except Exception as e:
+                    logger.warning(f"Title refinement failed: {e}, using original query")
+                    logger.debug(f"Title refinement error traceback:\n{traceback.format_exc()}")
+                    final_title = temp_title
             
             # Step 11: NEW - Generate JSON-LD artifact using final title and relevant sources
             json_ld = self._generate_json_ld_artifact(
@@ -3813,16 +5646,23 @@ No signals extracted due to insufficient evidence.
             horizon = self._classify_horizon(relevant_sources)
             is_hybrid = self._is_hybrid_thesis_anchored(intent, relevant_sources)
 
+            # Fix 5: Update source serialization - sources_data_stats uses updated report_model.sources
             sources_data_stats: List[Dict[str, Any]] = []
             for src_model in report_model.sources:
                 record = src_model.model_dump()
                 record["content_sha"] = source_sha_map.get(src_model.id)
                 sources_data_stats.append(record)
 
+            # Use correct source count: for thesis-path use all_validated_sources, otherwise use report_model.sources
+            if intent == "theory" and 'all_validated_sources' in locals():
+                validated_count = len(all_validated_sources)
+            else:
+                validated_count = len(report_model.sources)
+
             agent_stats = {
                 'date_filter_stats': self.get_date_filter_stats() if hasattr(self, 'get_date_filter_stats') else None,
                 'sources_data': sources_data_stats,
-                'validated_sources_count': len(sources),
+                'validated_sources_count': validated_count,
                 'intent': intent,
                 'horizon': horizon,
                 'hybrid_thesis_anchored': is_hybrid,
@@ -3833,8 +5673,8 @@ No signals extracted due to insufficient evidence.
                 'advanced_tokens_spent': advanced_tokens,
                 'metrics': metrics,
                 'asset_gating': {
-                    'images_enabled': not anchor_gate,
-                    'social_enabled': not anchor_gate,
+                    'images_enabled': True,  # Always enable images for thesis-path reports
+                    'social_enabled': not anchor_gate,  # Still gate social assets based on anchors
                     'reason': 'insufficient anchors' if anchor_gate else ''
                 },
                 'source_sha_map': source_sha_map,
@@ -3934,7 +5774,34 @@ No signals extracted due to insufficient evidence.
             return report, json_ld, run_summary
             
         except Exception as e:
+            # Log full exception details with traceback
             logger.error(f"Error in enhanced search: {str(e)}")
+            logger.error(f"Traceback:\n{traceback.format_exc()}")
+            
+            # Log context information
+            logger.error(f"Query: {query}")
+            logger.error(f"Days back: {days_back}")
+            logger.error(f"Seed: {seed}")
+            logger.error(f"Budget advanced: {budget_advanced}")
+            if 'intent' in locals():
+                logger.error(f"Intent: {intent}")
+            
+            # Save error details to last_run_status for upstream access
+            self.last_run_status = {
+                "quality_gates_passed": False,
+                "error": {
+                    "type": type(e).__name__,
+                    "message": str(e),
+                    "traceback": traceback.format_exc(),
+                    "query": query,
+                    "days_back": days_back,
+                    "context": {
+                        "function": "search",
+                        "stage": "report_generation"
+                    }
+                }
+            }
+            
             return f"Error performing enhanced search: {str(e)}", {}, {
                 'intent': 'unknown',
                 'artifacts': {},

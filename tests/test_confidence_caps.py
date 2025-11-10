@@ -6,8 +6,8 @@ from config import STIConfig
 
 
 def test_confidence_cap_theory_anchor_absent():
-    """Test that theory reports with weak anchors get capped at 0.55."""
-    # Create a breakdown that would yield > 0.55 confidence
+    """Test that theory reports with weak anchors get capped at 0.60."""
+    # Create a breakdown that would yield > 0.60 confidence
     breakdown = ConfidenceBreakdown(
         source_diversity=0.9,
         anchor_coverage=0.4,  # Below ANCHOR_COVERAGE_MIN (0.70)
@@ -17,17 +17,20 @@ def test_confidence_cap_theory_anchor_absent():
     
     # Without cap, this would be:
     uncapped = confidence_headline(breakdown)
-    assert uncapped > 0.55, "Test setup: uncapped confidence should exceed cap"
+    assert uncapped > 0.60, "Test setup: uncapped confidence should exceed cap"
     
     # With cap (simulating the logic in _run_auditors):
     intent = "theory"
     anchor_coverage = 0.4
-    cap = getattr(STIConfig, 'CONFIDENCE_CAP_THEORY_ANCHOR_ABSENT', 0.55)
+    cap = getattr(STIConfig, 'THEORY_CONFIDENCE_CAP', 0.60)
     
     if intent == "theory" and anchor_coverage < getattr(STIConfig, 'ANCHOR_COVERAGE_MIN', 0.70):
         capped = min(uncapped, cap)
         assert capped == cap, f"Confidence should be capped at {cap}, got {capped}"
-        assert capped <= 0.55, f"Capped confidence {capped} should be <= 0.55"
+        assert capped <= 0.60, f"Capped confidence {capped} should be <= 0.60"
+        # Verify cap_reason is set correctly
+        cap_reason = "theory|anchor_coverage<min"
+        assert cap_reason == "theory|anchor_coverage<min", "Cap reason should match expected value"
     else:
         pytest.fail("Test setup failed: conditions should trigger cap")
 

@@ -156,6 +156,7 @@ class STIConfig:
     
     # Title-Source Alignment Settings
     MIN_TITLE_RELEVANCE_SCORE = 0.6  # Minimum relevance score for sources to be included
+    MAX_SOURCES_PER_LLM_BATCH = 20  # Maximum sources per batch for LLM relevance evaluation (prevents timeouts)
     ENABLE_TITLE_REFINEMENT = True   # Flag to enable/disable title updates based on content
     TITLE_REFINEMENT_THRESHOLD = 0.5  # If alignment < this, refine title
     ENABLE_QUERY_REFINEMENT = True   # Flag for query expansion before search
@@ -202,7 +203,7 @@ class STIConfig:
     THEORY_FOUNDATIONAL_DAYS_BACK = 1825  # Foundational/seminal up to 5 years
     
     # Theory fallback thresholds (more lenient for foundational sources)
-    SEMANTIC_THRESHOLD_FOUNDATIONAL = 0.40  # Lower threshold for foundational sources
+    SEMANTIC_THRESHOLD_FOUNDATIONAL = 0.55  # Increased from 0.40 to filter out irrelevant sources
     MIN_TITLE_RELEVANCE_SCORE_FOUNDATIONAL = 0.35  # Lower threshold for foundational sources
     
     # Sprint deadline
@@ -285,6 +286,14 @@ class STIConfig:
     THESIS_SINGLE_DOMAIN_THRESHOLD = 0.80  # Flag if >80% from single domain
     ANCHOR_COVERAGE_MIN = 0.70
     REQUIRE_ANCHORS_FOR_ASSETS = True
+    
+    # Thesis path source requirements
+    MIN_SOURCES_THESIS_PATH = 10  # Minimum total sources required for thesis-path generation
+    
+    # Abstraction-based search configuration
+    CANONICAL_RELEVANCE_THRESHOLD = 0.50  # Lower threshold for canonical sources
+    MAX_ABSTRACTION_LAYERS = 5  # Maximum number of abstraction layers
+    CANONICAL_PAPERS_PER_LAYER = 5  # Target canonical papers per layer
     
     @classmethod
     def get_total_target_words(cls) -> int:

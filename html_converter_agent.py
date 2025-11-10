@@ -23,8 +23,9 @@ except ImportError:
     # Logger not yet initialized, use basic print or defer warning
     STIConfig = None
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Configure logging - only if root logger has no handlers (avoid conflicts)
+if not logging.getLogger().handlers:
+    logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -120,11 +121,20 @@ class HTMLConverterAgent:
                 template_data['hybrid_thesis_anchored'] = _as.get('hybrid_thesis_anchored', False)
                 # Use validated_sources_count from agent_stats if available (matches manifest)
                 validated_count = _as.get('validated_sources_count')
+                parsed_sources = parsed_sections.get('sources', [])
+                rendered_count = len(parsed_sources)
+                
                 if validated_count is not None:
-                    template_data['sources_count'] = validated_count
+                    # Use the smaller of validated_count and rendered_count to avoid overcounting
+                    template_data['sources_count'] = min(validated_count, rendered_count)
+                    if validated_count != rendered_count:
+                        logger.warning(
+                            f"Source count mismatch: validated={validated_count}, "
+                            f"rendered={rendered_count}. Using rendered count: {template_data['sources_count']}"
+                        )
                 else:
-                    # Fallback to parsed sources count
-                    template_data['sources_count'] = len(parsed_sections.get('sources', []))
+                    # Fallback to parsed sources count (actual rendered sources)
+                    template_data['sources_count'] = rendered_count
             except Exception:
                 template_data['horizon'] = template_data.get('horizon', 'Near-term')
                 template_data['hybrid_thesis_anchored'] = template_data.get('hybrid_thesis_anchored', False)
@@ -137,7 +147,9 @@ class HTMLConverterAgent:
             template_data['confidence_breakdown'] = agent_stats.get('confidence_breakdown') or metadata.get('confidence_breakdown')
             template_data['run_manifest'] = agent_stats.get('run_manifest') or metadata.get('run_manifest')
             template_data['provenance_banner'] = self._render_provenance_banner(template_data)
-            template_data['confidence_dials'] = self._render_confidence_dials(template_data)
+            confidence_dials_html = self._render_confidence_dials(template_data)
+            # Ensure empty string if None/empty to prevent template token leak
+            template_data['confidence_dials'] = confidence_dials_html if confidence_dials_html else ''
             template_data['evidence_ledger_html'] = self._render_evidence_ledger(ledger)
             template_data['adversarial_html'] = self._render_adversarial_section(adversarial)
             template_data['playbooks_html'] = self._render_playbooks(playbooks)
@@ -189,9 +201,9 @@ class HTMLConverterAgent:
                 
                 # Derive anchor_status from ledger coverage (not domain heuristics)
                 anchor_status = None
-                if ledger and ledger.get('anchor_coverage') is not None:
-                    # Use ledger's anchor_coverage metric
-                    anchor_coverage = float(ledger.get('anchor_coverage', 0.0))
+                if ledger:
+                    # Prefer strict coverage for thesis displays, fallback to any
+                    anchor_coverage = float(ledger.get('anchor_coverage_strict', ledger.get('anchor_coverage_any', ledger.get('anchor_coverage', 0.0))))
                     anchor_coverage_min = getattr(STIConfig, 'ANCHOR_COVERAGE_MIN', 0.70)
                     if anchor_coverage >= anchor_coverage_min:
                         anchor_status = "Anchored"
@@ -454,7 +466,8 @@ class HTMLConverterAgent:
                 sources_text, 
                 signals_html=sections.get('signals_html', ''),
                 raw_markdown=all_raw_sections,
-                ledger=metadata.get('evidence_ledger')
+                ledger=metadata.get('evidence_ledger'),
+                metadata=metadata
             )
             sections['sources_html'] = self._render_source_citations(sections['sources'])
         else:
@@ -786,10 +799,14 @@ class HTMLConverterAgent:
             citations = re.findall(r'\[\^(\d+)(?::[^\]]+)?\]|\[(\d+)\]', markdown)
             cited_ids = {int(c[0] if c[0] else c[1]) for c in citations if c[0] or c[1]}
             
-            # Filter sources to only those cited in markdown
+            # Fix 6: For thesis-path reports, include ALL validated sources, not just cited ones
+            # Citations are for in-text references, but all sources should be listed in footer
+            is_thesis = metadata.get('intent') == 'theory' or metadata.get('report_type') == 'thesis'
+            
+            # Filter sources: for thesis reports, include all; for market reports, only cited
             for source_data in sources_data:
                 source_id = source_data.get('id')
-                if source_id in cited_ids:
+                if is_thesis or source_id in cited_ids:
                     # Format source for rendering
                     publisher = source_data.get('publisher', '')
                     date = source_data.get('date', '')
@@ -1915,7 +1932,7 @@ class HTMLConverterAgent:
     
     def _parse_sources(self, sources_text: str, signals_html: str = "", 
                        analysis_sections: List[str] = None, raw_markdown: str = "",
-                       ledger: Dict[str, Any] = None) -> List[Dict[str, Any]]:
+                       ledger: Dict[str, Any] = None, metadata: Dict[str, Any] = None) -> List[Dict[str, Any]]:
         """Parse sources from markdown text and filter to only cited sources"""
         sources = []
         source_lines = sources_text.strip().split('\n')
@@ -1987,8 +2004,18 @@ class HTMLConverterAgent:
                     }
                     sources.append(source)
         
-        # Filter to only cited sources
-        if signals_html or raw_markdown or analysis_sections:
+        # Fix 6: For thesis-path reports, include ALL validated sources, not just cited ones
+        # Determine if this is a thesis report (check metadata or report structure)
+        is_thesis_report = False
+        if metadata:
+            is_thesis_report = metadata.get('intent') == 'theory' or metadata.get('report_type') == 'thesis'
+        # Also check if raw_markdown has thesis-style sections (Abstract, Foundations, etc.)
+        if raw_markdown and not is_thesis_report:
+            thesis_indicators = ['## Abstract', '## Foundations', '## Theoretical Grounding', 'Claim-Evidence-Method', '## Title and Abstract']
+            is_thesis_report = any(indicator in raw_markdown for indicator in thesis_indicators)
+        
+        # Filter to only cited sources (unless thesis report)
+        if (signals_html or raw_markdown or analysis_sections) and not is_thesis_report:
             cited_source_ids = set()
             
             # Extract citation references from signals HTML (already processed, uses [id] format)
@@ -2009,12 +2036,14 @@ class HTMLConverterAgent:
                 citation_pattern = r'\[(\d+)\]'
                 cited_source_ids.update(int(m.group(1)) for m in re.finditer(citation_pattern, all_analysis_text))
             
-            # Filter sources to only include cited ones
+            # Filter sources to only include cited ones (for market reports)
             filtered_sources = [s for s in sources if s['id'] in cited_source_ids]
             
             logger.info(f"Source filtering: {len(sources)} total sources, {len(filtered_sources)} cited sources")
             logger.info(f"Cited source IDs: {sorted(cited_source_ids)}")
             sources = filtered_sources
+        elif is_thesis_report:
+            logger.info(f"Thesis report detected: Including all {len(sources)} validated sources (not filtering by citations)")
 
         if ledger:
             support_map: Dict[str, List[Dict[str, Any]]] = {}
@@ -2123,6 +2152,8 @@ class HTMLConverterAgent:
         metrics = template_data.get('metrics') or {}
         anchor_cov = metrics.get('anchor_coverage', ac)
         quant_flags = metrics.get('quant_flags', 0)
+        cap_applied = metrics.get('cap_applied', False)
+        cap_reason = metrics.get('confidence_cap_reason')
         run_manifest = template_data.get('run_manifest') or {}
         advanced_tasks = run_manifest.get('advanced_tasks_executed') or []
         advanced_tokens = run_manifest.get('advanced_tokens_spent')
@@ -2137,7 +2168,11 @@ class HTMLConverterAgent:
         if quant_flags:
             quant_sentence = f"Math guard flagged {quant_flags} issue(s); see quantitative appendix."
 
-        description_parts = [part for part in [advanced_sentence, quant_sentence] if part]
+        cap_sentence = ""
+        if cap_applied and cap_reason:
+            cap_sentence = f"Confidence capped at {getattr(STIConfig, 'THEORY_CONFIDENCE_CAP', 0.60):.2f} ({cap_reason})."
+
+        description_parts = [part for part in [advanced_sentence, quant_sentence, cap_sentence] if part]
         description = " ".join(description_parts)
 
         return f'''
@@ -2397,6 +2432,11 @@ class HTMLConverterAgent:
                 # Dynamic sections for thesis template
                 'all_sections_html': data.get('all_sections_html', ''),
                 'toc_html': data.get('toc_html', ''),
+                # Template rendering helpers
+                'confidence_dials': data.get('confidence_dials', ''),
+                'provenance_banner': data.get('provenance_banner', ''),
+                'quant_patch_html': data.get('quant_patch_html', ''),
+                'evidence_ledger_html': data.get('evidence_ledger_html', ''),
             }
             
             # Merge defaults with provided data (provided data takes precedence)
@@ -2409,17 +2449,25 @@ class HTMLConverterAgent:
             # Simple template substitution
             html = template
             for key, value in merged_data.items():
-                placeholder = f"{{{{{key}}}}}"
-                if isinstance(value, str):
-                    html = html.replace(placeholder, value)
-                elif isinstance(value, (int, float)):
-                    html = html.replace(placeholder, str(value))
-                else:
-                    html = html.replace(placeholder, str(value))
+                # Handle both {{key}} and {{key|safe}} patterns
+                placeholder_plain = f"{{{{{key}}}}}"
+                placeholder_safe = f"{{{{{key}|safe}}}}"
+                
+                # Convert None to empty string
+                if value is None:
+                    value = ''
+                
+                # Convert to string if not already
+                if not isinstance(value, str):
+                    value = str(value)
+                
+                # Replace both patterns
+                html = html.replace(placeholder_safe, value)
+                html = html.replace(placeholder_plain, value)
             
-            # Replace any remaining placeholders with empty string
+            # Replace any remaining placeholders (including |safe variants) with empty string
             import re as regex_module
-            html = regex_module.sub(r'\{\{(\w+)\}\}', '', html)
+            html = regex_module.sub(r'\{\{(\w+)(\|safe)?\}\}', '', html)
             
             return html
             

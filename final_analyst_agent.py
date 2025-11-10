@@ -20,6 +20,7 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
+from urllib.parse import urlparse
 
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field, validator
@@ -31,8 +32,9 @@ try:
 except ImportError:
     TavilyClient = None
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Configure logging - only if root logger has no handlers (avoid conflicts)
+if not logging.getLogger().handlers:
+    logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -519,6 +521,49 @@ class FinalAnalystGradeAgent:
         logger.info(f"SearXNG returned {len(sources)} results for {source_type.value if source_type else 'general'} search")
         return sources
     
+    def _is_article_url(self, url: str) -> bool:
+        """
+        Check if URL is a specific article (not index/category page).
+        Uses publisher-specific article path patterns.
+        """
+        if not url:
+            return False
+        
+        url_lower = url.lower()
+        
+        # Publisher-specific article path patterns
+        article_patterns = {
+            'reuters.com': [
+                r'/technology/\d{4}/\d{2}/\d{2}/',  # /technology/2025/10/13/...
+                r'/article/',  # /article/...
+                r'/world/',  # /world/...
+                r'/business/',  # /business/...
+            ],
+            'bloomberg.com': [
+                r'/news/articles/',  # /news/articles/...
+                r'/news/features/',  # /news/features/...
+            ],
+            'ft.com': [
+                r'/content/',  # /content/...
+            ],
+            'wsj.com': [
+                r'/articles/',  # /articles/...
+            ],
+            'sec.gov': [
+                r'/Archives/edgar/data/',  # SEC filings
+            ],
+        }
+        
+        # Check if URL matches any article pattern for its domain
+        for domain, patterns in article_patterns.items():
+            if domain in url_lower:
+                return any(re.search(pattern, url_lower) for pattern in patterns)
+        
+        # For other domains, require path depth > 1 (reject root/index pages)
+        parsed = urlparse(url)
+        path_parts = [p for p in parsed.path.split('/') if p]
+        return len(path_parts) > 1
+    
     def _passes_strict_hygiene_filters(self, result: Dict[str, Any]) -> bool:
         """Check if result passes strict hygiene filters"""
         url = result.get('url', '')
@@ -533,12 +578,24 @@ class FinalAnalystGradeAgent:
         if 'links.message.bloomberg.com' in url:
             return False
         
+        # Check if URL is a specific article (not index page)
+        if not self._is_article_url(url):
+            return False
+        
         # Prefer whitelist patterns
         for pattern in self.whitelist_patterns:
             if pattern in url.lower():
                 return True
         
-        # Allow other sources but with lower priority
+        # For other domains, require article path pattern match
+        # If domain matches publisher list, require article path pattern match
+        publisher_domains = ['reuters.com', 'bloomberg.com', 'ft.com', 'wsj.com', 'sec.gov']
+        url_lower = url.lower()
+        if any(domain in url_lower for domain in publisher_domains):
+            # Already checked by _is_article_url, so if we get here it passed
+            return True
+        
+        # For other domains, require path depth > 1 (already checked by _is_article_url)
         return True
     
     def _clean_url(self, url: str) -> str:

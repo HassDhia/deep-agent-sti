@@ -226,13 +226,16 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
             logger.warning("⚠️ OpenAI client not initialized - cannot generate images")
             return None
 
+        # Note: Image generation is now always enabled for thesis-path reports
+        # regardless of anchor coverage. Asset gating is handled at the agent level.
+        # This check is kept for backward compatibility but should not block images.
         if (
             intent in {"theory", "thesis"}
             and getattr(STIConfig, 'REQUIRE_ANCHORS_FOR_ASSETS', False)
         ):
             if anchor_coverage is not None and anchor_coverage < getattr(STIConfig, 'ANCHOR_COVERAGE_MIN', 0.70):
-                logger.info("Skip images: insufficient anchors for Thesis path.")
-                return None
+                logger.debug("Anchor coverage below minimum, but images still enabled per policy.")
+                # Don't return None - allow images to be generated
         
         # Validate report_dir
         report_path = Path(report_dir)

@@ -59,6 +59,43 @@ _JOURNAL_HINTS = (
 _DOI_RX = re.compile(r"10\.\d{4,9}/[-._;()/:A-Z0-9]+", re.I)
 
 
+def _is_strict_anchor(anchor: EvidenceAnchor) -> bool:
+    """
+    Check if anchor is strict (Type-1): has DOI AND domain matches THESIS_ANCHOR_DOMAINS.
+    
+    Args:
+        anchor: EvidenceAnchor to check
+        
+    Returns:
+        True if anchor has DOI and domain is in approved list, False otherwise
+    """
+    if not anchor.doi:
+        return False
+    
+    # Check if DOI matches pattern
+    if not _DOI_RX.search(anchor.doi):
+        return False
+    
+    # Check if URL domain matches approved domains
+    url = (anchor.url or "").lower()
+    if not url:
+        return False
+    
+    # Import config lazily to avoid circular imports
+    try:
+        from config import STIConfig
+        anchor_domains = getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [])
+    except ImportError:
+        anchor_domains = [
+            'ieeexplore.ieee.org', 'dl.acm.org', 'link.springer.com',
+            'sciencedirect.com', 'jstor.org', 'acm.org', 'springer.com',
+            'mitpressjournals.org', 'siam.org', 'aps.org'
+        ]
+    
+    # Check if any approved domain is in the URL
+    return any(domain.lower() in url for domain in anchor_domains)
+
+
 def _domain_score(url: str) -> float:
     u = (url or "").lower()
     score = 0.0
@@ -85,10 +122,12 @@ def _guess_anchors_from_sources(
         match = _DOI_RX.search(surface)
         if match:
             doi = match.group(0)
-        ranked.append((
-            _domain_score(url),
-            EvidenceAnchor(doi=doi, title=title, url=url),
-        ))
+        anchor = EvidenceAnchor(doi=doi, title=title, url=url)
+        score = _domain_score(url)
+        # Boost score for strict anchors (DOI + approved domain)
+        if _is_strict_anchor(anchor):
+            score += 2.0  # Significant boost for strict anchors
+        ranked.append((score, anchor))
 
     ranked.sort(key=lambda item: item[0], reverse=True)
     return [anchor for _, anchor in ranked[:max_anchors]]
@@ -191,6 +230,108 @@ def _sha(text: str) -> str:
     return hashlib.sha1(text.encode("utf-8")).hexdigest()
 
 
+def hunt_strict_anchors(claim_text: str, n: int = 2, cache: Optional[Dict[str, Any]] = None) -> List[EvidenceAnchor]:
+    """
+    Hunt for domain-correct anchors by searching THESIS_ANCHOR_DOMAINS only.
+    Uses SearXNG with site: queries for approved domains.
+    
+    Args:
+        claim_text: Claim text to search for
+        n: Maximum number of anchors to return
+        cache: Optional cache dict to avoid duplicate searches
+        
+    Returns:
+        List of EvidenceAnchor objects with DOI, title, URL from approved domains
+    """
+    import requests
+    from urllib.parse import quote
+    
+    cache_key = f"anchor_hunt_{hashlib.sha1(claim_text.encode()).hexdigest()[:8]}"
+    if cache and cache_key in cache:
+        logger.debug(f"Using cached anchor hunt for claim: {claim_text[:50]}...")
+        return cache[cache_key]
+    
+    anchors: List[EvidenceAnchor] = []
+    
+    # Get approved domains from config
+    try:
+        from config import STIConfig
+        anchor_domains = getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [])
+        searxng_base = getattr(STIConfig, 'SEARXNG_BASE_URL', 'http://localhost:8080')
+        timeout = getattr(STIConfig, 'HTTP_TIMEOUT_SECONDS', 12)
+    except ImportError:
+        anchor_domains = [
+            'ieeexplore.ieee.org', 'dl.acm.org', 'link.springer.com',
+            'sciencedirect.com', 'jstor.org', 'acm.org', 'springer.com',
+            'mitpressjournals.org', 'siam.org', 'aps.org'
+        ]
+        searxng_base = 'http://localhost:8080'
+        timeout = 12
+    
+    # Search up to 2-3 domains (limit to avoid too many API calls)
+    search_domains = anchor_domains[:3]
+    
+    for domain in search_domains:
+        if len(anchors) >= n:
+            break
+        
+        try:
+            # Build site: query
+            query = f"site:{domain} {claim_text[:100]}"  # Limit query length
+            search_url = f"{searxng_base.rstrip('/')}/search"
+            
+            headers = {
+                'Accept': 'application/json',
+                'User-Agent': 'sti-anchor-hunter/1.0'
+            }
+            
+            params = {
+                'q': query,
+                'format': 'json',
+                'categories': 'science',
+                'safesearch': 1
+            }
+            
+            resp = requests.get(search_url, params=params, headers=headers, timeout=timeout)
+            if resp.status_code == 200:
+                data = resp.json()
+                results = data.get('results', [])
+                
+                for result in results[:2]:  # Limit per domain
+                    if len(anchors) >= n:
+                        break
+                    
+                    url = result.get('url') or result.get('link') or ''
+                    title = result.get('title') or 'Untitled'
+                    
+                    # Extract DOI from URL or title
+                    doi = None
+                    surface = f"{url} {title}"
+                    match = _DOI_RX.search(surface)
+                    if match:
+                        doi = match.group(0)
+                    
+                    # Only add if it's a strict anchor (DOI + domain match)
+                    anchor = EvidenceAnchor(doi=doi, title=title, url=url, why_relevant=f"Found via {domain}")
+                    if _is_strict_anchor(anchor):
+                        anchors.append(anchor)
+                    elif doi:  # Add even if not strict, but prefer strict
+                        anchors.append(anchor)
+                        
+        except Exception as e:
+            logger.debug(f"Anchor hunt error for {domain}: {e}")
+            continue
+    
+    # Rank by strictness (strict anchors first)
+    anchors.sort(key=lambda a: (not _is_strict_anchor(a), not bool(a.doi)))
+    
+    # Cache results
+    if cache is not None:
+        cache[cache_key] = anchors[:n]
+    
+    return anchors[:n]
+
+
 def align_claims_to_evidence(
     claims: Iterable[Dict[str, Any]],
     sources: List[Dict[str, Any]],
@@ -201,13 +342,42 @@ def align_claims_to_evidence(
     """Build an evidence ledger for downstream consumers."""
 
     items: List[ClaimLedgerItem] = []
-    coverage_hits = 0
+    coverage_hits_any = 0
+    coverage_hits_strict = 0
 
     for claim in claims:
         claim_text = claim.get("text") or claim.get("claim_text") or ""
         claim_id = claim.get("id") or claim.get("claim_id") or _sha(claim_text)[:8]
 
         anchors = _guess_anchors_from_sources(sources, max_anchors=3)
+        
+        # Anchor-Hunter pass: search approved domains for domain-correct anchors
+        try:
+            # Use cache if provided (from agent's evidence_cache)
+            cache = getattr(align_claims_to_evidence, '_anchor_hunt_cache', None)
+            if cache is None:
+                cache = {}
+                align_claims_to_evidence._anchor_hunt_cache = cache
+            
+            hunted = hunt_strict_anchors(claim_text, n=2, cache=cache)
+            # Merge hunted anchors with heuristic ones, prioritizing strict domain matches
+            # Strict anchors first, then others
+            all_anchors = hunted + anchors
+            # Deduplicate by URL, keeping strict anchors
+            seen_urls = set()
+            merged = []
+            for anchor in all_anchors:
+                url_key = (anchor.url or "").lower()
+                if url_key and url_key not in seen_urls:
+                    seen_urls.add(url_key)
+                    merged.append(anchor)
+            # Sort: strict anchors first
+            merged.sort(key=lambda a: (not _is_strict_anchor(a), not bool(a.doi)))
+            anchors = merged[:3]  # Limit to 3 anchors
+        except Exception as e:
+            logger.debug(f"Anchor hunt failed (non-fatal): {e}")
+            # Continue with heuristic anchors only
+        
         spans: List[SupportSpan] = []
         overreach = False
         note = ""
@@ -271,8 +441,12 @@ def align_claims_to_evidence(
                         excerpt = text[:280].replace("\n", " ")
                         spans.append(SupportSpan(source_id=source_id, text=excerpt))
 
+        # Track coverage: any anchor vs strict anchor
         if anchors:
-            coverage_hits += 1
+            coverage_hits_any += 1
+            # Check if any anchor is strict
+            if any(_is_strict_anchor(anchor) for anchor in anchors):
+                coverage_hits_strict += 1
 
         items.append(
             ClaimLedgerItem(
@@ -285,10 +459,13 @@ def align_claims_to_evidence(
             )
         )
 
-    anchor_coverage = coverage_hits / max(1, len(items))
+    anchor_coverage_any = coverage_hits_any / max(1, len(items))
+    anchor_coverage_strict = coverage_hits_strict / max(1, len(items))
     ledger = {
         "claims": [_item_to_dict(item) for item in items],
-        "anchor_coverage": round(anchor_coverage, 3),
+        "anchor_coverage": round(anchor_coverage_any, 3),  # Backward compatibility
+        "anchor_coverage_any": round(anchor_coverage_any, 3),
+        "anchor_coverage_strict": round(anchor_coverage_strict, 3),
         "hash": _sha("".join(item.claim_id for item in items)),
     }
     return ledger

@@ -21,8 +21,9 @@ from tavily import TavilyClient
 from file_utils import save_simple_report_auto
 from config import STIConfig
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Configure logging - only if root logger has no handlers (avoid conflicts)
+if not logging.getLogger().handlers:
+    logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -84,7 +85,8 @@ class SimpleMCPTimeFilteredAgent:
             "api_key": openai_api_key,
             "model": model_name,
             "temperature": 0.1,
-            "response_format": {"type": "json_object"}
+            "response_format": {"type": "json_object"},
+            "timeout": 120.0  # 120 second timeout to prevent hanging
         }
         if organization:
             llm_params["openai_organization"] = organization

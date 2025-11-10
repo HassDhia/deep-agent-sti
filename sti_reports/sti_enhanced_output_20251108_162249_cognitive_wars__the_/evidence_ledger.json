@@ -1,0 +1,206 @@
+{
+  "claims": [
+    {
+      "claim_id": "S1",
+      "claim_text": "2025-11-04 — Authors of a published note (corrigendum) posted 1 corrigendum document on arXiv correcting Olfati‑Saber, Fax & Murray (2007) and specifying stronger results.",
+      "anchors": [
+        {
+          "doi": "10.3758/s13423-025-02740-3",
+          "title": "Can I trust this paper?",
+          "url": "https://link.springer.com/article/10.3758/s13423-025-02740-3",
+          "why_relevant": "Found via link.springer.com"
+        },
+        {
+          "doi": "10.1007/978-3-030-99680-2_40",
+          "title": "Retraction of scientific papers: Types of retraction, consequences, and impacts",
+          "url": "https://link.springer.com/chapter/10.1007/978-3-030-99680-2_40",
+          "why_relevant": "Found via link.springer.com"
+        },
+        {
+          "doi": "10.1057/s41268-023-00313-2",
+          "title": "In 'crisis' we trust? On (un) intentional knowledge distortion and the exigency of terminological clarity in academic and political discourses on Russia's war against …",
+          "url": "https://link.springer.com/article/10.1057/s41268-023-00313-2",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "S2",
+      "claim_text": "2025-11-05 — Proceedings / curators registered 1 formal erratum entry referencing the Olfati‑Saber, Fax & Murray (2007) article, noting inaccuracies and priority issues.",
+      "anchors": [
+        {
+          "doi": "10.1057/s41268-023-00313-2",
+          "title": "In 'crisis' we trust? On (un) intentional knowledge distortion and the exigency of terminological clarity in academic and political discourses on Russia's war against …",
+          "url": "https://link.springer.com/article/10.1057/s41268-023-00313-2",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "S3",
+      "claim_text": "2025-11-06 — Springer-hosted interdisciplinary assessment was updated by incorporating 1 set of external materials ('data on file') referenced in the note about information and cognitive wars.",
+      "anchors": [
+        {
+          "doi": "10.1057/s41268-023-00313-2",
+          "title": "In 'crisis' we trust? On (un) intentional knowledge distortion and the exigency of terminological clarity in academic and political discourses on Russia's war against …",
+          "url": "https://link.springer.com/article/10.1057/s41268-023-00313-2",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "S4",
+      "claim_text": "2025-11-07 — The corrigendum authors published 1 set of stronger theoretical results applicable to the class of networked multi‑agent systems, asserting improvements over prior claims.",
+      "anchors": [
+        {
+          "doi": "10.1145/3746059.3747675",
+          "title": "SoilSense: Appropriating Soil-based Microbial Fuel Cells to Create Tangible Interfaces",
+          "url": "https://dl.acm.org/doi/abs/10.1145/3746059.3747675",
+          "why_relevant": "Found via dl.acm.org"
+        },
+        {
+          "doi": "10.1145/3652851",
+          "title": "Gaps, ambiguity, and establishing complexity-class containments via iterative constant-setting",
+          "url": "https://dl.acm.org/doi/abs/10.1145/3652851",
+          "why_relevant": "Found via dl.acm.org"
+        },
+        {
+          "doi": "10.1057/s41268-023-00313-2",
+          "title": "In 'crisis' we trust? On (un) intentional knowledge distortion and the exigency of terminological clarity in academic and political discourses on Russia's war against …",
+          "url": "https://link.springer.com/article/10.1057/s41268-023-00313-2",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "S5",
+      "claim_text": "2025-11-08 — The note's authors publicly flagged 1 priority/interpretation dispute concerning Olfati‑Saber et al. (2007), formally asserting that the original paper's interpretation of priority is not exact.",
+      "anchors": [
+        {
+          "doi": "10.1057/s41268-023-00313-2",
+          "title": "In 'crisis' we trust? On (un) intentional knowledge distortion and the exigency of terminological clarity in academic and political discourses on Russia's war against …",
+          "url": "https://link.springer.com/article/10.1057/s41268-023-00313-2",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "EXEC1",
+      "claim_text": "Between Nov 4–8, 2025 a corrigendum correcting Olfati‑Saber, Fax & Murray (2007), a formal erratum, a Springer interdisciplinary update incorporating external \"data on file,\" publication of stronger theoretical results, and a public priority dispute collectively recalibrated confidence in foundational multi‑agent syste",
+      "anchors": [
+        {
+          "doi": "10.1057/s41268-023-00313-2",
+          "title": "In 'crisis' we trust? On (un) intentional knowledge distortion and the exigency of terminological clarity in academic and political discourses on Russia's war against …",
+          "url": "https://link.springer.com/article/10.1057/s41268-023-00313-2",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "MARKET1",
+      "claim_text": "The recent cascade of academic updates—corrigenda, errata and a Springer-hosted interdisciplinary assessment incorporating external \"data on file\" related to information and cognitive wars—has immediate and measurable implications for market dynamics in technologies tied to networked multi‑agent systems and secure info",
+      "anchors": [
+        {
+          "doi": "10.1057/s41268-023-00313-2",
+          "title": "In 'crisis' we trust? On (un) intentional knowledge distortion and the exigency of terminological clarity in academic and political discourses on Russia's war against …",
+          "url": "https://link.springer.com/article/10.1057/s41268-023-00313-2",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "TECH1",
+      "claim_text": "Summary and context: A cluster of formal corrections, errata, and an interdisciplinary assessment update in early November 2025 collectively signal a substantive refinement of theoretical foundations for networked multi‑agent systems and raise broader implications for applied AI systems, infrastructure, and risk manage",
+      "anchors": [
+        {
+          "doi": "10.1145/155892.155894",
+          "title": "Errata, amendments and interpretations for the Fortran 90 standards document",
+          "url": "https://dl.acm.org/doi/pdf/10.1145/155892.155894",
+          "why_relevant": "Found via dl.acm.org"
+        },
+        {
+          "doi": "10.1145/192844.193066",
+          "title": "Situated evaluation for cooperative systems",
+          "url": "https://dl.acm.org/doi/abs/10.1145/192844.193066",
+          "why_relevant": "Found via dl.acm.org"
+        },
+        {
+          "doi": "10.1057/s41268-023-00313-2",
+          "title": "In 'crisis' we trust? On (un) intentional knowledge distortion and the exigency of terminological clarity in academic and political discourses on Russia's war against …",
+          "url": "https://link.springer.com/article/10.1057/s41268-023-00313-2",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "COMP1",
+      "claim_text": "Winner/loser identification — The sequence of events documented (corrigendum, formal erratum, stronger theoretical results, and a public priority/interpretation dispute) signals an immediate advantage to firms and research-led teams that can rapidly integrate corrected and stronger theory into products and services. Ve",
+      "anchors": [
+        {
+          "doi": "10.1057/s41268-023-00313-2",
+          "title": "In 'crisis' we trust? On (un) intentional knowledge distortion and the exigency of terminological clarity in academic and political discourses on Russia's war against …",
+          "url": "https://link.springer.com/article/10.1057/s41268-023-00313-2",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "LENS1",
+      "claim_text": "## Operator Lens",
+      "anchors": [
+        {
+          "doi": "10.1145/1863543.1863572",
+          "title": "Matching lenses: alignment and view update",
+          "url": "https://dl.acm.org/doi/abs/10.1145/1863543.1863572",
+          "why_relevant": "Found via dl.acm.org"
+        },
+        {
+          "doi": "10.1145/1411203.1411257",
+          "title": "Quotient lenses",
+          "url": "https://dl.acm.org/doi/abs/10.1145/1411203.1411257",
+          "why_relevant": "Found via dl.acm.org"
+        },
+        {
+          "doi": "10.1057/s41268-023-00313-2",
+          "title": "In 'crisis' we trust? On (un) intentional knowledge distortion and the exigency of terminological clarity in academic and political discourses on Russia's war against …",
+          "url": "https://link.springer.com/article/10.1057/s41268-023-00313-2",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    }
+  ],
+  "anchor_coverage": 1.0,
+  "anchor_coverage_any": 1.0,
+  "anchor_coverage_strict": 1.0,
+  "hash": "8f850fb475b5576bfdff090cd605fb4a0a65d3c6"
+}

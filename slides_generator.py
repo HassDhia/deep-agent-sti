@@ -26,7 +26,9 @@ try:
     GOOGLE_APIS_AVAILABLE = True
 except ImportError:
     GOOGLE_APIS_AVAILABLE = False
-    logging.basicConfig(level=logging.INFO)
+    # Configure logging - only if root logger has no handlers (avoid conflicts)
+    if not logging.getLogger().handlers:
+        logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
     logger.warning("⚠️ Google API libraries not available - slide generation disabled")
 

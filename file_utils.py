@@ -14,8 +14,9 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 from typing import Any, Dict, List, Optional
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Configure logging - only if root logger has no handlers (avoid conflicts)
+if not logging.getLogger().handlers:
+    logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -469,3 +470,30 @@ def list_all_reports(agent_type: str = None) -> List[str]:
 def save_run_manifest(report_dir: str, manifest: Dict[str, Any]) -> None:
     """Persist run manifest alongside report outputs."""
     write_json(Path(report_dir) / "manifest.json", manifest)
+
+
+def save_error_log(report_dir: str, error_info: Dict[str, Any]) -> None:
+    """
+    Save structured error information to error_log.json.
+    
+    Args:
+        report_dir: Directory where the error log should be saved
+        error_info: Dictionary containing error information with keys:
+            - error_type: Type of exception
+            - error_message: Exception message
+            - traceback: Full traceback string
+            - query: Query that was being processed
+            - timestamp: ISO timestamp
+            - context: Additional context dictionary
+    """
+    try:
+        # Ensure report directory exists
+        Path(report_dir).mkdir(parents=True, exist_ok=True)
+        
+        # Save error log
+        error_log_path = Path(report_dir) / "error_log.json"
+        write_json(error_log_path, error_info)
+        logger.info(f"Error log saved to: {error_log_path}")
+    except Exception as e:
+        logger.error(f"Failed to save error log: {e}")
+        # Don't raise - error logging failures shouldn't break the system

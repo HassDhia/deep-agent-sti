@@ -131,6 +131,18 @@ class QueryIntent(BaseModel):
     reasoning: str = Field(description="Brief explanation of why this intent was chosen")
 
 
+class QueryDomain(BaseModel):
+    """Pydantic model for query domain extraction"""
+    primary_domain: str = Field(description="Primary domain/field (e.g., 'technology/artificial intelligence', 'healthcare/medicine', 'finance/economics')")
+    domain_keywords: List[str] = Field(description="Key terms that indicate this domain")
+    confidence: float = Field(ge=0.0, le=1.0, description="Confidence in domain identification")
+
+
+class SearchQueries(BaseModel):
+    """Pydantic model for LLM-generated search queries"""
+    queries: List[str] = Field(description="List of diverse search queries optimized for academic source discovery")
+
+
 class RerankScore(BaseModel):
     source_id: int
     score: float = Field(ge=0.0, le=1.0)
@@ -228,5 +240,15 @@ class ThesisMetadata(BaseModel):
     badges: Dict[str, float] = Field(default_factory=dict, description="alignment, theory_depth, clarity (0-10 scale)")
     rubric_score: float = Field(ge=0.0, le=100.0, description="Total rubric score out of 100")
     disclaimer: str = Field(default="Theory-first synthesis with CEM grid; see assumptions & validation plan.")
+
+
+class AbstractionLayers(BaseModel):
+    """Pydantic model for conceptual abstraction layers"""
+    layers: Dict[str, List[str]] = Field(description="Dictionary mapping layer names (e.g., 'Layer 1: Specific', 'Layer 2: Domain') to lists of concepts/keywords")
+
+
+class CanonicalPapers(BaseModel):
+    """Pydantic model for canonical papers at each abstraction layer"""
+    papers: Dict[str, List[str]] = Field(description="Dictionary mapping layer names to lists of canonical paper titles/authors")
 
 

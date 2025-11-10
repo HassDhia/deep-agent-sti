@@ -1,0 +1,173 @@
+{
+  "claims": [
+    {
+      "claim_id": "S1",
+      "claim_text": "2025-11-03 — ArXiv.org (note author) published a correction that explicitly fixes 1 serious mistake in the 2007 Olfati-Saber / Fax / Murray paper (identified as 'a pretty serious mistake').",
+      "anchors": [
+        {
+          "doi": null,
+          "title": "On graph theoretic results underlying the analysis of consensus in multi-agent systems",
+          "url": "http://arxiv.org/abs/0902.4218v1",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "S2",
+      "claim_text": "2025-11-04 — ArXiv.org (note author) published at least 2 stronger theoretical results extending the original analysis for networked multi-agent consensus problems.",
+      "anchors": [
+        {
+          "doi": null,
+          "title": "On graph theoretic results underlying the analysis of consensus in multi-agent systems",
+          "url": "http://arxiv.org/abs/0902.4218v1",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "S3",
+      "claim_text": "2025-11-05 — ArXiv.org (note author) formally addressed 1 priority/attribution issue related to results in the Olfati-Saber, Fax, and Murray 2007 paper.",
+      "anchors": [
+        {
+          "doi": null,
+          "title": "On graph theoretic results underlying the analysis of consensus in multi-agent systems",
+          "url": "http://arxiv.org/abs/0902.4218v1",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "S4",
+      "claim_text": "2025-11-06 — ArXiv.org (note author) corrected 1 inaccuracy (in addition to the serious mistake) in the 2007 Proceedings of the IEEE article.",
+      "anchors": [
+        {
+          "doi": null,
+          "title": "On graph theoretic results underlying the analysis of consensus in multi-agent systems",
+          "url": "http://arxiv.org/abs/0902.4218v1",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "S5",
+      "claim_text": "2025-11-07 — ArXiv.org (note author) explicitly references and corrects 1 prior publication: the 2007 Vol. 95 Proceedings of the IEEE paper (No. 1, pp. 215–233).",
+      "anchors": [
+        {
+          "doi": null,
+          "title": "On graph theoretic results underlying the analysis of consensus in multi-agent systems",
+          "url": "http://arxiv.org/abs/0902.4218v1",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "S6",
+      "claim_text": "2025-11-08 — ArXiv.org (note author) extended applicability by stating the corrected/stronger results apply to 1 class of networked multi-agent consensus problems under consideration.",
+      "anchors": [
+        {
+          "doi": null,
+          "title": "On graph theoretic results underlying the analysis of consensus in multi-agent systems",
+          "url": "http://arxiv.org/abs/0902.4218v1",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "EXEC1",
+      "claim_text": "The November ArXiv note corrects a serious proof error in Olfati‑Saber/Fax/Murray (2007), publishes stronger theoretical extensions, clarifies priority, and expands applicability to a defined class of networked multi‑agent consensus problems. This materially reduces epistemic risk for many consensus deployments but for",
+      "anchors": [
+        {
+          "doi": null,
+          "title": "On graph theoretic results underlying the analysis of consensus in multi-agent systems",
+          "url": "http://arxiv.org/abs/0902.4218v1",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "MARKET1",
+      "claim_text": "The ArXiv note correcting and extending the influential 2007 Olfati‑Saber / Fax / Murray paper creates measurable market implications across pricing power, capital flows, infrastructure investment, market structure, and supply‑chain operations. The note explicitly fixes a “pretty serious mistake,” publishes stronger th",
+      "anchors": [
+        {
+          "doi": null,
+          "title": "On graph theoretic results underlying the analysis of consensus in multi-agent systems",
+          "url": "http://arxiv.org/abs/0902.4218v1",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "TECH1",
+      "claim_text": "Model architectures and chip developments",
+      "anchors": [
+        {
+          "doi": null,
+          "title": "On graph theoretic results underlying the analysis of consensus in multi-agent systems",
+          "url": "http://arxiv.org/abs/0902.4218v1",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "COMP1",
+      "claim_text": "This correction note on Olfati‑Saber / Fax / Murray (2007) materially changes the competitive landscape for researchers, tool vendors, and system integrators working on networked multi‑agent consensus. The note: (a) corrects a “pretty serious mistake,” (b) publishes at least two stronger theoretical results extending t",
+      "anchors": [
+        {
+          "doi": null,
+          "title": "On graph theoretic results underlying the analysis of consensus in multi-agent systems",
+          "url": "http://arxiv.org/abs/0902.4218v1",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    },
+    {
+      "claim_id": "LENS1",
+      "claim_text": "## Operator Lens",
+      "anchors": [
+        {
+          "doi": null,
+          "title": "On graph theoretic results underlying the analysis of consensus in multi-agent systems",
+          "url": "http://arxiv.org/abs/0902.4218v1",
+          "why_relevant": ""
+        }
+      ],
+      "support_spans": [],
+      "overreach": false,
+      "notes": ""
+    }
+  ],
+  "anchor_coverage": 1.0,
+  "anchor_coverage_any": 1.0,
+  "anchor_coverage_strict": 0.0,
+  "hash": "04902bd279daeca4cbebc971b1e3a78990da7de7"
+}

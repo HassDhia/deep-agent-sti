@@ -173,6 +173,38 @@ def suggest_patch_for_vignette(params: Dict[str, Any], horizon_hours: float = 6.
     noise_mass = max(0.0, (1.0 - precision) * reports_per_hr)
     lam_false = noise_mass * w_k
     p_false_kinetic = 1.0 - math.exp(-lam_false)
+    
+    # Monotonicity checks
+    if tpr > 0 and fpr > 0 and base_rate > 0:
+        # Check PPV monotonicity: should be increasing in tpr, decreasing in fpr
+        warning_tpr = monotonicity_linter(
+            lambda t: ppv(t, fpr, base_rate, p_loss=p_loss),
+            "tpr",
+            {"fpr": (fpr, fpr), "base_rate": (base_rate, base_rate), "p_loss": (p_loss, p_loss)},
+            "increasing"
+        )
+        if warning_tpr:
+            alerts.append(warning_tpr)
+        
+        warning_fpr = monotonicity_linter(
+            lambda f: ppv(tpr, f, base_rate, p_loss=p_loss),
+            "fpr",
+            {"tpr": (tpr, tpr), "base_rate": (base_rate, base_rate), "p_loss": (p_loss, p_loss)},
+            "decreasing"
+        )
+        if warning_fpr:
+            alerts.append(warning_fpr)
+    
+    # Check Poisson hazard monotonicity: should be increasing in rate
+    if mu > 0 and alpha > 0 and tau > 0:
+        warning_hazard = monotonicity_linter(
+            lambda r: poisson_hazard(r, horizon_hours, m=int(params.get("m", 1))),
+            "rate",
+            {},
+            "increasing"
+        )
+        if warning_hazard:
+            alerts.append(warning_hazard)
 
     latex_equations = [
         r"\lambda = \mu \cdot \alpha \cdot \tau \cdot p_{\text{conn}} \cdot \kappa",
