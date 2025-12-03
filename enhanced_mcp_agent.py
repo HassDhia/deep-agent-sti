@@ -228,6 +228,7 @@ class EnhancedSTIAgent:
         scope["spec_notes"] = spec_notes
 
         letter_data = None
+        letter_markdown = ""
         letter_bullets = {"investable": [], "targets": []}
         letter_primary_cta = ""
         letter_email_subject = ""
@@ -271,6 +272,8 @@ class EnhancedSTIAgent:
                 letter_status = "error"
         else:
             letter_status = "skipped_no_context"
+        if letter_data:
+            letter_markdown = self._render_executive_letter_markdown(letter_data)
 
         markdown = self._build_markdown(
             query,
@@ -335,6 +338,7 @@ class EnhancedSTIAgent:
             "quant": quant_payload,
             "comparison_map": sections.get("comparison_map", {}),
             "executive_letter": letter_data or {},
+            "executive_letter_markdown": letter_markdown,
             "letter_status": letter_status,
             "letter_bullets": letter_bullets,
             "letter_primary_cta": letter_primary_cta,
@@ -1747,6 +1751,66 @@ class EnhancedSTIAgent:
             if len(targets) >= 6:
                 break
         return targets
+
+    def _render_executive_letter_markdown(self, letter: Dict[str, Any]) -> str:
+        """Render the executive letter JSON into markdown for Market-Path outputs."""
+        if not letter:
+            return ""
+
+        lines: List[str] = []
+        title = self._sanitize_text(letter.get("title") or "")
+        subtitle = self._sanitize_text(letter.get("subtitle") or "")
+        tldr = self._sanitize_text(letter.get("tldr") or "")
+
+        if title:
+            lines.append(f"# {title}")
+        if subtitle:
+            lines.append(f"_{subtitle}_")
+            lines.append("")
+        if tldr:
+            lines.append(f"> {tldr}")
+            lines.append("")
+
+        for section in letter.get("sections") or []:
+            name = self._sanitize_text(section.get("name") or "")
+            body = self._sanitize_text(section.get("body") or "")
+            if not body:
+                continue
+            if name:
+                lines.append(f"## {name}")
+            lines.append(body)
+            lines.append("")
+
+        bullets_investable = letter.get("bullets_investable") or []
+        if bullets_investable:
+            lines.append("### Why this window matters")
+            for item in bullets_investable:
+                clean_item = self._sanitize_text(item)
+                if clean_item:
+                    lines.append(f"- {clean_item}")
+            lines.append("")
+
+        bullets_targets = letter.get("bullets_targets") or []
+        if bullets_targets:
+            lines.append("### Targets for this pilot")
+            for item in bullets_targets:
+                clean_item = self._sanitize_text(item)
+                if clean_item:
+                    lines.append(f"- {clean_item}")
+            lines.append("")
+
+        primary_cta = self._sanitize_text(letter.get("primary_cta") or "")
+        if primary_cta:
+            lines.append("### Decision requested")
+            lines.append(primary_cta)
+            lines.append("")
+
+        email_subject = self._sanitize_text(letter.get("email_subject") or "")
+        if email_subject:
+            lines.append(f"_Forward with subject: {email_subject}_")
+            lines.append("")
+
+        return "\n".join(lines).strip()
 
     def _build_letter_context(
         self,

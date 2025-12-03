@@ -155,6 +155,7 @@ def sample_report_bundle():
             "Finance": "Block scale unless Local Flagship Footfall, early-window share, and event CPA stay inside guardrails.",
         },
         "executive_letter": {
+            "title": "Holiday windows behave like drop math",
             "subtitle": "Turning holiday experiments into loyalty gains",
             "tldr": "We can trade one markdown window for a loyalty-rich pop-up sprint if we approve a two-week test now.",
             "sections": [
@@ -177,6 +178,42 @@ def sample_report_bundle():
             "primary_cta": "Approve the focused holiday test with a single sponsor and daily instrumentation.",
             "email_subject": "Proposal: Holiday pop-up test to trade markdowns for loyalty and better unit economics"
         },
+        "executive_letter_markdown": (
+            "# Holiday windows behave like drop math\n"
+            "_Turning holiday experiments into loyalty gains_\n"
+            "\n"
+            "> We can trade one markdown window for a loyalty-rich pop-up sprint if we approve a two-week test now.\n"
+            "\n"
+            "## What we are seeing\n"
+            "Retailers are compressing holiday demand into two precise windows and measuring footfall daily. Loyalty enrollments spike when pop-ups add instant digital rewards.\n"
+            "\n"
+            "## The move\n"
+            "Run an early-access A/B plus a pop-up loyalty funnel backed by BNPL and instant rewards. Keep the test tight with daily readouts and predefined kill switches.\n"
+            "\n"
+            "## Size of prize\n"
+            "Targets stay disciplined: **10–15%** footfall lift (stretch ≥ **25%**), **20–30%** early-window share, event CPA ≤ **0.8×** baseline, QR redemption ≥ **5%** of footfall within 30 days.\n"
+            "\n"
+            "## Risks\n"
+            "Noise from short windows, reward system failures, or negative BNPL economics. We mitigate with holdouts, canary tech rollouts, and net-contrib monitoring.\n"
+            "\n"
+            "## Decision requested\n"
+            "Approve the two-week test, assign a single sponsor across Retail/Marketing/Finance, and authorize Brand Collab Lab plus analytics to instrument and report daily.\n"
+            "\n"
+            "### Why this window matters\n"
+            "- Holiday demand is compressing into two short windows with measurable lift\n"
+            "- Pop-ups now outperform permanent markdowns for loyalty acquisition\n"
+            "- Instant rewards plus BNPL let us hold margin while growing members\n"
+            "\n"
+            "### Targets for this pilot\n"
+            "- Footfall +10–15% (stretch ≥25%) during the two-week window\n"
+            "- Early-window share from 12–15% baseline to 20–30% of transactions\n"
+            "- Event CPA ≤0.80× baseline with QR/instant rewards ≥5% within 30 days\n"
+            "\n"
+            "### Decision requested\n"
+            "Approve the focused holiday test with a single sponsor and daily instrumentation.\n"
+            "\n"
+            "_Forward with subject: Proposal: Holiday pop-up test to trade markdowns for loyalty and better unit economics_"
+        ),
         "letter_bullets": {
             "investable": [
                 "Holiday demand is compressing into two measurable windows",
@@ -294,22 +331,14 @@ def test_market_path_markdown_renderer(tmp_path):
     files = renderer.render(bundle, str(tmp_path))
     assert files
     output = Path(files[0]).read_text(encoding="utf-8")
-    assert "Concretely, I'd run" in output
-    assert "In practice this only works if a few teams move in step." in output
-    assert "**Why this works**" in output
-    assert "## " not in output
-    assert "\n|" not in output
-    assert "_Decision Map_" not in output
-    assert "_Measurement Spine_" not in output
-    assert "_Sources & Confidence_" in output
-    assert "[Read HTML intelligence report](intelligence_report.html)" in output
-    assert "Intelligence report" in output
-    for metric_id in bundle["pilot_spec"]["key_metrics"]:
-        label = bundle["metric_spec"][metric_id]["label"]
-        assert label in output
-    for phrase in ["Retail needs to", "Partnerships needs to", "Finance needs to"]:
-        assert phrase in output
-    assert "Head of Retail" not in output
+    expected_letter = bundle["executive_letter_markdown"].strip()
+    assert output.strip() == expected_letter
+    assert output.startswith("# Holiday windows behave like drop math")
+    assert "## What we are seeing" in output
+    assert "## The move" in output
+    assert "### Why this window matters" in output
+    assert "### Targets for this pilot" in output
+    assert "_Forward with subject: Proposal: Holiday pop-up test to trade markdowns for loyalty and better unit economics_" in output
     banned_tokens = [
         "foot_traffic_uplift",
         "early_window_share",
@@ -331,15 +360,6 @@ def test_market_path_markdown_renderer(tmp_path):
     banned_tokens.extend(sorted(known_metric_ids()))
     for token in banned_tokens:
         assert token not in output
-    assert "_Evidence:_" not in output
-    assert "twelve stores" not in output.lower()
-    assert "Treat this as a directional read." in output
-    assert "Evidence:" not in output
-    assert "Evidence Directional evidence" in output
-    assert "Local Flagship Footfall" in output
-    for metric_id in bundle["pilot_spec"]["key_metrics"]:
-        label = bundle["metric_spec"][metric_id]["label"]
-        assert label in output
 
 
 def test_market_path_pdf_renderer(tmp_path):
