@@ -17,14 +17,14 @@ class MarketPathMarkdownRenderer(BaseRenderer):
 
     def render(self, report_bundle: Dict[str, Any], report_dir: str) -> List[str]:
         base = Path(report_dir)
-        deep_link = None
-        html_candidate = base / "intelligence_report.html"
-        if html_candidate.exists():
-            deep_link = html_candidate.name
         letter_markdown = (report_bundle.get("executive_letter_markdown") or "").strip()
         if letter_markdown:
             markdown = letter_markdown
         else:
+            deep_link = None
+            html_candidate = base / "intelligence_report.html"
+            if html_candidate.exists():
+                deep_link = html_candidate.name
             artifact_links = []
             pdf_candidate = base / "market_path_report.pdf"
             if pdf_candidate.exists():

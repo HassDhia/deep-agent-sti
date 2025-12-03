@@ -173,18 +173,9 @@ class EnhancedSTIAgent:
                 scope_json,
             )
         )
-        image_prompt_bundle = []
-        try:
-            prompt_response = self._tool_json(
-                generate_image_prompt_bundle(json.dumps(report, ensure_ascii=False))
-            )
-            if isinstance(prompt_response, dict):
-                image_prompt_bundle = prompt_response.get("images") or []
-        except Exception as image_prompt_error:
-            logger.debug(f"image_prompt_bundle failed: {image_prompt_error}")
-        self._trace("image_prompt_bundle", image_prompt_bundle)
         image_briefs = image_briefs.get("image_briefs") if isinstance(image_briefs, dict) else image_briefs
         self._trace("image_briefs", image_briefs)
+        image_prompt_bundle: List[Dict[str, Any]] = []
 
         top_moves_raw = exec_data.get("top_operator_moves") or self._derive_top_moves(signals)
         top_moves = [self._sanitize_text(move) for move in (top_moves_raw or []) if move]
@@ -334,7 +325,6 @@ class EnhancedSTIAgent:
             "source_stats": source_stats,
             "sections": sections,
             "image_briefs": image_briefs,
-            "image_prompts": image_prompt_bundle,
             "quant": quant_payload,
             "comparison_map": sections.get("comparison_map", {}),
             "executive_letter": letter_data or {},
@@ -378,6 +368,16 @@ class EnhancedSTIAgent:
                 "generated_at": generated_at.isoformat(),
             },
         }
+        try:
+            prompt_response = self._tool_json(
+                generate_image_prompt_bundle(json.dumps(report, ensure_ascii=False))
+            )
+            if isinstance(prompt_response, dict):
+                image_prompt_bundle = prompt_response.get("images") or []
+        except Exception as image_prompt_error:
+            logger.debug(f"image_prompt_bundle failed: {image_prompt_error}")
+        report["image_prompts"] = image_prompt_bundle
+        self._trace("image_prompt_bundle", image_prompt_bundle)
         return report
 
     # ------------------------------------------------------------------
