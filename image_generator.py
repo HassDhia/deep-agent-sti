@@ -918,12 +918,12 @@ class ImageGenerator:
             return rng.choice(usable)
 
         if template_id == "hero_decision_window":
-            scene = tokens.get("scene") or "quiet operator decision table"
+            scene = tokens.get("scene") or "zen operator decision table"
             personas = tokens.get("personas") or "operator team"
             action = tokens.get("action") or "reviewing options together"
             symbolism = tokens.get("symbolism") or "single highlighted note on the table"
             props = tokens.get("props") or "laptops, notebooks, printed brief pages"
-            mood = tokens.get("mood") or "calm, thoughtful, precise"
+            mood = tokens.get("mood") or "calm, thoughtful, zen"
             lighting = tokens.get("lighting") or "soft natural window light"
             focal = tokens.get("focal_point") or "moment of shared agreement"
             style_line = style.get("lighting", "subtle editorial daylight with gentle contrast")
@@ -952,7 +952,7 @@ class ImageGenerator:
                 ], f"Action: {action}, they talk through the tradeoffs at the table."),
                 f"Symbolism: {symbolism} suggesting long term thinking, not urgency.",
                 f"Key objects: {props} placed casually, with visible notes and margins.",
-                f"Mood: {mood}, grounded and human, not theatrical.",
+                f"Mood: {mood}, grounded and human, not theatrical, zen.",
                 f"Lighting: {lighting} styled as {style_line}.",
                 f"Composition: {framing} with generous negative space and focus on {focal}.",
                 f"Palette: {palette} with {geometry} in a {environment} that feels real and usable.",
@@ -967,7 +967,7 @@ class ImageGenerator:
             structure = tokens.get("structure") or "concentric rings, like an editorial diagram"
             motion = tokens.get("motion") or "slow gradients that feel like drifting attention"
             direction = tokens.get("direction") or "shifts in demand toward the center"
-            elements = tokens.get("elements") or "simple nodes, arcs, and soft fields of tone"
+            elements = tokens.get("elements") or "simple nodes, arcs, and soft fields of zen tone"
             palette_hint = tokens.get("palette") or "muted ink blue accent"
             lighting = style.get("lighting", "soft studio glow, almost paper like")
             framing = style.get("framing", "flat editorial layout on a light background")
@@ -983,7 +983,7 @@ class ImageGenerator:
                 f"Abstract structure: {structure} representing {context_label}.",
                 f"Motion: {motion} that suggests {direction} rather than aggressive pulses.",
                 f"Visual elements: {elements}, drawn with a diagram like simplicity.",
-                "Mood: analytical, calm, almost like a margin sketch from a strategy essay.",
+                "Mood: analytical, zen, almost like a margin sketch from a strategy essay.",
                 f"Lighting: {lighting} with subtle reflections on a {environment}.",
                 f"Composition: {framing} with a centered form and generous negative space around it.",
                 f"Color: {palette} with a single {palette_hint} accent for emphasis.",
@@ -1013,7 +1013,7 @@ class ImageGenerator:
                     f"Scene: {scene}.",], f"Scene: {scene} during the {time_window}."),
                 f"Moment: {moment}, mid conversation rather than posed.",
                 f"Personas: {personas}, engaged but relaxed.",
-                f"Mood: {mood}, focused on clarity over drama.",
+                f"Mood: {mood}, focused on clarity over drama, zen.",
                 f"Lighting: {lighting} styled as {style.get('lighting', 'subtle editorial glow, minimal contrast')}.",
                 f"Props: {props} with visible notes, printouts, and open tabs.",
                 "Expressions: natural, as if captured between sentences in a discussion.",
