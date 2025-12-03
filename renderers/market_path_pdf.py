@@ -27,8 +27,13 @@ class MarketPathPDFRenderer(BaseRenderer):
         html_candidate = Path(report_dir) / "intelligence_report.html"
         if html_candidate.exists():
             deep_link = html_candidate.name
-        context = build_market_path_context(report_bundle, deep_link=deep_link, report_dir=report_dir)
         pdf_path = Path(report_dir) / "market_path_report.pdf"
+        letter_markdown = (report_bundle.get("executive_letter_markdown") or "").strip()
+        if letter_markdown:
+            LOGGER.info("Rendering Market-Path PDF from executive letter markdown.")
+            self._write_pdf_from_markdown(letter_markdown, pdf_path)
+            return [str(pdf_path)]
+        context = build_market_path_context(report_bundle, deep_link=deep_link, report_dir=report_dir)
         if not self._render_with_typst(context, pdf_path):
             LOGGER.info("Typst not available. Falling back to inline PDF writer.")
             self._render_fallback_pdf(context, pdf_path)
@@ -55,6 +60,9 @@ class MarketPathPDFRenderer(BaseRenderer):
 
     def _render_fallback_pdf(self, context: Dict[str, Any], output_path: Path) -> None:
         markdown = render_markdown(context)
+        self._write_pdf_from_markdown(markdown, output_path)
+
+    def _write_pdf_from_markdown(self, markdown: str, output_path: Path) -> None:
         lines: List[str] = []
         for raw_line in markdown.splitlines():
             cleaned = _sanitize_line(raw_line.rstrip())
