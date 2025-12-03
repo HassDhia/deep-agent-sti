@@ -1575,6 +1575,23 @@ class EnhancedSTIAgent:
             owner_roles = ["Head of Retail", "Head of Partnerships", "Head of Marketing", "Finance"]
         if "Finance" not in owner_roles:
             owner_roles.append("Finance")
+        # Deduplicate order-preserving
+        seen_roles: Set[str] = set()
+        deduped_roles: List[str] = []
+        for role in owner_roles:
+            if role and role not in seen_roles:
+                deduped_roles.append(role)
+                seen_roles.add(role)
+        owner_roles = deduped_roles
+        if len(owner_roles) < 2:
+            defaults = ["Head of Retail", "Head of Partnerships", "Head of Marketing", "Finance"]
+            for role in defaults:
+                if role not in owner_roles:
+                    owner_roles.append(role)
+                if len(owner_roles) >= 2:
+                    break
+        elif len(owner_roles) > 4:
+            owner_roles = owner_roles[:4]
         location_radius = pilot_spec_raw.get("location_radius_miles") or 5
         try:
             location_radius = max(0, int(location_radius))
