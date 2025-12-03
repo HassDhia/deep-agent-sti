@@ -1,0 +1,148 @@
+[
+  {
+    "name": "China Consumer 2025 Conference",
+    "reason": "non-US focus; low applicability to US operational tests."
+  },
+  {
+    "name": "General Filmmaker Digital Asset Management",
+    "reason": "used for technology context but offers broad industry analysis rather than US retail test guidance; kept out of spine for specificity."
+  },
+  {
+    "name": "Non-native Plant Adaptation",
+    "reason": "off-topic biological research; irrelevant to store-as-studio thesis."
+  },
+  {
+    "category": "Market",
+    "name": "Stores Acting As Owned Media Channels",
+    "description": "Major operators are treating retail floors as first-party media by producing and airing store-native content to customers in situ. This reduces reliance on paid digital channels and changes where conversion happens, so operators can capture attention and sales earlier in the holiday window.",
+    "operator_move": "Head of Retail: Convert 12 high-traffic stores into mini-studios and run a Nov 18 - Dec 02, 2025 test measuring foot-traffic uplift vs matched controls and QR redemption, targeting base uplift 10-15% and QR redemptions ≥5%.",
+    "operator_scan": "Measure daily foot traffic lift and QR redemptions vs control stores.",
+    "spine_hook": "Stores are shifting from shelf to media channel.",
+    "time_horizon": "6-week",
+    "strength": 0.82,
+    "US_fit": 0.95,
+    "operationality": 0.9,
+    "support": [
+      2,
+      8,
+      4
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      2,
+      8,
+      4
+    ],
+    "id": "S1",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Market",
+    "name": "Discount-Heavy Holiday Makes Experience Sales Higher-Value",
+    "description": "Black Friday and Cyber Monday continue to drive deep, margin-compressing discounts across categories. That raises the relative value of experience-driven, non-discount purchases because they avoid direct price erosion and can lift early-window share.",
+    "operator_move": "Head of Brand: Run price-light, experience pop-ups in 10 stores Nov 18 - Dec 02, 2025 and track buyer activity share vs promo intensity, aiming for event CPA ≤0.8× baseline and an early-window share lift toward 20-30%.",
+    "operator_scan": "Compare buyer activity share to discount depth daily at store level.",
+    "spine_hook": "Deep holiday discounts make experiences comparatively more valuable.",
+    "time_horizon": "now",
+    "strength": 0.8,
+    "US_fit": 0.9,
+    "operationality": 0.85,
+    "support": [
+      5,
+      6,
+      2
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      5,
+      6,
+      2
+    ],
+    "id": "S2",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Technology",
+    "name": "Cloud Production Cuts Store Content Friction",
+    "description": "Cloud-driven studio workflows are lowering cost and time for producing high-quality video and assets in nontraditional locations. Faster, cheaper production lets stores iterate content for in-window promotions and capture early demand before competitors rely on price.",
+    "operator_move": "Head of Marketing: Deploy cloud production tooling in six stores and run a Nov 18 - Dec 02, 2025 test measuring content-to-shelf time and conversion lift, targeting an early-window share increase from 12-15% toward 20%.",
+    "operator_scan": "Track content turnaround time and conversion lift per store per asset.",
+    "spine_hook": "Cloud tooling makes store content fast and affordable.",
+    "time_horizon": "6-week",
+    "strength": 0.79,
+    "US_fit": 0.9,
+    "operationality": 0.8,
+    "support": [
+      4
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      4
+    ],
+    "id": "S3",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Cultural",
+    "name": "Gen Z Creative Demand Elevates In-Store Creator Collabs",
+    "description": "Brands courting Gen Z are prioritizing creative, in-person activations that double as content engines. Operators who host creator-led events can convert cultural relevance into measurable store visits and digital engagement during the holiday stretch.",
+    "operator_move": "Head of Partnerships: Book three creator-led in-store activations Nov 18 - Dec 02, 2025 and measure QR-driven opt-ins and buyer activity share per event, targeting QR redemption ≥5% of footfall and event CPA ≤0.8× baseline.",
+    "operator_scan": "Count event-driven buyers, QR signups, and short-term conversion lift per activation.",
+    "spine_hook": "Creators turn store events into measurable demand.",
+    "time_horizon": "6-week",
+    "strength": 0.78,
+    "US_fit": 0.88,
+    "operationality": 0.8,
+    "support": [
+      3,
+      8,
+      7
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      3,
+      8,
+      7
+    ],
+    "id": "S4",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Behavioral",
+    "name": "Hyperlocal Store Stories Drive Measurable Foot Traffic",
+    "description": "Smaller operators are demonstrating that local, community-focused content can win online interest without large ad budgets. Replicating hyperlocal storytelling at scale lets national retailers lift targeted zip-code foot traffic and capture early-window buyers with lower promotional intensity.",
+    "operator_move": "Head of Property: Deploy hyperlocal content and programming in 8 stores Nov 18 - Dec 02, 2025 and measure zip-code-level social referral lift and foot-traffic uplift, aiming for base uplift 10-15% in targeted markets.",
+    "operator_scan": "Monitor zip-code foot traffic, social referrals, and buyer activity share weekly.",
+    "spine_hook": "Local stories turn into local store visits.",
+    "time_horizon": "6-week",
+    "strength": 0.78,
+    "US_fit": 0.9,
+    "operationality": 0.78,
+    "support": [
+      7,
+      8
+    ],
+    "on_spine": true,
+    "quant_support": "none",
+    "source_grade": "C",
+    "citations": [
+      7,
+      8
+    ],
+    "id": "S5",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  }
+]

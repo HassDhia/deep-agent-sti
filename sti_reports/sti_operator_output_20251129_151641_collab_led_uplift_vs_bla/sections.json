@@ -1,0 +1,715 @@
+{
+  "deep_analysis": {
+    "sections": [
+      {
+        "title": "Tariff clarity lowers headline price-hike risk",
+        "spine_position": "what",
+        "priority": 1,
+        "scan_line": "Tariff fog clearing reduces price-hike signaling; discount leverage remains potent.",
+        "insight": "Fewer companies signaled price hikes as tariff uncertainty eased in Q3, reducing the need to pre-announce margin actions [^1]. This removes an external justification for across-the-board increases, meaning promotional pricing still drives short-term demand but now carries clearer margin tradeoffs rather than tariff-driven cost offsets. Moving from blanket discounts to partner-funded activations preserves selling price while reallocating net promo spend to activation value.",
+        "operator_note": "Run a 6-week operational pilot replacing one weekend 20% sitewide discount with a co-branded in-store activation in 12 pilot stores. Track foot_traffic_uplift, buyer_activity_share, net margin per transaction, and event_cpa. Commit to cut or scale after week 3 if foot_traffic_uplift is below 10% or event_cpa exceeds 0.80x baseline.",
+        "instrument_next": "Instrument the S1 pilot: 12 stores, 6 weeks, measure foot_traffic_uplift and buyer_activity_share versus the weekend baseline.",
+        "citations": [
+          1
+        ]
+      },
+      {
+        "title": "Exclusive drops concentrate early-window demand",
+        "spine_position": "so_what",
+        "priority": 1,
+        "scan_line": "Partner drops shift purchase timing; lift early-window share without deeper markdowns.",
+        "insight": "Exclusive, week-one product drops in high-traffic stores concentrate intent and move purchases into the early window, improving early_window_share versus a broad discounting cadence [^1]. The mechanism is scarcity-driven urgency plus earned partner media that frontloads visits and purchases, reducing reliance on deeper markdowns to clear stock. Versus blanket discounts, exclusive drops trade off broader reach for higher early conversion rates and stronger partner media lift.",
+        "operator_note": "Execute a 4-week test with a week-one exclusive collab product drop in 15 high-traffic stores. Measure early_window_share, sell-through in week 1, conversion rate, and incremental footfall versus last-year baseline. Decision rule: scale if early_window_share reaches 20% within week 1 and event_cpa ≤0.80x baseline.",
+        "instrument_next": "Instrument the S2 test: 15 stores, 4 weeks, measure early_window_share against last-year baseline and monitor week-1 sell-through.",
+        "citations": [
+          1
+        ]
+      },
+      {
+        "title": "Co-funding shifts P&L and lowers effective CPA",
+        "spine_position": "now_what",
+        "priority": 1,
+        "scan_line": "Partner-funded 15% protects margin and can reduce event CPA versus 20% sitewide.",
+        "insight": "A three-week finance model comparing a 20% blanket discount to a co-funded 15% collaboration typically shows co-funding reduces net promo spend and can drive event_cpa below the 0.80x target when partners underwrite media or product costs [^1]. The second-order effect is higher owned-media value per dollar spent because partner funds can be reclassified as media or market-development rather than pure markdown, preserving gross margin relative to blanket discounts. The break point is partner funding share and sell-through; if partner contribution falls or sell-through lags, the margin advantage disappears quickly.",
+        "operator_note": "Run a 3-week CFO-partnership profit model comparing net margin, event_cpa, and contribution per sale for (a) 20% sitewide discount and (b) co-funded 15% collab. Include sensitivity to partner funding share (0–100%), sell-through variance, and reclassified media value. Decision rule: prefer collab if event_cpa ≤0.80x and net margin loss is <50% of the blanket discount loss.",
+        "instrument_next": "Instrument the S3 finance model: 3 weeks, scenario runs on partner funding share and sell-through assumptions, output event_cpa and net margin deltas.",
+        "citations": [
+          1
+        ]
+      },
+      {
+        "title": "Store-as-studio converts promo spend into owned media",
+        "spine_position": "now_what",
+        "priority": 2,
+        "scan_line": "Flagship pop-ups create media lift and raise buyer activity versus pure discounts.",
+        "insight": "Short-term store-as-studio pop-ups can reallocate promo budgets into content and live activation, increasing buyer_activity_share per promo dollar and improving paired metrics against promo intensity [^1]. The mechanism is twofold: localized experiential draw (footfall) and reusable content/media value that extends the activation's reach beyond the weekend. This approach trades operational complexity and property allocation for higher media value and potentially better QR_redemption and early-window performance versus blanket discounts.",
+        "operator_note": "Pilot a 2-week store-as-studio pop-up in 8 flagship locations over a holiday weekend. Capture content, run local paid amplification, and measure paired_metric: buyer_activity_share versus promo_intensity, plus QR_redemption and foot_traffic_uplift. Stop if buyer_activity_share increases <5 percentage points or QR_redemption <5% of footfall.",
+        "instrument_next": "Instrument the S4 pop-up: 8 flagships, 2 weeks, measure buyer_activity_share, QR_redemption, and content reach metrics.",
+        "citations": [
+          1
+        ]
+      }
+    ],
+    "summary": "Test three levers in parallel: swap a weekend sitewide discount for a co-branded activation to protect margin and measure foot_traffic_uplift; run exclusive drops to frontload purchases and lift early_window_share; and model co-funded promo economics to validate event_cpa and net margin tradeoffs. Use store-as-studio pop-ups to convert promo dollars into owned media and track buyer_activity_share versus promo intensity. Instrument each signal with clear stop/scale rules tied to foot_traffic_uplift, early_window_share, event_cpa ≤0.80x, and QR_redemption thresholds so you can decide within two planning cycles."
+  },
+  "pattern_matches": [
+    {
+      "label": "Replace weekend sitewide discount with co-branded activation",
+      "then": "Retailers historically ran blanket weekend sitewide discounts to drive holiday footfall and clear inventory.",
+      "now": "Brands are testing co-branded in-store activations that trade depth of discount for partner marketing and exclusivity to protect margin.",
+      "operator_leap": "Head of Retail run a 6-week pilot replacing one weekend 20% storewide discount with a co-branded in-store activation in 12 pilot stores and measure foot_traffic_uplift and buyer_activity_share versus control.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        1
+      ]
+    },
+    {
+      "label": "Limited exclusive drops concentrate early-window demand",
+      "then": "Streetwear and limited-release brands historically used scarce drops to drive concentrated early-window purchases and earned media.",
+      "now": "Retailers can recreate that urgency with partner-exclusive week-one product drops to raise early-window share without across-the-board markdowns.",
+      "operator_leap": "Head of Partnerships run a 4-week test: launch a week-one exclusive collab product drop in 15 high-traffic stores and measure early_window_share versus last-year baseline.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        1
+      ]
+    },
+    {
+      "label": "Co-funded promotions improve P&L vs blanket markdowns",
+      "then": "Brands have long used co-funded promotions with suppliers or partners to share discount cost and protect gross margin.",
+      "now": "Co-funded 10–15% collaboration promotions can yield similar demand to 20% blanket discounts while improving net margin and marketing leverage.",
+      "operator_leap": "CFO and Head of Partnerships run a 3-week finance model comparing P&L outcomes of a 20% blanket discount versus a co-funded 15% collaboration, targeting event_cpa ≤0.80× baseline and reporting net_margin impact.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        1
+      ]
+    },
+    {
+      "label": "Stores as studio increase buyer engagement per promo dollar",
+      "then": "Retailers have used pop-ups and in-store events historically to produce higher engagement and longer dwell time than price promotions.",
+      "now": "Converting promo dollars into store-as-studio experiences boosts buyer activity share relative to promo intensity and creates owned media moments.",
+      "operator_leap": "Head of Property run a 2-week store-as-studio pop-up in 8 flagship locations during the next holiday weekend and track the paired_metric: buyer_activity_share versus promo_intensity and event_cpa.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        1
+      ]
+    },
+    {
+      "label": "Early-window exclusives protect margin and lift conversion",
+      "then": "Early-bird offers historically captured high-intent shoppers willing to pay closer to full price before mass markdowns.",
+      "now": "Targeted week-one bundles and gated access convert early shoppers at higher yield and raise early_window_share without deeper markdowns later.",
+      "operator_leap": "Run a week-one exclusive bundles test with QR-gated access in 10 pilot stores to hit early_window_share 20–30% and QR_redemption ≥5% of footfall; compare conversion and margin to standard promo weekends.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        1
+      ]
+    },
+    {
+      "label": "Reallocate promo spend to in-store media to lower event CPA",
+      "then": "Some retailers shifted ad and promo budget into experiential in-store marketing to improve ROI per event.",
+      "now": "Shifting a portion of promo dollars to in-store media and partner co-marketing can lower event_cpa while raising buyer_activity_share.",
+      "operator_leap": "Run a controlled reallocation: move X% of holiday promo budget into in-store media and partner co-funding across 6 pilot stores for 6 weeks and measure event_cpa, buyer_activity_share, and net_margin versus matched controls.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        1
+      ]
+    }
+  ],
+  "brand_outcomes": [
+    {
+      "title": "Replace one weekend 20% sitewide with a 6-week co-branded in-store activation pilot",
+      "description": "Run a 6-week pilot in 12 high-traffic stores replacing one weekend 20% sitewide discount with a co-branded activation that bundles partner-funded experiences and limited SKUs. Measure foot_traffic_uplift and buyer activity share vs that weekend baseline to validate higher throughput with shallower markdowns [^1].",
+      "impact": "Throughput and incremental margin — target foot_traffic_uplift 10-15% base, stretch ≥25%; monitor paired buyer activity share vs promo intensity and event_cpa pressure.",
+      "time_horizon": "next 6 weeks",
+      "owner": "Head of Retail",
+      "citations": [
+        1
+      ]
+    },
+    {
+      "title": "Move 20% of holiday demand into the earlier window with exclusive partner product drops",
+      "description": "Execute a 4-week test: week-one exclusive collab product drops in 15 highest-footfall stores to shift early-window purchases. Goal: lift early_window_share from 12-15% to 20-30% while avoiding deeper markdowns and keeping event CPA at or below the ceiling [^1].",
+      "impact": "Early-window share and loyalty cadence — explicit target to move 20% of holiday demand earlier without crushing margin; measure early_window_share and event_cpa (≤0.80x baseline).",
+      "time_horizon": "next 90 days (one planning cycle)",
+      "owner": "Head of Partnerships",
+      "citations": [
+        1
+      ]
+    },
+    {
+      "title": "Model co-funded 15% collab vs 20% blanket discount to lock event CPA",
+      "description": "CFO and Head of Partnerships run a 3-week P&L model comparing a 20% blanket discount to a co-funded 15% collaboration. Include media equivalence, partner funding, and incremental margin run-rates to test whether event_cpa stays ≤0.80x baseline under the collab scenario [^1].",
+      "impact": "Event CPA and incremental margin — outcome decides whether promo dollars are converted to co-funding or retained as markdowns; target event_cpa ≤0.80× baseline and improved margin per sale.",
+      "time_horizon": "next 30 days",
+      "owner": "CFO",
+      "citations": [
+        1
+      ]
+    },
+    {
+      "title": "Convert promo spend to store-as-studio pop-ups to raise buyer activity share",
+      "description": "Deploy 2-week store-as-studio pop-ups in 8 flagship locations during the next holiday weekend. Treat space as paid media: host partner content, QR-driven exclusives, and capture QR_redemption and buyer activity share vs promo intensity to prove media ROI in-store [^1].",
+      "impact": "Loyalty and owned media throughput — aim for QR_redemption ≥5% of footfall and improved buyer activity share while reducing blanket discount reliance.",
+      "time_horizon": "next holiday weekend (next 90 days)",
+      "owner": "Head of Property",
+      "citations": [
+        1
+      ]
+    }
+  ],
+  "operator_notes": "All signals point to testing partner-led activations instead of blanket discounts over the next two planning cycles. Prioritize a finance model to clear the discounting math, then run 6-week store pilots (collab drop, in-store activation, store-as-studio) to measure foot_traffic_uplift, early_window_share, event_cpa, and buyer activity share. Competing approach: blanket discounts can still win short-term volume but will likely raise event CPA when input-cost volatility is lower; use the CFO model to decide which to scale. Sources: Reuters tariff clarity signal (1).",
+  "quant": {
+    "spine_hook": "Success = footfall +10–15% (stretch ≥25%), early-window share 20–30%, and event CPA ≤0.80× baseline while QR redemptions ≥5% of footfall.",
+    "anchors": [
+      {
+        "id": "Q1",
+        "headline": "Foot-traffic uplift target for partner-led activations",
+        "topic": "Foot traffic vs blanket discounts",
+        "value_low": 10,
+        "value_high": 15,
+        "unit": "% uplift vs comparable non-promo weekend",
+        "status": "target",
+        "band": "base",
+        "owner": "Head of Retail",
+        "expression": "Footfall +10–15% vs comparable non-promo weekend in pilot stores",
+        "source_ids": [],
+        "applies_to_signals": [
+          "S1",
+          "S4"
+        ]
+      },
+      {
+        "id": "Q2",
+        "headline": "Early-window share baseline and goal",
+        "topic": "Transactions in early event window",
+        "value_low": 12,
+        "value_high": 15,
+        "unit": "% of total event transactions",
+        "status": "observed",
+        "band": "base",
+        "owner": "Merch + Analytics",
+        "expression": "Current early-window share = 12–15% of event transactions; goal = 20–30%",
+        "source_ids": [],
+        "applies_to_signals": [
+          "S2",
+          "S1"
+        ]
+      },
+      {
+        "id": "Q3",
+        "headline": "Event CPA guardrail",
+        "topic": "Event CPA vs baseline",
+        "value_low": 0,
+        "value_high": 0.8,
+        "unit": "multiplier of baseline CPA",
+        "status": "target",
+        "band": "base",
+        "owner": "CFO",
+        "expression": "Event CPA ≤ 0.80× baseline CPA for the promotional period",
+        "source_ids": [],
+        "applies_to_signals": [
+          "S3",
+          "S1"
+        ]
+      },
+      {
+        "id": "Q4",
+        "headline": "QR redemption floor as activation lift proxy",
+        "topic": "Activation engagement",
+        "value_low": 5,
+        "value_high": 5,
+        "unit": "% of footfall",
+        "status": "target",
+        "band": "base",
+        "owner": "Head of Retail / Partnerships",
+        "expression": "QR-enabled offers redeemed by ≥5% of store footfall during activation windows",
+        "source_ids": [],
+        "applies_to_signals": [
+          "S4",
+          "S1"
+        ]
+      }
+    ],
+    "measurement_plan": [
+      {
+        "id": "M1",
+        "metric": "Event CPA",
+        "expression": "Achieve CPA ≤ 0.80× baseline over Nov 22–29 for stores in the pilot compared to matched-control stores",
+        "owner": "CFO / Performance Marketing",
+        "timeframe": "2025-11-22 to 2025-11-29",
+        "status": "plan",
+        "notes": "Use matched-control stores (same AUR and weekly footfall) and include partner-funded ad offsets in CPA denominator.",
+        "why_it_matters": "Proves partner-funded activations preserve acquisition efficiency vs blanket discounts."
+      },
+      {
+        "id": "M2",
+        "metric": "Buyer activity share vs promo intensity",
+        "expression": "Measure early-window share = 20–30% while promo SKU share remains ≈ LY or lower",
+        "owner": "Merch + Analytics",
+        "timeframe": "2025-11-22 to 2025-11-29",
+        "status": "plan",
+        "notes": "Track early-window transactions, % of SKUs on promo, and depth of markdowns daily. Report paired chart.",
+        "why_it_matters": "Paired metrics show whether early-buyer growth is coming from converted new buyers or deeper markdowns."
+      },
+      {
+        "id": "M3",
+        "metric": "Foot-traffic uplift (pilot vs control)",
+        "expression": "Footfall uplift 10–15% (stretch ≥25%) in pilot stores vs matched-control weekend",
+        "owner": "Head of Retail / Store Ops",
+        "timeframe": "2025-11-22 to 2025-11-29",
+        "status": "plan",
+        "notes": "Deploy footfall sensors and hourly door counts. Compare same-day LY and matched-control stores.",
+        "why_it_matters": "Direct test of whether co-branded activations drive incremental store visits compared with blanket discounts."
+      },
+      {
+        "id": "M4",
+        "metric": "Partner funding vs discount P&L",
+        "expression": "Model event-level P&L showing net margin and CPA under (A) 20% blanket discount and (B) co-funded 15% collaboration + media value",
+        "owner": "CFO / Head of Partnerships",
+        "timeframe": "Prior to pilot launch; finalize by 2025-11-08",
+        "status": "plan",
+        "notes": "Include partner ad credits, incremental store revenue, and assumed carryover sales. Run sensitivity on conversion lift ±5pp.",
+        "why_it_matters": "Quantifies tradeoffs and shows whether partner funding replaces markdowns while protecting CPA."
+      }
+    ],
+    "coverage": 0.82
+  },
+  "activation_kit": [
+    {
+      "display": {
+        "pillar": "Retail Activation",
+        "play_name": "Co‑branded in-store activation replacing blanket weekend discount",
+        "card_title": "Replace one weekend 20% with a co-funded in-store activation",
+        "persona": "Head of Retail",
+        "best_fit": "Regional stores with spare event space and stable weekend baseline",
+        "not_for": "High-velocity stores where checkout throughput is the constraint",
+        "thresholds_summary": "Cut or scale after week 3 if foot traffic lift <10% or event CPA >0.8× baseline; aim redemption ≥15%.",
+        "why_now": "Tariff clarity reduces need for broad price moves; reallocating promo to partner-funded activations preserves price while driving traffic.",
+        "proof_point": "Signal S1: 6-week replacement pilot recommended; S3 finance guardrail targets event_CPA ≤0.8× baseline.",
+        "approach_name": "collab-led holiday",
+        "time_horizon": "6-week",
+        "placement_options": [
+          "Dedicated in-store activation bay",
+          "Front-of-store endcap",
+          "Corner experiential kiosk"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Retail",
+        "collaborator": "Head of Partnerships",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "event_cpa": "≤0.80× baseline",
+          "foot_traffic_uplift_week3": "≥10%",
+          "redemption_rate": "≥15%",
+          "net_margin_per_tx_delta_bps": "≥-100"
+        },
+        "prerequisites": [
+          "Door count baseline",
+          "POS event tagging and uplift instrumentation",
+          "Partner co-funding confirmation",
+          "Merchandising / build plan"
+        ],
+        "target_map": [
+          {
+            "org_type": "Retailer",
+            "role": "Retail ops",
+            "why_now": "Vacant bay available for weekend swap"
+          },
+          {
+            "org_type": "Partnerships",
+            "role": "Head of Partnerships",
+            "why_now": "Can co-fund promo spend to preserve price"
+          },
+          {
+            "org_type": "Finance",
+            "role": "CFO / Commercial Finance",
+            "why_now": "Need quick P&L comparison vs blanket discount"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Kickoff pilot scope",
+            "narrative": "Align stores, partner funding, measurement and 6-week plan.",
+            "CTA": "Book the pilot",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "3",
+            "subject": "Measurement & ops reconfirm",
+            "narrative": "Share instrumentation plan, door counts, and merchandising schedule.",
+            "CTA": "Share instrumentation",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "21",
+            "subject": "Week 3 readout",
+            "narrative": "Assess foot traffic and CPA against thresholds to decide cut or scale.",
+            "CTA": "Decide continue or stop",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "medium",
+        "strategy_tag": "collab-led holiday"
+      },
+      "play_name": "Co‑branded in-store activation replacing blanket weekend discount",
+      "pillar": "Retail Activation"
+    },
+    {
+      "display": {
+        "pillar": "Partnership Product",
+        "play_name": "Week-one exclusive collab product drop",
+        "card_title": "Run a limited-week exclusive drop in high-traffic stores",
+        "persona": "Head of Partnerships",
+        "best_fit": "High-traffic stores with proven early-window converters",
+        "not_for": "Low-stock or low-visibility locations",
+        "thresholds_summary": "Measure early-window share versus last year; aim event CPA ≤0.8× baseline and redemption ≥15% for mini-burst success.",
+        "why_now": "Exclusive drops concentrate early-window demand and reduce reliance on deeper markdowns.",
+        "proof_point": "Signal S2: week-one exclusive drops shift purchase timing and lift early-window share.",
+        "approach_name": "collab-led holiday",
+        "time_horizon": "pilot",
+        "placement_options": [
+          "Front-of-store drop shelf",
+          "Checkout or endcap display",
+          "Small pop-up table in main aisle"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Partnerships",
+        "collaborator": "Brand Partner (creative + product)",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "event_cpa": "≤0.80× baseline",
+          "early_window_share_lift": "≥10% vs last-year week-one",
+          "redemption_rate": "≥15%",
+          "sell_through_week1": "≥60%"
+        },
+        "prerequisites": [
+          "Allocation plan for exclusive SKU",
+          "Store list with high footfall",
+          "POS tagging for early-window attribution",
+          "Partner comms and in-store POS"
+        ],
+        "target_map": [
+          {
+            "org_type": "Partnerships",
+            "role": "Partnerships lead",
+            "why_now": "Can secure limited allocation and co-promote"
+          },
+          {
+            "org_type": "Retailer",
+            "role": "Store ops",
+            "why_now": "High-traffic sites to concentrate early demand"
+          },
+          {
+            "org_type": "Marketing",
+            "role": "Local marketing manager",
+            "why_now": "Drive local awareness for week-one purchase timing"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Drop kickoff",
+            "narrative": "Confirm SKUs, store list, sell-through targets, and POS build.",
+            "CTA": "Allocate inventory",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "7",
+            "subject": "Week-one readout",
+            "narrative": "Share early-window lift and sell-through; flag supply issues.",
+            "CTA": "Adjust reallocation",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "21",
+            "subject": "Post-pilot assessment",
+            "narrative": "Compare early-window share to baseline and CPA to guardrails.",
+            "CTA": "Decide scale approach",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": false,
+        "ops_drag": "medium",
+        "strategy_tag": "collab-led holiday"
+      },
+      "play_name": "Week-one exclusive collab product drop",
+      "pillar": "Partnership Product"
+    },
+    {
+      "display": {
+        "pillar": "Store-as-Studio",
+        "play_name": "Flagship store-as-studio holiday pop-up",
+        "card_title": "2-week flagship pop-up during holiday weekend",
+        "persona": "Head of Property",
+        "best_fit": "Flagship locations with high local media reach",
+        "not_for": "Small footprint stores or heavy queue stores",
+        "thresholds_summary": "Target buyer activity share growth vs promo intensity; success if event CPA ≤0.8× baseline and foot traffic uplift ≥10%.",
+        "why_now": "Short store-as-studio runs create media moments and measurable buyer activity without broad markdowns.",
+        "proof_point": "Signal S4: 2-week flagship pop-ups recommended to track paired metric (buyer activity share vs promo intensity).",
+        "approach_name": "store-as-studio / media-led holiday",
+        "time_horizon": "immediate",
+        "placement_options": [
+          "Flagship atrium pop-up",
+          "Window takeover + interior demo zone"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Property",
+        "collaborator": "Brand Marketing / Studio",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "event_cpa": "≤0.80× baseline",
+          "foot_traffic_uplift": "≥10%",
+          "buyer_activity_share_lift": "≥8%"
+        },
+        "prerequisites": [
+          "Flagship availability for holiday weekend",
+          "Local media plan and measurement",
+          "Staffing for experience and conversion",
+          "Signage and compliance sign-off"
+        ],
+        "target_map": [
+          {
+            "org_type": "Property",
+            "role": "Head of Property",
+            "why_now": "Flagships are free over holiday weekend for pop-up"
+          },
+          {
+            "org_type": "Marketing",
+            "role": "Brand studio",
+            "why_now": "Need media-friendly content window"
+          },
+          {
+            "org_type": "Retailer",
+            "role": "Store ops",
+            "why_now": "Can support staffing and floor changes"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Site readiness call",
+            "narrative": "Confirm site logistics, media plan, and staffing for holiday weekend.",
+            "CTA": "Reserve site",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "2",
+            "subject": "Ops readiness check",
+            "narrative": "Validate signage, staffing schedule, and measurement tags.",
+            "CTA": "Deploy measurement",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "7",
+            "subject": "Post-weekend readout",
+            "narrative": "Deliver buyer activity share and CPA vs thresholds for go/no-go.",
+            "CTA": "Decide next run",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "high",
+        "strategy_tag": "store-as-studio / media-led holiday"
+      },
+      "play_name": "Flagship store-as-studio holiday pop-up",
+      "pillar": "Store-as-Studio",
+      "overflow_notes": [
+        "3-week P&L model comparing 20% sitewide vs co-funded 15% collab | Signal S3: run a 3-week finance model and target event_cpa ≤0.80× baseline to prove P&L benefit. | pilot"
+      ]
+    }
+  ],
+  "risk_radar": [
+    {
+      "risk_name": "Blanket discount margin erosion",
+      "scan_line": "Risk: blanket discounts compress margin without delivering incremental buyers",
+      "trigger": "Using sitewide or storewide percent-off as primary lever to drive traffic when tariff rationale for price moves is gone",
+      "detection": "Track incremental buyers vs baseline, net margin per transaction, event_cpa, and promo_revenue_share during discount windows; compare to matched non-discount holdouts",
+      "mitigation": "Run a 6-week A/B pilot: replace one weekend 20% sitewide discount with a co-funded 15% collab activation in 12 pilot stores. Stop or revert if foot_traffic_uplift <10% or event_cpa >0.80x baseline after week 3",
+      "severity": 3,
+      "likelihood": 3,
+      "approach_exposure": "discount-heavy holiday",
+      "citations": [
+        1
+      ]
+    },
+    {
+      "risk_name": "Collab-driven stockouts cannibalize full-price sales",
+      "scan_line": "Risk: exclusive drops pull demand forward and create stockouts, sacrificing later full-price revenue",
+      "trigger": "Week-one exclusive collab drops with insufficient channel allocation or no reserved inventory for full-price channels",
+      "detection": "Monitor early_window_share, sell-through rate, post-drop conversion, lost_sales_rate, and timing of repeat purchases; flag channels with >70% sell-through in first 72 hours",
+      "mitigation": "Allocate controlled inventory windows and reserve a full-price SKU pool. Run a 4-week test: launch week-one exclusive drops in 15 high-traffic stores with 20% inventory reserve for full-price channels; measure early_window_share and post-drop conversion",
+      "severity": 2,
+      "likelihood": 2,
+      "approach_exposure": "collab-led holiday",
+      "citations": [
+        1
+      ]
+    },
+    {
+      "risk_name": "Store-as-studio traffic without buyer conversion",
+      "scan_line": "Risk: pop-up activations lift foot traffic but dilute buyer activity share and increase cost per buyer",
+      "trigger": "Turning stores into content studios or non-transactional events without gating or direct-sale mechanics",
+      "detection": "Track buyer_activity_share vs foot_traffic_uplift, average_order_value, dwell_time, staff_hours_per_event, and paired_metric (buyer_activity_share / promo_intensity)",
+      "mitigation": "Run a 2-week store-as-studio pilot in 8 flagships with gated direct-to-sale offers. Stop if buyer_activity_share uplift <10% or event_cpa >1.0x baseline",
+      "severity": 2,
+      "likelihood": 2,
+      "approach_exposure": "store-as-studio / media-led holiday",
+      "citations": [
+        1
+      ]
+    },
+    {
+      "risk_name": "Measurement contamination masks true lift",
+      "scan_line": "Risk: overlapping pilots and weak controls produce noisy lift estimates and bad investment decisions",
+      "trigger": "Running concurrent tests across stores/channels without clear holdouts or pre-registered metrics",
+      "detection": "Look for inconsistent uplift across comparable holdouts, high variance in treatment effects, divergence between modeled and observed P&L, and failed placebo tests",
+      "mitigation": "Define strict control stores and time windows. Pre-register metrics and run isolated randomization. Have CFO and Head of Partnerships run a 3-week finance model comparing P&L of a 20% blanket discount vs a co-funded 15% collaboration targeting event_cpa ≤0.80x baseline",
+      "severity": 3,
+      "likelihood": 2,
+      "approach_exposure": "all",
+      "citations": [
+        1
+      ]
+    }
+  ],
+  "future_outlook": [
+    {
+      "horizon": "6-month",
+      "headline": "Partner drops shift early-window demand without deeper markdowns",
+      "scan_line": "If true, we will see a measurable rise in week-one purchases within 2 months",
+      "description": "Replacing one weekend 20% sitewide discount with co‑branded in-store activations in a 12-store, 6-week pilot will drive foot_traffic_uplift and concentrate purchases into the early window, raising early_window_share versus the baseline [^1]. Tracking buyer_activity_share and foot_traffic_uplift will show whether partner-funded activations preserve price while maintaining demand, and whether event_cpa holds at or below 0.80x the discount baseline [^1]. If the pilot fails to reach a predefined foot_traffic_uplift threshold (for example 10%) or event_cpa > 0.80x baseline by week 3, stop or rework the activation mechanics before scaling [^1].",
+      "operator_watch": "early_window_share (week 1) versus last-year baseline",
+      "collaboration_upside": "Lift early-window purchases by 10-20% while holding event_cpa ≤ 0.8x baseline and preserving average selling price",
+      "dominant_approach": "collab-led holiday",
+      "confidence": 0.7,
+      "citations": [
+        1
+      ]
+    },
+    {
+      "horizon": "12-month",
+      "headline": "Scale store-as-studio activations to reduce blanket discount reliance and improve net margin",
+      "scan_line": "If true, we will see fewer sitewide discounts and higher net margin per event within 9 months",
+      "description": "Scaling successful pilots into an 8- to 12-location store-as-studio program during peak windows will shift promotional spend to partner co-funding and media-led experiences, reducing the need for blanket markdowns [^1]. A rolling 3-week finance model comparing a 20% blanket discount versus a co-funded 15% collaboration should show improved P&L outcomes and lower long-term promo leakage if event_cpa remains ≤ 0.80x baseline [^1]. If net margin per transaction improves while foot traffic and early_window_share stay flat or grow, convert weekend discounts into recurring partner activations across the portfolio [^1].",
+      "operator_watch": "event_cpa (cost per event acquisition) versus discount baseline",
+      "collaboration_upside": "Replace routine sitewide discounts with partner-funded activations that preserve price, reduce promo spend, and improve net margin per event",
+      "dominant_approach": "store-as-studio / media-led holiday",
+      "confidence": 0.65,
+      "citations": [
+        1
+      ]
+    }
+  ],
+  "comparison_map": {
+    "approach_map": [
+      {
+        "approach_name": "Co-branded in-store activation replacing weekend discount",
+        "who_it_is_for": "Head of Retail running regional holiday programs who can reallocate one weekend promo budget to partner-funded activation.",
+        "strengths": "Trades depth of markdown for partner marketing and exclusivity to protect margin (S1, S3). Designed to preserve price while driving foot traffic and buyer activity share through experiential pulls.",
+        "failure_modes": "Partner activation fails to reach outside partner audience and the event CPA rises above acceptable ceiling. Poor allocation or no reserved inventory creates cannibalization of full-price sales.",
+        "when_to_choose": "Choose when weekend sitewide discounts are compressing margin and a partner can contribute marketing or funding for a focused activation.",
+        "when_not_to_choose": "Do not choose for high-velocity stores where checkout throughput is the constraint or when no partner funding/marketing is available.",
+        "supporting_signals": [
+          "S1",
+          "S3"
+        ],
+        "key_risks": [
+          "Blanket discount margin erosion",
+          "Collab-driven stockouts cannibalize full-price sales"
+        ],
+        "key_metrics": [
+          "foot_traffic_uplift",
+          "buyer_activity_share",
+          "event_cpa",
+          "redemption_rate"
+        ]
+      },
+      {
+        "approach_name": "Exclusive partner product drops to concentrate early-window demand",
+        "who_it_is_for": "Head of Partnerships who can secure limited SKUs and partner marketing to shift demand into week one.",
+        "strengths": "Creates urgency and concentrates buys in the early window without across-the-board markdowns (S2). Effective at lifting early_window_share and earning partner media for minimal price movement.",
+        "failure_modes": "Drops pull demand forward and cause stockouts that eat later full-price sales. Logistics failures on allocation or tracking hide post-drop revenue impact and inflate apparent success.",
+        "when_to_choose": "Choose when you can reserve inventory for full-price channels and partners will promote an exclusive week-one drop.",
+        "when_not_to_choose": "Do not choose if you cannot reserve channel allocations or do not have real-time sell-through visibility.",
+        "supporting_signals": [
+          "S2",
+          "S3"
+        ],
+        "key_risks": [
+          "Collab-driven stockouts cannibalize full-price sales",
+          "Blanket discount margin erosion"
+        ],
+        "key_metrics": [
+          "early_window_share",
+          "sell_through_rate",
+          "post_drop_conversion",
+          "reserved_inventory_share",
+          "event_cpa"
+        ]
+      },
+      {
+        "approach_name": "Store-as-studio / media-led holiday (convert promo $ into in-store media)",
+        "who_it_is_for": "Head of Property or Head of Retail with flagship stores and physical space to run pop-ups or studio programming.",
+        "strengths": "Turns activation budget into owned media impressions and dwell that lift buyer activity share versus promo intensity (S4, S1). Provides a measurable paired metric between activity share and promo spend.",
+        "failure_modes": "Low creative or poor placement yields impressions without conversion, raising event CPA. Overuse in constrained stores harms throughput and local operations.",
+        "when_to_choose": "Choose when you can dedicate flagship space and want to test media ROI vs blanket discounts quickly.",
+        "when_not_to_choose": "Do not choose for stores with limited floor space or where checkout capacity is already maxed.",
+        "supporting_signals": [
+          "S4",
+          "S1",
+          "S3"
+        ],
+        "key_risks": [
+          "Blanket discount margin erosion",
+          "Collab-driven stockouts cannibalize full-price sales"
+        ],
+        "key_metrics": [
+          "buyer_activity_share",
+          "paired_metric",
+          "dwell_time",
+          "event_cpa",
+          "media_impressions_per_visit"
+        ]
+      }
+    ],
+    "buyer_guide": [
+      {
+        "option_name": "Traditional agency retainer",
+        "best_for": "Brands needing turnkey creative, logistics and partner sourcing across many doors.",
+        "not_for": "Small pilots or teams needing rapid, low-cost tests.",
+        "commercial_shape": "Monthly retainer plus production and media pass-throughs; typical minimum 3-month commitment.",
+        "proof_needed_before_scaling": "Two pilot weekends with ≥10% foot_traffic_uplift and event_cpa ≤0.8× baseline or a clear step-change in early_window_share.",
+        "where_STI_fits": "STI provides the test matrix, stop/go thresholds, KPI instrumentation and a one-page activation scorecard for the agency to execute."
+      },
+      {
+        "option_name": "In-house studio sprint",
+        "best_for": "Operators with internal creative and ops teams who want control and fast iteration.",
+        "not_for": "Teams lacking production bandwidth or rapid measurement capability.",
+        "commercial_shape": "Fixed 4–6 week sprint fee plus production budget; single short-window pilot per sprint.",
+        "proof_needed_before_scaling": "One 6-week pilot meeting thresholds: foot_traffic_uplift ≥10% and event_cpa ≤0.8× baseline.",
+        "where_STI_fits": "STI supplies test design, KPI dashboards, measurement templates and the stop/ramp rules to run the sprint internally."
+      },
+      {
+        "option_name": "Partner-funded pop-up collab",
+        "best_for": "Stores with partner brands willing to co-fund activation and deliver marketing lift.",
+        "not_for": "Markets without active partners or where inventory cannot be ring-fenced.",
+        "commercial_shape": "Cost-share model: partner covers a negotiated share of activation and media for a 1–2 weekend window; partner marketing contribution documented in the MOUs.",
+        "proof_needed_before_scaling": "Clear attribution that partner-funded media drove incremental foot traffic and buyer activity, plus event_cpa ≤0.8× baseline in pilot stores.",
+        "where_STI_fits": "STI runs attribution design, partner funding P&L model, and stop/go triggers to protect margin and cadence."
+      },
+      {
+        "option_name": "Performance-based co-funded promotion",
+        "best_for": "CFOs who need capped CPA and want partner risk-sharing tied to performance.",
+        "not_for": "Partners unwilling to agree payment on measurable outcomes.",
+        "commercial_shape": "Revenue-share or CPA guarantee: partner pays per buyer or covers incremental CPA up to agreed threshold for the event window.",
+        "proof_needed_before_scaling": "A 3-week finance model test showing event_cpa ≤0.8× baseline under the co-funding terms.",
+        "where_STI_fits": "STI builds the P&L comparison, runs the CPA guardrail, and instruments the reporting to enforce payment and stop rules."
+      }
+    ]
+  },
+  "signal_map_notes": "All signals point to testing partner-led activations instead of blanket discounts over the next two planning cycles. Prioritize a finance model to clear the discounting math, then run 6-week store pilots (collab drop, in-store activation, store-as-studio) to measure foot_traffic_uplift, early_window_share, event_cpa, and buyer activity share. Competing approach: blanket discounts can still win short-term volume but will likely raise event CPA when input-cost volatility is lower; use the CFO model to decide which to scale. Sources: Reuters tariff clarity signal (1)."
+}

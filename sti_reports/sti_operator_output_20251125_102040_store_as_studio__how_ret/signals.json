@@ -1,0 +1,82 @@
+[
+  {
+    "category": "Market",
+    "name": "A24 Shop Experience Inside Barnes & Noble",
+    "description": "A24 and Barnes & Noble are rolling out studio-branded shop-in-shop spaces inside select stores, combining books, merch and film tie-ins. The move treats the retail footprint as a content stage that both sells product and generates social-first content for the studio.",
+    "operator_move": "Barnes & Noble (owner): run a 30-day branded shop-in-shop with 4 ticketed events; target +20% dwell time and +50% social video shares versus baseline, measurable within 30 days. (Support: [2],[4])",
+    "strength": 0.9,
+    "US_fit": 1.0,
+    "operationality": 0.9,
+    "support": [
+      2,
+      4
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      2,
+      4
+    ],
+    "id": "S1"
+  },
+  {
+    "category": "Market",
+    "name": "Property Managers Pivot to Experience-First Leasing",
+    "description": "Retail property management is shifting from purely transactional leases to curated, event-forward programming and mixed scheduling for spaces. Landlords are treating leases like programming slots sold to content owners and brands.",
+    "operator_move": "Property manager (owner): convert one 5,000 sq ft anchor to an experience-first lease for a 45-day pilot with weekly ticketed activations; KPI: incremental foot traffic and event-driven short-term lease inquiries measured over 8 weeks. (Support: [3])",
+    "strength": 0.85,
+    "US_fit": 0.95,
+    "operationality": 0.8,
+    "support": [
+      3
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      3
+    ],
+    "id": "S2"
+  },
+  {
+    "category": "Technology",
+    "name": "Agentic AI Enables Programmatic Store Programming",
+    "description": "Forbes reports that agentic commerce and unified product and customer data let retailers program the right assortment and events at the right moment, making stores behave like programmable channels. This technical stack reduces friction for brand collaborations and time-boxed content activations.",
+    "operator_move": "Retailer data team (owner): deploy an agentic merch and event scheduling pilot across 5 stores for 6 weeks; KPI: on-shelf availability lift and conversion lift for featured items, measured weekly. (Support: [1],[5])",
+    "strength": 0.88,
+    "US_fit": 0.9,
+    "operationality": 0.8,
+    "support": [
+      1,
+      5
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      1,
+      5
+    ],
+    "id": "S3"
+  },
+  {
+    "category": "Cultural",
+    "name": "Emotional-First Retail Fuels Collectibles And Events",
+    "description": "Imagine Studio’s Q4 trends highlight how emotional connection and collectibles convert in-store moments into loyalty and earned media. Brands are using drops and limited runs in physical stores to turn visits into content creation opportunities.",
+    "operator_move": "Brand retail team (owner): execute a 30-day collectible drop with one live in-store activation; KPI: capture rate of registered collectors and repeat visit rate within 30 days. (Support: [8])",
+    "strength": 0.8,
+    "US_fit": 0.85,
+    "operationality": 0.75,
+    "support": [
+      8
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      8
+    ],
+    "id": "S4"
+  }
+]

@@ -1,0 +1,81 @@
+{
+  "hero": {
+    "slot": "hero",
+    "core_tension": "Choose whether the extra dollar preserves margin by targeting top loyalty members or buys reach via collab/retail media during the early holiday window.",
+    "setting": "Back-office strategy table in a quiet store mezzanine. Three matte cards fanned on the table read Loyalty, Retail Media, Collab. Composition cues: 3/4 overhead angle, operator framed center, materials: matte paper cards, glass tablet edge, concrete tabletop.",
+    "persona": "Head of Retail",
+    "action": "Deliberately presses a single card labeled \"$1 credit — top decile\" into a launch position while glancing at a printed matched-collab plan.",
+    "urgency_symbol": "A narrowing band of light across the cards that visually mimics a closing window.",
+    "props": [
+      "Matte campaign cards for Loyalty / Retail Media / Collab",
+      "Printed matched-collab activation brief",
+      "Small store counter placard referencing Nov 18–Dec 02 window"
+    ],
+    "lighting": "Polished editorial: confident highlights on the chosen card, soft shadow on alternatives to emphasize decision.",
+    "mood": "Precise, decisive, measurement-first",
+    "anchor_section": "header",
+    "metric_focus": [
+      "early_window_share",
+      "event_cpa"
+    ],
+    "alt": "Head of Retail choosing $1 loyalty credit for Nov18–Dec02 pilot; launching test"
+  },
+  "signal_map": {
+    "slot": "signal_map",
+    "structure": "Concentric rings with inner loyalty core, middle retail media band, outer collab reach lattice. Quant anchors placed in ring segments: inner ring annotated 12–15% current early-window share, goal 20–30%; outer arc labels footfall uplift base 10–15% and stretch ≥25%. Composition cues: isometric view, textured paper material for rings.",
+    "elements": [
+      "Tokens representing sample shoppers clustered toward the loyalty core",
+      "Arcs showing flow of new buyers from collab into capture mechanics",
+      "Annotated quant anchors (percent ranges, CPA ceiling) embedded in geometry"
+    ],
+    "motion": "Flow lines move inward from collab lattice through retail media into loyalty core to show trial converting to repeat when capture mechanics are present.",
+    "palette": "Neutral base with three confident accents: loyalty teal, media amber, collab indigo; paper and matte metal textures.",
+    "anchor_section": "signals_and_thesis",
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share",
+      "event_cpa"
+    ],
+    "alt": "CMO mapping early-window share vs event CPA; comparing $1 loyalty credit, retail media, collab reach"
+  },
+  "case_studies": [
+    {
+      "slot": "case_study_1",
+      "scene": "Quiet store planning huddle where a retail manager and Head of Partnerships pin a localized $1 credit card to a rack labeled Top Decile Offers. Composition cues: eye-level angle on hands pinning the card, materials: linen reminder cards and metallic binder clips.",
+      "moment": "Operator hands a sealed $1-targeted insert to a store lead and points to the in-store capture checklist that ties redemptions to margin-per-visit metrics.",
+      "persona": "Head of Partnerships",
+      "props": [
+        "Top-decile loyalty insert cards",
+        "In-store capture checklist printed on cardstock",
+        "Sample receipt with margin-per-visit annotation"
+      ],
+      "lighting": "Clean editorial light with a focused highlight on the pinned card and checklist.",
+      "mood": "Collaborative, margin-conscious, test-oriented",
+      "anchor_section": "mini_case_story",
+      "metric_focus": [
+        "footfall_lift",
+        "conversion_rate"
+      ],
+      "alt": "Head of Partnerships deploying $1 loyalty credit; measuring visits and conversion"
+    },
+    {
+      "slot": "case_study_2",
+      "scene": "Store-as-studio activation: Partnerships lead and a store manager inspect a co-branded shelf vignette for a collab SKU. Composition cues: low angle to emphasize display, materials: glossy collab pack, matte sampling tray, printed QR panel.",
+      "moment": "The Partnerships lead gestures to a paper QR capture panel on the display while a store associate practices scanning workflow for instant in-store capture.",
+      "persona": "Partnerships Lead",
+      "props": [
+        "Co-branded collab SKU mock pack",
+        "Printed QR capture panel",
+        "Sampling tray and brief for in-store capture mechanics"
+      ],
+      "lighting": "Polished, high-contrast rim light on the collab pack to signal trial focus.",
+      "mood": "Experimental, reach-focused, conversion-aware",
+      "anchor_section": "mini_case_story",
+      "metric_focus": [
+        "qr_redemption",
+        "event_cpa"
+      ],
+      "alt": "Partnerships Lead running collab SKU with in-store QR capture; tracking redemptions and CPA"
+    }
+  ]
+}

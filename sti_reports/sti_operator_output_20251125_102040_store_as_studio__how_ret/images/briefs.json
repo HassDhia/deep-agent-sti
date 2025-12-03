@@ -1,0 +1,69 @@
+{
+  "hero": {
+    "core_tension": "Decision tension between steady footfall and short appointment-driven spikes during event windows.",
+    "setting": "Large bookstore interior transformed into a branded pop space. Clean negative space around focal area.",
+    "persona": "Retail operator and brand studio lead collaborating over spatial plans.",
+    "action": "They frame a windowed display together while one points to a tablet with scheduling overlays.",
+    "urgency_symbol": "Stacked ticket-stub motif held like a fan to imply staged windows and limited slots.",
+    "props": [
+      "Folded branded shop banner",
+      "Stack of ticket stubs as a pattern",
+      "Matte product mockups on a pedestal"
+    ],
+    "lighting": "Polished editorial lighting with confident highlights on faces and the display. Soft shadows to keep negative space clean.",
+    "mood": "Precise, collaborative, confident",
+    "alt": "Operator and studio lead aligning a branded pop display, ticket stubs in hand"
+  },
+  "signal_map": {
+    "structure": "Concentric rings with radial nodes connected by arcs representing events, inventory, and footfall spikes.",
+    "elements": [
+      "Ring nodes as event windows",
+      "Arcs for agentic inventory flows",
+      "Tokens for featured SKUs and collector cohorts"
+    ],
+    "motion": "Sweep from outer steady ring inward to a bright central node indicating concentrated demand.",
+    "palette": "Matte neutrals with confident highlights in brand color and metallic accents to suggest premium timing.",
+    "alt": "Diagram rings and arcs showing event windows focusing demand to a central node"
+  },
+  "case_studies": [
+    {
+      "scene": "Anchor retail space in mid-conversion to an experience-first lease.",
+      "moment": "Property manager and brand rep inspect a cleared 5,000 sq ft bay with modular risers and staged lighting.",
+      "persona": "Property manager, brand activation lead, store ops technician.",
+      "props": [
+        "Modular risers",
+        "Folded lease addenda on clipboard",
+        "Simplified footfall heatmap printout"
+      ],
+      "lighting": "Polished editorial highlights on the cleared bay and faces; wide negative space to emphasize potential.",
+      "mood": "Practical, opportunistic, decisive",
+      "alt": "Property manager and brand rep survey a cleared anchor bay for a pilot activation"
+    },
+    {
+      "scene": "Backroom operations desk during an agentic merch pilot.",
+      "moment": "Retail data lead pins a schedule to a wall calendar grid while a store manager checks SKU tags.",
+      "persona": "Retail data lead, store manager, merch handler.",
+      "props": [
+        "Printed schedule strips",
+        "SKU tag bundles",
+        "Tablet showing on-shelf availability graph"
+      ],
+      "lighting": "Focused editorial key light on the schedule and tablet with muted surroundings to suggest concentration.",
+      "mood": "Analytical, focused, controlled",
+      "alt": "Data lead and store manager synchronizing schedule strips with SKU tags"
+    },
+    {
+      "scene": "In-store collectible drop event with a live activation.",
+      "moment": "Brand team hands limited runs to a small line as in-store performer cues a moment of attention.",
+      "persona": "Brand retail team, collector, store host.",
+      "props": [
+        "Small numbered collectible packs",
+        "Ticket stubs folded into a display",
+        "Minimal stage riser"
+      ],
+      "lighting": "Polished editorial spot on the drop table with soft ambient fill to keep crowd silhouettes clear.",
+      "mood": "Energetic, intentional, intimate",
+      "alt": "Brand team handing numbered collectibles to a small, focused line"
+    }
+  ]
+}

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments | Signal-Driven Brand Collaborations</title>
+    <style>
+        :root {
+            --bg: #f8f8f2;
+            --paper: #ffffff;
+            --text: #1b1f2b;
+            --muted: #6c7283;
+            --accent: #0a4c6a;
+            --border: #ebedf5;
+            --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            --serif: "Source Serif 4", "Spectral", Georgia, "Times New Roman", serif;
+            --sans: "Source Sans 3", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            --font-base: clamp(1rem, 0.94rem + 0.3vw, 1.15rem);
+            --line-base: 1.7;
+            --h1: clamp(2.2rem, 1.6rem + 1.2vw, 3rem);
+            --h2: clamp(1.4rem, 1.2rem + 0.4vw, 1.65rem);
+            --h3: clamp(1.15rem, 1.05rem + 0.2vw, 1.35rem);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            font-family: var(--sans);
+            color: var(--text);
+            line-height: var(--line-base);
+            font-size: var(--font-base);
+        }
+
+        .page {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 48px 24px 72px;
+        }
+
+        header {
+            background: var(--paper);
+            padding: 48px;
+            border-radius: 24px;
+            box-shadow: 0 18px 60px rgba(13, 21, 45, 0.08);
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-family: var(--serif);
+            font-size: var(--h1);
+            margin: 0 0 12px;
+            line-height: 1.2;
+        }
+
+        h2, h3, h4 {
+            font-family: var(--serif);
+            margin-top: 48px;
+            margin-bottom: 12px;
+            line-height: 1.25;
+        }
+
+        p {
+            margin: 0 0 20px;
+            font-size: var(--font-base);
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--muted);
+            margin-bottom: 18px;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 32px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .meta-item {
+            min-width: 160px;
+        }
+
+        .meta-label {
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .meta-value {
+            font-size: 1rem;
+            margin-top: 4px;
+        }
+
+        .updated {
+            margin-top: 32px;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .hero-figure {
+            margin: 28px 0 0;
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 24px 70px rgba(13, 21, 45, 0.09);
+            background: #000;
+        }
+
+        .hero-figure img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            max-height: 480px;
+        }
+
+        .hero-figure figcaption {
+            padding: 16px 28px;
+            font-size: 0.95rem;
+            color: var(--muted);
+            background: var(--paper);
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+        }
+
+        .hero-meta span strong {
+            display: block;
+            color: var(--text);
+            font-size: 0.95rem;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+
+        main {
+            margin-top: 42px;
+            background: var(--paper);
+            padding: 48px;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 24px 70px rgba(13, 21, 45, 0.07);
+        }
+
+        main h2 {
+            font-size: var(--h2);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        blockquote {
+            border-left: 4px solid var(--accent);
+            padding-left: 18px;
+            margin: 24px 0;
+            color: var(--accent);
+            font-style: italic;
+            background: rgba(10, 76, 106, 0.04);
+        }
+
+        code, pre {
+            font-family: var(--mono);
+            background: #f3f5fa;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        pre {
+            padding: 18px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 32px 0;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 12px;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background: rgba(10, 76, 106, 0.06);
+            font-weight: 600;
+        }
+
+        ul, ol {
+            margin: 0 0 24px 20px;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(10, 76, 106, 0.2);
+        }
+
+        a:hover {
+            border-bottom-color: var(--accent);
+        }
+
+        .image-gallery {
+            margin-top: 52px;
+        }
+
+        .image-gallery h3 {
+            font-family: var(--serif);
+            font-size: 1.15rem;
+            margin-bottom: 18px;
+            color: var(--heading);
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+        }
+
+        .image-grid figure {
+            background: var(--paper);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 14px 38px rgba(13, 21, 45, 0.08);
+        }
+
+        .image-grid img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            height: 200px;
+        }
+
+        .image-grid figcaption {
+            padding: 14px 18px 18px;
+        }
+
+        .image-grid .label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+        }
+
+        .image-grid .description {
+            font-size: 0.95rem;
+            margin-top: 6px;
+            color: var(--text);
+        }
+
+        @media (max-width: 640px) {
+            .page {
+                padding: 32px 16px;
+            }
+
+            header, main {
+                padding: 32px 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .meta {
+                flex-direction: column;
+            }
+
+            .hero-figure figcaption {
+                padding: 12px 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <div class="tagline">Signal-Driven Brand Collaborations</div>
+            <h1>Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments</h1>
+            <div class="subtitle">Market-Path collaboration brief</div>
+            <div class="meta">
+                
+                    <div class="meta-item">
+                        <div class="meta-label">Window</div>
+                        <div class="meta-value">2025-11-22 → 2025-11-29</div>
+                    </div>
+                
+                    <div class="meta-item">
+                        <div class="meta-label">Read time</div>
+                        <div class="meta-value">~22 min read</div>
+                    </div>
+                
+                    <div class="meta-item">
+                        <div class="meta-label">Confidence</div>
+                        <div class="meta-value">Medium</div>
+                    </div>
+                
+                    <div class="meta-item">
+                        <div class="meta-label">Region</div>
+                        <div class="meta-value">US</div>
+                    </div>
+                
+            </div>
+            
+            <div class="updated">Updated Nov 29, 2025</div>
+            
+        </header>
+        
+        <figure class="hero-figure">
+            <img src="images/hero_collab_led_uplift_vs_blanket_d.png" alt="Brand partnerships lead and store ops align on co-branded early-window bundles." loading="eager" />
+            <figcaption>Trade short-term sitewide cuts for concentrated co-branded early windows. Show the decision tension between pulling buys forward and holding blended margin as a narrow timing choice. One points at a stack of exclusive bundle boxes while the other peels a QR hang-tag. Exchange of a taped plan labeled &#39;S1&#39;. Precise. Decisive. Ready-to-test.</figcaption>
+        </figure>
+        
+        <div class="hero-meta">
+            
+            <span>Window <strong>2025-11-22 → 2025-11-29</strong></span>
+            
+            <span>Read <strong>~22 min read</strong></span>
+            
+            <span>Confidence <strong>Medium</strong></span>
+            
+        </div>
+        
+        
+        <main>
+            <h1 id="collabled-uplift-vs-blanket-discounts-in-lowgrowth-environments">Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments</h1>
+<blockquote>
+<p>Shift promotional spend from blanket discounts to co-branded early windows and store-as-studio content to protect margins and capture early demand. Favor a collab-led / store-as-studio holiday approach over discount-heavy tactics. -&gt;  tracks Early-window buys ≈ 12–15% of holiday transactions (current) -&gt; Brand Partnerships, Merch and Store Ops must launch the A/B test, schedule three weekend activations, and brief Marketing to produce a four-episode store-as-studio series.</p>
+</blockquote>
+<p><em>Meta: 2025-11-22 -&gt; 2025-11-29 · US · Confidence Medium · ~22 min</em></p>
+<hr>
+<p><em>Executive Take</em><br>
+Shift promotional spend from blanket discounts to co-branded early windows and store-as-studio content to protect margins and capture early demand. Favor a collab-led / store-as-studio holiday approach over discount-heavy tactics. -&gt;  tracks Early-window buys ≈ 12–15% of holiday transactions (current) -&gt; Brand Partnerships, Merch and Store Ops must launch the A/B test, schedule three weekend activations, and brief Marketing to produce a four-episode store-as-studio series.</p>
+<p><em>Operator Moves</em>
+| Immediate | Positioning | Compounding |
+| --- | --- | --- |
+| Run a six-week A/B test: control = sitewide 20% off; variant = co-branded early-window with tiered bundles and exclusive SKUs; track early_window_share, blended margin, event_cpa, and QR_redemption. | Shift buys into a paid early-window, not a sitewide cut: Signals S1 and S3: co-branded early windows plus bundle replacement of sitewide cuts concentrate buyer share without the same margin hit. | Concentrated partner windows lift early capture and protect margin: Replacing a sitewide 20% cut with co-branded early-window tiered bundles will shift purchases into the window without equivalent margin erosion [^4]. In-store collab activations and short store-as-studio content series accelerate foot traffic and early conversion, boosting short-window share when combined with QR-linked offers [^5][^8]. Instrumented A/B tests at the SKU and bundle level can validate event_cpa and blended margin within six weeks and give clear go/no-go signals for scaling in the next planning cycle [^2]. |</p>
+<p><em>Decision Map</em>
+| Approach | Best For | When To Choose | When Not To Choose | Key Metrics |
+| --- | --- | --- | --- | --- |
+| Co-branded early exclusive (paid early-window) | Head of Brand Partnerships and Head of Merch seeking to pull full-price demand into a short window.; Strengths: Concentrates higher-value buyers into a narrow period and leverages partner media to fund reach and scarcity (see S1). A/B testing against sitewide cuts can preserve blended margin while shifting buyer share forward (see S3). | When you can secure partner-funded exclusives, allocate limited SKUs, and gate national sale messaging for a 2-week window. | Do not choose if you cannot prevent sitewide sale signals or if SKU-level margins are under 100bps buffer. | early_window_share, qr_redemption, event_cpa, blended_margin, buyer_share |
+| Store-as-studio content drops + weekend activations | Heads of Store Ops and Marketing with flagship or representative stores and basic production capability.; Strengths: Generates measurable foot-traffic uplift via three targeted weekend activations and a short-form content series that drives early-window buys (see S2 and S4). Micro-influencer content amplifies reach without catalog-wide discounts and supports attribution via QR triggers. | When you can staff store activations, produce 3–4 short episodes, and instrument POS with QR tracking over the next 6 weeks. | Avoid if you cannot operationalize live activations across representative stores or cannot measure QR-led conversions. | foot_traffic_uplift, qr_redemption, event_cpa, early_window_share, conversion_rate |
+| Tiered collab bundles replacing sitewide discount | Head of Merchandising and Head of Pricing who can run controlled site experiments and manage SKU-level margins.; Strengths: Replaces blanket 20% off with partner-tiered bundles to retain margin while delivering perceived deal via exclusivity (see Pattern match and S3). A/B tests can prove event CPA and blended margin outcomes quickly. | When you can run a 6-week A/B test replacing sitewide discount with tiered bundles and enforce national messaging controls. | Do not choose if you lack SKU-level margin telemetry or cannot isolate customers from broader sale communications. | event_cpa, blended_margin, buyer_share_vs_promo_intensity, AOV, conversion_rate |
+<em>Buyer Guide</em>
+| Option | Best For | Not For | Commercial Shape | Proof Needed | Where STI Fits |
+| --- | --- | --- | --- | --- | --- |
+| Traditional agency retainer | Large retailers needing turnkey creative, national media buy, and cross-door coordination. | Operators with limited budget or who need hyper-local, fast pilots. | Monthly retainer for strategy + per-campaign production and media costs; typical minimum 3-month commitment. | Two pilot markets showing ≥15% foot_traffic_uplift or early_window_share hitting 20% with event_cpa ≤0.8x baseline. | Provide the signal framework, KPI thresholds, and A/B test design for the agency to execute and report against. |
+| In-house studio sprint | Operators with an in-house content team and at least one store configured as a production bay. | Teams without production bandwidth or rapid post-production capability. | Fixed 4-episode sprint budget plus per-episode micro-influencer fees and minimal media boost; one 4–6 week engagement. | Single-store test showing early_window_share ≥20% and event_cpa ≤0.8x baseline or foot_traffic_uplift ≥10%. | Deliver episode storyboards tied to QR CTAs, measurement spec, and roll/fail thresholds for scaling to additional doors. |
+| Partner-funded pop-up collab | Brands able to secure partner funding for inventory, talent, or promo budget to reduce operator spend. | Commodity categories with low partner marketing interest. | Limited 2-week to 6-week revenue-share or cost-share window where partner covers incentives and some media support. | QR_redemption ≥5% of footfall in the window and event_cpa ≤0.8x baseline while holding blended margin neutral. | Run attribution tags, QR measurement, and provide the decision rules for whether to convert partner pilots into networked offers. |
+| Merch + Pricing A/B test lab (internal) | Operators able to run controlled site experiments with SKU-level margin data and traffic split capability. | Organizations without analytics to measure blended margin or isolated traffic cohorts. | Short-term analytics and test budget; internal effort for merchandising changes; typical 6-week test window. | Blended_margin neutral (≤100bps loss) and event_cpa ≤0.8x baseline with buyer_share shifted into target window (20–30%). | Provide test design, success thresholds, and signal-level dashboards to determine scale or stop decisions. |
+<em>Signals &amp; Thesis</em></p>
+<p><em>Measurement Spine</em>
+<strong>Anchors</strong>
+| Metric | Target | Notes |
+| --- | --- | --- |
+| Current early-window buyer share | 12–15 % of total holiday transactions | Brand Partnerships | base | Early-window purchase concentration |
+| Store foot-traffic uplift target | 10–15 % lift vs baseline | Store Ops | base | Foot-traffic lift from collab activations |
+| Event CPA ceiling for partner-led activity | 0–0.8 × baseline CPA | Performance marketing | base | Cost per acquisition vs baseline |</p>
+<p><strong>Measurement Plan</strong>
+| Metric | Expression | Window |
+| --- | --- | --- |
+| Event CPA | CPA ≤ 0.80× baseline CPA — Keeps paid acquisition from eroding margin when swapping sitewide discounts for partner-led offers. | Nov 22–29 (primary), extend per activation |
+| Buyer activity share vs promo intensity | Early-window transactions 20–30% while promo-SKU share ≈ last year (no blanket increase) — Protects margin by showing buyer growth came from time-limited collabs not broader discounting. | Nov 29–Dec 12 (co-branded early window) |
+| Foot-traffic uplift (store-level) | Visits ↑ 10–15% vs matched-week baseline (stretch ≥25% for high-performing stores) — Direct test of whether in-store collabs drive incremental visits without price cuts. | Next three weekend activations starting Nov 22–Dec 13 |</p>
+<p><em>Mechanisms</em>
+- <strong>Early-window capture vs sitewide discount</strong> — Replacing blanket sitewide cuts with co-branded early windows concentrates buyer share into narrow timeframes, raising early_window_share without the same margin erosion as a blanket discount [^4][^2]. (Second-order: The mechanism is selective value transfer: exclusive bundles or limited SKUs change purchase timing and mix instead of lowering price across the catalog, preserving blended margin while shifting volume to the partner window [^2][^4].). Constraint: Stop defaulting to sitewide percent cuts. Prioritize exclusive partner SKUs and tiered bundles for the early window. Price test at SKU-bundle level to hold blended margin while measuring buyer share movement into the window.
+- <strong>In-store activations move foot traffic, not just conversion</strong> — Short, localized in-store brand activations produce measurable foot-traffic uplifts in the 10 to 25 percent band when targeted to representative stores and weekends, delivering higher-quality visits than broad digital discounts [^8][^5]. (Second-order: The mechanism is neighborhood relevance plus experiential pull; local partners extend reach and drive walk-ins that are more likely to convert at full price or into partner bundles, improving revenue per visit and QR-based attribution [^8][^5].). Constraint: Prioritize three weekend activations across diverse store profiles. Lock partner exclusives and QR incentives. Measure traffic, conversion, AOV, and incremental sales per labor hour.
+- <strong>Pricing mechanics: tiered bundles vs volume discounts</strong> — Volume price curves show that staged discounts scale but compress margin across the board, while tiered collab bundles can target discount to lower-margin items or add-on SKUs to protect core margin [^2][^4]. (Second-order: Mechanically, bundles change the product mix and give negotiable headroom for partner compensation without forcing a catalog-wide price change, preserving margin per incremental buyer if event_cpa remains at or below the 0.8x ceiling [^2].). Constraint: Model blended-margin outcomes before launching bundles. Define tier thresholds by profit contribution not by historic discount bands. Keep top-margin core SKUs out of mandatory discount pools.
+- <strong>Store-as-studio content converts media to early buys</strong> — A short episodic series filmed in stores with micro-influencers turns media value into measurable early-window share when each drop ties to a timed partner offer or QR activation [^8][^9]. (Second-order: The mechanism is synchronous scarcity: content creates notice and demand while the exclusive offer channels that interest into the store or defined online path, lowering event_cpa relative to generic reach buys [^5][^9].). Constraint: Make content drops conditional. Each episode must include a scannable action that routes to a partner-exclusive bundle. Treat content as a conversion driver not a vanity campaign.</p>
+<p><em>Window &amp; Guardrails</em>
+- Window: 2025-11-22 -&gt; 2025-11-29
+- Region focus: US</p>
+<p><em>Risks &amp; Exceptions</em>
+- <strong>Promo signaling collapses early-window gains</strong> — Concurrent sitewide discounts, competitor headlines, or uncontrolled public banners that reframe the sale as a general discount. Detect Drop in early_window_share vs baseline; rise in sitewide coupon redemptions; event_cpa rising; search and landing traffic shifting from partner pages to generic sale pages. Mitigate A/B test co-branded early-window vs sitewide control and gate national sale messaging; owner: Merch+Pricing; window: 6 weeks. Stop wider sale comms if variant holds blended margin but loses window share..
+- <strong>Blended margin erosion from mis-priced bundles</strong> — Pricing bundles to hit volume targets without SKU-level margin controls; high substitution from full-price SKUs into discounted bundles. Detect Falling blended_margin; SKU-level margin decline; cannibalization_rate (bundle sales replacing full-price sales); lower LTV per cohort. Mitigate Price test at SKU-bundle level and cap discount depth; owner: Merch+Pricing; window: 6 weeks. Pause bundle rollout if blended_margin falls below neutral..
+- <strong>Store activations overload ops and degrade CX</strong> — Multiple high-attendance activations in concentrated windows without staffing, inventory or pickup buffers. Detect Store wait_time and queue length rising; in-store conversion falling; pickup OOS and fulfillment delays; NPS or in-store CS contacts increasing. Mitigate Run three weekend pilot activations in representative stores with scaled staffing, extra pickup stock and clear queue SLAs; owner: Store Ops; window: next 6 weeks. Abort activations if wait_time &gt;15 min or NPS drops &gt;10 points..
+- <strong>Content-driven CPA inflation without timing lift</strong> — Low-engagement micro-influencer content, weak CTAs or poor audience match leading to high viewership but low conversion. Detect Event_cpa &gt; baseline; low view-to-purchase conversion; no increase in early_window_share; poor view-through attribution. Mitigate Pilot a 4-episode store-as-studio series with cohort-level tracking and a midpoint optimization; owner: Marketing; window: next 6 weeks. Pause if event_cpa &gt;1.0x baseline and early_window_share unchanged..</p>
+<p><em>Mini Case Story</em><br>
+Then: Retailers historically pulled broad sitewide discounts to chase volume during weak consumer sentiment.
+Now: Replace blanket 20% off with tiered collab bundles that trade depth of discount for perceived exclusivity and partner reach.
+Operator move: A/B test replacing a sitewide 20% off with tiered collab bundles for 6 weeks; hold blended margin neutral and target event_cpa ≤0.8× baseline while tracking buyer activity share vs promo intensity.</p>
+<p><em>Closing Frame</em><br>
+If Early-Window Collab Exclusives is true, Run a six-week A/B test: control = sitewide 20% off; variant = co-branded early-window with tiered bundles and exclusive SKUs; track early_window_share, blended margin, event_cpa, and QR_redemption. becomes optimal.</p>
+<p><em>One-Line Mental Model</em>  </p>
+<blockquote>
+<p>Store-as-studio content amplifies partner exclusives and concentrates buyer activity early, lowering event CPA when audience and offers align.</p>
+</blockquote>
+<p><em>Sources &amp; Confidence</em><br>
+Confidence: Medium (0.89). 0.89
+- krcrtv.com (2025-11-29): ANALYSIS: Shutdown, tariffs push shoppers to hunt for deals &amp; DMV ...
+- vendavo.com (2025-11-29): Price Curve Optimization Strategy for Profitability | Vendavo
+- wspma.com (2025-11-29): Latest News - Washington State Pest Management Association
+- getmonetizely.com (2025-11-29): How to Structure Volume Discounts That Scale With Growth</p>
+<p><em>Generated 2025-11-29 12:44 · Window 2025-11-22 -&gt; 2025-11-29 · Region US</em></p>
+<!-- visual-notes:start -->
+<hr>
+<h3 id="visual-hero">Visual Hero</h3>
+<p><img alt="Brand partnerships lead and store ops align on co-branded early-window bundles." src="images/hero_collab_led_uplift_vs_blanket_d.png"></p>
+<p><em>Trade short-term sitewide cuts for concentrated co-branded early windows. Show the decision tension between pulling buys forward and holding blended margin as a narrow timing choice. One points at a stack of exclusive bundle boxes while the other peels a QR hang-tag. Exchange of a taped plan labeled 'S1'. Precise. Decisive. Ready-to-test.</em></p>
+<h3 id="visual-notes">Visual Notes</h3>
+<p><img alt="Abstract map shifting buyer activity from sitewide ring to early-window wedge; shows QR and CPA signals." src="images/section_signal_map_collab_led_uplift_vs_blanket_d.png"></p>
+<p><em>Signal Map: Concentric rings with an inner wedge. Outer ring = sitewide discount; inner wedge = early-window share.</em></p>
+<p><img alt="Store ops and marketing run weekend collab activation; staff log QR redemptions." src="images/section_case_study_1_collab_led_uplift_vs_blanket_d.png"></p>
+<p><em>Case Study 1: Store activation corner. Overhead 45-degree angle. Pop-up demo table by the entrance. Materials: woven textiles, brass fittings, branded acrylic.</em></p>
+<hr>
+<!-- visual-notes:end -->
+            
+            <section class="image-gallery">
+                <h3>Visual Notes</h3>
+                <div class="image-grid">
+                    
+                    <figure>
+                        <img src="images/section_signal_map_collab_led_uplift_vs_blanket_d.png" alt="Abstract map shifting buyer activity from sitewide ring to early-window wedge; shows QR and CPA signals." loading="lazy" />
+                        <figcaption>
+                            <div class="label">Signal Map</div>
+                            <div class="description">Concentric rings with an inner wedge. Outer ring = sitewide discount; inner wedge = early-window share.</div>
+                        </figcaption>
+                    </figure>
+                    
+                    <figure>
+                        <img src="images/section_case_study_1_collab_led_uplift_vs_blanket_d.png" alt="Store ops and marketing run weekend collab activation; staff log QR redemptions." loading="lazy" />
+                        <figcaption>
+                            <div class="label">Case Study 1</div>
+                            <div class="description">Store activation corner. Overhead 45-degree angle. Pop-up demo table by the entrance. Materials: woven textiles, brass fittings, branded acrylic.</div>
+                        </figcaption>
+                    </figure>
+                    
+                </div>
+            </section>
+            
+        </main>
+    </div>
+</body>
+</html>

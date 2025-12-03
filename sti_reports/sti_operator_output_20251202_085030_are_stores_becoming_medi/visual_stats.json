@@ -1,0 +1,13 @@
+{
+  "anchors_found": [],
+  "anchors_with_images": [],
+  "anchors_missing_images": [],
+  "images_without_anchor": [
+    "case_study_1",
+    "signal_map"
+  ],
+  "gallery_size": 2,
+  "required_anchors": [
+    "signal_map"
+  ]
+}

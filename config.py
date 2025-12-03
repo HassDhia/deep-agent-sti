@@ -1,335 +1,327 @@
 """
-STI Configuration
+STI Configuration (Operator-Focused)
 
-Configuration settings for the STI Analyst-Grade Intelligence System
-including report targets, quality gates, and MCP server configurations.
+Minimal configuration surface for the signal-driven Brand Collab Lab workflow.
+Values are intentionally lightweight so the agent can focus on operator outcomes
+instead of academic routing or thesis scaffolding.
 """
 
+import json
 import os
-from typing import Tuple
+from typing import Dict, List, Tuple
 
-# Load environment variables from .env file if available
 try:
     from dotenv import load_dotenv
+
     load_dotenv()
 except ImportError:
-    # dotenv not installed, skip loading
     pass
 
 
 class STIConfig:
-    """Configuration class for STI Intelligence System"""
-    
-    # Report targets (enhanced)
-    TARGET_WORD_COUNT = 3350
-    SIGNALS_COUNT = 6  # Up from 4
-    
-    # Quality gates (updated)
-    CONFIDENCE_BOUNDS: Tuple[float, float] = (0.30, 0.85)
-    CONFIDENCE_MAX_VENDOR = 0.70
-    REQUIRE_TIME_WINDOW_STRICT = True
-    REQUIRE_UNIT_NORMALIZATION = True
-    REQUIRE_ENTITY_ALIGNMENT = True
-    MIN_INDEPENDENT_SOURCES = 2
-    MIN_PRIMARY_SOURCES = 0      # Changed from 1 to 0
-    MIN_TOTAL_SOURCES = 2        # Changed from 3 to 2
-    ANCHOR_COVERAGE_MIN = 0.70
-    VENDOR_CAP_PCT = 0.40
-    REQUIRE_ANCHORS_FOR_ASSETS = True
-    
-    # New section requirements
-    REQUIRE_MARKET_ANALYSIS = True
-    REQUIRE_TECH_DEEPDIVE = True
-    REQUIRE_COMPETITIVE_ANALYSIS = True
-    REQUIRE_EXPANDED_LENSES = True
-    REQUIRE_EXECUTIVE_SUMMARY = True
-    
-    # MCP server configs
-    ANALYSIS_SERVER_PATH = "servers/analysis_server.py"
-    
-    # Source hygiene patterns
-    BLOCKLIST_PATTERNS = [
-        'partnercontent', 'sponsored', 'brandstudio', 'message.bloomberg.com',
-        '/sponsored/', 'brand-content', 'advertorial', 'promoted'
-    ]
-    
-    WHITELIST_PATTERNS = [
-        'reuters.com', 'apnews.com', 'ft.com/content', 'bloomberg.com/news',
-        'wsj.com/articles', 'theinformation.com', 'techcrunch.com',
-        'arstechnica.com', 'wired.com', 'nature.com'
-    ]
-    
-    INDEPENDENT_NEWS_DOMAINS = [
-        'reuters.com', 'bloomberg.com', 'ft.com', 'wsj.com', 'ap.org',
-        'theinformation.com', 'semianalysis.com', 'techcrunch.com'
-    ]
-    
-    PRIMARY_DOMAINS = [
-        'sec.gov', 'company blogs', 'press releases', 'product pages'
-    ]
-    
-    VENDOR_ASSERTED_DOMAINS = [
-        'nebius.com', 'openai.com', 'anthropic.com', 'company blogs'
-    ]
-    
-    ACADEMIC_DOMAINS = [
-        'arxiv.org', 'scholar.google.com', 'academia.edu', 'researchgate.net',
-        'ieee.org', 'acm.org', 'springer.com', 'nature.com', 'science.org',
-        'dl.acm.org', 'ieeexplore.ieee.org', 'link.springer.com', 'sciencedirect.com',
-        'arxiv.org/list/cs.MA',  # Multi-agent systems
-        'arxiv.org/list/cs.DC',  # Distributed computing
-        'arxiv.org/list/cs.SY',  # Systems and control
-        'arxiv.org/list/cs.GT',  # Computer science and game theory
-        'mitpress.mit.edu',      # MIT Press for foundational textbooks
-        'cambridge.org',         # Cambridge University Press
-        'oxfordjournals.org'     # Oxford academic journals
-    ]
-    
-    # Report section word targets
-    EXECUTIVE_SUMMARY_WORDS = 200
-    TOPLINE_WORDS = 100
-    SIGNALS_WORDS = 600  # 6 signals × 100 words each
-    MARKET_ANALYSIS_WORDS = 500
-    TECH_DEEPDIVE_WORDS = 600
-    COMPETITIVE_ANALYSIS_WORDS = 500
-    OPERATOR_LENS_WORDS = 400
-    INVESTOR_LENS_WORDS = 400
-    BD_LENS_WORDS = 400
-    ACTIONS_WORDS = 200
-    SOURCES_WORDS = 200
-    
-    # LLM settings
-    DEFAULT_MODEL = "gpt-5-mini-2025-08-07"
-    ADVANCED_MODEL_NAME = "gpt-5-2025-08-07"
-    ADVANCED_BUDGET_PCT = 0.25
-    TEMPERATURE = 0.1
+    """Operator-first configuration used across the runtime."""
+
+    BRAND_TAGLINE = "Signal-Driven Brand Collaborations"
+    DEFAULT_MODEL = os.getenv("STI_MODEL", "gpt-5-mini-2025-08-07")
     RESPONSE_FORMAT = {"type": "json_object"}
-    
-    # Time window settings
-    DEFAULT_DAYS_BACK = 7
-    MAX_DAYS_BACK = 30
-    
-    # Entity types for extraction
-    ENTITY_TYPES = ["ORG", "PERSON", "PRODUCT", "TICKER", "GEO"]
-    
-    # Topic taxonomy
-    TOPIC_TAXONOMY = {
-        'AI': ['ai', 'artificial intelligence', 'machine learning', 'llm', 'gpt'],
-        'Cybersecurity': ['security', 'cyber', 'breach', 'vulnerability'],
-        'Cloud': ['cloud', 'aws', 'azure', 'gcp', 'infrastructure'],
-        'Robotics': ['robot', 'automation', 'autonomous'],
-        'AR/VR': ['ar', 'vr', 'augmented', 'virtual', 'metaverse'],
-        'Semiconductors': ['chip', 'semiconductor', 'nvidia', 'amd', 'intel'],
-        'Policy': ['regulation', 'policy', 'government', 'compliance'],
-        'Markets': ['market', 'trading', 'investment', 'capital', 'funding']
-    }
-    
-    # Publisher mapping
-    PUBLISHER_MAP = {
-        'reuters.com': 'Reuters',
-        'bloomberg.com': 'Bloomberg',
-        'ft.com': 'Financial Times',
-        'wsj.com': 'Wall Street Journal',
-        'ap.org': 'Associated Press',
-        'theinformation.com': 'The Information',
-        'semianalysis.com': 'SemiAnalysis',
-        'techcrunch.com': 'TechCrunch',
-        'arstechnica.com': 'Ars Technica',
-        'wired.com': 'Wired',
-        'mckinsey.com': 'McKinsey',
-        'deloitte.com': 'Deloitte',
-        'forbes.com': 'Forbes',
-        'nebius.com': 'Nebius',
-        'openai.com': 'OpenAI',
-        'arxiv.org': 'arXiv'
-    }
-    
-    # Credibility scores by source type
-    CREDIBILITY_SCORES = {
-        'independent_news': 0.8,
-        'primary': 0.9,
-        'trade_press': 0.7,
-        'vendor_consulting': 0.5,
-        'vendor_asserted': 0.4,
-        'academic': 0.85
-    }
-    
-    # Title-Source Alignment Settings
-    MIN_TITLE_RELEVANCE_SCORE = 0.6  # Minimum relevance score for sources to be included
-    MAX_SOURCES_PER_LLM_BATCH = 20  # Maximum sources per batch for LLM relevance evaluation (prevents timeouts)
-    ENABLE_TITLE_REFINEMENT = True   # Flag to enable/disable title updates based on content
-    TITLE_REFINEMENT_THRESHOLD = 0.5  # If alignment < this, refine title
-    ENABLE_QUERY_REFINEMENT = True   # Flag for query expansion before search
-    QUERY_REFINEMENT_TEMPERATURE = 0.3  # Temperature for query refinement LLM calls
-    
-    # Image generation settings
-    ENABLE_IMAGE_GENERATION = True
-    ENABLE_SECTION_IMAGES = True  # Enable section images in addition to hero image
-    MAX_SECTION_IMAGES = 4  # Maximum section images per report (excluding hero)
-    MIN_SECTION_LENGTH_FOR_IMAGE = 400  # Minimum words in section to warrant image
-    DALL_E_IMAGE_SIZE = "1792x1024"  # Landscape hero images (DALL-E 3: 1024x1024, 1792x1024, 1024x1792 | gpt-image-1: 1024x1024, 1536x1024, 1024x1536)
-    DALL_E_QUALITY = "standard"      # "standard" or "hd" (DALL-E 3 only)
-    DALL_E_MODEL = "dall-e-3"        # OpenAI API model name for image generation (temporarily using dall-e-3 while gpt-image-1 access propagates)
-    IMAGE_GENERATION_TIMEOUT = 120.0  # Timeout in seconds for image generation API calls (2 minutes)
-    # OpenAI Organization ID (optional - set in .env as OPENAI_ORGANIZATION for verified org)
-    # Organization Name: Smart Technology Investments
-    OPENAI_ORGANIZATION = None  # Set to org_xxxxx from platform.openai.com/org-settings
-    
-    # Intent Classification Settings
-    ENABLE_INTENT_ROUTING = True  # Flag to enable theory vs market routing
-    THEORY_KEYWORDS = ['theory', 'framework', 'model', 'algorithm', 'proof', 'consensus', 
-                       'control', 'coordination', 'equilibrium', 'lyapunov', 'nash', 
-                       'mathematical', 'theorem', 'proposition', 'formal', 'axiom',
-                       'distributed', 'decentralized', 'hierarchical', 'cooperative', 
-                       'leader', 'follower', 'protocol', 'agent-based', 'theoretical', 
-                       'foundations', 'first principles', 'seminal', 'survey', 'command',
-                       'multi-agent', 'swarm', 'consensus', 'agreement', 'synchronization',
-                       'orchestration', 'federated', 'peer-to-peer', 'distributed systems',
-                       'control theory', 'game theory', 'mechanism design', 'auction theory']
-    MARKET_KEYWORDS = ['startup', 'funding', 'enterprise', 'vendor', 'product', 'trend', 
-                       'investment', 'ipo', 'acquisition', 'revenue', 'market', 'sales']
-    
-    # Academic requirements for theory queries
-    MIN_ACADEMIC_SOURCES_THEORY = 3
-    SEMANTIC_THRESHOLD_THEORY = 0.65
-    SEMANTIC_THRESHOLD_MARKET = 0.4
-    
-    # Confidence penalties
-    CONFIDENCE_ACADEMIC_FRACTION_TARGET = 0.3  # For theory queries, require at least 30% academic sources
-    THEORY_ACADEMIC_PENALTY_WEIGHT = 1.15  # Multiplier on penalty strength for theory queries
-    
-    # Theory-specific time windows
-    THEORY_EXTENDED_DAYS_BACK = 365  # Recent academic sweeps up to 1 year
-    THEORY_FOUNDATIONAL_DAYS_BACK = 1825  # Foundational/seminal up to 5 years
-    
-    # Theory fallback thresholds (more lenient for foundational sources)
-    SEMANTIC_THRESHOLD_FOUNDATIONAL = 0.55  # Increased from 0.40 to filter out irrelevant sources
-    MIN_TITLE_RELEVANCE_SCORE_FOUNDATIONAL = 0.35  # Lower threshold for foundational sources
-    
-    # Sprint deadline
-    SPRINT_DEADLINE = "2025-10-31"
-    
-    # JSON-LD schema settings
-    JSON_LD_CONTEXT = "https://schema.org"
-    JSON_LD_TYPE = "Report"
-    ORGANIZATION_NAME = "Smart Technology Investments LLC"
-    ORGANIZATION_URL = "https://sti.ai"
-    
-    # Search provider settings
-    SEARCH_PROVIDER = 'searxng'  # 'tavily' | 'searxng'
-    SEARXNG_BASE_URL = 'http://localhost:8080'
-    HTTP_TIMEOUT_SECONDS = 12
-    MAX_RESULTS_PER_QUERY = 10
-    SCRAPE_ENABLE = True
-    
-    # Market-path diversity controls
-    MIN_DISTINCT_PUBLISHERS_MARKET = 2     # Require at least N distinct publishers
-    SINGLE_DOMAIN_MAX_FRACTION = 0.6       # No more than 60% from any single domain
-    VENDOR_CAP_PCT = 0.40                  # Max share from a single vendor domain
-    
-    # Market title relevance threshold (slightly more permissive than theory)
-    MARKET_TITLE_RELEVANCE_THRESHOLD = 0.5
-    MARKET_TITLE_MIN_ALIGNMENT = 0.45
-    MARKET_TITLE_MIN_MUST_KEEP = 2
-    MARKET_TITLE_BANNED = [
-        'ai agents', 'ai trends', 'technology update', 'ai update', 'weekly ai brief'
-    ]
-    
-    # Google Slides API settings
-    ENABLE_SLIDES_GENERATION = True  # Set to True to enable slide deck generation
-    GOOGLE_SLIDES_TEMPLATE_ID = ""    # Optional: Google Drive ID of master template (if empty, creates from scratch)
-    GOOGLE_DRIVE_FOLDER_ID = "1CC5RtrsizDvQfsboJvvnawsBoiv5CMSj"  # Folder ID where presentations and images are saved
-    GOOGLE_LOGO_URL = ""  # Optional: URL to logo image for hero slide replacement (must be publicly accessible)
-    
-    # Cashmere-style enhancements
-    ENABLE_LAYOUT_BASED_SLIDES = True  # Use layout-based slide creation
-    ENABLE_THEME_COLORS = True         # Use theme color system (with RGB fallback)
-    SLIDES_TEMPLATE_CONFIG_PATH = "slides_template_config.py"  # Template config module path
-    
-    # Authentication: Use OAuth 2.0 (user account) or Service Account
-    # OAuth 2.0 (recommended - uses your personal storage quota)
-    # SECURITY: These values MUST be read from environment variables to avoid committing secrets
-    # NEVER hardcode secrets in this file. Set GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_CLIENT_SECRET
-    # in your .env file (which is gitignored). If secrets were previously committed, rotate them
-    # immediately in Google Cloud Console.
-    GOOGLE_OAUTH_CLIENT_ID = os.getenv('GOOGLE_OAUTH_CLIENT_ID', '')  # OAuth 2.0 Client ID from Google Cloud Console
-    GOOGLE_OAUTH_CLIENT_SECRET = os.getenv('GOOGLE_OAUTH_CLIENT_SECRET', '')  # OAuth 2.0 Client Secret from Google Cloud Console
-    GOOGLE_OAUTH_TOKEN_FILE = ".google_token.json"  # File to store OAuth refresh token
-    
-    # Service Account (has storage limitations - only works with Shared Drives)
-    GOOGLE_CREDENTIALS_PATH = ""  # Path to service account JSON (leave empty to use OAuth)
-    GOOGLE_USE_OAUTH = True  # Set to True to use OAuth instead of service account
-    
-    # Thesis path thresholds / controls
-    THESIS_CRITIQUE_MIN_SCORE = 0.70
-    THESIS_MAX_REPAIRS = 2
-    THEORY_CONFIDENCE_CAP = 0.60
-    CANONICAL_SEMANTIC_FLOOR = 0.70
-    # Confidence cap for theory reports with weak anchors
-    CONFIDENCE_CAP_THEORY_ANCHOR_ABSENT = 0.55
-    
-    # Thesis anchor source settings
-    THESIS_ANCHOR_DOMAINS = [
-        'ieeexplore.ieee.org',  # IEEE Xplore
-        'dl.acm.org',  # ACM Digital Library
-        'link.springer.com',  # Springer
-        'sciencedirect.com',  # ScienceDirect
-        'jstor.org',  # JSTOR
-        'acm.org',  # ACM publications
-        'springer.com',  # Springer publications
-        'mitpressjournals.org',  # MIT Press journals
-        'siam.org',  # SIAM journals
-        'aps.org',  # American Physical Society
-    ]
-    THESIS_MIN_ANCHOR_SOURCES = 5  # Minimum anchor (non-preprint) sources
-    THESIS_SOURCE_DIVERSITY_TARGET = 0.40  # 40%+ anchor sources
-    THESIS_SINGLE_DOMAIN_THRESHOLD = 0.80  # Flag if >80% from single domain
-    ANCHOR_COVERAGE_MIN = 0.70
-    REQUIRE_ANCHORS_FOR_ASSETS = True
-    
-    # Thesis path source requirements
-    MIN_SOURCES_THESIS_PATH = 10  # Minimum total sources required for thesis-path generation
-    
-    # Abstraction-based search configuration
-    CANONICAL_RELEVANCE_THRESHOLD = 0.50  # Lower threshold for canonical sources
-    MAX_ABSTRACTION_LAYERS = 5  # Maximum number of abstraction layers
-    CANONICAL_PAPERS_PER_LAYER = 5  # Target canonical papers per layer
-    
-    @classmethod
-    def get_total_target_words(cls) -> int:
-        """Calculate total target word count"""
-        return (cls.EXECUTIVE_SUMMARY_WORDS + cls.TOPLINE_WORDS + 
-                cls.SIGNALS_WORDS + cls.MARKET_ANALYSIS_WORDS + 
-                cls.TECH_DEEPDIVE_WORDS + cls.COMPETITIVE_ANALYSIS_WORDS +
-                cls.OPERATOR_LENS_WORDS + cls.INVESTOR_LENS_WORDS + 
-                cls.BD_LENS_WORDS + cls.ACTIONS_WORDS + cls.SOURCES_WORDS)
-    
-    @classmethod
-    def validate_config(cls) -> bool:
-        """Validate configuration settings"""
-        # Check word count targets
-        total_words = cls.get_total_target_words()
-        if total_words != cls.TARGET_WORD_COUNT:
-            print(f"Warning: Total word count ({total_words}) doesn't match target ({cls.TARGET_WORD_COUNT})")
-        
-        # Check confidence bounds
-        if cls.CONFIDENCE_BOUNDS[0] >= cls.CONFIDENCE_BOUNDS[1]:
-            print("Error: Invalid confidence bounds")
-            return False
-        
-        # Check source requirements (allow zero as configured targets)
-        if cls.MIN_INDEPENDENT_SOURCES < 0 or cls.MIN_PRIMARY_SOURCES < 0:
-            print("Error: Invalid source requirements")
-            return False
-        
-        return True
+    MODEL_TEMPERATURE = float(os.getenv("STI_MODEL_TEMPERATURE", "0.15"))
 
+    # Search and source controls
+    SEARCH_PROVIDER = os.getenv("STI_SEARCH_PROVIDER", "searxng")
+    SEARXNG_BASE_URL = os.getenv("SEARXNG_BASE_URL", "http://localhost:8080")
+    HTTP_TIMEOUT_SECONDS = int(os.getenv("STI_HTTP_TIMEOUT", "12"))
+    MAX_RESULTS_PER_QUERY = int(os.getenv("STI_MAX_RESULTS", "12"))
+    MAX_SOURCE_COUNT = int(os.getenv("STI_MAX_SOURCES", "9"))
+    MIN_OPERATOR_SIGNALS = int(os.getenv("STI_MIN_SIGNALS", "5"))
+    DEFAULT_DAYS_BACK = int(os.getenv("STI_DAYS_BACK", "7"))
+    MAX_DAYS_BACK = int(os.getenv("STI_MAX_DAYS", "21"))
+    SOURCE_MIN_TOTAL = int(os.getenv("STI_SOURCE_MIN_TOTAL", "7"))
+    SOURCE_MIN_CORE = int(os.getenv("STI_SOURCE_MIN_CORE", "3"))
+    SOURCE_MIN_UNIQUE_DOMAINS = int(os.getenv("STI_SOURCE_MIN_UNIQUE", "3"))
+    SOURCE_MIN_DATA_HEAVY = int(os.getenv("STI_SOURCE_MIN_DATA", "1"))
+    SOURCE_SOFT_FLOOR = int(os.getenv("STI_SOURCE_SOFT_FLOOR", "5"))
+    SOURCE_HARD_FLOOR = int(os.getenv("STI_SOURCE_HARD_FLOOR", "3"))
+    SOURCE_MIN_IN_WINDOW = int(os.getenv("STI_SOURCE_MIN_IN_WINDOW", "3"))
+    SOURCE_MIN_BACKGROUND = int(os.getenv("STI_SOURCE_MIN_BACKGROUND", "1"))
+    SOURCE_MAX_DOMAIN_RATIO = float(os.getenv("STI_SOURCE_MAX_DOMAIN_RATIO", "0.6"))
+    SEARCH_QUERY_AXES = [
+        axis.strip()
+        for axis in os.getenv(
+            "STI_SEARCH_AXES",
+            ",".join(
+                [
+                    "{query}",
+                    "{query} collaboration activation foot traffic",
+                    "{query} early window share exclusive drops",
+                    "{query} tariff outlook margin pressure",
+                ]
+            ),
+        ).split(",")
+        if axis.strip()
+    ]
+    SEARXNG_CATEGORY_STEPS = [
+        ["news"],
+        ["news", "general"],
+        ["news", "general", "science"],
+    ]
+    _axes_by_kind_raw = os.getenv(
+        "STI_SEARCH_AXES_BY_KIND",
+        json.dumps(
+            {
+                "store_as_studio": [
+                    "{query}",
+                    "{query} retail foot traffic activation",
+                    "{query} flagship pop up in-store media",
+                    "{query} experiential store studio collab",
+                ],
+                "pricing": [
+                    "{query}",
+                    "{query} margin pressure discounting elasticity",
+                    "{query} promotion CPA blended margin",
+                    "{query} retailer pricing test data",
+                ],
+                "collaboration": [
+                    "{query}",
+                    "{query} co-branded activation case study",
+                    "{query} partnership foot traffic uplift",
+                ],
+            }
+        ),
+    )
+    try:
+        SEARCH_QUERY_AXES_BY_KIND: Dict[str, List[str]] = {
+            key: [
+                axis for axis in value if isinstance(axis, str) and axis.strip()
+            ]
+            for key, value in (json.loads(_axes_by_kind_raw) or {}).items()
+        }
+    except Exception:
+        SEARCH_QUERY_AXES_BY_KIND = {}
+    AXIS_HEALTH_PATH = os.getenv("STI_AXIS_HEALTH_PATH", "sti_reports/axis_health.json")
+    AXIS_HEALTH_LOW_THRESHOLD = float(os.getenv("STI_AXIS_HEALTH_LOW_THRESHOLD", "0.15"))
+    DIVERSITY_PROBES = [
+        probe.strip()
+        for probe in os.getenv(
+            "STI_DIVERSITY_PROBES",
+            ",".join(
+                [
+                    "{query} mastercard spendingpulse data",
+                    "{query} nrf retail report",
+                    "{query} visa retail momentum index",
+                    "{query} deloitte retail study",
+                ]
+            ),
+        ).split(",")
+        if probe.strip()
+    ]
 
-# Validate configuration on import
-if not STIConfig.validate_config():
-    print("Configuration validation failed!")
-else:
-    print("✅ STI Configuration loaded successfully")
-    print(f"📊 Target word count: {STIConfig.get_total_target_words()}")
-    print(f"🎯 Signals count: {STIConfig.SIGNALS_COUNT}")
-    print(f"📈 Confidence bounds: {STIConfig.CONFIDENCE_BOUNDS}")
+    # Presentation
+    MARKDOWN_HTML_TEMPLATE = os.getenv(
+        "STI_MARKDOWN_HTML_TEMPLATE", "templates/article_minimal.html"
+    )
+    REPORT_RENDERERS = [
+        renderer.strip()
+        for renderer in os.getenv(
+            "STI_REPORT_RENDERERS", "market_path_markdown,market_path_pdf"
+        ).split(",")
+        if renderer.strip()
+    ]
+    DARK_MODE_BACKGROUND = "#050709"
+    ACCENT_COLOR = "#66d9ff"
+    BODY_FONT = "'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    OPERATOR_VOICE_RULES = [
+        "Write in short 2-4 sentence bursts.",
+        "Eliminate corporate filler and buzzwords.",
+        "Tie every insight to an operator move or measurable outcome.",
+    ]
+    MARKET_REPORT_META_PROMPT = (
+        "You are the STI Operator-Grade Intelligence Engine.\n\n"
+        "VOICE AND STYLE\n"
+        "- Write for senior operators (Heads of Retail, CMOs, CFOs, Property, Partnerships).\n"
+        "- No em dashes.\n"
+        "- No marketing fluff or self-promotion about STI or \"this report\".\n"
+        "- Prefer short, direct sentences; avoid long multi-clause chains.\n"
+        "- Plain language over clever phrasing.\n"
+        "- Every line should help someone decide what to test, measure, or stop doing.\n\n"
+        "STRUCTURE\n"
+        "- Follow the structure and JSON schema defined in the tool-specific prompt.\n"
+        "- Do NOT add extra sections like Executive Take, Mini Case Story, or Closing Frame unless the tool explicitly asks for them.\n"
+        "- Do NOT use arrows like \"->\" in any output.\n\n"
+        "OUTPUT TEST\n"
+        "1. Compress complexity without losing key mechanisms.\n"
+        "2. Surface operator leverage and tradeoffs.\n"
+        "3. Provide moves or metrics that can be acted on within one or two planning cycles.\n\n"
+        "FAIL CONDITIONS\n"
+        "- Rambling narrative, unsupported abstraction, self-referential commentary, or mood statements.\n"
+        "- Sentences that do not change how an operator would think or act.\n\n"
+        "FINAL FEELING\n"
+        "The reader should walk away thinking, \"I know what this means for my next test.\""
+    )
+
+    REPORT_STRUCTURE: List[Tuple[str, str]] = [
+        ("executive_summary", "Executive Summary"),
+        ("signal_map", "Signal Map"),
+        ("deep_analysis", "Deep Analysis"),
+        ("pattern_matches", "Historical & Contemporary Pattern Matches"),
+        ("brand_outcomes", "Brand & Operator Outcomes"),
+        ("activation_kit", "Activation Kit"),
+        ("risk_radar", "Risk Radar"),
+        ("future_outlook", "Future Outlook"),
+    ]
+
+    SIGNAL_FAMILIES = ["Market", "Technology", "Cultural", "Behavioral"]
+    ACTIVATION_PILLARS = [
+        "Operator Workflow",
+        "Studio Collaboration",
+        "Retail & Hospitality Activation",
+    ]
+    IMAGE_BRIEF_TARGETS = ["hero", "signal_map", "case_studies"]
+
+    SOURCE_DOMAIN_WEIGHTS = {
+        "reuters.com": 0.95,
+        "apnews.com": 0.9,
+        "bloomberg.com": 0.9,
+        "ft.com": 0.88,
+        "wsj.com": 0.88,
+        "nytimes.com": 0.9,
+        "washingtonpost.com": 0.85,
+        "nrf.com": 0.95,
+        "deloitte.com": 0.92,
+        "mastercard.com": 0.92,
+        "adobe.com": 0.92,
+        "placer.ai": 0.9,
+        "sensormatic.com": 0.85,
+        "retaildive.com": 0.8,
+        "retailtouchpoints.com": 0.78,
+        "modernretail.co": 0.78,
+        "wwd.com": 0.8,
+        "forbes.com": 0.65,
+        "businessinsider.com": 0.65,
+    }
+    DEFAULT_SOURCE_WEIGHT = 0.6
+    SOURCE_DOMAIN_GRADES = {
+        "A": {
+            "nrf.com",
+            "deloitte.com",
+            "mastercard.com",
+            "adobe.com",
+            "placer.ai",
+            "sensormatic.com",
+            "reuters.com",
+            "apnews.com",
+            "bloomberg.com",
+            "ft.com",
+            "wsj.com",
+            "nytimes.com",
+            "washingtonpost.com",
+        },
+        "B": {
+            "retaildive.com",
+            "retailtouchpoints.com",
+            "modernretail.co",
+            "wwd.com",
+            "techcrunch.com",
+            "theinformation.com",
+            "semianalysis.com",
+            "businessoffashion.com",
+        },
+        "C": {
+            "forbes.com",
+            "businessinsider.com",
+            "usatoday.com",
+            "local10.com",
+            "nbcnewyork.com",
+            "timeout.com",
+        },
+    }
+    SOURCE_BLOCKLIST = {
+        "msn.com",
+        "news.yahoo.com",
+        "news.google.com",
+        "pressreader.com",
+        "theguardian.com",
+        "telegraph.co.uk",
+        "standard.co.uk",
+    }
+    SOURCE_GRADE_FALLBACK = "C"
+    SIGNAL_MAX_COUNT = int(os.getenv("STI_SIGNAL_MAX", "6"))
+    US_REGION_HINTS = [
+        "us",
+        "u.s.",
+        "american",
+        "united states",
+        "us-based",
+        "black friday",
+        "thanksgiving",
+    ]
+    SIGNAL_MIN_STRENGTH = float(os.getenv("STI_SIGNAL_MIN_STRENGTH", "0.75"))
+    SIGNAL_MIN_US_FIT = float(os.getenv("STI_SIGNAL_MIN_US_FIT", "0.8"))
+    SIGNAL_MIN_SUPPORT = int(os.getenv("STI_SIGNAL_MIN_SUPPORT", "2"))
+    SIGNAL_REQUIRE_CORE_SUPPORT = os.getenv("STI_SIGNAL_REQUIRE_CORE_SUPPORT", "true").lower() != "false"
+    SIGNAL_SUPPORT_COVERAGE_MIN = float(os.getenv("STI_SIGNAL_SUPPORT_COVERAGE_MIN", "0.5"))
+    TOP_SIGNAL_DOMAIN_CHECK_COUNT = int(os.getenv("STI_TOP_SIGNAL_DOMAIN_CHECK_COUNT", "3"))
+    SIGNAL_REQUIRE_DATA_HEAVY_TOP = os.getenv("STI_SIGNAL_REQUIRE_DATA_HEAVY_TOP", "true").lower() != "false"
+    SIGNAL_TARGET_COUNT = int(os.getenv("STI_SIGNAL_TARGET", "6"))
+    TOP_OPERATOR_MOVE_COUNT = 3
+    QUALITY_THRESHOLD = float(os.getenv("STI_SOURCE_QUALITY", "0.7"))
+    ACTIVATION_THRESHOLDS = {
+        "mini_burst": {"cpa": 0.8, "redemption": 0.15},
+        "staged_discount": {"margin_delta_bps": -100, "repeat_rate_delta": 0.0},
+    }
+    MAX_ACTIVATION_PLAYS = int(os.getenv("STI_ACTIVATION_MAX", "3"))
+    TARGET_READ_TIME_MINUTES = int(os.getenv("STI_TARGET_READ_MINUTES", "15"))
+
+    # Image generation
+    ENABLE_IMAGE_GENERATION = os.getenv("STI_ENABLE_IMAGES", "true").lower() == "true"
+    ENABLE_SECTION_IMAGES = True
+    MAX_SECTION_IMAGES = 2
+    MIN_SECTION_LENGTH_FOR_IMAGE = 200
+    DALL_E_MODEL = os.getenv("STI_IMAGE_MODEL", "gpt-image-1-mini")
+    DALL_E_IMAGE_SIZE = os.getenv("STI_IMAGE_SIZE", "1536x1024")
+    IMAGE_GENERATION_TIMEOUT = float(os.getenv("STI_IMAGE_TIMEOUT", "120"))
+    OPENAI_ORGANIZATION = os.getenv("OPENAI_ORGANIZATION")
+
+    SOCIAL_DISCLOSURE = (
+        "Signals validated inside the current window unless marked. "
+        "Reach out to Brand Collab Lab for operator instrumentation."
+    )
+
+    OUTPUT_FILES = [
+        "intelligence_report.md",
+        "market_path_report.md",
+        "market_path_report.pdf",
+        "intelligence_report.jsonld",
+        "metadata.json",
+    ]
+
+    REPORT_CONTRACT = {
+        "title_prefix": "Signal Report — ",
+        "sections": [
+            "Executive Summary",
+            "Signal Map",
+            "Quant Anchors",
+            "Measurement Plan",
+            "Deep Analysis",
+            "Historical & Contemporary Pattern Matches",
+            "Brand & Operator Outcomes",
+            "Activation Kit — Brand Collab Lab Handoff",
+            "Risk Radar",
+            "Future Outlook",
+            "Sources",
+        ],
+        "read_time_target": TARGET_READ_TIME_MINUTES,
+        "word_target": 2600,
+        "image_targets": {"min": 3, "max": 5},
+        "cta": {
+            "primary": "Talk to Brand Collab Lab",
+            "activation": "Want this play translated for your brand? → /collab-lab",
+        },
+    }
+
+    @classmethod
+    def operator_sections(cls) -> List[Tuple[str, str]]:
+        return cls.REPORT_STRUCTURE
+
+    @classmethod
+    def section_keys(cls) -> List[str]:
+        return [section for section, _ in cls.REPORT_STRUCTURE]

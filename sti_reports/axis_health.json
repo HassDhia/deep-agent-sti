@@ -1,0 +1,14 @@
+{
+  "{query}": {
+    "runs": 15,
+    "hits": 15
+  },
+  "{query} collaboration activation foot traffic": {
+    "runs": 6,
+    "hits": 5
+  },
+  "{query} early window share exclusive drops": {
+    "runs": 2,
+    "hits": 2
+  }
+}

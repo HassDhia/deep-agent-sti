@@ -1,0 +1,111 @@
+{
+  "generated_at": "2025-11-25T10:42:16.472500",
+  "query": "Store as Studio:\nHow retail stores are becoming content properties",
+  "time_window": {
+    "start": "2025-11-18",
+    "end": "2025-11-25",
+    "days": 7
+  },
+  "confidence": {
+    "score": 0.833,
+    "display": 0.83,
+    "band": "Medium",
+    "dials": {
+      "strength": "high",
+      "coverage": "medium",
+      "quant_support": "high",
+      "consistency": "high"
+    },
+    "breakdown": {
+      "average_strength": 0.8575,
+      "coverage": 0.667,
+      "quant_support": 1.0,
+      "contradiction_penalty": 0.9
+    }
+  },
+  "files": [
+    "intelligence_report.md",
+    "intelligence_report.html",
+    "market_path_report.md",
+    "market_path_report.pdf",
+    "intelligence_report.jsonld",
+    "metadata.json"
+  ],
+  "sections": [
+    "deep_analysis",
+    "pattern_matches",
+    "brand_outcomes",
+    "operator_notes",
+    "quant",
+    "activation_kit",
+    "risk_radar",
+    "future_outlook",
+    "signal_map_notes"
+  ],
+  "title": "Holiday Flagship Early-Access & Pop-up Tests",
+  "highlights": [
+    "Unified holiday pack sets measurable targets: **10\u201315%** footfall, **20\u201330%** early-window share, CPA \u2264**0.80\u00d7**, QR redemption \u2265**5%**.",
+    "A/B frame compares legacy markdowns (Arm A) to bundle+GWP+loyalty (Arm B) inside the same two-week window to prove causality.",
+    "Instrumented pop-up plus agentic merch scheduling prevents stockouts and makes discounting tactical, not blanket."
+  ],
+  "executive_summary": "Run a concentrated holiday early-access plus pop-up experiment to hit the unified holiday target pack: detectable foot-traffic uplift **10\u201315%** (stretch **\u226525%** in top markets), early-window transaction share **20\u201330%** (vs ~12\u201315% baseline), event CPA \u2264**0.80\u00d7** baseline, and QR/scan redemption **\u22655%** of footfall. Momentum lock. Frame the test as an A/B inside the same two-week window: Arm A legacy markdown versus Arm B bundle+GWP+loyalty to isolate lift and CPA. Brand, operations, analytics, property and data teams must align on the event calendar, door-count instrumentation, QR\u2192POS links and an A/B holdout to deploy **within 30 days** [^2][^1][^3].",
+  "top_operator_moves": [
+    "Stand up a two-week A/B in 5 pilot stores plus one pop-up market: Arm A legacy markdown vs Arm B bundle+GWP+loyalty; reserve featured SKUs.",
+    "Ship measurement: door counts or proxy, QR\u2192POS linkage, early-window transaction flag and a randomized holdout for CPA benchmarking.",
+    "Activate agentic merchandising/scheduling to guarantee on-shelf availability for event SKUs and to shorten the event-to-shelf loop."
+  ],
+  "statistics": {
+    "word_count": 2756,
+    "signal_count": 4,
+    "source_count": 9
+  },
+  "read_time_minutes": 14,
+  "length_label": "~14 min read",
+  "qa": {
+    "issues": [
+      "Signal count outside required band"
+    ],
+    "coverage": 0.667,
+    "quant_support": 1.0,
+    "contradiction_penalty": 0.9,
+    "appendix_count": 3,
+    "scope": {
+      "topic": "Store as Studio:\nHow retail stores are becoming content properties",
+      "time_window": {
+        "start": "2025-11-18",
+        "end": "2025-11-25",
+        "days": 7
+      },
+      "target_region": "US",
+      "use_cases": [
+        "brand\u2194brand",
+        "brick&mortar\u2194brand"
+      ],
+      "must_answer": [
+        "When are the high-value windows",
+        "What changes discounting math"
+      ]
+    },
+    "read_time": 14,
+    "high_quality_signals": true,
+    "observed_quant": true,
+    "tier1_market_signals": false
+  },
+  "agent": "EnhancedSTIAgent",
+  "model": "gpt-5-mini-2025-08-07",
+  "renderers": [
+    "market_path_markdown",
+    "market_path_pdf",
+    "legacy_html"
+  ],
+  "artifact_paths": [
+    "sti_reports/sti_operator_output_20251125_102040_store_as_studio__how_ret/intelligence_report.html",
+    "sti_reports/sti_operator_output_20251125_102040_store_as_studio__how_ret/market_path_report.md",
+    "sti_reports/sti_operator_output_20251125_102040_store_as_studio__how_ret/market_path_report.pdf"
+  ],
+  "social_media_content": {
+    "confidence": 0.83,
+    "teaser_mode": false,
+    "sources_used": "msn.com | bisnow.com | forbes.com"
+  }
+}

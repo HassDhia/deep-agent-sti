@@ -1,0 +1,183 @@
+{
+  "generated_at": "2025-11-30T17:12:04.603097",
+  "query": "Are sneaker brands missing the micro-communities right outside their flagship doors?",
+  "time_window": {
+    "start": "2025-11-24",
+    "end": "2025-12-01",
+    "days": 7
+  },
+  "confidence": {
+    "score": 0.28,
+    "display": 0.28,
+    "band": "Directional",
+    "dials": {
+      "strength": "light",
+      "coverage": "light",
+      "quant_support": "high",
+      "consistency": "high"
+    },
+    "breakdown": {
+      "average_strength": 0.0,
+      "coverage": 0.0,
+      "quant_support": 1.0,
+      "contradiction_penalty": 0.8
+    },
+    "note": "Directional evidence: 9 sources • 9 domains • 9 in-window / 0 background • support coverage 0%"
+  },
+  "files": [
+    "intelligence_report.md",
+    "market_path_report.md",
+    "market_path_report.pdf",
+    "intelligence_report.jsonld",
+    "metadata.json"
+  ],
+  "sections": [
+    "deep_analysis",
+    "pattern_matches",
+    "brand_outcomes",
+    "operator_notes",
+    "quant",
+    "activation_kit",
+    "risk_radar",
+    "future_outlook",
+    "comparison_map",
+    "signal_map_notes"
+  ],
+  "title": "Are sneaker brands missing the micro-communities right outside their flagship doors?",
+  "highlights": [
+    "Micro-creators within a five-mile radius convert local followers into on-foot visits by producing shoppable short-form content tied to drops.",
+    "Reserving creator-assigned inventory and enforcing on-site content + unique codes preserves margin versus blanket sitewide discounts.",
+    "QR/UTM + same-day POS tagging makes creator-driven purchases traceable and lets you compare buyer activity share versus promo intensity."
+  ],
+  "executive_summary": "You need to drive measurable local foot traffic and higher-value buyer share from the micro-communities immediately outside flagship doors without escalating blanket discounting in the next 6 weeks. Store-as-studio activations can deliver **10-15%** foot-traffic uplift (stretch ≥25%) and move early-window share from current 12-15% toward **20-30%**, while keeping event CPA at or below **0.80×** baseline if QR redemption hits at least **5%** of footfall. Favor a store-as-studio / media-led holiday approach over a discount-heavy holiday and, in the next 30 days, have Partnerships, Retail Ops and Marketing run a 4–6 week pilot recruiting micro-creators within a five-mile radius, reserve creator-assigned inventory, and instrument unique QR/UTMs plus same-day POS tags to trace conversions. Measure success by the foot-traffic uplift and early-window buyer share targets above and by event CPA versus baseline so you can stop or scale within one cycle [^4][^5][^6].",
+  "top_operator_moves": [
+    "Launch a 4-6 week creator-residency pilot in one flagship: recruit local micro-creators, reserve creator-assigned inventory, and require on-site shoppable content with unique QR/UTMs.",
+    "Instrument attribution: add same-day POS flags for creator-driven purchases, deploy unique codes per creator/event, and dashboard footfall uplift vs promo intensity.",
+    "Set CPA and redemption guardrails: pause scale if event CPA exceeds 0.80× baseline or if QR redemption is below 5% of footfall."
+  ],
+  "statistics": {
+    "word_count": 3604,
+    "signal_count": 0,
+    "source_count": 9
+  },
+  "read_time_minutes": 18,
+  "length_label": "~18 min read",
+  "qa": {
+    "issues": [
+      "Source coverage under minimum thresholds",
+      "Signal count outside required band",
+      "Read time exceeds target"
+    ],
+    "coverage": 0.0,
+    "quant_support": 1.0,
+    "contradiction_penalty": 0.8,
+    "appendix_count": 7,
+    "scope": {
+      "topic": "Are sneaker brands missing the micro-communities right outside their flagship doors?",
+      "time_window": {
+        "start": "2025-11-24",
+        "end": "2025-12-01",
+        "days": 7
+      },
+      "target_region": "US",
+      "use_cases": [
+        "brand↔brand",
+        "brick&mortar↔brand"
+      ],
+      "must_answer": [
+        "When are the high-value windows",
+        "What changes discounting math"
+      ],
+      "approach_hints": [
+        "discount-heavy holiday",
+        "collab-led holiday",
+        "store-as-studio / media-led holiday"
+      ],
+      "unified_target_pack": {
+        "foot_traffic_uplift": {
+          "base": "10-15%",
+          "stretch": "≥25%"
+        },
+        "early_window_share": {
+          "current": "12-15%",
+          "goal": "20-30%"
+        },
+        "event_cpa": {
+          "ceiling": "≤0.80× baseline"
+        },
+        "qr_redemption": {
+          "floor": "≥5% of footfall"
+        },
+        "paired_metric": "Track buyer activity share vs promo intensity side by side"
+      },
+      "topic_kind": "store_as_studio",
+      "thin_evidence": true,
+      "operator_job_story": "How to drive measurable local foot traffic and higher-value buyer share from the micro-communities immediately outside flagship doors without escalating blanket discounting in the next 6 weeks.",
+      "search_shaped_variants": [
+        "Test local creator residencies and limited drops to lift flagship footfall without wider discounts",
+        "Compare collab-led in-store events versus sitewide holiday promos on buyer share and margin",
+        "Measure QR-engagement and early-window purchase share from pop-ups and release events",
+        "Run a 4–6 week pilot recruiting nearby creators to convert on-foot communities into buyers"
+      ],
+      "evidence_regime": "directional",
+      "evidence_note": "Directional evidence: 9 sources • 9 domains • 9 in-window / 0 background • support coverage 0%"
+    },
+    "read_time": 18,
+    "high_quality_signals": true,
+    "observed_quant": true,
+    "tier1_market_signals": true
+  },
+  "agent": "EnhancedSTIAgent",
+  "model": "gpt-5-mini-2025-08-07",
+  "source_stats": {
+    "total": 9,
+    "core": 0,
+    "support": 9,
+    "unique_domains": 9,
+    "domain_counts": {
+      "facebook.com": 1,
+      "bapexadidasnmdr1.com": 1,
+      "reddit.com": 1,
+      "influencers-time.com": 1,
+      "vogue.com": 1,
+      "soleretriever.com": 1,
+      "indianretailer.com": 1,
+      "statista.com": 1,
+      "hbcumoney.com": 1
+    },
+    "data_heavy": 5,
+    "time_span_days": 0,
+    "tier_counts": {
+      "core": 9,
+      "context": 0
+    },
+    "dominant_ratio": 0.111,
+    "thin_evidence": true,
+    "thresholds": {
+      "total": true,
+      "core": false,
+      "domains": true,
+      "data": true,
+      "dominance": true,
+      "in_window": true,
+      "background": false,
+      "support_coverage": false
+    },
+    "support_coverage": 0.0,
+    "regime": "directional"
+  },
+  "renderers": [
+    "market_path_markdown",
+    "market_path_pdf",
+    "legacy_html"
+  ],
+  "artifact_paths": [
+    "sti_reports/sti_operator_output_20251130_170428_are_sneaker_brands_missi/market_path_report.md",
+    "sti_reports/sti_operator_output_20251130_170428_are_sneaker_brands_missi/market_path_report.pdf"
+  ],
+  "social_media_content": {
+    "confidence": 0.28,
+    "teaser_mode": true,
+    "sources_used": ""
+  }
+}

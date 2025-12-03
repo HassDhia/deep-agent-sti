@@ -1,0 +1,41 @@
+[
+  {
+    "type": "hero",
+    "query": "Store as Studio:\nHow retail stores are becoming content properties",
+    "intent": "market",
+    "prompt": "Capture Decision tension between steady footfall and short appointment-driven spikes during event windows.. Scene: Large bookstore interior transformed into a branded pop space. Clean negative space around focal area.. Persona: Retail operator and brand studio lead collaborating over spatial plans.. Action: They frame a windowed display together while one points to a tablet with scheduling overlays.. Urgency symbol: Stacked ticket-stub motif held like a fan to imply staged windows and limited slots.. Key objects: Folded branded shop banner, Stack of ticket stubs as a pattern, Matte product mockups on a pedestal. Lighting: Polished editorial lighting with confident highlights on faces and the display. Soft shadows to keep negative space clean.. Mood: Precise, collaborative, confident. Props: Folded branded shop banner, Stack of ticket stubs as a pattern, Matte product mockups on a pedestal. polished editorial photography, clean gradients, confident highlights, single clear subject, generous negative space, modern materials, daylight optimism, not a poster, not a collage, not an infographic, no charts, no UI, no labels",
+    "image": "images/hero_store_as_studio_how_retail_sto.png"
+  },
+  {
+    "type": "section",
+    "query": "Store as Studio:\nHow retail stores are becoming content properties",
+    "intent": "market",
+    "section": "Signal Map",
+    "prompt": "Structure: Concentric rings with radial nodes connected by arcs representing events, inventory, and footfall spikes.. Motion: Sweep from outer steady ring inward to a bright central node indicating concentrated demand.. polished editorial photography, clean gradients, confident highlights, single clear subject, generous negative space, modern materials, daylight optimism, not a poster, not a collage, not an infographic, no charts, no UI, no labels",
+    "image": "images/section_signal_map_store_as_studio_how_retail_sto.png"
+  },
+  {
+    "type": "section",
+    "query": "Store as Studio:\nHow retail stores are becoming content properties",
+    "intent": "market",
+    "section": "Case Study 1",
+    "prompt": "Scene: Anchor retail space in mid-conversion to an experience-first lease.. Moment: Property manager and brand rep inspect a cleared 5,000 sq ft bay with modular risers and staged lighting.. Persona: Property manager, brand activation lead, store ops technician.. Mood: Practical, opportunistic, decisive. Lighting: Polished editorial highlights on the cleared bay and faces; wide negative space to emphasize potential.. Props: Modular risers, Folded lease addenda on clipboard, Simplified footfall heatmap printout. polished editorial photography, clean gradients, confident highlights, single clear subject, generous negative space, modern materials, daylight optimism, not a poster, not a collage, not an infographic, no charts, no UI, no labels",
+    "image": "images/section_case_study_1_store_as_studio_how_retail_sto.png"
+  },
+  {
+    "type": "section",
+    "query": "Store as Studio:\nHow retail stores are becoming content properties",
+    "intent": "market",
+    "section": "Case Study 2",
+    "prompt": "Scene: Backroom operations desk during an agentic merch pilot.. Moment: Retail data lead pins a schedule to a wall calendar grid while a store manager checks SKU tags.. Persona: Retail data lead, store manager, merch handler.. Mood: Analytical, focused, controlled. Lighting: Focused editorial key light on the schedule and tablet with muted surroundings to suggest concentration.. Props: Printed schedule strips, SKU tag bundles, Tablet showing on-shelf availability graph. polished editorial photography, clean gradients, confident highlights, single clear subject, generous negative space, modern materials, daylight optimism, not a poster, not a collage, not an infographic, no charts, no UI, no labels",
+    "image": "images/section_case_study_2_store_as_studio_how_retail_sto.png"
+  },
+  {
+    "type": "section",
+    "query": "Store as Studio:\nHow retail stores are becoming content properties",
+    "intent": "market",
+    "section": "Case Study 3",
+    "prompt": "Scene: In-store collectible drop event with a live activation.. Moment: Brand team hands limited runs to a small line as in-store performer cues a moment of attention.. Persona: Brand retail team, collector, store host.. Mood: Energetic, intentional, intimate. Lighting: Polished editorial spot on the drop table with soft ambient fill to keep crowd silhouettes clear.. Props: Small numbered collectible packs, Ticket stubs folded into a display, Minimal stage riser. polished editorial photography, clean gradients, confident highlights, single clear subject, generous negative space, modern materials, daylight optimism, not a poster, not a collage, not an infographic, no charts, no UI, no labels",
+    "image": "images/section_case_study_3_store_as_studio_how_retail_sto.png"
+  }
+]

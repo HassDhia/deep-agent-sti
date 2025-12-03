@@ -1,0 +1,142 @@
+[
+  {
+    "name": "Gaming Coverage (non-retail entertainment)",
+    "reason": "off thesis; entertainment articles do not inform US retail collaboration signals (sources 2 and 5)."
+  },
+  {
+    "name": "Local Weather/Feature Stories",
+    "reason": "non-strategic local news; low relevance to national retail collaboration thesis (source 4)."
+  },
+  {
+    "name": "Fishing Lifestyle Pieces",
+    "reason": "off thesis and non-US retail; no operational leverage for collaborations (sources 8 and 9)."
+  },
+  {
+    "name": "Poynter Media Literacy",
+    "reason": "useful context on trust but low direct evidence for in-store media moves; strength < 0.78 for this thesis (source 3)."
+  },
+  {
+    "category": "Market",
+    "name": "Platform Blackouts Revalue Owned Local Channels",
+    "description": "Major platform distribution risks are making brands reassess reliance on rented video inventory. That risk pushes budgets and urgency toward owned local channels where control and measurement sit with the brand.",
+    "operator_move": "Head of Retail: Run a 2-week in-store media pilot Nov 18–Dec 02 across 20 stores to compare event CPA and foot-traffic uplift, targeting event CPA <=0.8x baseline and foot-traffic uplift 10–15%.",
+    "operator_scan": "Track third-party distribution disruptions and compare in-store CPA to digital video CPA weekly.",
+    "spine_hook": "Platform risk shifts value to owned store media.",
+    "time_horizon": "now",
+    "strength": 0.88,
+    "US_fit": 1.0,
+    "operationality": 0.9,
+    "support": [
+      1
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      1
+    ],
+    "id": "S1",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Cultural",
+    "name": "Creator Marketplaces Push Launches Into Owned Commerce",
+    "description": "Creator-led marketplaces and creator-owned product lines are forcing brands to own the path to purchase rather than rely on distributor flows. That trend creates tight windows where in-store activations and co-branded pop-ups generate measurable lift and deeper margins.",
+    "operator_move": "Head of Partnerships: Co-launch one creator product with a 7–14 day in-store pop in 30 stores (Nov 18–Dec 02) and measure QR redemption and buyer activity share versus promo intensity, targeting QR redemption >=5% of footfall. ",
+    "operator_scan": "Monitor creator product sell-through and QR redemption rates during pop windows.",
+    "spine_hook": "Creators move launches into brand-controlled local channels.",
+    "time_horizon": "6-week",
+    "strength": 0.82,
+    "US_fit": 0.92,
+    "operationality": 0.86,
+    "support": [
+      7
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "C",
+    "citations": [
+      7
+    ],
+    "id": "S2",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Behavioral",
+    "name": "Grab-and-Go Formats Raise Near-Store Conversion",
+    "description": "Localized grab-and-go and convenience formats lift short-term conversion by meeting urgent holiday intent near consumer routines. Operators can leverage that proximity to run higher-yield activations and tighter attribution than broad digital promos.",
+    "operator_move": "Head of Property: Convert the top 10 performing locations to grab-and-go holiday kiosks for Nov 18–Dec 02 and measure foot-traffic uplift (base 10–15% target, stretch >=25%) and QR redemption >=5% of footfall.",
+    "operator_scan": "Measure conversion rate and average basket at grab-and-go sites daily.",
+    "spine_hook": "Near-store convenience converts urgent holiday buyers.",
+    "time_horizon": "now",
+    "strength": 0.8,
+    "US_fit": 0.95,
+    "operationality": 0.85,
+    "support": [
+      6
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "C",
+    "citations": [
+      6
+    ],
+    "id": "S3",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Market",
+    "name": "In-Store Experience Lowers Required Discount Depth",
+    "description": "Brands that shift demand into stores capture price elasticity advantages because experience and immediacy reduce reliance on headline discounts. That changes discounting math by enabling smaller in-store markdowns while preserving or improving event CPA and margin per buyer.",
+    "operator_move": "CFO: Test a two-arm promo Nov 18–Dec 02 where 20 stores run a store-only 10% premium price with experience-led merchandising versus a matched digital 20% discount, and measure margin per buyer and event CPA aiming for event CPA <=0.8x digital baseline.",
+    "operator_scan": "Track margin per buyer and relative CPA across store-only versus digital discount arms daily.",
+    "spine_hook": "Store experience reduces necessary headline discounts.",
+    "time_horizon": "6-week",
+    "strength": 0.86,
+    "US_fit": 0.95,
+    "operationality": 0.88,
+    "support": [
+      1,
+      6
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      1,
+      6
+    ],
+    "id": "S4",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Technology",
+    "name": "Store-as-Studio Improves Attribution And Content ROI",
+    "description": "Brands that use stores as content production and measurement centers get faster feedback loops and cheaper creative that directly drives foot traffic. That setup lets teams track buyer activity share versus promo intensity with embedded QR and measurement tags to optimize spend in two planning cycles.",
+    "operator_move": "Head of Marketing: Produce short-form in-store content in 30 stores over a 6-week window and attach unique QR tags to each asset, then measure buyer activity share versus promo intensity weekly aiming to improve paired metric by 10 points.",
+    "operator_scan": "Compare foot-traffic uplift from in-store-shot assets vs off-site assets each week.",
+    "spine_hook": "Shoot content in stores to link creative to store visits.",
+    "time_horizon": "6-week",
+    "strength": 0.8,
+    "US_fit": 0.9,
+    "operationality": 0.85,
+    "support": [
+      7,
+      1
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      7,
+      1
+    ],
+    "id": "S5",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  }
+]

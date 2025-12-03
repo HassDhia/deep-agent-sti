@@ -1,0 +1,607 @@
+{
+  "deep_analysis": {
+    "sections": [
+      {
+        "title": "Store-as-Studio signal",
+        "spine_position": "what",
+        "priority": 1,
+        "scan_line": "Stores are being repurposed into content studios and event hubs.",
+        "insight": "Retail operators and local entrepreneurs are actively converting storefronts into creative studios and branded event spaces, monetizing attention as much as transactions [^1][^7]. Property managers and brands are designing integrated experiential programs that prioritize footfall, partnerships, and social reach over pure sales per square foot [^2][^6]. The mechanism is simple: attention generated in-store converts into earned media and partner value that shifts the primary KPI from immediate margin to multichannel audience lift [^2][^6].",
+        "operator_note": "Launch a 6-week flagship pilot that runs four curated branded content sessions; assign a single owner, instrument daily walk-in counts, event RSVPs, and social reach metrics, and compare incremental sales during activation windows to baseline sales per hour; target +10% walk-in lift, +20% social reach, and document content asset CPM-equivalent versus external studio costs.",
+        "instrument_next": "Instrument a 6-week flagship pilot that books four branded content sessions and tracks walk-in counts, event attribution, and social reach.",
+        "citations": [
+          1,
+          7,
+          2,
+          6
+        ]
+      },
+      {
+        "title": "When the high-value windows occur",
+        "spine_position": "so_what",
+        "priority": 1,
+        "scan_line": "High-value windows cluster around launches, weekends, and cultural drops.",
+        "insight": "High-value windows concentrate on product launches, weekend consumer peaks, and cultural drops tied to youth trends where in-store content sharply amplifies reach [^1][^4]. Branded partnerships and timed activations convert content-driven attention into foot traffic and short-term sales during 2-to-6 week campaigns [^6][^8]. This changes one thing about how operators should think: plan clustered 4-to-8 week campaign blocks with clear weekly marginal-return thresholds rather than one-off activations [^6][^8].",
+        "operator_note": "Build a rolling 8-week activation calendar aligned to launches and cultural moments; prioritize weekend clusters and the first two weeks of a campaign for heavier spend and measurement; set a stop rule: pause any activation whose weekly marginal footfall or sales lift falls below 60% of the campaign's first-week lift.",
+        "instrument_next": "Instrument a rolling 8-week calendar that maps launches, weekends, and cultural dates to scheduled studio activations and tracks weekly marginal ROI.",
+        "citations": [
+          1,
+          6,
+          8,
+          4
+        ]
+      },
+      {
+        "title": "Discounting math shifts",
+        "spine_position": "so_what",
+        "priority": 2,
+        "scan_line": "Content-driven attention reduces the need for blanket price discounts.",
+        "insight": "When stores generate owned content and social reach, the marginal effectiveness of broad discounts falls because attention-driven conversion captures higher-intent traffic [^2][^7]. Unified data and personalized offers let operators replace blanket markdowns with targeted in-store incentives, improving redemption efficiency and lowering cost per incremental sale [^9]. Operators should recompute discount math to include earned social reach, saved studio rental costs, and CPM-equivalent of content when comparing against markdown-driven volume [^7][^9].",
+        "operator_note": "Complete a cross-system data audit, define a single product and customer dictionary, then run a controlled test: deploy a personalized in-store offer to 1,000 customers during activations and compare redemption lift and cost per incremental sale versus a baseline blanket discount; set a target +15% redemption lift and lower CPM-equivalent than mass markdowns.",
+        "instrument_next": "Instrument a cross-system data audit and deploy a targeted in-store personalized offer to 1,000 customers, measuring redemption lift versus baseline discount-driven sales.",
+        "citations": [
+          2,
+          7,
+          9
+        ]
+      },
+      {
+        "title": "Tight experiments and measurement",
+        "spine_position": "now_what",
+        "priority": 1,
+        "scan_line": "Run short pilots that measure footfall, CPM-equivalent, and tenant lift.",
+        "insight": "Converting vacant units into rotating artist residencies or branded shop-in-shops causes measurable increases in mall dwell time and tenant inquiries, giving property managers a quantifiable upside to activation programming [^7][^2]. Brands that use vacant retail as in-house studios reduce external production costs and can produce multiple assets at a lower CPM-equivalent than renting studios for each shoot [^7][^8]. The leverage point sits here: run 6-to-8 week pilots with explicit KPIs and stop rules to learn lift curves and unit economics quickly [^2][^8].",
+        "operator_note": "Pilot one vacant storefront as a rotating artist residency for eight weeks with daily dwell-time sensors, tenant inquiry logging, event RSVPs, and content production cost tracking; require weekly reporting, three-stop-rule triggers, and a decision meeting at week four to continue, scale, or kill the pilot.",
+        "instrument_next": "Instrument an 8-week pilot converting one vacant storefront into a rotating artist residency with daily dwell-time sensors, reservation logs, and tenant inquiry tracking.",
+        "citations": [
+          2,
+          7,
+          8
+        ]
+      }
+    ],
+    "summary": "The signal is clear: stores repurposed as studios convert attention into measurable commercial value. Start with tight 6-to-8 week pilots that align with high-value windows, swap blanket markdowns for targeted offers informed by a cross-system data audit, and measure three core KPIs: incremental footfall, cost-per-content-asset, and category sales lift; instrument these pilots now to reveal unit economics and stop rules."
+  },
+  "pattern_matches": [
+    {
+      "label": "Limited cultural drops drive store-as-stage",
+      "then": "Pop Mart used blind-box scarcity and eventized retail to create cultural frenzies and long lines. [4,5]",
+      "now": "Brands are running limited drops and content-first activations inside flagships, turning stores into production hubs and social moments. [1,8,2]",
+      "operator_leap": "Run a 6-week flagship drop test that mixes evening release windows (weeknights 6–9pm) and weekend launch days, measure footfall and social reach targets (+10% walk-ins, +20% social), and replace broad permanent markdowns with time-limited bundles and exclusive SKUs to preserve price integrity. [4,5,1,8,2]",
+      "citations": [
+        4,
+        5,
+        1,
+        8,
+        2
+      ]
+    },
+    {
+      "label": "Store-as-studio for brand partnerships",
+      "then": "A24 converted bookstore real estate into branded experiential shop spaces to sell films, books, and merch in situ. [6]",
+      "now": "Retailers and studios are embedding curated shop-in-shop experiences to co-produce events, merchandise drops, and content inside larger retail footprints. [6,2,8]",
+      "operator_leap": "Pilot a 6-week shop-in-shop with a cultural partner focused on weekend and evening programming, track category sales lift (+10%) and media reach, and price the pilot with experiential add-ons and exclusive product rather than headline percentage discounts. [6,2,8]",
+      "citations": [
+        6,
+        2,
+        8
+      ]
+    },
+    {
+      "label": "Vacant storefronts become rotating creative studios",
+      "then": "Zero Empty Spaces turned empty retail into artist residencies to raise mall dwell and local engagement. [7]",
+      "now": "Property managers and brands are renting short-term storefronts as content stages and shooting locations to cut studio costs and create earned media. [7,2]",
+      "operator_leap": "Convert one vacant storefront into an 8-week rotating artist residency that hosts branded shoots and events, measure dwell time (+15% target) and tenant inquiries, and use time-limited experiences instead of marking down long-tail inventory. [7,2]",
+      "citations": [
+        7,
+        2
+      ]
+    },
+    {
+      "label": "In-store personalization closes the loop on studio traffic",
+      "then": "Agentic commerce arguments showed unified customer and product data unlocks precise, timely offers. [9]",
+      "now": "Brands can trigger personalized in-store offers from CRM signals during content events to convert studio visitors without broad discounts. [9]",
+      "operator_leap": "Complete a 6-week cross-system data audit and deploy one personalized in-store offer to 1,000 invited customers during a content window, measure redemption lift (+15% target), and swap blanket percent-off tiers for targeted limited offers to protect margin. [9]",
+      "citations": [
+        9
+      ]
+    },
+    {
+      "label": "Pop-ups as content factories and PR engines",
+      "then": "Local shops like Stockboy reconfigured retail into creative studios to host community and produce branded content. [1]",
+      "now": "Brands are booking pop-ups both as retail tests and as social-first production sets to generate owned assets and earned coverage. [8,1,7]",
+      "operator_leap": "Book two vacant pop-up spaces for four weeks to produce six social assets timed to product launches and holiday lead-ins, benchmark cost-per-asset versus studio rental aiming for 30% lower CPM-equivalent, and price with exclusive bundles instead of storewide discounts. [8,1,7]",
+      "citations": [
+        8,
+        1,
+        7
+      ]
+    }
+  ],
+  "brand_outcomes": [
+    {
+      "title": "Store-as-Studio Flagship Content Program",
+      "description": "The mechanism is simple. Turn one flagship into a recurring content studio and public event space for a 6-week run, hosting four branded sessions and two open nights to measure walk-in lift and social reach. The signal underneath is that stores that produce content become destination and distribution channels for brand storytelling. Momentum lock. Execute as a tight test with footfall, D2C link clicks, and social CPMs as primary metrics [^1][^8][^2][^6].",
+      "impact": "Throughput (footfall), social reach, incremental conversion",
+      "time_horizon": "next 6 weeks",
+      "owner": "Brand Marketing & Store Operations",
+      "citations": [
+        1,
+        8,
+        2,
+        6
+      ]
+    },
+    {
+      "title": "Vacant-Storefront Artist Residency Pilot",
+      "description": "Pilot converting one vacant storefront into a rotating artist residency for an 8-week test to lift mall dwell time and tenant inquiries. The mechanism is simple. Programming draws new audiences, increases time on site, and generates PR and leasing leads. Measure dwell time, event RSVPs, incremental tenant inquiries, and short-term pop-up revenue [^2][^7].",
+      "impact": "Dwell time, leasing velocity, non-rent revenue",
+      "time_horizon": "next 8 weeks",
+      "owner": "Property Management / Real Estate",
+      "citations": [
+        2,
+        7
+      ]
+    },
+    {
+      "title": "Shop-in-Shop Cultural Partnership Pilot",
+      "description": "Secure a 6-week shop-in-shop with a cultural partner to test category sales lift and brand affinity inside a proven retail footprint. The signal underneath is branded in-store spaces convert cultural attention into purchase windows while sharing cost and audience. The operator move is straightforward: limit SKU depth, run co-branded events, and measure category sales versus adjacent control stores [^6][^1].",
+      "impact": "Category sales, incremental margin, new-customer acquisition",
+      "time_horizon": "next 6 weeks",
+      "owner": "Retail Partnerships",
+      "citations": [
+        6,
+        1
+      ]
+    },
+    {
+      "title": "Cross-System Data Audit and Targeted In-Store Offers",
+      "description": "Complete a cross-system data audit in 6 weeks and deploy a targeted in-store offer to 1,000 high-value customers to test redemption and margin impact. The mechanism is simple. High-value windows are product drops, holiday peak weeks and experiential event nights. Momentum lock. This changes discounting math by shifting from blanket markdowns to narrow audience incentives that protect margin and raise redemption efficiency [^9][^2][^7].",
+      "impact": "Incremental margin, redemption efficiency, loyalty lift",
+      "time_horizon": "next 6 weeks",
+      "owner": "Data & CRM",
+      "citations": [
+        9,
+        2,
+        7
+      ]
+    }
+  ],
+  "operator_notes": "The mechanism is simple. High-value windows are concentrated event times: evening programming, weekend drop events, and headline activations where attention, social content, and conversion cluster. This changes one thing about discounting math: experiential scarcity and content-driven exclusives raise full-price sell-through and reduce reliance on broad markdowns, so operators should measure full-price conversion and trade percent-off for access, sampling, and time-limited offers. The leverage point sits in quick pilots that pair landlord inventory, a cultural partner, and unified data.",
+  "quant": {
+    "spine_hook": "Success = sustained +10–15% foot-traffic lift (stretch ≥25%) with early-window transactions 20–30% and Event CPA ≤0.8× baseline.",
+    "anchors": [
+      {
+        "id": "Q1",
+        "headline": "Scale of vacant-to-studio conversions in practice",
+        "topic": "Converted vacant retail spaces operated by Zero Empty Spaces",
+        "value_low": 33,
+        "value_high": 33,
+        "unit": "locations",
+        "status": "observed",
+        "band": "base",
+        "owner": "Property Management",
+        "expression": "33 active converted spaces in operator portfolio",
+        "source_ids": [
+          7
+        ],
+        "applies_to_signals": [
+          "S2",
+          "S4"
+        ]
+      },
+      {
+        "id": "Q2",
+        "headline": "Operational cadence for flagship content sessions",
+        "topic": "Branded content sessions per flagship per 6-week window",
+        "value_low": 4,
+        "value_high": 4,
+        "unit": "sessions",
+        "status": "target",
+        "band": "base",
+        "owner": "Brand Marketing",
+        "expression": "Run 4 branded content sessions per flagship every 6 weeks",
+        "source_ids": [
+          1,
+          8,
+          2,
+          6
+        ],
+        "applies_to_signals": [
+          "S1",
+          "S3",
+          "S4"
+        ]
+      },
+      {
+        "id": "Q3",
+        "headline": "Foot-traffic uplift target from Store-as-Studio events",
+        "topic": "Foot-traffic uplift vs baseline",
+        "value_low": 10,
+        "value_high": 25,
+        "unit": "%",
+        "status": "target",
+        "band": "base/stretch",
+        "owner": "Retail Ops + Analytics",
+        "expression": "10–15% uplift base; stretch to ≥25% in top markets",
+        "source_ids": [
+          2
+        ],
+        "applies_to_signals": [
+          "S1",
+          "S2",
+          "S3"
+        ]
+      }
+    ],
+    "measurement_plan": [
+      {
+        "id": "M1",
+        "metric": "Event CPA",
+        "expression": "CPA ≤ 0.80× baseline",
+        "owner": "Performance marketing",
+        "timeframe": "Thanksgiving weekend (Nov 27–30 window)",
+        "status": "plan",
+        "why_it_matters": "Keeps acquisition efficient while scaling experiential spend; guardrail for ROI."
+      },
+      {
+        "id": "M2",
+        "metric": "Buyer activity share vs promo intensity",
+        "expression": "Transactions in early window 20–30% while promo SKU share ≈ LY",
+        "owner": "Merch + Analytics",
+        "timeframe": "Nov 13–26 (early-window test + holiday lead)",
+        "status": "plan",
+        "notes": "Track buyer share alongside promo SKU percent to avoid growth driven purely by discounting.",
+        "why_it_matters": "Paired metrics protect margin while growing true buyer counts; separates footfall from discount-driven transactions."
+      },
+      {
+        "id": "M3",
+        "metric": "QR / scan redemption",
+        "expression": "Redemptions ≥ 5% of measured footfall per event day",
+        "owner": "Store Operations",
+        "timeframe": "Nov 20–27 (pilot week)",
+        "status": "plan",
+        "notes": "Baseline footfall must be measured via door counters or Wi‑Fi for denominator; tag redemptions to events.",
+        "why_it_matters": "Direct trace of content-to-purchase conversion and a leading indicator of early-window transactions."
+      },
+      {
+        "id": "M4",
+        "metric": "Cross-system attribution & personalization rollout",
+        "expression": "Complete data audit; deploy 1,000 personalized in-store offers and measure redemption lift vs baseline",
+        "owner": "Data & CRM",
+        "timeframe": "6 weeks (audit → offer → measure)",
+        "status": "plan",
+        "notes": "Provides attribution backbone to tie content events to incremental buyers and CPA.",
+        "why_it_matters": "The leverage point sits here. Without single-source attribution, experiential lifts will be noisy and unrepeatable."
+      }
+    ],
+    "coverage": 0.85
+  },
+  "activation_kit": [
+    {
+      "display": {
+        "pillar": "Store-as-Studio",
+        "play_name": "Branded Content Pop-Up Series",
+        "card_title": "Flagship content sessions that drive footfall and assets",
+        "persona": "Brand experiential lead and store operations",
+        "best_fit": "Flagship stores, high-traffic malls, corner boutiques",
+        "not_for": "Closed dark stores with no customer-facing frontage",
+        "thresholds_summary": "Event CPA ≤ 0.8× baseline, walk-in lift ≥ +10%, social reach lift ≥ +20%, content CPM-equivalent ≤ 70% of external studio cost.",
+        "why_now": "Brands need low-cost content and operators can monetize attention in short windows.",
+        "proof_point": "Run four curated sessions in a 6-week window and target +10% walk-in and +20% social reach while cutting content cost per asset by 30%.",
+        "time_horizon": "6-week",
+        "placement_options": [
+          "Flagship window",
+          "Storefront corner",
+          "In-mall event bay"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Brand Partnerships Lead",
+        "collaborator": "Retail Operations Manager",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "event_cpa": "≤0.80× baseline",
+          "walk_in_lift": "≥+10%",
+          "social_reach_lift": "≥+20%",
+          "content_cpm_vs_studio": "≤70% of external studio cost"
+        },
+        "prerequisites": [
+          "Door counts",
+          "Basic AV rig",
+          "Event permit if required"
+        ],
+        "target_map": [
+          {
+            "org_type": "Retailer",
+            "role": "Retail ops",
+            "why_now": "High-profile window and upcoming product launch"
+          },
+          {
+            "org_type": "Brand",
+            "role": "Experiential marketing",
+            "why_now": "Need low-cost, high-reach content"
+          },
+          {
+            "org_type": "Property Manager",
+            "role": "Asset manager",
+            "why_now": "Underused bay available"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Kickoff",
+            "narrative": "Align goals, metric definitions, and single owner in a 30-minute sync.",
+            "CTA": "Book the pilot",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "3",
+            "subject": "Reconfirm instrumentation",
+            "narrative": "Share door count method, social tagging plan, and event schedule.",
+            "CTA": "Share instrumentation",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "7",
+            "subject": "Close scope",
+            "narrative": "Confirm dates, staffing, and asset handoff plan for the 6-week window.",
+            "CTA": "Sign off",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "medium"
+      },
+      "play_name": "Branded Content Pop-Up Series",
+      "pillar": "Store-as-Studio"
+    },
+    {
+      "display": {
+        "pillar": "Space Activation",
+        "play_name": "Rotating Creative Residency",
+        "card_title": "Convert a vacant storefront into a creative residency",
+        "persona": "Property manager and community programming lead",
+        "best_fit": "Malls, high-street vacancies, placemaking zones",
+        "not_for": "Fully leased flagship locations with no available bay",
+        "thresholds_summary": "Target dwell time lift ≥ +15% and measurable increase in tenant inquiries; event CPA ≤ 0.8× baseline for promoted events.",
+        "why_now": "Vacant bays are low-cost, and cultural programming drives footfall and PR.",
+        "proof_point": "An 8-week residency can lift mall dwell time by about 15% and trigger tenant leads.",
+        "time_horizon": "pilot",
+        "placement_options": [
+          "Vacant storefront",
+          "Mall-side kiosk",
+          "Underused shop bay"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Property Activation Lead",
+        "collaborator": "Local Gallery or Artist Collective",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "dwell_time_lift": "≥+15%",
+          "tenant_inquiries": "measurable increase vs baseline",
+          "event_cpa": "≤0.80× baseline"
+        },
+        "prerequisites": [
+          "Short-term license agreement",
+          "Basic lighting and electrical access",
+          "Insurance and site checklist"
+        ],
+        "target_map": [
+          {
+            "org_type": "Property Manager",
+            "role": "Leasing ops",
+            "why_now": "Vacancy increases and portfolio performance pressure"
+          },
+          {
+            "org_type": "Local Arts Org",
+            "role": "Curator",
+            "why_now": "Looking for public space and audience exposure"
+          },
+          {
+            "org_type": "Retailer",
+            "role": "Marketing",
+            "why_now": "Opportunity to co-program and test new concepts"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Kickoff",
+            "narrative": "Agree residency dates, KPIs, and single point of contact.",
+            "CTA": "Book the pilot",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "7",
+            "subject": "Reconfirm logistics",
+            "narrative": "Share fit-out plan, signage rules, and event schedule.",
+            "CTA": "Share schedule",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "21",
+            "subject": "Close interim review",
+            "narrative": "Measure dwell, capture tenant interest, and decide next steps.",
+            "CTA": "Measure and recommend",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "medium"
+      },
+      "play_name": "Rotating Creative Residency",
+      "pillar": "Space Activation"
+    },
+    {
+      "display": {
+        "pillar": "Retail Partnerships",
+        "play_name": "Cultural Shop-In-Shop Pilot",
+        "card_title": "Short-window shop-in-shop with a cultural partner",
+        "persona": "Retail partnership lead and merchant",
+        "best_fit": "Department stores, category adjacencies, high-traffic lanes",
+        "not_for": "Misaligned categories and purely online merchants",
+        "thresholds_summary": "Target category sales lift ≥ +10%, margin per order ≥ baseline minus 100 bps, and 90-day repeat ≥ baseline.",
+        "why_now": "Shop-in-shop converts cultural audience attention into measurable category sales uplift.",
+        "proof_point": "A 6-week pilot can produce a +10% category sales lift when aligned to launches.",
+        "time_horizon": "6-week",
+        "placement_options": [
+          "Dedicated shop bay",
+          "Inline gondola",
+          "Popup counter"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Retail Partnership Manager",
+        "collaborator": "Cultural Partner or Brand",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "category_sales_lift": "≥+10%",
+          "margin_per_order": "≥baseline -100bps",
+          "90d_repeat": "≥baseline"
+        },
+        "prerequisites": [
+          "POS mapping and SKU linkage",
+          "Repricing guardrails",
+          "Staffing and training plan"
+        ],
+        "target_map": [
+          {
+            "org_type": "Department Store",
+            "role": "Merchant",
+            "why_now": "Need to refresh categories during season"
+          },
+          {
+            "org_type": "Brand",
+            "role": "Marketing",
+            "why_now": "Product launch needs experiential touchpoint"
+          },
+          {
+            "org_type": "Store",
+            "role": "Store manager",
+            "why_now": "In-store staff can upsell and capture data"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Kickoff",
+            "narrative": "Agree sales KPIs, margin guardrails, and activation dates.",
+            "CTA": "Book the pilot",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "3",
+            "subject": "Reconfirm merchandising",
+            "narrative": "Share planogram, POS setup, and staffing rota.",
+            "CTA": "Share merchandising plan",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "21",
+            "subject": "Close pilot review",
+            "narrative": "Report sales lift vs baseline and assess repeat behavior.",
+            "CTA": "Report sales vs baseline",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "high"
+      },
+      "play_name": "Cultural Shop-In-Shop Pilot",
+      "pillar": "Retail Partnerships",
+      "overflow_notes": [
+        "Book vacant retail space for content shoots | Two vacant store bookings over four weeks produced six assets and reduced CPM-equivalent by ~30%. | immediate",
+        "Audit systems and deliver a 1,000-person in-store personalized offer | Complete a cross-system audit and deploy one localized offer to 1,000 customers and target +15% redemption lift in 6 weeks. | 6-week"
+      ]
+    }
+  ],
+  "risk_radar": [
+    {
+      "risk_name": "Window compression squeezes loyalty",
+      "scan_line": "Risk: high-frequency activations fatigue regular customers",
+      "trigger": "Too many events in the same footprint without varied value",
+      "detection": "Declining repeat visit rate; lower average basket on activation days; rising negative social comments",
+      "mitigation": "Limit activation cadence per location to one major event every 4 weeks and rotate activation types",
+      "severity": 3,
+      "likelihood": 2,
+      "citations": [
+        "2",
+        "6"
+      ]
+    },
+    {
+      "risk_name": "Partner mismatch drains attention",
+      "scan_line": "Risk: ill-fitting cultural partners drive reach but no conversion",
+      "trigger": "Selecting partners with audience mismatch or weak activation execution",
+      "detection": "High impressions with low in-store lift; low RSVP-to-show rate; weak post-event engagement",
+      "mitigation": "Require partner performance KPIs in contracts and run a 2-event sandbox before scaling",
+      "severity": 2,
+      "likelihood": 2,
+      "citations": [
+        "1",
+        "7",
+        "6"
+      ]
+    },
+    {
+      "risk_name": "Operational friction kills activation cadence",
+      "scan_line": "Risk: logistics and ops failures raise cost and reduce repeatability",
+      "trigger": "Lack of playbook, slow approvals, or inconsistent setup quality",
+      "detection": "Rising setup times; increased unplanned spend; failure-to-launch incidents",
+      "mitigation": "Create a standardized activation playbook, train 3 regional ops leads, and run monthly dry-runs",
+      "severity": 3,
+      "likelihood": 3,
+      "citations": [
+        "2",
+        "7"
+      ]
+    },
+    {
+      "risk_name": "Data gaps break personalization and attribution",
+      "scan_line": "Risk: fragmented systems prevent accurate measurement of lift",
+      "trigger": "No cross-system customer ID, weak baseline controls, or missing social attribution",
+      "detection": "Inconsistent KPIs across commerce, CRM, and social; inability to run controlled A/B windows",
+      "mitigation": "Complete a cross-system data audit within 6 weeks and implement one tracked personalized offer to 1,000 customers",
+      "severity": 3,
+      "likelihood": 3,
+      "citations": [
+        "9",
+        "5"
+      ]
+    }
+  ],
+  "future_outlook": [
+    {
+      "horizon": "6-month",
+      "headline": "Pilots Prove Store-as-Studio ROI",
+      "scan_line": "If true, we will see measurable footfall and social reach lifts in pilot locations within 3 months.",
+      "description": "Operators running 6-week pilots will report higher event-period walk-ins and more owned content assets sold to partners, proving that attention can be monetized alongside sales [^1]. Measurement will show CRM-linked redemption lifts that justify partner sponsorships and recurring activations [^9]. Local property managers will begin offering curated pop-up programs as a leasing strategy for vacant units [^2].",
+      "operator_watch": "Incremental walk-ins per activation hour versus baseline",
+      "collaboration_upside": "A repeatable pilot demonstrates a sponsor product and produces a template for revenue-share deals across sites",
+      "confidence": 0.75,
+      "citations": [
+        1,
+        9,
+        2
+      ]
+    },
+    {
+      "horizon": "12-month",
+      "headline": "Scaled Store-as-Studio Programs",
+      "scan_line": "If true, we will see multi-site rollouts and partner packages adopted by regional portfolios within 9 to 12 months.",
+      "description": "Successful pilots will scale into standardized playbooks across multiple locations, lowering content costs and creating predictable audience products for partners [^6]. Property owners will report higher occupancy velocity for spaces marketed as experiential-first and win new tenants attracted to increased dwell and marketing lift [^2]. Brands will reallocate part of creative budgets to in-house live production, reducing external studio spend and accelerating content cadence [^7].",
+      "operator_watch": "Number of signed sponsor agreements per site per quarter",
+      "collaboration_upside": "Networked sites sell packaged audience impressions and produce predictable partner revenue streams",
+      "confidence": 0.65,
+      "citations": [
+        6,
+        2,
+        7
+      ]
+    }
+  ],
+  "signal_map_notes": "The mechanism is simple. High-value windows are concentrated event times: evening programming, weekend drop events, and headline activations where attention, social content, and conversion cluster. This changes one thing about discounting math: experiential scarcity and content-driven exclusives raise full-price sell-through and reduce reliance on broad markdowns, so operators should measure full-price conversion and trade percent-off for access, sampling, and time-limited offers. The leverage point sits in quick pilots that pair landlord inventory, a cultural partner, and unified data."
+}

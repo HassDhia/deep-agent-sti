@@ -1,0 +1,272 @@
+{
+  "generated_at": "2025-12-02T10:03:23.944226",
+  "query": "Are brands finally waking up to the fact that the strongest media channel is the shop next door?",
+  "time_window": {
+    "start": "2025-11-18",
+    "end": "2025-12-02",
+    "days": 14,
+    "label": "Nov 18 – Dec 02, 2025"
+  },
+  "confidence": {
+    "score": 0.28,
+    "display": 0.28,
+    "band": "Directional",
+    "dials": {
+      "strength": "light",
+      "coverage": "light",
+      "quant_support": "high",
+      "consistency": "high"
+    },
+    "breakdown": {
+      "average_strength": 0.0,
+      "coverage": 0.0,
+      "quant_support": 1.0,
+      "contradiction_penalty": 0.8
+    },
+    "note": "Directional evidence: 9 sources • 7 domains • 9 in-window / 0 background • support coverage 0%"
+  },
+  "files": [
+    "intelligence_report.md",
+    "market_path_report.md",
+    "market_path_report.pdf",
+    "intelligence_report.jsonld",
+    "metadata.json"
+  ],
+  "sections": [
+    "deep_analysis",
+    "pattern_matches",
+    "brand_outcomes",
+    "operator_notes",
+    "quant",
+    "activation_kit",
+    "risk_radar",
+    "future_outlook",
+    "comparison_map",
+    "signal_map_notes"
+  ],
+  "title": "Are brands finally waking up to the fact that the strongest media channel is the shop next door?",
+  "highlights": [
+    "Target top-performing neighborhood stores as isolated experiments rather than rolling sitewide promos; keep offers narrow: one premium SKU, one bundle, exclusive stock.",
+    "Creators and live/store media move paid reach into owned demand that lands in physical locations and supports premium pricing.",
+    "Replace broad discounts with short premium windows plus QR funnels to track redemption and buyer activity share vs promo intensity."
+  ],
+  "executive_summary": "You need to drive higher-margin holiday sales from nearby stores without surrendering margin to broad digital discounting in the next six weeks. This matters because focused local activations can deliver **10-15%** foot-traffic uplift (stretch **≥25%**) while shifting early-window share from 12-15% toward a **20-30%** goal and holding event CPA at **≤0.80×** baseline with QR redemption floors at ≥5% of footfall. Prioritize a store-as-studio / media-led holiday with creator co-launches as the primary approach, and have merchandising, store ops, and marketing run 2-week local premium offers, inventory holds, and QR-driven checkout funnels in the next 30 days; measure success by buyer activity share vs promo intensity and foot-traffic uplift. These moves follow observed local demand outperformance and creator-to-store conversion mechanics. [^6][^7]",
+  "top_operator_moves": [
+    "Select 15–30 pilot stores with above-benchmark weekly demand and lock a 2-week premium window, reallocating inventory away from sitewide discounts.",
+    "Run creator co-launch events in pilot stores with live content, limited SKU bundles, and QR-enabled purchase paths targeting **≥5%** QR redemption of footfall.",
+    "Instrument store-level A/B tests to measure foot-traffic uplift, conversion rate, margin per transaction, buyer activity share vs promo intensity, and event CPA aiming for **≤0.80×** baseline."
+  ],
+  "statistics": {
+    "word_count": 3559,
+    "signal_count": 0,
+    "source_count": 9
+  },
+  "read_time_minutes": 18,
+  "length_label": "~18 min read",
+  "qa": {
+    "issues": [
+      "Source coverage under minimum thresholds",
+      "Signal count outside required band",
+      "Read time exceeds target"
+    ],
+    "coverage": 0.0,
+    "quant_support": 1.0,
+    "contradiction_penalty": 0.8,
+    "appendix_count": 9,
+    "scope": {
+      "topic": "Are brands finally waking up to the fact that the strongest media channel is the shop next door?",
+      "time_window": {
+        "start": "2025-11-18",
+        "end": "2025-12-02",
+        "days": 14,
+        "label": "Nov 18 – Dec 02, 2025"
+      },
+      "target_region": "US",
+      "use_cases": [
+        "brand↔brand",
+        "brick&mortar↔brand"
+      ],
+      "must_answer": [
+        "When are the high-value windows",
+        "What changes discounting math"
+      ],
+      "approach_hints": [
+        "discount-heavy holiday",
+        "collab-led holiday",
+        "store-as-studio / media-led holiday"
+      ],
+      "unified_target_pack": {
+        "foot_traffic_uplift": {
+          "base": "10-15%",
+          "stretch": "≥25%"
+        },
+        "early_window_share": {
+          "current": "12-15%",
+          "goal": "20-30%"
+        },
+        "event_cpa": {
+          "ceiling": "≤0.80× baseline"
+        },
+        "qr_redemption": {
+          "floor": "≥5% of footfall"
+        },
+        "paired_metric": "Track buyer activity share vs promo intensity side by side"
+      },
+      "window_label": "Nov 18 – Dec 02, 2025",
+      "topic_kind": "general",
+      "thin_evidence": true,
+      "operator_job_story": "How to drive higher-margin holiday sales from nearby stores without surrendering margin to broad digital discounting in the next six weeks.",
+      "search_shaped_variants": [
+        "How to lift store foot traffic 10-25% over the holiday window without deeper sitewide discounts",
+        "Test in-store media and creator co-launches that beat digital CPA in 2–6 weeks",
+        "Which stores should run store-as-studio content and premium pricing during Nov 18–Dec 02",
+        "Measure buyer share vs promo intensity for local events and QR activations"
+      ],
+      "evidence_regime": "directional",
+      "evidence_note": "Directional evidence: 9 sources • 7 domains • 9 in-window / 0 background • support coverage 0%",
+      "pilot_spec": {
+        "scenario": "neighborhood_premium_window",
+        "store_count": 10,
+        "store_type": "small_format_neighborhood",
+        "duration_weeks": 2,
+        "window": "Nov 18 – Dec 02, 2025",
+        "primary_move": "Run a two-week premium product window plus creator-led in-store activations in selected neighborhood stores to lift foot traffic 10\u001315% while holding event CPA at or below 0.8x baseline and QR redemption at or above 5%.",
+        "owner_roles": [
+          "Head of Retail",
+          "Head of Partnerships",
+          "Head of Marketing",
+          "Finance"
+        ],
+        "location_radius_miles": 5,
+        "key_metrics": [
+          "event_cpa_ratio",
+          "qr_redemption_pct"
+        ],
+        "window_label": "Nov 18 – Dec 02, 2025"
+      },
+      "metric_spec": {
+        "foot_traffic_uplift_pct": {
+          "label": "Incremental foot-traffic lift (A/B stores)",
+          "target_range": [
+            10.0,
+            15.0
+          ],
+          "unit": "percent",
+          "stage": "target",
+          "owner": "Retail Ops",
+          "target_text": "10\u001315% incremental lift; stretch goal 25%",
+          "notes": ""
+        },
+        "early_window_share_pct": {
+          "label": "Early-window buyer share",
+          "target_range": [
+            20.0,
+            30.0
+          ],
+          "unit": "percent",
+          "stage": "target",
+          "owner": "Analytics",
+          "target_text": "Raise early-window buyer share from ~12\u001315% to 20\u001330% during the pilot",
+          "notes": ""
+        },
+        "event_cpa_ratio": {
+          "label": "Event CPA ratio vs digital baseline",
+          "target_range": [
+            0.8,
+            0.8
+          ],
+          "unit": "ratio",
+          "stage": "guardrail",
+          "owner": "Performance Marketing",
+          "target_text": "Maintain event CPA at or below 0.8x baseline (ceiling)",
+          "notes": ""
+        },
+        "qr_redemption_pct": {
+          "label": "QR redemption rate among footfall",
+          "target_range": [
+            5.0,
+            5.0
+          ],
+          "unit": "percent",
+          "stage": "guardrail",
+          "owner": "Retail Ops",
+          "target_text": "QR code redemptions should be 5% of measured footfall",
+          "notes": ""
+        }
+      },
+      "role_actions": {
+        "Head of Retail": [
+          "Select the 10 neighborhood stores for the pilot using recent weekly demand and proximity criteria; deploy window-specific inventory and in-store signage; run daily footfall A/B via metric Foot Traffic Uplift Pct (M1) and stop any store not tracking toward the 10\u001315% uplift by week end."
+        ],
+        "Head of Partnerships": [
+          "Lock 1\u00132 creator or local brand collab per store for in-store activations and content shoots; require event-level spend and incremental buyer counts to calculate Event Cpa Ratio (M2); pause partnerships that exceed the 0.8 ratio."
+        ],
+        "Head of Marketing": [
+          "Run localized media and paid social to drive nearby awareness within the 5-mile radius; tag and funnel local traffic to QR activations and measure Qr Redemption Pct (M1); shift budget away from sitewide discounts if Event Cpa Ratio <= 0.8 and Foot Traffic Uplift Pct >= 10%."
+        ],
+        "Finance": [
+          "Approve the pilot budget conditional on the guardrails: only fund incremental local media and creator fees while Event Cpa Ratio <= 0.8 and projected Qr Redemption Pct >= 5%; require daily spend vs incremental-buyers reporting for mid-pilot review."
+        ]
+      },
+      "pilot_spec_issues": [],
+      "spec_version": "v1",
+      "spec_ok": true,
+      "spec_notes": []
+    },
+    "read_time": 18,
+    "high_quality_signals": true,
+    "observed_quant": true,
+    "tier1_market_signals": true
+  },
+  "agent": "EnhancedSTIAgent",
+  "model": "gpt-5-mini-2025-08-07",
+  "source_stats": {
+    "total": 9,
+    "core": 0,
+    "support": 9,
+    "unique_domains": 7,
+    "domain_counts": {
+      "seekingalpha.com": 1,
+      "gamerant.com": 2,
+      "poynter.org": 1,
+      "wlox.com": 1,
+      "clevescene.com": 1,
+      "hutchnews.com": 1,
+      "msn.com": 2
+    },
+    "data_heavy": 3,
+    "time_span_days": 0,
+    "tier_counts": {
+      "core": 9,
+      "context": 0
+    },
+    "dominant_ratio": 0.222,
+    "thin_evidence": true,
+    "thresholds": {
+      "total": true,
+      "core": false,
+      "domains": true,
+      "data": true,
+      "dominance": true,
+      "in_window": true,
+      "background": false,
+      "support_coverage": false
+    },
+    "support_coverage": 0.0,
+    "regime": "directional"
+  },
+  "renderers": [
+    "market_path_markdown",
+    "market_path_pdf",
+    "legacy_html"
+  ],
+  "artifact_paths": [
+    "sti_reports/sti_operator_output_20251202_095523_are_brands_finally_wakin/market_path_report.md",
+    "sti_reports/sti_operator_output_20251202_095523_are_brands_finally_wakin/market_path_report.pdf"
+  ],
+  "social_media_content": {
+    "confidence": 0.28,
+    "teaser_mode": true,
+    "sources_used": ""
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "spine_hook": "Success = footfall +10–15% (stretch ≥25%), early-window share 20–30%, and event CPA ≤0.80× baseline while QR redemptions ≥5% of footfall.",
+  "anchors": [
+    {
+      "id": "Q1",
+      "headline": "Foot-traffic uplift target for partner-led activations",
+      "topic": "Foot traffic vs blanket discounts",
+      "value_low": 10,
+      "value_high": 15,
+      "unit": "% uplift vs comparable non-promo weekend",
+      "status": "target",
+      "band": "base",
+      "owner": "Head of Retail",
+      "expression": "Footfall +10–15% vs comparable non-promo weekend in pilot stores",
+      "source_ids": [],
+      "applies_to_signals": [
+        "S1",
+        "S4"
+      ]
+    },
+    {
+      "id": "Q2",
+      "headline": "Early-window share baseline and goal",
+      "topic": "Transactions in early event window",
+      "value_low": 12,
+      "value_high": 15,
+      "unit": "% of total event transactions",
+      "status": "observed",
+      "band": "base",
+      "owner": "Merch + Analytics",
+      "expression": "Current early-window share = 12–15% of event transactions; goal = 20–30%",
+      "source_ids": [],
+      "applies_to_signals": [
+        "S2",
+        "S1"
+      ]
+    },
+    {
+      "id": "Q3",
+      "headline": "Event CPA guardrail",
+      "topic": "Event CPA vs baseline",
+      "value_low": 0,
+      "value_high": 0.8,
+      "unit": "multiplier of baseline CPA",
+      "status": "target",
+      "band": "base",
+      "owner": "CFO",
+      "expression": "Event CPA ≤ 0.80× baseline CPA for the promotional period",
+      "source_ids": [],
+      "applies_to_signals": [
+        "S3",
+        "S1"
+      ]
+    },
+    {
+      "id": "Q4",
+      "headline": "QR redemption floor as activation lift proxy",
+      "topic": "Activation engagement",
+      "value_low": 5,
+      "value_high": 5,
+      "unit": "% of footfall",
+      "status": "target",
+      "band": "base",
+      "owner": "Head of Retail / Partnerships",
+      "expression": "QR-enabled offers redeemed by ≥5% of store footfall during activation windows",
+      "source_ids": [],
+      "applies_to_signals": [
+        "S4",
+        "S1"
+      ]
+    }
+  ],
+  "measurement_plan": [
+    {
+      "id": "M1",
+      "metric": "Event CPA",
+      "expression": "Achieve CPA ≤ 0.80× baseline over Nov 22–29 for stores in the pilot compared to matched-control stores",
+      "owner": "CFO / Performance Marketing",
+      "timeframe": "2025-11-22 to 2025-11-29",
+      "status": "plan",
+      "notes": "Use matched-control stores (same AUR and weekly footfall) and include partner-funded ad offsets in CPA denominator.",
+      "why_it_matters": "Proves partner-funded activations preserve acquisition efficiency vs blanket discounts."
+    },
+    {
+      "id": "M2",
+      "metric": "Buyer activity share vs promo intensity",
+      "expression": "Measure early-window share = 20–30% while promo SKU share remains ≈ LY or lower",
+      "owner": "Merch + Analytics",
+      "timeframe": "2025-11-22 to 2025-11-29",
+      "status": "plan",
+      "notes": "Track early-window transactions, % of SKUs on promo, and depth of markdowns daily. Report paired chart.",
+      "why_it_matters": "Paired metrics show whether early-buyer growth is coming from converted new buyers or deeper markdowns."
+    },
+    {
+      "id": "M3",
+      "metric": "Foot-traffic uplift (pilot vs control)",
+      "expression": "Footfall uplift 10–15% (stretch ≥25%) in pilot stores vs matched-control weekend",
+      "owner": "Head of Retail / Store Ops",
+      "timeframe": "2025-11-22 to 2025-11-29",
+      "status": "plan",
+      "notes": "Deploy footfall sensors and hourly door counts. Compare same-day LY and matched-control stores.",
+      "why_it_matters": "Direct test of whether co-branded activations drive incremental store visits compared with blanket discounts."
+    },
+    {
+      "id": "M4",
+      "metric": "Partner funding vs discount P&L",
+      "expression": "Model event-level P&L showing net margin and CPA under (A) 20% blanket discount and (B) co-funded 15% collaboration + media value",
+      "owner": "CFO / Head of Partnerships",
+      "timeframe": "Prior to pilot launch; finalize by 2025-11-08",
+      "status": "plan",
+      "notes": "Include partner ad credits, incremental store revenue, and assumed carryover sales. Run sensitivity on conversion lift ±5pp.",
+      "why_it_matters": "Quantifies tradeoffs and shows whether partner funding replaces markdowns while protecting CPA."
+    }
+  ],
+  "coverage": 0.82
+}

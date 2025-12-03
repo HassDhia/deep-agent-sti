@@ -1,0 +1,25 @@
+[
+  {
+    "type": "hero",
+    "query": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+    "intent": "market",
+    "prompt": "Scene: hybrid studio store corner low 3 4 angle. Personas: brand partnerships lead store ops manager standing close. Action: one points at stack exclusive bundle boxes while. Symbolism: taut red thread looping through stacked boxes suggesting. Key objects: co branded early exclusive boxes s1 tiered bundle. Mood: precise decisive ready test. Lighting: Polished editorial. Confident highlights on faces and product edges. Soft fill to keep negative space clean. styled as diffused skylight with controlled highlights. Composition: three-quarter view from eye level with generous negative space, focus on one points at stack exclusive bundle boxes while. Palette: slate base with subtle brass highlights with subtle ribbon-like contours in a structured architectural backdrop. polished editorial photography, cinematic but minimal, deep contrast, subtle cool-tone grading, generous negative space, modern materials, natural poses, realistic lighting, no text, no logos, no UI, no charts, no infographics, no collage, no poster layout, single clear focal area",
+    "image": "images/hero_collab_led_uplift_vs_blanket_d.png"
+  },
+  {
+    "type": "section",
+    "query": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+    "intent": "market",
+    "section": "Signal Map",
+    "prompt": "Abstract structure: concentric rings inner wedge outer ring sitewide discount representing prioritize tests shift buyer timing concentration rather than. Motion: animated pulse flowing outer ring toward inner wedge that suggests prioritize tests shift buyer timing concentration rather than. Visual elements: tokens foot traffic uplift spikes qr nodes redemption. Mood: analytical, calm, precise. Lighting: half-toned studio wash with subtle reflections on a architectural plinth. Composition: planar orthographic layout with a centered form and generous negative space. Color: dark neutrals with matte neutrals steel gray one accent cobalt partner and cool slate with ivory bands accents. Never literal dashboards, axes, or labels. polished editorial photography, cinematic but minimal, deep contrast, subtle cool-tone grading, generous negative space, modern materials, natural poses, realistic lighting, no text, no logos, no UI, no charts, no infographics, no collage, no poster layout, single clear focal area",
+    "image": "images/section_signal_map_collab_led_uplift_vs_blanket_d.png"
+  },
+  {
+    "type": "section",
+    "query": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+    "intent": "market",
+    "section": "Case Study 1",
+    "prompt": "Scene: store activation corner overhead 45 degree angle pop during weekend collab starts fill staff tap qr signs. Moment: weekend collab starts fill staff tap qr signs. Personas: store ops manager local marketing lead running three. Mood: kinetic measurable test ready. Lighting: Polished editorial with warm spotlights on demo table and clean shadow falloff. styled as diffused skylight with controlled highlights. Props: pop up shelf co branded skus qr redemption. Composition: three-quarter view from eye level with clear view of store activation corner overhead 45 degree angle pop and minimal background distractions. polished editorial photography, cinematic but minimal, deep contrast, subtle cool-tone grading, generous negative space, modern materials, natural poses, realistic lighting, no text, no logos, no UI, no charts, no infographics, no collage, no poster layout, single clear focal area",
+    "image": "images/section_case_study_1_collab_led_uplift_vs_blanket_d.png"
+  }
+]

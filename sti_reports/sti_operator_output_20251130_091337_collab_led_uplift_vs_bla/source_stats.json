@@ -1,0 +1,37 @@
+{
+  "total": 9,
+  "core": 0,
+  "support": 9,
+  "unique_domains": 9,
+  "domain_counts": {
+    "krcrtv.com": 1,
+    "vendavo.com": 1,
+    "shenglufashion.com": 1,
+    "getmonetizely.com": 1,
+    "northbeam.io": 1,
+    "homeer.com": 1,
+    "gatesnotes.com": 1,
+    "homeindepth.com": 1,
+    "facebook.com": 1
+  },
+  "data_heavy": 4,
+  "time_span_days": 0,
+  "tier_counts": {
+    "core": 9,
+    "context": 0
+  },
+  "dominant_ratio": 0.111,
+  "thin_evidence": true,
+  "thresholds": {
+    "total": true,
+    "core": false,
+    "domains": true,
+    "data": true,
+    "dominance": true,
+    "in_window": true,
+    "background": false,
+    "support_coverage": false
+  },
+  "support_coverage": 0.0,
+  "regime": "directional"
+}

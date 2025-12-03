@@ -1,0 +1,14 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Report",
+  "name": "Are loyalty programs losing power compared to community events?",
+  "about": "Are loyalty programs losing power compared to community events?",
+  "abstract": "We must raise early-window buyer share and footfall during the discount-heavy holiday without leaning on deeper loyalty discounts over the next six weeks. Prioritize place-based activations that target **10–15%** foot-traffic uplift (stretch **≥25%**) and move early-window share from **12–15%** toward **20–30%**, while keeping event CPA at or below **0.80×** baseline [^1]. Favor a store-as-studio / media-led holiday with brand collabs timed to Black Friday weekend, and within 30 days marketing, store ops, and partnerships must reallocate planned loyalty discount spend into in-store activations, local media/creator slots, and POS event attribution [^1][^3]. Measure success daily via buyer activity share vs promo intensity and confirm QR redemption at **≥5%** of footfall to validate discovery-to-buy conversion [^1].",
+  "datePublished": "2025-12-01T03:31:02.524698",
+  "temporalCoverage": "2025-11-24/2025-12-01",
+  "hasPart": [],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": 0.28
+  }
+}

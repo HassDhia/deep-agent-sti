@@ -1,0 +1,126 @@
+[
+  {
+    "type": "hero",
+    "slot": "hero",
+    "section": "Hero",
+    "anchor_section": "header",
+    "template": "hero_decision_window",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "scene": "back office strategy table quiet store mezzanine three",
+        "personas": "head retail",
+        "action": "deliberately presses single card labeled 1 credit top",
+        "symbolism": "narrowing band light across cards visually mimics closing",
+        "props": "matte campaign cards loyalty retail media collab printed",
+        "mood": "precise decisive measurement first",
+        "lighting": "Polished editorial: confident highlights on the chosen card, soft shadow on alternatives to emphasize decision.",
+        "focal_point": "deliberately presses single card labeled 1 credit top"
+      },
+      "style": {
+        "framing": "three-quarter view from eye level",
+        "lighting": "warm directional light with gentle falloff",
+        "palette": "ivory and charcoal with cyan pins",
+        "geometry": "subtle ribbon-like contours",
+        "environment": "measured spatial grid"
+      },
+      "metric_focus": [
+        "early_window_share",
+        "event_cpa"
+      ],
+      "metric_labels": [
+        "Early-window share",
+        "Event CPA"
+      ]
+    },
+    "metric_focus": [
+      "early_window_share",
+      "event_cpa"
+    ],
+    "alt": "Head of Retail choosing $1 loyalty credit for Nov18–Dec02 pilot; launching test",
+    "image": "images/hero_if_i_ve_got_one_more_dollar_to.png"
+  },
+  {
+    "type": "section",
+    "section": "Signal Map",
+    "slot": "signal_map",
+    "anchor_section": "signals_and_thesis",
+    "template": "signal_map_concentric",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "context": "prioritize pilots reallocate incremental dollar blanket discounts three",
+        "structure": "concentric rings inner loyalty core middle retail media",
+        "elements": "tokens representing sample shoppers clustered toward loyalty core",
+        "motion": "flow lines move inward collab lattice through retail",
+        "direction": "prioritize pilots reallocate incremental dollar blanket discounts three",
+        "palette": "neutral base three confident accents loyalty teal media"
+      },
+      "style": {
+        "framing": "planar orthographic layout",
+        "lighting": "half-toned studio wash",
+        "palette": "mist gray with electric blue pulses",
+        "geometry": "floating planes and dots",
+        "environment": "calm studio backdrop"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "early_window_share",
+        "event_cpa"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "Early-window share",
+        "Event CPA"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share",
+      "event_cpa"
+    ],
+    "alt": "CMO mapping early-window share vs event CPA; comparing $1 loyalty credit, retail media, collab reach",
+    "image": "images/section_signal_map_if_i_ve_got_one_more_dollar_to.png"
+  },
+  {
+    "type": "section",
+    "section": "Case Study 1",
+    "slot": "case_study_1",
+    "anchor_section": "mini_case_story",
+    "template": "case_play_activation",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "scene": "quiet store planning huddle where retail manager head",
+        "time": "operator hands sealed 1 targeted insert store lead",
+        "moment": "operator hands sealed 1 targeted insert store lead",
+        "personas": "head partnerships",
+        "mood": "collaborative margin conscious test oriented",
+        "lighting": "Clean editorial light with a focused highlight on the pinned card and checklist.",
+        "props": "top decile loyalty insert cards store capture checklist",
+        "focal_point": "quiet store planning huddle where retail manager head"
+      },
+      "style": {
+        "framing": "grounded eye-level framing focused on the active bay",
+        "lighting": "warm directional light with gentle falloff",
+        "palette": "ivory and charcoal with cyan pins",
+        "geometry": "clean architectural facets",
+        "environment": "open negative-space retail bay"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "conversion_rate"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "Conversion rate"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "conversion_rate"
+    ],
+    "alt": "Head of Partnerships deploying $1 loyalty credit; measuring visits and conversion",
+    "image": "images/section_case_study_1_if_i_ve_got_one_more_dollar_to.png"
+  }
+]

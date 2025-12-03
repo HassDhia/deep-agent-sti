@@ -1,0 +1,114 @@
+[
+  {
+    "name": "Performance Tech Injury Narrative",
+    "reason": "strength < 0.78; single Reddit insider source (3) gives opinion but not actionable, so demoted."
+  },
+  {
+    "name": "Macro Footwear Revenue Tables",
+    "reason": "off-thesis and non-actionable within a 6-week store-as-studio test window; source 8 is macro-level."
+  },
+  {
+    "name": "Global Retailer Success Playbook",
+    "reason": "non-US examples or broad corporate strategy without local pilot specifics; source 2 is strategic but needs local test tailoring and thus less direct operational signal."
+  },
+  {
+    "category": "Market",
+    "name": "Flagship Footprint Flux",
+    "description": "Major retail owners are repurposing or closing legacy footprint, creating opportunity windows for brand-led activations near flagship doors. That localized churn makes flagships testable labs for quick pop-ups and paid experiences that capture adjacent micro-communities. ",
+    "operator_move": "Have regional retail ops run a 6-week test with four flagships pairing local collab pop-ups and an exclusive SKU, and measure foot_traffic_uplift to +15% and QR_redemption >=5% by store; owner: regional retail ops, window: 6-week, KPI: foot_traffic_uplift and QR_redemption.",
+    "operator_scan": "Measure baseline footfall then track incremental foot_traffic_uplift and QR scans during pop-ups.",
+    "spine_hook": "Retail real estate is becoming activation windows.",
+    "time_horizon": "6-week",
+    "strength": 0.84,
+    "US_fit": 1.0,
+    "operationality": 0.9,
+    "support": [
+      1
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      1
+    ],
+    "id": "S1",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Cultural",
+    "name": "Doorstep Micro-Communities",
+    "description": "Underserved TikTok creator segments and local sneaker communities are actively recommending and buying sneaker finds, creating concentrated local audiences. Recruiting those creators into short residencies can shift early-window purchase share and lower event CPA versus broad influencer spends. ",
+    "operator_move": "Task brand partnerships and comms to recruit six local creators within a two-mile radius of one flagship for a 4-week residency, and target early_window_share 20-30% with event_cpa <=0.8x baseline; owner: brand partnerships + comms, window: 4-week, KPI: early_window_share and event_cpa.",
+    "operator_scan": "Count creator-driven purchases and compare event CPA to baseline paid events.",
+    "spine_hook": "Local creators convert neighborhood communities.",
+    "time_horizon": "6-week",
+    "strength": 0.86,
+    "US_fit": 0.95,
+    "operationality": 0.9,
+    "support": [
+      4,
+      5
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      4,
+      5
+    ],
+    "id": "S2",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Behavioral",
+    "name": "Release-Driven Localization",
+    "description": "Limited drops and raffles continue to gather physical queues and concentrated local audiences around stores. Those release events are an on-ramp to in-store experiences and measurable QR engagement if paired with reservation mechanics and near-door activation. ",
+    "operator_move": "Instruct store ops and product to run a 6-week limited drop pilot at two flagships with reserve-and-pickup plus an in-store activation, and measure foot_traffic_uplift (base 10-15%) and QR_redemption >=5%; owner: store ops + product, window: 6-week, KPI: foot_traffic_uplift and QR_redemption.",
+    "operator_scan": "Track raffle entrants converting to purchases and QR scans at pickup.",
+    "spine_hook": "Drops concentrate local demand at doorsteps.",
+    "time_horizon": "6-week",
+    "strength": 0.8,
+    "US_fit": 0.95,
+    "operationality": 0.85,
+    "support": [
+      6
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "C",
+    "citations": [
+      6
+    ],
+    "id": "S3",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Market",
+    "name": "Discounting Elasticity On Collabs",
+    "description": "Holiday discount pressure can be reduced if collab-led in-store experiences convert local communities at higher yield than broad cut promotions. Running paired pilots that keep deeper discounts online but offer shallower, experience-backed incentives in-store will reveal the discount depth needed to hit margin and buyer-share targets. ",
+    "operator_move": "Direct finance and merchandising to run a 6-week paired pilot across three flagships comparing sitewide 30% discount to a 15% collab discount plus in-store experience, and measure buyer activity share vs promo intensity aiming to reduce promo depth by 10-15% while holding early_window_share >=20%; owner: finance + merchandising, window: 6-week, KPI: promo depth and early_window_share.",
+    "operator_scan": "Track buyer activity share versus promo depth across pilot stores and channels.",
+    "spine_hook": "Collab experiences change required promo depth.",
+    "time_horizon": "6-week",
+    "strength": 0.78,
+    "US_fit": 0.9,
+    "operationality": 0.88,
+    "support": [
+      2,
+      1
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      2,
+      1
+    ],
+    "id": "S4",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  }
+]

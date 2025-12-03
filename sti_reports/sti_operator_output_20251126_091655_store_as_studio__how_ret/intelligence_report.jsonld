@@ -1,0 +1,57 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Report",
+  "name": "Holiday Flagship Early-Access & Pop-up Tests",
+  "about": "Store as Studio:\nHow retail stores are becoming content properties",
+  "abstract": "Short, curated early-access windows plus a two-arm A/B framing (Arm A legacy markdown vs Arm B bundle+GWP+loyalty inside the same two-week window) can hit the unified holiday target pack: **10–15%** foot-traffic uplift (stretch **≥25%** in top markets), **20–30%** early-window transaction share (vs ~12–15% baseline), event CPA **≤0.80×** baseline, and QR/scan redemption **≥5%** of footfall. The mechanism is simple. Limited windows concentrate demand, raise attach rates for bundles and GWPs, and cut markdown leakage versus pure discounting. Collaboration teams must finalize the two-arm test plan, lock inventory and store holdouts, instrument door counts and QR→POS tracking, and align ops, merch, marketing, partnerships, and analytics to execute within the next 30 days [^1][^3].",
+  "datePublished": "2025-11-26T17:26:25.136988",
+  "temporalCoverage": "2025-11-19/2025-11-26",
+  "hasPart": [
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.bisnow.com/national/news/retail/vacant-retail-space-becomes-a-blank-canvas-for-artists-132069"
+      ],
+      "about": "Cultural"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.msn.com/en-us/movies/news/a24-barnes-noble-partner-on-branded-in-store-spaces-for-indie-studios-books-movies-merch/ar-AA1R7Fqi?ocid=BingNewsVerp",
+        "https://www.msn.com/en-us/movies/news/a24-barnes-noble-partner-on-branded-in-store-spaces-for-indie-studios-books-movies-merch/ar-AA1R7Fqi"
+      ],
+      "about": "Market"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.bisnow.com/new-york/news/retail/retail-property-management-cushmanwakefield-studiob-131980"
+      ],
+      "about": "Market"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.marketwatch.com/press-release/imagine-s-q4-trends-highlights-emotional-connections-in-retail-out-of-home-and-collectibles-34421084"
+      ],
+      "about": "Cultural"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.forbes.com/sites/ilonalimonta-volkova/2025/11/26/ai-commerce-startup-onton-raises-75m-to-take-on-retail-giants/",
+        "https://www.forbes.com/councils/forbesbusinesscouncil/2025/11/25/how-agentic-commerce-is-reshaping-retail-and-cpg-strategy/"
+      ],
+      "about": "Technology"
+    }
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": 0.882
+  }
+}

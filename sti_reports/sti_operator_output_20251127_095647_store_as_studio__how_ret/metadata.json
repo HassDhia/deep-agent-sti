@@ -1,0 +1,111 @@
+{
+  "generated_at": "2025-11-27T10:06:11.416160",
+  "query": "Store as Studio:\nHow retail stores are becoming content properties",
+  "time_window": {
+    "start": "2025-11-20",
+    "end": "2025-11-27",
+    "days": 7
+  },
+  "confidence": {
+    "score": 0.884,
+    "display": 0.88,
+    "band": "Medium",
+    "dials": {
+      "strength": "high",
+      "coverage": "high",
+      "quant_support": "high",
+      "consistency": "high"
+    },
+    "breakdown": {
+      "average_strength": 0.836,
+      "coverage": 0.833,
+      "quant_support": 1.0,
+      "contradiction_penalty": 1.0
+    }
+  },
+  "files": [
+    "intelligence_report.md",
+    "market_path_report.md",
+    "market_path_report.pdf",
+    "intelligence_report.jsonld",
+    "metadata.json"
+  ],
+  "sections": [
+    "deep_analysis",
+    "pattern_matches",
+    "brand_outcomes",
+    "operator_notes",
+    "quant",
+    "activation_kit",
+    "risk_radar",
+    "future_outlook",
+    "signal_map_notes"
+  ],
+  "title": "Store as Studio: How retail stores are becoming content properties",
+  "highlights": [
+    "Pilot target pack: **10–15%** footfall lift, **20–30%** early-window share, **≤0.80×** event CPA, **≥5%** QR redemption of footfall [^2].",
+    "A/B test design: Arm A legacy markdown vs Arm B bundle+GWP+loyalty run in the same two-week window to measure CPA compression and transaction timing [^6][^9].",
+    "Measurement priorities: door counts, QR→POS mapping, early-window transaction tagging, and a single daily report owner across teams [^7][^9]."
+  ],
+  "executive_summary": "What is happening: operators are moving stores from pure retail to content-first holiday pilots that pair limited early-access windows with bundled offers, turning attention into measurable transactions [^1][^2]. Why it matters: the unified holiday target pack is explicit — detectable foot-traffic uplift **10–15%** (stretch **≥25%** in top markets), early-window transaction share **20–30%** (vs ~12–15% baseline), event CPA target **≤0.80×** baseline, and QR/scan redemption **≥5%** of footfall [^2][^7]. The A/B framing is essential: Arm A runs legacy markdowns and Arm B runs bundle+GWP+loyalty inside the same two-week window to isolate the lift signal and CPA compression [^6][^9]. What operators should do in the next 30 days: **assign a single owner**, lock a flagship pilot, instrument door counts and QR→POS link, configure A/B holdouts, and align marketing, store ops, data/CRM, and property on reporting cadence [^9][^7]. ### Quick Scanners",
+  "top_operator_moves": [
+    "Immediate: Lock one flagship site, publish the two-week early-access window, and **assign a single measurement owner** to run daily footfall and transaction checks.",
+    "Quarter-scale: Execute the Arm A vs Arm B A/B with spatial holdouts and standardized bundles/GWP, then reprice markdowns only after a winner emerges.",
+    "Long-tail: Convert repeat pop-up wins into a calendar of branded content sessions and shared property partnerships to institutionalize audience-driven demand."
+  ],
+  "statistics": {
+    "word_count": 3978,
+    "signal_count": 5,
+    "source_count": 9
+  },
+  "read_time_minutes": 20,
+  "length_label": "~20 min read",
+  "qa": {
+    "issues": [
+      "Read time exceeds target"
+    ],
+    "coverage": 0.833,
+    "quant_support": 1.0,
+    "contradiction_penalty": 1.0,
+    "appendix_count": 2,
+    "scope": {
+      "topic": "Store as Studio:\nHow retail stores are becoming content properties",
+      "time_window": {
+        "start": "2025-11-20",
+        "end": "2025-11-27",
+        "days": 7
+      },
+      "target_region": "US",
+      "use_cases": [
+        "brand↔brand",
+        "brick&mortar↔brand"
+      ],
+      "must_answer": [
+        "When are the high-value windows",
+        "What changes discounting math"
+      ]
+    },
+    "read_time": 20,
+    "high_quality_signals": true,
+    "observed_quant": true,
+    "tier1_market_signals": false
+  },
+  "agent": "EnhancedSTIAgent",
+  "model": "gpt-5-mini-2025-08-07",
+  "renderers": [
+    "market_path_markdown",
+    "market_path_pdf",
+    "legacy_html"
+  ],
+  "artifact_paths": [
+    "sti_reports/sti_operator_output_20251127_095647_store_as_studio__how_ret/market_path_report.md",
+    "sti_reports/sti_operator_output_20251127_095647_store_as_studio__how_ret/market_path_report.pdf",
+    "sti_reports/sti_operator_output_20251127_095647_store_as_studio__how_ret/intelligence_report.html",
+    "sti_reports/sti_operator_output_20251127_095647_store_as_studio__how_ret/market_path_report.html"
+  ],
+  "social_media_content": {
+    "confidence": 0.88,
+    "teaser_mode": false,
+    "sources_used": "chicagoreader.com | forbes.com | bisnow.com"
+  }
+}

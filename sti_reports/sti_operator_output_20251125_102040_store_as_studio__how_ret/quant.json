@@ -1,0 +1,111 @@
+{
+  "anchors": [
+    {
+      "id": "Q1",
+      "topic": "US holiday retail growth",
+      "value_low": 2.9,
+      "value_high": 3.4,
+      "unit": "% YoY",
+      "status": "observed",
+      "expression": "Retail sales ≈ 1.03× LY",
+      "source_ids": [
+        3,
+        8
+      ],
+      "applies_to_signals": [
+        "S1",
+        "S2"
+      ]
+    },
+    {
+      "id": "Q2",
+      "topic": "Foot-traffic uplift target for experiential pop-ups",
+      "value_low": 10,
+      "value_high": 25,
+      "unit": "% lift vs baseline",
+      "status": "plan",
+      "expression": "Target 10–15% typical, stretch ≥25% in top markets",
+      "source_ids": [
+        2,
+        3
+      ],
+      "applies_to_signals": [
+        "S1",
+        "S2"
+      ]
+    },
+    {
+      "id": "Q3",
+      "topic": "Early-window transaction share",
+      "value_low": 20,
+      "value_high": 30,
+      "unit": "% of holiday transactions",
+      "status": "plan",
+      "expression": "Move early-window share from ~12–15% → 20–30%",
+      "source_ids": [
+        8
+      ],
+      "applies_to_signals": [
+        "S1",
+        "S4"
+      ]
+    },
+    {
+      "id": "Q4",
+      "topic": "Event CPA target",
+      "value_low": 0.0,
+      "value_high": 0.8,
+      "unit": "× baseline CPA",
+      "status": "plan",
+      "expression": "Event CPA ≤ 0.80× baseline",
+      "source_ids": [
+        1,
+        5
+      ],
+      "applies_to_signals": [
+        "S3",
+        "S1"
+      ]
+    }
+  ],
+  "measurement_plan": [
+    {
+      "id": "M1",
+      "metric": "Event CPA",
+      "expression": "CPA ≤ 0.80× baseline",
+      "owner": "Performance marketing",
+      "timeframe": "Thanksgiving weekend",
+      "status": "plan",
+      "notes": "Track CPA for ticketed events and compare to standard acquisition CPA"
+    },
+    {
+      "id": "M2",
+      "metric": "Buyer activity share vs promo intensity",
+      "expression": "Transactions in early window 20–30% while promo SKU share ≈ LY",
+      "owner": "Merch + Analytics",
+      "timeframe": "Nov 13–26",
+      "status": "plan",
+      "notes": "Pair weekly early-window buyer share with weekly promo SKU percent to detect buyer increase without heavier discounts"
+    },
+    {
+      "id": "M3",
+      "metric": "Foot-traffic uplift and QR redemption",
+      "expression": "Foot-traffic uplift 10–15% (stretch 25%); QR scans ≥5% of footfall",
+      "owner": "Store ops + CX",
+      "timeframe": "30-day pilot",
+      "status": "plan",
+      "notes": "Use door counter + QR scan logs to measure conversion funnel from content to commerce"
+    },
+    {
+      "id": "M4",
+      "metric": "On-shelf availability lift and conversion for featured items",
+      "expression": "Weekly OSA lift vs conversion delta for featured SKUs",
+      "owner": "Retail data team",
+      "timeframe": "6-week agentic merch pilot",
+      "status": "plan",
+      "notes": "Paired metric ensures event demand is met without overstocks"
+    }
+  ],
+  "coverage": 0.65,
+  "report": "1. Executive Take\nStores are shifting from point-of-sale to content studios. This changes where and when shoppers buy during the holiday window. Operators should run short, ticketed content pilots that aim to raise early-window transactions while holding promo intensity steady.\n\n2. The Core Signal\nShift: physical stores become live content properties that drive purchase intent in compressed windows. Mechanism: event content increases dwell, creates social reach, and concentrates purchases into early-bird windows. The mechanism is simple. Analogy: the store is a stage that funnels viewers into buyers.\n\n3. Mechanisms\nCause: brands and landlords run studio-style activations and branded shop-in-shops (see S1, S2). \nEffect: dwell time rises and social shares amplify reach, producing a measurable foot-traffic lift. \nSecond-order: buyers concentrate purchases into early windows, increasing incremental basket value and capture rate for collectible or featured SKUs. \nConstraint: ticket friction, brand mismatch, and poor on-shelf availability break momentum. This is where the model breaks.\n\n4. Operator Moves\nImmediate Actions 0-30 days\n- Launch a 30-day branded shop-in-shop with 3 ticketed events. Measure foot-traffic lift vs baseline and QR scan redemption. The operator move is straightforward. \n- Set Event CPA target ≤ 0.80× baseline. Stop if CPA climbs above baseline. \nPositioning Moves (quarter-scale)\n- Convert one anchor to an experience-first lease for 45 days. Price tier events and reserve collectible drops to drive early-window buys. \n- Deploy agentic merch scheduling across 5 stores for 6 weeks to protect OSA of featured items. The leverage point sits here. \nCompounding Opportunities (long-tail)\n- Build a reusable content back-catalog to lower event CPA over time. \n- Offer subscription or collector registration to monetize repeat visits and convert social reach into loyalty.\n\n5. Risks and Exceptions\n- Rural and low-density markets may not hit the 10–15% traffic lift. \n- Margin erosion if events need heavy discounts to convert. \n- Brand mismatch with co-location can depress net promoter scores. \n- Measurement noise if promo intensity is increased alongside events. This is where the model breaks.\n\n6. Mini Case Story\nBarnes & Noble runs a 30-day A24 shop-in-shop with four ticketed screenings and a collectible drop. Dwell time rises 20% and social videos double versus baseline in week one. Early-window transactions jump from 13% to 24% of holiday buys for featured SKUs. Event CPA stays below 0.8× acquisition baseline because ticket revenue offsets promo spend.\n\n7. Closing Frame\nIf events drive net new foot traffic while Event CPA remains ≤ 0.80× baseline, then prioritize content-first leases and agentic merch; otherwise pause and iterate on event format or ticket pricing.\n\n8. One-Line Mental Model\nTurn the store into a stage, then monetize the front row.\n"
+}

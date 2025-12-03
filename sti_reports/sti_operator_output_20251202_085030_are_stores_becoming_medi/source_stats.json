@@ -1,0 +1,36 @@
+{
+  "total": 9,
+  "core": 0,
+  "support": 9,
+  "unique_domains": 8,
+  "domain_counts": {
+    "cbbc.org": 1,
+    "qsrmagazine.com": 1,
+    "vogue.com": 1,
+    "moviemaker.com": 1,
+    "msn.com": 2,
+    "riverjournalonline.com": 1,
+    "retailtouchpoints.com": 1,
+    "phys.org": 1
+  },
+  "data_heavy": 4,
+  "time_span_days": 0,
+  "tier_counts": {
+    "core": 9,
+    "context": 0
+  },
+  "dominant_ratio": 0.222,
+  "thin_evidence": true,
+  "thresholds": {
+    "total": true,
+    "core": false,
+    "domains": true,
+    "data": true,
+    "dominance": true,
+    "in_window": true,
+    "background": false,
+    "support_coverage": false
+  },
+  "support_coverage": 0.0,
+  "regime": "directional"
+}

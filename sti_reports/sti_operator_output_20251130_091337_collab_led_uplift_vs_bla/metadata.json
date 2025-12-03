@@ -1,0 +1,183 @@
+{
+  "generated_at": "2025-11-30T09:20:59.528594",
+  "query": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+  "time_window": {
+    "start": "2025-11-23",
+    "end": "2025-11-30",
+    "days": 7
+  },
+  "confidence": {
+    "score": 0.28,
+    "display": 0.28,
+    "band": "Directional",
+    "dials": {
+      "strength": "light",
+      "coverage": "light",
+      "quant_support": "high",
+      "consistency": "high"
+    },
+    "breakdown": {
+      "average_strength": 0.0,
+      "coverage": 0.0,
+      "quant_support": 1.0,
+      "contradiction_penalty": 0.8
+    },
+    "note": "Directional evidence: 9 sources • 9 domains • 9 in-window / 0 background • support coverage 0%"
+  },
+  "files": [
+    "intelligence_report.md",
+    "market_path_report.md",
+    "market_path_report.pdf",
+    "intelligence_report.jsonld",
+    "metadata.json"
+  ],
+  "sections": [
+    "deep_analysis",
+    "pattern_matches",
+    "brand_outcomes",
+    "operator_notes",
+    "quant",
+    "activation_kit",
+    "risk_radar",
+    "future_outlook",
+    "comparison_map",
+    "signal_map_notes"
+  ],
+  "title": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+  "highlights": [
+    "Early holiday weeks are deal-hungry; framing and scarcity move timing more than additional percent-off depth.",
+    "Blanket percent-offs lift visits fast but compress gross margin and raise promo intensity without raising buyer activity share proportionally.",
+    "Store-as-studio collab events concentrate spend, improve buyer activity per promo dollar, and lower event CPA when paired with curated pricing and QR-driven measurement."
+  ],
+  "executive_summary": "You need to drive store footfall and buyer activity with collaboration-led offers instead of blanket discounts within the next 6 weeks without sacrificing margin. Targeted collab events can shift purchases into high-value early windows and capture share while delivering **10–15%** foot-traffic uplift (stretch **≥25%**), moving early-window share from 12–15% toward **20–30%**, and lowering event CPA to ≤**0.80×** baseline compared with sitewide percent-offs that hollow margins. Favor a store-as-studio / media-led holiday approach: in the next 30 days cross-functional teams must run a randomized 2-week pilot comparing control, blanket-percent, and collaboration-event stores, instrument daily early-window share, foot traffic, buyer activity share vs promo intensity, and QR redemption, and treat success as hitting the uplift and early-window share targets while holding event CPA ≤0.80× baseline [^1][^5].",
+  "top_operator_moves": [
+    "Run a randomized 2-week pilot across matched stores that compares control, blanket-percent discounts, and collaboration events.",
+    "Price collaboration inventory using steeper price curves and value-add bundling instead of sitewide percent-offs to preserve margin.",
+    "Instrument daily metrics (foot traffic, early-window share, buyer activity share vs promo intensity, event CPA, QR redemption) and report to a single analytics owner."
+  ],
+  "statistics": {
+    "word_count": 3742,
+    "signal_count": 0,
+    "source_count": 9
+  },
+  "read_time_minutes": 19,
+  "length_label": "~19 min read",
+  "qa": {
+    "issues": [
+      "Source coverage under minimum thresholds",
+      "Signal count outside required band",
+      "Read time exceeds target"
+    ],
+    "coverage": 0.0,
+    "quant_support": 1.0,
+    "contradiction_penalty": 0.8,
+    "appendix_count": 10,
+    "scope": {
+      "topic": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+      "time_window": {
+        "start": "2025-11-23",
+        "end": "2025-11-30",
+        "days": 7
+      },
+      "target_region": "US",
+      "use_cases": [
+        "brand↔brand",
+        "brick&mortar↔brand"
+      ],
+      "must_answer": [
+        "When are the high-value windows",
+        "What changes discounting math"
+      ],
+      "approach_hints": [
+        "discount-heavy holiday",
+        "collab-led holiday",
+        "store-as-studio / media-led holiday"
+      ],
+      "unified_target_pack": {
+        "foot_traffic_uplift": {
+          "base": "10-15%",
+          "stretch": "≥25%"
+        },
+        "early_window_share": {
+          "current": "12-15%",
+          "goal": "20-30%"
+        },
+        "event_cpa": {
+          "ceiling": "≤0.80× baseline"
+        },
+        "qr_redemption": {
+          "floor": "≥5% of footfall"
+        },
+        "paired_metric": "Track buyer activity share vs promo intensity side by side"
+      },
+      "topic_kind": "pricing",
+      "thin_evidence": true,
+      "operator_job_story": "How to drive store footfall and buyer activity with collaboration-led offers instead of blanket discounts within the next 6 weeks without sacrificing margin.",
+      "search_shaped_variants": [
+        "How to use brand collaborations to lift early holiday share without blanket percent-offs",
+        "Test plan: store-led collab events that hit foot traffic + buyer share targets in 6 weeks",
+        "Which discount types preserve margin while lowering event CPA vs sitewide sales",
+        "Pricing test: apply price-curve optimization to collaboration inventory, measure promo ROI"
+      ],
+      "evidence_regime": "directional",
+      "evidence_note": "Directional evidence: 9 sources • 9 domains • 9 in-window / 0 background • support coverage 0%"
+    },
+    "read_time": 19,
+    "high_quality_signals": true,
+    "observed_quant": true,
+    "tier1_market_signals": true
+  },
+  "agent": "EnhancedSTIAgent",
+  "model": "gpt-5-mini-2025-08-07",
+  "source_stats": {
+    "total": 9,
+    "core": 0,
+    "support": 9,
+    "unique_domains": 9,
+    "domain_counts": {
+      "krcrtv.com": 1,
+      "vendavo.com": 1,
+      "shenglufashion.com": 1,
+      "getmonetizely.com": 1,
+      "northbeam.io": 1,
+      "homeer.com": 1,
+      "gatesnotes.com": 1,
+      "homeindepth.com": 1,
+      "facebook.com": 1
+    },
+    "data_heavy": 4,
+    "time_span_days": 0,
+    "tier_counts": {
+      "core": 9,
+      "context": 0
+    },
+    "dominant_ratio": 0.111,
+    "thin_evidence": true,
+    "thresholds": {
+      "total": true,
+      "core": false,
+      "domains": true,
+      "data": true,
+      "dominance": true,
+      "in_window": true,
+      "background": false,
+      "support_coverage": false
+    },
+    "support_coverage": 0.0,
+    "regime": "directional"
+  },
+  "renderers": [
+    "market_path_markdown",
+    "market_path_pdf",
+    "legacy_html"
+  ],
+  "artifact_paths": [
+    "sti_reports/sti_operator_output_20251130_091337_collab_led_uplift_vs_bla/market_path_report.md",
+    "sti_reports/sti_operator_output_20251130_091337_collab_led_uplift_vs_bla/market_path_report.pdf"
+  ],
+  "social_media_content": {
+    "confidence": 0.28,
+    "teaser_mode": true,
+    "sources_used": ""
+  }
+}

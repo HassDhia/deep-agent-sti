@@ -1,0 +1,105 @@
+[
+  {
+    "category": "Market",
+    "name": "Studio-Branded Shop Partnerships Scale",
+    "description": "Studio brands are buying curated shop space inside national retailers to turn stores into extension stages for releases. A24 and Barnes & Noble launched the A24 Shop Experience, showing how studios and retailers co-invest in branded in-store ecosystems.",
+    "operator_move": "Operator move: Barnes & Noble + A24 style pilot — deploy a branded shop in 3 flagship stores during the next content release window (4–8 weeks) and measure dwell time, conversion rate, and incremental revenue vs baseline.",
+    "strength": 0.92,
+    "US_fit": 0.95,
+    "operationality": 0.9,
+    "support": [
+      2,
+      4
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      2,
+      4
+    ],
+    "id": "S1"
+  },
+  {
+    "category": "Market",
+    "name": "Property Managers Monetize Time Slots as Content Real Estate",
+    "description": "Mall and center managers are repricing real estate for experience-dayparts and event tenancy instead of traditional leases. The property role shifts from landlord to curator, selling curated time and audience access to brands.",
+    "operator_move": "Operator move: Mall operator pilot — reprice and lease two weekend evening slots as event-daypart packages to brands for 8 weeks and track rent per square foot uplift and event attendance.",
+    "strength": 0.85,
+    "US_fit": 0.9,
+    "operationality": 0.8,
+    "support": [
+      3
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      3
+    ],
+    "id": "S2"
+  },
+  {
+    "category": "Technology",
+    "name": "Agentic Commerce Enables Moment Pricing and Assortment",
+    "description": "Agentic AI and unified product/customer data let stores shift assortments and prices in real time around content moments, reducing blanket markdowns. The mechanism is simple. Better signals mean smaller, targeted discounts.",
+    "operator_move": "Operator move: Retailer pilot — integrate POS and catalog data into an agentic pricing flow for event windows across 3 stores in 6 weeks; KPI: reduce promotional depth while holding or lifting gross margin percentage.",
+    "strength": 0.9,
+    "US_fit": 0.9,
+    "operationality": 0.85,
+    "support": [
+      1,
+      6
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      1,
+      6
+    ],
+    "id": "S3"
+  },
+  {
+    "category": "Cultural",
+    "name": "In-Store Episodes and Drops Create High-Value Windows",
+    "description": "Brands are staging episodic content in stores — short live shows, collectible drops, and micro-events that concentrate visitation into high-value windows like launch days and weekend evenings. These episodes create peak demand spikes that function differently from regular store traffic.",
+    "operator_move": "Operator move: Brand + retailer collab — run four 30-minute in-store episodes across 4 weekends during a product drop and measure visit spikes, sell-through on drop SKUs, and social clip reach.",
+    "strength": 0.8,
+    "US_fit": 0.85,
+    "operationality": 0.82,
+    "support": [
+      5,
+      8
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      5,
+      8
+    ],
+    "id": "S4"
+  },
+  {
+    "category": "Behavioral",
+    "name": "Studio-To-Street Products Extend Content Runs",
+    "description": "Lifestyle brands are turning studio-first products into street staples, prolonging the content window and creating recurring visit patterns. Alo and others show how product and class overlap sustains attention beyond single releases.",
+    "operator_move": "Operator move: Brand-retailer capsule — place a studio-curated capsule in 5 stores and run biweekly in-store classes over 8 weeks; KPI: repeat visit rate and capsule sell-through within the 8-week period.",
+    "strength": 0.78,
+    "US_fit": 0.9,
+    "operationality": 0.8,
+    "support": [
+      7,
+      9
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      7,
+      9
+    ],
+    "id": "S5"
+  }
+]

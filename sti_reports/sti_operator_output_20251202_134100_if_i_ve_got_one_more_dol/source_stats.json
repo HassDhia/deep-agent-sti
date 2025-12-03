@@ -1,0 +1,37 @@
+{
+  "total": 9,
+  "core": 0,
+  "support": 9,
+  "unique_domains": 9,
+  "domain_counts": {
+    "newstribune.com": 1,
+    "housingwire.com": 1,
+    "reuters.com": 1,
+    "foxbusiness.com": 1,
+    "csnews.com": 1,
+    "oregonlive.com": 1,
+    "businesswire.com": 1,
+    "eonline.com": 1,
+    "msn.com": 1
+  },
+  "data_heavy": 1,
+  "time_span_days": 0,
+  "tier_counts": {
+    "core": 9,
+    "context": 0
+  },
+  "dominant_ratio": 0.111,
+  "thin_evidence": true,
+  "thresholds": {
+    "total": true,
+    "core": false,
+    "domains": true,
+    "data": true,
+    "dominance": true,
+    "in_window": true,
+    "background": false,
+    "support_coverage": false
+  },
+  "support_coverage": 0.0,
+  "regime": "directional"
+}

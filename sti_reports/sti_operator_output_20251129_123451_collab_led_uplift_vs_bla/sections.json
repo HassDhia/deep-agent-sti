@@ -1,0 +1,769 @@
+{
+  "deep_analysis": {
+    "sections": [
+      {
+        "title": "Early-window capture vs sitewide discount",
+        "spine_position": "what",
+        "priority": 1,
+        "scan_line": "Collab exclusives can pull buys forward without collapsing margins.",
+        "insight": "Replacing blanket sitewide cuts with co-branded early windows concentrates buyer share into narrow timeframes, raising early_window_share without the same margin erosion as a blanket discount [^4][^2]. The mechanism is selective value transfer: exclusive bundles or limited SKUs change purchase timing and mix instead of lowering price across the catalog, preserving blended margin while shifting volume to the partner window [^2][^4]. When leaders switch from sitewide discounting to tiered collab offers, what breaks is broad promotional signaling; what holds is short-term volume if the exclusives and communications are compelling enough to overcome deal-hunting spikes from macro headlines [^1][^4].",
+        "operator_note": "Stop defaulting to sitewide percent cuts. Prioritize exclusive partner SKUs and tiered bundles for the early window. Price test at SKU-bundle level to hold blended margin while measuring buyer share movement into the window.",
+        "instrument_next": "Instrument a six-week A/B test: control = sitewide 20% off; variant = co-branded early-window with tiered bundles and exclusive SKUs; track early_window_share, blended margin, event_cpa, and QR_redemption.",
+        "citations": [
+          4,
+          2,
+          1
+        ]
+      },
+      {
+        "title": "In-store activations move foot traffic, not just conversion",
+        "spine_position": "so_what",
+        "priority": 1,
+        "scan_line": "Weekend store collabs lift foot traffic with lower media friction.",
+        "insight": "Short, localized in-store brand activations produce measurable foot-traffic uplifts in the 10 to 25 percent band when targeted to representative stores and weekends, delivering higher-quality visits than broad digital discounts [^8][^5]. The mechanism is neighborhood relevance plus experiential pull; local partners extend reach and drive walk-ins that are more likely to convert at full price or into partner bundles, improving revenue per visit and QR-based attribution [^8][^5]. Compared with blanket online promotions, activations concentrate spend and lower wasted reach, but they scale only with store operations bandwidth and local inventory alignment; scale risks underperform if staffing and partner exclusives are weak [^1][^8].",
+        "operator_note": "Prioritize three weekend activations across diverse store profiles. Lock partner exclusives and QR incentives. Measure traffic, conversion, AOV, and incremental sales per labor hour.",
+        "instrument_next": "Instrument store-level randomization: run three weekend collab activations in treatment stores and matched control stores with equivalent paid media; capture foot_traffic_uplift, QR_redemption rate, event_cpa, and per-visit margin.",
+        "citations": [
+          8,
+          5,
+          1
+        ]
+      },
+      {
+        "title": "Pricing mechanics: tiered bundles vs volume discounts",
+        "spine_position": "so_what",
+        "priority": 3,
+        "scan_line": "Tiered bundles protect blended margin better than blunt volume discounts.",
+        "insight": "Volume price curves show that staged discounts scale but compress margin across the board, while tiered collab bundles can target discount to lower-margin items or add-on SKUs to protect core margin [^2][^4]. Mechanically, bundles change the product mix and give negotiable headroom for partner compensation without forcing a catalog-wide price change, preserving margin per incremental buyer if event_cpa remains at or below the 0.8x ceiling [^2]. Replacing a 20% sitewide cut with targeted bundles holds if you can control offer visibility and measurement; it fails if partners push broad publicization that triggers competitive price matching [^4][^2].",
+        "operator_note": "Model blended-margin outcomes before launching bundles. Define tier thresholds by profit contribution not by historic discount bands. Keep top-margin core SKUs out of mandatory discount pools.",
+        "instrument_next": "Instrument a margin-modeled pricing experiment: control = volume discount tiers across catalog; variant = tiered collab bundles targeted to partner channels; track blended margin, event_cpa, and buyer activity share vs promo intensity.",
+        "citations": [
+          2,
+          4
+        ]
+      },
+      {
+        "title": "Store-as-studio content converts media to early buys",
+        "spine_position": "now_what",
+        "priority": 2,
+        "scan_line": "Micro-influencer episodes drive urgency when tied to exclusive offers.",
+        "insight": "A short episodic series filmed in stores with micro-influencers turns media value into measurable early-window share when each drop ties to a timed partner offer or QR activation [^8][^9]. The mechanism is synchronous scarcity: content creates notice and demand while the exclusive offer channels that interest into the store or defined online path, lowering event_cpa relative to generic reach buys [^5][^9]. Without exclusivity the content lifts reach but raises CPA; with tight offers the same media spend converts more early purchases and concentrates holiday buys into the early window [^8][^5].",
+        "operator_note": "Make content drops conditional. Each episode must include a scannable action that routes to a partner-exclusive bundle. Treat content as a conversion driver not a vanity campaign.",
+        "instrument_next": "Instrument a four-episode store-as-studio series where episodes are tied to timed partner offers; use UTM tracking plus store QR scans to compare early_window_share and event_cpa against matched weeks with equivalent media spend but no exclusive offers.",
+        "citations": [
+          8,
+          9,
+          5
+        ]
+      }
+    ],
+    "summary": "Prioritize a single A/B cycle focused on replacing blanket sitewide discounts with co-branded early windows supported by three store activations and a four-episode store-as-studio content run. Measure the same signals across tests: early_window_share, foot_traffic_uplift, event_cpa, QR_redemption, and blended margin. Instrumentation must include store-level controls, UTM/QR attribution, and SKU-level margin modeling so you can tell whether buys shifted or simply got cheaper."
+  },
+  "pattern_matches": [
+    {
+      "label": "Blanket sitewide discount as default",
+      "then": "Retailers historically pulled broad sitewide discounts to chase volume during weak consumer sentiment.",
+      "now": "Replace blanket 20% off with tiered collab bundles that trade depth of discount for perceived exclusivity and partner reach.",
+      "operator_leap": "A/B test replacing a sitewide 20% off with tiered collab bundles for 6 weeks; hold blended margin neutral and target event_cpa ≤0.8× baseline while tracking buyer activity share vs promo intensity.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        1,
+        2,
+        4
+      ]
+    },
+    {
+      "label": "Short exclusive early-window drops",
+      "then": "Brands used controlled early-access capsule launches to capture full-price demand before mass promos.",
+      "now": "Run a 2-week co-branded early exclusive window (Nov 29–Dec 12) to shift purchases earlier and concentrate higher-value buyers.",
+      "operator_leap": "Brand Partnerships run the 2-week early exclusive; measure early_window_share (goal 20–30%) and QR_redemption ≥5% of footfall within the window.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        8,
+        1
+      ]
+    },
+    {
+      "label": "Store-as-studio content drops",
+      "then": "In-store demos and hosted events historically converted foot traffic into higher AOV and repeat visits.",
+      "now": "Produce a 4-episode store-as-studio content series with micro-influencers to create appointment-to-buy behavior and drive early-window share.",
+      "operator_leap": "Marketing and Store Ops run the 4-episode series over the next 6 weeks; aim to lift early_window_share to 20%+ and keep event_cpa ≤0.8× baseline while measuring foot_traffic_uplift per episode.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        8,
+        9,
+        5
+      ]
+    },
+    {
+      "label": "Volume-tier discounts that scale",
+      "then": "Wholesalers and mature sellers used fixed tier systems that rewarded bigger buyers but often left margins unprotected.",
+      "now": "Structure volume discount tiers that scale with customer maturity and partner bundles to protect blended margin as volume grows.",
+      "operator_leap": "Merch + Pricing design dynamic volume tiers for collab bundles and run a 6-week test vs fixed tiering; measure blended margin and conversion lift per tier.",
+      "supports_approach": "",
+      "citations": [
+        4,
+        2
+      ]
+    },
+    {
+      "label": "News-sensitive flash timing",
+      "then": "Retailers have historically timed promos immediately after market shocks to capture deal-hungry shoppers.",
+      "now": "Concentrate limited-time partner offers on high-news days after tariff or shutdown headlines to capture short-term increases in deal-seeking behavior.",
+      "operator_leap": "Marketing queue partner offers to hit next high-news day windows over the next 6 weeks; measure event_cpa and foot_traffic_uplift against baseline.",
+      "supports_approach": "discount-heavy holiday",
+      "citations": [
+        1,
+        5
+      ]
+    },
+    {
+      "label": "Weekend in-store collab activations",
+      "then": "Pop-up collaborations historically lifted foot traffic and created urgency in local markets.",
+      "now": "Run three weekend collab activations across representative stores to test local demand elasticity and cross-sell lift.",
+      "operator_leap": "Store Ops and Marketing run three weekend activations over 6 weeks; target foot_traffic_uplift base 10–15% (stretch ≥25%) and QR_redemption ≥5% while tracking event_cpa.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        8,
+        1,
+        5
+      ]
+    }
+  ],
+  "brand_outcomes": [
+    {
+      "title": "Front-load 20–30% of holiday buys with a 2-week co-branded early exclusive",
+      "description": "Run a tightly timed co-branded early window (example: Nov 29–Dec 12) with exclusive bundles and partner-funded incentives to pull demand forward without sitewide markdowns. Use partner inventory allocations, limited SKUs, and tracked QR redemption at POS to force scarcity and measurement [^8][^1][^4].",
+      "impact": "Throughput and incremental margin — move early_window_share to 20–30%; keep event_cpa ≤0.8× baseline and QR_redemption ≥5% while holding blended margin neutral via partner funding.",
+      "time_horizon": "next 6 weeks",
+      "owner": "Brand Partnerships",
+      "citations": [
+        8,
+        1,
+        4
+      ]
+    },
+    {
+      "title": "Three weekend in-store collab activations to lift foot traffic 10–15% (stretch ≥25%)",
+      "description": "Execute three weekend activations across representative stores with co-branded demos, exclusive in-store bundles, and QR-triggered offers. Prioritize high-news days and partner talent to create urgency and measure foot_traffic_uplift and QR_redemption in real time [^8][^1][^5].",
+      "impact": "Throughput and local conversion — aim for base foot_traffic_uplift 10–15% (stretch ≥25%) and QR_redemption ≥5%; measure event_cpa vs baseline per store.",
+      "time_horizon": "next 6 weeks",
+      "owner": "Store Operations + Marketing",
+      "citations": [
+        8,
+        1,
+        5
+      ]
+    },
+    {
+      "title": "A/B test: replace blanket 20% off with tiered partner bundles to protect margin",
+      "description": "Run a 6-week A/B test swapping sitewide 20% off for tiered bundles and partner co-discounts targeted by cohort. Track event_cpa, blended margin, and buyer activity share vs promo intensity to find break-even pricing curves [^2][^4].",
+      "impact": "Incremental margin and CPA — target event_cpa ≤0.8× baseline while keeping blended margin neutral or positive; track buyer share vs promo intensity to avoid volume cannibalization.",
+      "time_horizon": "6 weeks",
+      "owner": "Merchandising + Pricing",
+      "citations": [
+        2,
+        4
+      ]
+    },
+    {
+      "title": "Store-as-studio: 4-episode micro-influencer drops to shift early-window share",
+      "description": "Produce four short store-shot episodes with micro-influencers promoting exclusive in-store drops and QR-first offers. Release on high-news days to amplify earned reach and measure lift in early_window_share and event_cpa against a non-content control [^8][^9][^5].",
+      "impact": "Loyalty and acquisition efficiency — aim to lift early_window_share to 20% and hold event_cpa ≤0.8× baseline; use content-driven attribution to allocate spend across paid and earned channels.",
+      "time_horizon": "next 6 weeks",
+      "owner": "Marketing",
+      "citations": [
+        8,
+        9,
+        5
+      ]
+    }
+  ],
+  "operator_notes": "Prioritize tests that shift buyer timing and concentration rather than broad price cuts. Start with co-branded early exclusives and 3 weekend collab activations to hit the early-window share and footfall targets within one planning cycle. Pair those with a controlled A/B of tiered collab bundles versus sitewide discounts to measure event CPA and blended margin. Use store-as-studio content to amplify early windows without expanding discount depth. Hold blanket sitewide coupons as the control and only scale if tiered collab tests fail to meet event_cpa ≤0.8x or early_window_share goals.",
+  "quant": {
+    "spine_hook": "Success = early-window buyer share 20–30% + store foot-traffic uplift ≥10% while event CPA stays ≤0.8× baseline and QR redemptions ≥5% of footfall.",
+    "anchors": [
+      {
+        "id": "Q1",
+        "headline": "Current early-window buyer share",
+        "topic": "Early-window purchase concentration",
+        "value_low": 12,
+        "value_high": 15,
+        "unit": "% of total holiday transactions",
+        "status": "observed",
+        "band": "base",
+        "owner": "Brand Partnerships",
+        "expression": "Early-window buys ≈ 12–15% of holiday transactions (current)",
+        "source_ids": [
+          8,
+          5
+        ],
+        "applies_to_signals": [
+          "S1",
+          "S4"
+        ]
+      },
+      {
+        "id": "Q2",
+        "headline": "Store foot-traffic uplift target",
+        "topic": "Foot-traffic lift from collab activations",
+        "value_low": 10,
+        "value_high": 15,
+        "unit": "% lift vs baseline",
+        "status": "target",
+        "band": "base",
+        "owner": "Store Ops",
+        "expression": "Visits ≈ 1.10–1.15× baseline during activation weekends",
+        "source_ids": [
+          5,
+          1
+        ],
+        "applies_to_signals": [
+          "S2",
+          "S5"
+        ]
+      },
+      {
+        "id": "Q3",
+        "headline": "Event CPA ceiling for partner-led activity",
+        "topic": "Cost per acquisition vs baseline",
+        "value_low": 0,
+        "value_high": 0.8,
+        "unit": "× baseline CPA",
+        "status": "target",
+        "band": "base",
+        "owner": "Performance marketing",
+        "expression": "Event CPA ≤ 0.80× baseline CPA (ceiling to protect margin)",
+        "source_ids": [
+          2,
+          5
+        ],
+        "applies_to_signals": [
+          "S3",
+          "S4"
+        ]
+      },
+      {
+        "id": "Q4",
+        "headline": "QR redemption floor",
+        "topic": "In-store activation capture rate",
+        "value_low": 5,
+        "value_high": 5,
+        "unit": "% of footfall",
+        "status": "target",
+        "band": "base",
+        "owner": "Store Ops / CRM",
+        "expression": "QR-driven redemptions ≥ 5% of visiting shoppers during activations",
+        "source_ids": [
+          8,
+          5
+        ],
+        "applies_to_signals": [
+          "S1",
+          "S2"
+        ]
+      }
+    ],
+    "measurement_plan": [
+      {
+        "id": "M1",
+        "metric": "Event CPA",
+        "expression": "CPA ≤ 0.80× baseline CPA",
+        "owner": "Performance marketing",
+        "timeframe": "Nov 22–29 (primary), extend per activation",
+        "status": "plan",
+        "why_it_matters": "Keeps paid acquisition from eroding margin when swapping sitewide discounts for partner-led offers."
+      },
+      {
+        "id": "M2",
+        "metric": "Buyer activity share vs promo intensity",
+        "expression": "Early-window transactions 20–30% while promo-SKU share ≈ last year (no blanket increase)",
+        "owner": "Merch + Analytics",
+        "timeframe": "Nov 29–Dec 12 (co-branded early window)",
+        "status": "plan",
+        "notes": "Track transactions in early window and percent of promo SKUs sold side by side weekly.",
+        "why_it_matters": "Protects margin by showing buyer growth came from time-limited collabs not broader discounting."
+      },
+      {
+        "id": "M3",
+        "metric": "Foot-traffic uplift (store-level)",
+        "expression": "Visits ↑ 10–15% vs matched-week baseline (stretch ≥25% for high-performing stores)",
+        "owner": "Store Ops",
+        "timeframe": "Next three weekend activations starting Nov 22–Dec 13",
+        "status": "plan",
+        "why_it_matters": "Direct test of whether in-store collabs drive incremental visits without price cuts."
+      },
+      {
+        "id": "M4",
+        "metric": "QR redemption rate",
+        "expression": "QR redemptions ≥ 5% of measured footfall during events",
+        "owner": "Store Ops + CRM",
+        "timeframe": "Per activation weekend (Nov 22–Dec 13)",
+        "status": "plan",
+        "why_it_matters": "Provides a measurable conversion lever that links foot traffic to measurable CRM-able outcomes."
+      }
+    ],
+    "coverage": 0.9
+  },
+  "activation_kit": [
+    {
+      "display": {
+        "pillar": "Merchandising & Pricing",
+        "play_name": "Co-branded early window with tiered bundles",
+        "card_title": "Shift buys into a paid early-window, not a sitewide cut",
+        "persona": "Head of Merch; Head of Brand Partnerships",
+        "best_fit": "Brands with exclusives or clear bundle appeal and margin flexibility",
+        "not_for": "Commodity SKUs or categories with sub-100bps margin buffers",
+        "thresholds_summary": "Test to achieve event CPA ≤0.8× baseline, early-window share 20–30% and hold blended margin no worse than −100 bps.",
+        "why_now": "Pull demand into a narrow window to avoid catalog-wide margin erosion as macro headlines increase deal-seeking.",
+        "proof_point": "Signals S1 and S3: co-branded early windows plus bundle replacement of sitewide cuts concentrate buyer share without the same margin hit.",
+        "approach_name": "collab-led holiday",
+        "time_horizon": "6-week",
+        "placement_options": [
+          "Site homepage early-access banner",
+          "Email/loyalty early-access drip",
+          "Select product pages with bundle slots"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Merch + Pricing",
+        "collaborator": "Brand Partnerships",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "cpa": "≤0.80× baseline",
+          "early_window_share": "20-30%",
+          "blended_margin_change": "≥−100bps",
+          "qr_redemption": "≥5%"
+        },
+        "prerequisites": [
+          "SKU map and bundle definitions",
+          "Approved bundle pricing and margin model",
+          "Email + site creative and target segments",
+          "Analytics instrumentation (UTMs, QR codes, event tags)"
+        ],
+        "target_map": [
+          {
+            "org_type": "Merchandising",
+            "role": "Head of Merch",
+            "why_now": "Control promotional mix to protect blended margin"
+          },
+          {
+            "org_type": "Brand Partnerships",
+            "role": "Partnerships Lead",
+            "why_now": "Deliver exclusive offer that justifies early-window pull"
+          },
+          {
+            "org_type": "Marketing",
+            "role": "Lifecycle/Email",
+            "why_now": "Drive early-window traffic to tested segments"
+          },
+          {
+            "org_type": "Finance",
+            "role": "Revenue Ops",
+            "why_now": "Approve margin guardrails and measurement"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Kickoff: align goals",
+            "narrative": "Agree targets, windows, and measurement for the A/B test.",
+            "CTA": "Approve the pilot",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "3",
+            "subject": "Reconfirm creative & tags",
+            "narrative": "Validate bundle creative, email segments, and event instrumentation.",
+            "CTA": "Share instrumentation",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "7",
+            "subject": "Go/No-go",
+            "narrative": "Confirm readiness and sign off to launch the early-window variant.",
+            "CTA": "Launch the pilot",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": false,
+        "ops_drag": "high",
+        "strategy_tag": "collab-led holiday"
+      },
+      "play_name": "Co-branded early window with tiered bundles",
+      "pillar": "Merchandising & Pricing"
+    },
+    {
+      "display": {
+        "pillar": "Store Operations & Marketing",
+        "play_name": "Store-as-studio weekend activations with micro-influencer content",
+        "card_title": "Use stores as content studios to move foot traffic and reach",
+        "persona": "Head of Store Ops; Head of Marketing",
+        "best_fit": "Flagship and high-traffic stores with available event space and local marketing support",
+        "not_for": "Small franchise footprints or locations without trained event staff",
+        "thresholds_summary": "Aim for foot-traffic uplift 10–15% baseline (stretch ≥25%), event CPA ≤0.8× baseline and QR redemption targets per mini-burst guardrail.",
+        "why_now": "Short content bursts and in-store events accelerate early-window share and create owned media during a noisy news cycle.",
+        "proof_point": "Signals S2 and S4: weekend collabs across representative stores plus a store-as-studio series lift traffic and extend reach via content.",
+        "approach_name": "store-as-studio / media-led holiday",
+        "time_horizon": "6-week",
+        "placement_options": [
+          "Three weekend store activations",
+          "In-store micro-studio stage",
+          "Local social feeds + store content hub"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Marketing",
+        "collaborator": "Store Operations",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "foot_traffic_uplift": "10-15% (stretch ≥25%)",
+          "cpa": "≤0.80× baseline",
+          "qr_redemption": "≥5%",
+          "mini_burst_redemption": "≥15% (goal for short bursts)"
+        },
+        "prerequisites": [
+          "Booked store dates and staff schedule",
+          "Micro-influencer contracts and usage rights",
+          "Run-of-show and checkout flows (QR or POS promo codes)",
+          "Content capture kit and streaming / social plan",
+          "Measurement tags and footfall counters"
+        ],
+        "target_map": [
+          {
+            "org_type": "Store Operations",
+            "role": "Regional Ops Lead",
+            "why_now": "Execute replicable weekend format across representative stores"
+          },
+          {
+            "org_type": "Marketing",
+            "role": "Content Lead",
+            "why_now": "Capture and amplify event content to owned channels"
+          },
+          {
+            "org_type": "Brand Partnerships",
+            "role": "Partnerships Manager",
+            "why_now": "Coordinate co-branded assets and talent"
+          },
+          {
+            "org_type": "Analytics",
+            "role": "Retail Insights",
+            "why_now": "Measure footfall, CPA and redemption in-window"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Kickoff: book dates & talent",
+            "narrative": "Reserve store slots and confirm influencer availability and brief.",
+            "CTA": "Reserve store dates",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "7",
+            "subject": "Reconfirm run-of-show & tags",
+            "narrative": "Share final run-of-show, POS flows and measurement tags for the weekend.",
+            "CTA": "Install tags",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "21",
+            "subject": "Review & scale decision",
+            "narrative": "Assess uplift and CPA and decide whether to repeat or scale format.",
+            "CTA": "Scale or stop",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "medium",
+        "strategy_tag": "store-as-studio / media-led holiday"
+      },
+      "play_name": "Store-as-studio weekend activations with micro-influencer content",
+      "pillar": "Store Operations & Marketing"
+    },
+    {
+      "display": {
+        "pillar": "Marketing & Partnerships",
+        "play_name": "News-reactive partner offers concentrated on high-news days",
+        "card_title": "Deploy partner offers on days when news creates buying spikes",
+        "persona": "Head of Marketing; Head of Partnerships",
+        "best_fit": "Brands able to approve rapid creative and adjust cadence quickly",
+        "not_for": "SKUs constrained by supply or slow legal approvals",
+        "thresholds_summary": "Trigger on high-news days with goal event CPA ≤0.8× baseline and day-of foot-traffic uplift ≥10%.",
+        "why_now": "Macro headlines amplify deal-seeking; concentrating offers on those days captures buyer intent without flattening margins long-term.",
+        "proof_point": "Signal S5: concentrating partner offers on high-news days can improve event-level efficiency versus blanket promotion.",
+        "approach_name": "market-reactive partner offers",
+        "time_horizon": "immediate",
+        "placement_options": [
+          "Homepage hero on identified high-news days",
+          "Targeted SMS/Push to engaged segments"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Marketing",
+        "collaborator": "Brand Partnerships",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "cpa": "≤0.80× baseline",
+          "foot_traffic_uplift": "≥10% on event days",
+          "qr_redemption": "≥5%"
+        },
+        "prerequisites": [
+          "Standby creative templates pre-approved",
+          "Real-time news monitoring and playbook",
+          "Inventory safeguards and pricing guardrails",
+          "Quick-deploy measurement hooks (UTM, promo code)"
+        ],
+        "target_map": [
+          {
+            "org_type": "Marketing",
+            "role": "Demand Gen Lead",
+            "why_now": "Activate high-conversion creative on short notice"
+          },
+          {
+            "org_type": "Brand Partnerships",
+            "role": "Partnerships Ops",
+            "why_now": "Approve partner offer windows and assets quickly"
+          },
+          {
+            "org_type": "PR/Comms",
+            "role": "News Desk",
+            "why_now": "Signal which days are high-news and likely to drive deal-seeking"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Kickoff: approve standby creative",
+            "narrative": "Pre-approve creative and thresholds so the team can flip on offers same-day.",
+            "CTA": "Approve standby creative",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "1",
+            "subject": "Deploy on trigger",
+            "narrative": "Activate homepage and push to targeted segments when the news trigger fires.",
+            "CTA": "Push live",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "3",
+            "subject": "Rapid review",
+            "narrative": "Measure event CPA and foot traffic and decide whether to extend or stop.",
+            "CTA": "Adjust or terminate",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "low",
+        "strategy_tag": "market-reactive partner offers"
+      },
+      "play_name": "News-reactive partner offers concentrated on high-news days",
+      "pillar": "Marketing & Partnerships"
+    }
+  ],
+  "risk_radar": [
+    {
+      "risk_name": "Promo signaling collapses early-window gains",
+      "scan_line": "Risk: collab exclusives fail to pull buys forward when broad-sale signals leak",
+      "trigger": "Concurrent sitewide discounts, competitor headlines, or uncontrolled public banners that reframe the sale as a general discount",
+      "detection": "Drop in early_window_share vs baseline; rise in sitewide coupon redemptions; event_cpa rising; search and landing traffic shifting from partner pages to generic sale pages",
+      "mitigation": "A/B test co-branded early-window vs sitewide control and gate national sale messaging; owner: Merch+Pricing; window: 6 weeks. Stop wider sale comms if variant holds blended margin but loses window share.",
+      "severity": 3,
+      "likelihood": 2,
+      "approach_exposure": "collab-led holiday",
+      "citations": [
+        4,
+        2,
+        1
+      ]
+    },
+    {
+      "risk_name": "Blended margin erosion from mis-priced bundles",
+      "scan_line": "Risk: bundles hide deep margin loss through cannibalization of full-price demand",
+      "trigger": "Pricing bundles to hit volume targets without SKU-level margin controls; high substitution from full-price SKUs into discounted bundles",
+      "detection": "Falling blended_margin; SKU-level margin decline; cannibalization_rate (bundle sales replacing full-price sales); lower LTV per cohort",
+      "mitigation": "Price test at SKU-bundle level and cap discount depth; owner: Merch+Pricing; window: 6 weeks. Pause bundle rollout if blended_margin falls below neutral.",
+      "severity": 3,
+      "likelihood": 2,
+      "approach_exposure": "all",
+      "citations": [
+        2,
+        4
+      ]
+    },
+    {
+      "risk_name": "Store activations overload ops and degrade CX",
+      "scan_line": "Risk: weekend collab activations drive foot-traffic spikes that break staffing, pickup and conversion",
+      "trigger": "Multiple high-attendance activations in concentrated windows without staffing, inventory or pickup buffers",
+      "detection": "Store wait_time and queue length rising; in-store conversion falling; pickup OOS and fulfillment delays; NPS or in-store CS contacts increasing",
+      "mitigation": "Run three weekend pilot activations in representative stores with scaled staffing, extra pickup stock and clear queue SLAs; owner: Store Ops; window: next 6 weeks. Abort activations if wait_time >15 min or NPS drops >10 points.",
+      "severity": 3,
+      "likelihood": 2,
+      "approach_exposure": "store-as-studio / media-led holiday",
+      "citations": [
+        8,
+        1,
+        5
+      ]
+    },
+    {
+      "risk_name": "Content-driven CPA inflation without timing lift",
+      "scan_line": "Risk: store-as-studio content increases acquisition cost but fails to shift purchase timing",
+      "trigger": "Low-engagement micro-influencer content, weak CTAs or poor audience match leading to high viewership but low conversion",
+      "detection": "Event_cpa > baseline; low view-to-purchase conversion; no increase in early_window_share; poor view-through attribution",
+      "mitigation": "Pilot a 4-episode store-as-studio series with cohort-level tracking and a midpoint optimization; owner: Marketing; window: next 6 weeks. Pause if event_cpa >1.0x baseline and early_window_share unchanged.",
+      "severity": 2,
+      "likelihood": 2,
+      "approach_exposure": "store-as-studio / media-led holiday",
+      "citations": [
+        8,
+        9,
+        5
+      ]
+    }
+  ],
+  "future_outlook": [
+    {
+      "horizon": "6-month",
+      "headline": "Concentrated partner windows lift early capture and protect margin",
+      "scan_line": "If true, we will see early_window_share rise to 20–30% within 3 months and blended margin hold versus baseline within 6 months",
+      "description": "Replacing a sitewide 20% cut with co-branded early-window tiered bundles will shift purchases into the window without equivalent margin erosion [^4]. In-store collab activations and short store-as-studio content series accelerate foot traffic and early conversion, boosting short-window share when combined with QR-linked offers [^5][^8]. Instrumented A/B tests at the SKU and bundle level can validate event_cpa and blended margin within six weeks and give clear go/no-go signals for scaling in the next planning cycle [^2].",
+      "operator_watch": "early_window_share",
+      "collaboration_upside": "Early-window revenue share 20–30%, blended margin within 0–2% of baseline, event_cpa ≤0.8x baseline, foot_traffic uplift 10–25% in activation stores",
+      "dominant_approach": "collab-led holiday",
+      "confidence": 0.75,
+      "citations": [
+        4,
+        5,
+        8,
+        2
+      ]
+    },
+    {
+      "horizon": "12-month",
+      "headline": "Partner-first calendar reduces promotional depth and raises lifetime yield",
+      "scan_line": "If true, we will see promotional frequency fall and partner-window share become a repeatable 20–30% of peak-season revenue within 9–12 months",
+      "description": "If early-window mechanics prove they lift capture without margin collapse, teams can calendar recurring partner windows and reallocate spend from blanket discounts to co-funded activations [^1][^4]. Store-as-studio content amplified by micro-influencers can scale conversion and reduce reliance on paid media over time, lowering event_cpa and increasing owned reach [^9][^5]. Failing to act keeps the business tethered to sitewide markdowns, compressing long-term margin and training buyers to wait for broad promotions [^2].",
+      "operator_watch": "blended_margin",
+      "collaboration_upside": "Recurring partner calendar delivering 20–30% of peak revenue via partner windows, promotional frequency down ~30%, blended margin improved by 2–4 percentage points versus baseline",
+      "dominant_approach": "store-as-studio / media-led holiday",
+      "confidence": 0.6,
+      "citations": [
+        1,
+        2,
+        4,
+        5,
+        9
+      ]
+    }
+  ],
+  "comparison_map": {
+    "approach_map": [
+      {
+        "approach_name": "Co-branded early exclusive (paid early-window)",
+        "who_it_is_for": "Head of Brand Partnerships and Head of Merch seeking to pull full-price demand into a short window.",
+        "strengths": "Concentrates higher-value buyers into a narrow period and leverages partner media to fund reach and scarcity (see S1). A/B testing against sitewide cuts can preserve blended margin while shifting buyer share forward (see S3).",
+        "failure_modes": "Leaks of broad sale messaging or concurrent sitewide discounts will erase the window premium and reprice demand. Poor bundle pricing or substitution from full-price SKUs can hide margin loss and cannibalize sales.",
+        "when_to_choose": "When you can secure partner-funded exclusives, allocate limited SKUs, and gate national sale messaging for a 2-week window.",
+        "when_not_to_choose": "Do not choose if you cannot prevent sitewide sale signals or if SKU-level margins are under 100bps buffer.",
+        "supporting_signals": [
+          "S1",
+          "S3"
+        ],
+        "key_risks": [
+          "Promo signaling collapses early-window gains",
+          "Blended margin erosion from mis-priced bundles"
+        ],
+        "key_metrics": [
+          "early_window_share",
+          "qr_redemption",
+          "event_cpa",
+          "blended_margin",
+          "buyer_share"
+        ]
+      },
+      {
+        "approach_name": "Store-as-studio content drops + weekend activations",
+        "who_it_is_for": "Heads of Store Ops and Marketing with flagship or representative stores and basic production capability.",
+        "strengths": "Generates measurable foot-traffic uplift via three targeted weekend activations and a short-form content series that drives early-window buys (see S2 and S4). Micro-influencer content amplifies reach without catalog-wide discounts and supports attribution via QR triggers.",
+        "failure_modes": "If content or talent does not drive footfall, production costs and store disruption will outpace returns. High CPA or weak QR redemption indicates low conversion from media to purchase.",
+        "when_to_choose": "When you can staff store activations, produce 3–4 short episodes, and instrument POS with QR tracking over the next 6 weeks.",
+        "when_not_to_choose": "Avoid if you cannot operationalize live activations across representative stores or cannot measure QR-led conversions.",
+        "supporting_signals": [
+          "S2",
+          "S4"
+        ],
+        "key_risks": [
+          "Promo signaling collapses early-window gains",
+          "Blended margin erosion from mis-priced bundles"
+        ],
+        "key_metrics": [
+          "foot_traffic_uplift",
+          "qr_redemption",
+          "event_cpa",
+          "early_window_share",
+          "conversion_rate"
+        ]
+      },
+      {
+        "approach_name": "Tiered collab bundles replacing sitewide discount",
+        "who_it_is_for": "Head of Merchandising and Head of Pricing who can run controlled site experiments and manage SKU-level margins.",
+        "strengths": "Replaces blanket 20% off with partner-tiered bundles to retain margin while delivering perceived deal via exclusivity (see Pattern match and S3). A/B tests can prove event CPA and blended margin outcomes quickly.",
+        "failure_modes": "Poorly constructed bundles will cannibalize full-price sales and erode blended margin. Simultaneous mass promotions will reduce bundle differentiation and lower buyer share into the collab.",
+        "when_to_choose": "When you can run a 6-week A/B test replacing sitewide discount with tiered bundles and enforce national messaging controls.",
+        "when_not_to_choose": "Do not choose if you lack SKU-level margin telemetry or cannot isolate customers from broader sale communications.",
+        "supporting_signals": [
+          "S3",
+          "S5"
+        ],
+        "key_risks": [
+          "Blended margin erosion from mis-priced bundles",
+          "Promo signaling collapses early-window gains"
+        ],
+        "key_metrics": [
+          "event_cpa",
+          "blended_margin",
+          "buyer_share_vs_promo_intensity",
+          "AOV",
+          "conversion_rate"
+        ]
+      }
+    ],
+    "buyer_guide": [
+      {
+        "option_name": "Traditional agency retainer",
+        "best_for": "Large retailers needing turnkey creative, national media buy, and cross-door coordination.",
+        "not_for": "Operators with limited budget or who need hyper-local, fast pilots.",
+        "commercial_shape": "Monthly retainer for strategy + per-campaign production and media costs; typical minimum 3-month commitment.",
+        "proof_needed_before_scaling": "Two pilot markets showing ≥15% foot_traffic_uplift or early_window_share hitting 20% with event_cpa ≤0.8x baseline.",
+        "where_STI_fits": "Provide the signal framework, KPI thresholds, and A/B test design for the agency to execute and report against."
+      },
+      {
+        "option_name": "In-house studio sprint",
+        "best_for": "Operators with an in-house content team and at least one store configured as a production bay.",
+        "not_for": "Teams without production bandwidth or rapid post-production capability.",
+        "commercial_shape": "Fixed 4-episode sprint budget plus per-episode micro-influencer fees and minimal media boost; one 4–6 week engagement.",
+        "proof_needed_before_scaling": "Single-store test showing early_window_share ≥20% and event_cpa ≤0.8x baseline or foot_traffic_uplift ≥10%.",
+        "where_STI_fits": "Deliver episode storyboards tied to QR CTAs, measurement spec, and roll/fail thresholds for scaling to additional doors."
+      },
+      {
+        "option_name": "Partner-funded pop-up collab",
+        "best_for": "Brands able to secure partner funding for inventory, talent, or promo budget to reduce operator spend.",
+        "not_for": "Commodity categories with low partner marketing interest.",
+        "commercial_shape": "Limited 2-week to 6-week revenue-share or cost-share window where partner covers incentives and some media support.",
+        "proof_needed_before_scaling": "QR_redemption ≥5% of footfall in the window and event_cpa ≤0.8x baseline while holding blended margin neutral.",
+        "where_STI_fits": "Run attribution tags, QR measurement, and provide the decision rules for whether to convert partner pilots into networked offers."
+      },
+      {
+        "option_name": "Merch + Pricing A/B test lab (internal)",
+        "best_for": "Operators able to run controlled site experiments with SKU-level margin data and traffic split capability.",
+        "not_for": "Organizations without analytics to measure blended margin or isolated traffic cohorts.",
+        "commercial_shape": "Short-term analytics and test budget; internal effort for merchandising changes; typical 6-week test window.",
+        "proof_needed_before_scaling": "Blended_margin neutral (≤100bps loss) and event_cpa ≤0.8x baseline with buyer_share shifted into target window (20–30%).",
+        "where_STI_fits": "Provide test design, success thresholds, and signal-level dashboards to determine scale or stop decisions."
+      }
+    ]
+  },
+  "signal_map_notes": "Prioritize tests that shift buyer timing and concentration rather than broad price cuts. Start with co-branded early exclusives and 3 weekend collab activations to hit the early-window share and footfall targets within one planning cycle. Pair those with a controlled A/B of tiered collab bundles versus sitewide discounts to measure event CPA and blended margin. Use store-as-studio content to amplify early windows without expanding discount depth. Hold blanket sitewide coupons as the control and only scale if tiered collab tests fail to meet event_cpa ≤0.8x or early_window_share goals."
+}

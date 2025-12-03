@@ -1,0 +1,732 @@
+{
+  "deep_analysis": {
+    "sections": [
+      {
+        "title": "High-value windows are concentrated and actionable",
+        "spine_position": "what",
+        "priority": 1,
+        "scan_line": "Black Friday weekend produced strong footfall; early-window capture is decisive.",
+        "insight": "Black Friday and Saturday showed above-normal footfall and transaction activity across retailers, signaling an early holiday window that still concentrates buyer attention [^1]. This window is the highest-leverage period to shift share because small footfall gains convert to outsized share of early purchases. Community events or store activations timed in this window can pull discovery forward without deeper price cuts if they drive incremental visits and media value [^1][^3].",
+        "operator_note": "Treat the Black Friday weekend as the high-value capture window. Prioritize tests that trade loyalty discount dollars for place-based activations during this weekend and the preceding days. Limit price changes; measure incremental visits, conversion, and buyer activity share in tight daily buckets.",
+        "instrument_next": "Instrument store-level flags for event vs control, daily footfall sensors, POS transaction tags for event-attributed sales, and a buyer activity share metric that ties transactions to promotional intensity.",
+        "citations": [
+          1,
+          3
+        ]
+      },
+      {
+        "title": "Loyalty programs are underdelivering versus experience",
+        "spine_position": "so_what",
+        "priority": 1,
+        "scan_line": "Loyalty delivers less growth; experience and expectations now drive retention.",
+        "insight": "Recent analysis finds loyalty programs are failing to produce the expected lift and are underperforming as growth drivers in some markets [^2]. With near-zero switching costs and high experience expectations, excellent in-store experience or event-led discovery is now a primary lever to prevent churn and win incremental buyers [^3]. Compared to loyalty-led discounts, community events shift spend from per-transaction margin erosion to activation and media budgets, changing how value accrues and who converts.",
+        "operator_note": "Stop reflexively deepening loyalty discounts to chase early-window share. Reallocate a defined share of loyalty discount budget into measurable event activations. Keep loyalty as the retention lever, not the primary early-window acquisition vehicle.",
+        "instrument_next": "Instrument redemption caps and segmented offers in the loyalty stack, then route the freed budget into event spend while tracking margin per buyer cohort and new-buyer share.",
+        "citations": [
+          2,
+          3
+        ]
+      },
+      {
+        "title": "What breaks and what holds when you switch to events",
+        "spine_position": "so_what",
+        "priority": 2,
+        "scan_line": "Switching to events shifts costs to fixed activation and increases traffic volatility.",
+        "insight": "Replacing loyalty discounts with events reduces variable discount drag per transaction but introduces fixed activation costs and day-to-day footfall variance that can harm margin if conversion is weak [^1]. Events boost reach and discovery but will not hold buyer activity share unless you instrument conversion mechanics at POS and a retention follow-up flow [^3]. The anchor that holds conversion when shifting approaches is the post-visit capture and quick retention offer; without it, new-buyer lift will leak.",
+        "operator_note": "Expect margin profile and volatility to change. Budget events like small-scale brand collabs or store-as-studio activations that create owned media moments. Pair every event with a low-friction conversion mechanic at checkout and a next-72-hour retention incentive tied to the event audience.",
+        "instrument_next": "Instrument conversion touchpoints: event-specific SKUs or bundles, QR capture at checkout, event redemption codes, and a 72-hour follow-up coupon to measure retention from event visitors.",
+        "citations": [
+          1,
+          3
+        ]
+      },
+      {
+        "title": "Run tight paired A/Bs to prove event-led lift with fixed promo depth",
+        "spine_position": "now_what",
+        "priority": 1,
+        "scan_line": "Paired-store tests will show if events raise early-window buyer share without deeper discounts.",
+        "insight": "A controlled test across matched stores that holds promo depth constant while swapping loyalty discount spend for community events will reveal differences in footfall lift, buyer activity share, and event CPA. Tagging new buyers, loyalty redemptions, and media touchpoints will expose whether events hit the goals: +early-window share and acceptable CPA versus baseline. Use daily measurement and a 2-week follow-up window to capture short-term retention and redemption leakage [^1][^3].",
+        "operator_note": "Design the test with three arms: control (status-quo loyalty offers), loyalty budget shifted to equivalent media spend, and event activation using that budget. Match stores by baseline footfall and customer composition. Predefine success gates for early-window share (target 20-30%), event CPA ceiling, and QR redemption floor, and stop any arm breaching margin limits.",
+        "instrument_next": "Instrument matched-store assignments, event media impressions, POS event tags, loyalty redemption tracking, QR-scans linked to footfall, and daily dashboards comparing buyer activity share against promo intensity.",
+        "citations": [
+          1,
+          3
+        ]
+      }
+    ],
+    "summary": "Black Friday weekend remains the high-leverage window. Loyalty programs are losing yield as experience and zero switching costs favor discovery. Swapping loyalty discounts for community events can protect per-transaction margin and lift new-buyer share, but it changes cost structure and requires tight capture mechanics. Run paired-store A/Bs, hold promo depth constant, and instrument event attribution, QR captures, and 72-hour retention to decide whether to scale events or revert to loyalty-led tactics."
+  },
+  "pattern_matches": [
+    {
+      "label": "Loyalty points losing ROI",
+      "then": "Hotel loyalty programs historically drove repeat bookings and guest lifetime value through points and status.",
+      "now": "Studies show loyalty perks are under-delivering; members expect better experiences so points alone are not moving the needle.",
+      "operator_leap": "Reallocate a week of loyalty discount budget to a local event aimed at non-members; run the event in the week before Black Friday and target early-window share 20-30% while holding promo depth constant; compare CPA and 30-day spend vs a matched loyalty-discount cohort.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        2,
+        3
+      ]
+    },
+    {
+      "label": "Weekend traffic vs early-window capture",
+      "then": "Black Friday weekends historically produce concentrated footfall and transaction spikes.",
+      "now": "Retailers can shift spend-forward by running discovery events in the pre-Black-Friday week to capture earlier buyers without deeper discounts.",
+      "operator_leap": "Pilot a pre-Black Friday pop-up on weekday evenings that offers limited-time exclusives; measure early-window share, foot-traffic uplift, QR redemptions (floor 5%), and buyer activity share vs promo intensity over the next 14 days.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        1
+      ]
+    },
+    {
+      "label": "Experience fixes beat deeper discounts",
+      "then": "Brands that repaired poor experiences historically reduced churn and kept revenue without increasing incentives.",
+      "now": "With switching costs near zero, improving live experience at events retains customers more cheaply than expanding loyalty discounts.",
+      "operator_leap": "Set up two event variants: one with enhanced service touchpoints and one with a small loyalty discount; track retention, repeat purchase rate, and event CPA; prioritize the route with higher 30-day retention per dollar.",
+      "supports_approach": "",
+      "citations": [
+        3
+      ]
+    },
+    {
+      "label": "Swap points for experiential credits",
+      "then": "Loyalty programs historically used points to subsidize price-driven repeat behavior.",
+      "now": "Operators can convert part of points liability into experiential credits redeemable for events or partner activations to improve acquisition and margin.",
+      "operator_leap": "Run a 6-week pilot where top-tier members can redeem points for event access instead of discounts; track cost-per-redeemed-point, event CPA (target <=0.8x baseline), and incremental new-buyer share.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        2
+      ]
+    },
+    {
+      "label": "Partner-hosted activations scale discovery",
+      "then": "Hospitality and large brands historically used local partnerships and events to attract non-member footfall and PR.",
+      "now": "Retail brands can partner with local creators, community orgs, or hospitality players to run in-store activations that drive new-buyer volume without deeper loyalty cuts.",
+      "operator_leap": "Book one partner-hosted weekend per MSA in the next 4 weeks; allocate marketing to partner channels; measure new-buyer share, event CPA, and post-event redemption of follow-up offers.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        4
+      ]
+    },
+    {
+      "label": "Treasure-hunt merchandising lifts footfall without blanket cuts",
+      "then": "Secondhand and discount stores historically pulled high footfall by creating discovery and value perception rather than advertised blanket discounts.",
+      "now": "Curated clearance or limited-second assortments create a ‘treasure-hunt’ experience that drives visits and conversions while protecting promo depth on core SKUs.",
+      "operator_leap": "Run a limited-curation clearance pop-up in three stores with exclusive markdowns and QR-led scavenger incentives; target foot-traffic uplift 10-15% base and QR redemptions >=5% of footfall; compare margin impact vs site-wide discounts.",
+      "supports_approach": "discount-heavy holiday",
+      "citations": [
+        6,
+        7
+      ]
+    },
+    {
+      "label": "Scarcity mechanics replace deep discounts",
+      "then": "Scarcity mechanics in token economies historically drive urgency and higher conversion per unit.",
+      "now": "Time-limited event slots, limited-quantity event-only SKUs, and staged unlocks create urgency without broad price cuts.",
+      "operator_leap": "Introduce an event-only limited SKU with staged release windows across the pre-holiday period; measure conversion lift, early-window share, and whether unit economics beat an equivalent discount.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        9
+      ]
+    }
+  ],
+  "brand_outcomes": [
+    {
+      "title": "Front-load demand with ticketed early-access community events to capture 20% of holiday spend",
+      "description": "Run limited-capacity, ticketed store events in the early holiday window that include exclusive SKUs or timed pickup. Price tickets to cover event costs and avoid deeper loyalty discounts. Cap attendance per store and sell inventory allocation against tickets to guarantee margin. Test two price points and one non-ticketed control to measure shift in purchase timing and spend per buyer. This moves demand earlier without cutting loyalty economics [^1][^3].",
+      "impact": "early_window_share → 20% (target); foot_traffic_uplift base 10-15%; protects incremental margin by avoiding deeper loyalty discounts",
+      "time_horizon": "next 6 weeks",
+      "owner": "Retail ops + Store marketing",
+      "citations": [
+        1,
+        3
+      ]
+    },
+    {
+      "title": "Deploy store-as-studio brand collabs to drive discovery with capped promo depth",
+      "description": "Partner with complementary brands or creators for one-week pop-ups that use partner inventory and revenue share. Require partners to bring distinct product or experiences so consumers come for discovery, not a deeper sitewide discount. Track partner-paid media cost against event CPA and negotiate revenue-share to keep CPA below 0.8x baseline. Use these collabs to attract new buyers into the early window while holding loyalty discount depth steady [^1][^2].",
+      "impact": "throughput and new-buyer acquisition; event_cpa ≤ 0.8× baseline; reduces reliance on loyalty-led discounting",
+      "time_horizon": "next 6 weeks",
+      "owner": "Partnerships + Retail ops",
+      "citations": [
+        1,
+        2
+      ]
+    },
+    {
+      "title": "QR-first in-store funnel to convert event footfall into measurable redemptions and CRM lift",
+      "description": "Require QR check-in at event entry that delivers a single-use early-window offer and captures consented contact data. Measure QR redemptions as a share of footfall and push follow-up offers via SMS/email for non-redeemers. Aim for QR redemption ≥ 5% of event footfall and 2x conversion from QR opt-ins vs baseline in the early window. Keep the offer shallower than loyalty discounts to protect margin [^3][^1].",
+      "impact": "loyalty database growth and redemption efficiency; qr_redemption ≥ 5% of footfall; improves measured ROI of events",
+      "time_horizon": "next 30 days",
+      "owner": "CRM + Retail ops",
+      "citations": [
+        3,
+        1
+      ]
+    },
+    {
+      "title": "A/B test buyer activity share vs promo intensity: event-led vs loyalty-led stores",
+      "description": "Randomize matched stores into two arms: event-led activations with capped promo depth, and loyalty-incentive led activations with deeper redemptions. Track paired_metric: buyer activity share vs promo intensity, plus early_window_share and event CPA. Use 3-week windows and require statistical thresholds for early_window_share lift and CPA. Stop or scale tactics based on early_window_share and event_cpa tradeoffs [^1][^3].",
+      "impact": "measurement clarity for channel allocation; informs whether to scale events or loyalty spend; paired_metric drives spend reallocation",
+      "time_horizon": "next 6 weeks",
+      "owner": "Analytics + Growth",
+      "citations": [
+        1,
+        3
+      ]
+    }
+  ],
+  "operator_notes": "Prioritize event-led tests that shift spend from loyalty discounts to experience-driven discovery. Run tight finance models to see where loyalty redemptions blow past break-even in heavy-promo scenarios. Competing approaches: discount-heavy holiday buys volume now but raises break-even CPA and weakens loyalty economics; collab-led store-as-studio lifts early-window share and media ROI but requires experience KPIs (footfall lift, QR redemption, buyer activity share) be tracked against promo intensity. Track buyer activity share vs promo intensity side by side as the paired metric.",
+  "quant": {
+    "spine_hook": "Success = early-window buyer share reaches 20–30% while store footfall is up ≥10% without increasing loyalty discount depth.",
+    "anchors": [
+      {
+        "id": "Q1",
+        "headline": "Early-window buyer share — current",
+        "topic": "early_window_share",
+        "value_low": 12,
+        "value_high": 15,
+        "unit": "% of holiday transactions",
+        "status": "observed",
+        "band": "base",
+        "owner": "Merch + Analytics",
+        "expression": "Transactions in first 48 hours = 12–15% of holiday-period transactions",
+        "source_ids": [],
+        "applies_to_signals": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "id": "Q2",
+        "headline": "Foot traffic uplift — target",
+        "topic": "foot_traffic_uplift",
+        "value_low": 10,
+        "value_high": 15,
+        "unit": "% vs LY",
+        "status": "target",
+        "band": "base",
+        "owner": "Retail Ops",
+        "expression": "Store footfall +10–15% vs LY (base); stretch ≥25%",
+        "source_ids": [
+          1
+        ],
+        "applies_to_signals": [
+          "S1",
+          "S3"
+        ]
+      },
+      {
+        "id": "Q3",
+        "headline": "Event CPA — ceiling",
+        "topic": "event_cpa",
+        "value_low": 0.8,
+        "value_high": 0.8,
+        "unit": "× baseline CPA",
+        "status": "target",
+        "band": "base",
+        "owner": "Performance marketing",
+        "expression": "CPA ≤ 0.80× baseline for event-driven acquisitions",
+        "source_ids": [],
+        "applies_to_signals": [
+          "S2",
+          "S4"
+        ]
+      },
+      {
+        "id": "Q4",
+        "headline": "QR redemption — minimum",
+        "topic": "qr_redemption",
+        "value_low": 5,
+        "value_high": 5,
+        "unit": "% of footfall",
+        "status": "target",
+        "band": "base",
+        "owner": "Stores + Ops",
+        "expression": "QR-code redemptions ≥5% of counted in-store visits for event offers",
+        "source_ids": [],
+        "applies_to_signals": [
+          "S3",
+          "S4"
+        ]
+      }
+    ],
+    "measurement_plan": [
+      {
+        "id": "M1",
+        "metric": "Event CPA",
+        "expression": "CPA ≤ 0.80× baseline",
+        "owner": "Performance marketing",
+        "timeframe": "Nov 27–30 (Thanksgiving weekend)",
+        "status": "plan",
+        "why_it_matters": "Keeps acquisition cost efficient so events scale without deeper loyalty discounts."
+      },
+      {
+        "id": "M2",
+        "metric": "Buyer activity share vs promo intensity",
+        "expression": "Early-window share 20–30% while promo SKU share ≈ LY",
+        "owner": "Merch + Analytics",
+        "timeframe": "Nov 24–Dec 1",
+        "status": "plan",
+        "notes": "Track early-window transactions and percent of assortment on promo daily; pair-side-by-side.",
+        "why_it_matters": "Shows whether buyer growth came from new buyers (good) or from heavier discounting (bad)."
+      },
+      {
+        "id": "M3",
+        "metric": "QR redemption rate per footfall",
+        "expression": "QR redemptions ≥ 5% of counted footfall",
+        "owner": "Stores + Ops",
+        "timeframe": "Nov 24–Dec 1",
+        "status": "plan",
+        "notes": "Use turnstile or POS door-count baseline; capture redemption id to tie to buyer origin.",
+        "why_it_matters": "Validates event-driven discovery and measures clean take-up without loyalty price cuts."
+      },
+      {
+        "id": "M4",
+        "metric": "Loyalty discount depth vs incremental sales",
+        "expression": "Do not increase average loyalty discount depth > 2 percentage points vs current; measure incremental sales from loyalty redemptions separately",
+        "owner": "Loyalty + Finance",
+        "timeframe": "Nov 24–Dec 1",
+        "status": "plan",
+        "notes": "Report discount depth, redemption share, and incremental revenue daily.",
+        "why_it_matters": "Protects margin and proves events, not deeper loyalty cuts, drove growth."
+      }
+    ],
+    "coverage": 0.75
+  },
+  "activation_kit": [
+    {
+      "display": {
+        "pillar": "Retail Activation",
+        "play_name": "Black Friday Mini-Burst Event",
+        "card_title": "Short-run flagship event to capture early holiday demand",
+        "persona": "Retail Ops / Store GM",
+        "best_fit": "Flagship or high-footfall stores within top-performing trade areas",
+        "not_for": "Low-traffic stores or locations without event staffing capacity",
+        "thresholds_summary": "Event CPA ≤ 0.8× baseline and redemption ≥ 15% to call success.",
+        "why_now": "Black Friday weekend concentrates buyer attention and produces outsized footfall gains.",
+        "proof_point": "Black Friday weekend showed above-normal footfall and transaction activity across retailers.",
+        "approach_name": "store-as-studio / media-led holiday",
+        "time_horizon": "immediate",
+        "placement_options": [
+          "Flagship storefront",
+          "Mall entrance bay",
+          "High-traffic concourse kiosk"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Retail Ops",
+        "collaborator": "Brand Marketing",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "cpa": "≤0.8× baseline",
+          "redemption": "≥15%",
+          "min_daily_visitors": "≥baseline × 1.2"
+        },
+        "prerequisites": [
+          "Door counts enabled for event vs control",
+          "POS event tag configured",
+          "Staffing plan and brief",
+          "Signage permit or landlord approval"
+        ],
+        "target_map": [
+          {
+            "org_type": "Retailer",
+            "role": "Store GM",
+            "why_now": "Capture concentrated weekend footfall"
+          },
+          {
+            "org_type": "Brand",
+            "role": "Brand Marketing",
+            "why_now": "Amplify weekend content and drive attribution"
+          },
+          {
+            "org_type": "Property",
+            "role": "Lease/Facilities",
+            "why_now": "Approve temporary activation space"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Kickoff: scope and targets",
+            "narrative": "Align event footprint, target CPA, measurement tags and staffing.",
+            "CTA": "Book the pilot",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "2",
+            "subject": "Instrumentation check",
+            "narrative": "Validate door counters, POS tags, and reporting feeds before the weekend.",
+            "CTA": "Share instrumentation",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "7",
+            "subject": "Post-event close",
+            "narrative": "Review CPA, redemption and buyer activity share versus control stores.",
+            "CTA": "Sign off",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "medium",
+        "strategy_tag": "store-as-studio / media-led holiday"
+      },
+      "play_name": "Black Friday Mini-Burst Event",
+      "pillar": "Retail Activation"
+    },
+    {
+      "display": {
+        "pillar": "Customer Loyalty",
+        "play_name": "Loyalty-for-Experience Exchange",
+        "card_title": "Trade loyalty currency for member-only in-store experiences",
+        "persona": "Head of Loyalty / CRM",
+        "best_fit": "Brands with active loyalty bases and member engagement channels",
+        "not_for": "Brands without a loyalty program or poor member data hygiene",
+        "thresholds_summary": "Protect margin: margin per order ≥ baseline minus 100 bps and 90-day repeat ≥ baseline.",
+        "why_now": "Loyalty programs are underdelivering; experiences convert visits without heavy price cuts.",
+        "proof_point": "Experience-led offers drive incremental visits when loyalty value is reallocated to place.",
+        "approach_name": "collab-led holiday",
+        "time_horizon": "6-week",
+        "placement_options": [
+          "Member-only evening in-store",
+          "In-store demo bay with member RSVP"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Loyalty",
+        "collaborator": "Retail Ops",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "margin_delta": "≥ -100 bps vs baseline",
+          "repeat_90d": "≥ baseline",
+          "member_redemption_rate": "≥10%"
+        },
+        "prerequisites": [
+          "Loyalty segmentation and suppression lists",
+          "Member comms template and send window",
+          "POS support for member-tied redemptions",
+          "Staff script and brief"
+        ],
+        "target_map": [
+          {
+            "org_type": "Brand",
+            "role": "Head of Loyalty",
+            "why_now": "Reallocate loyalty spend to place-based lift"
+          },
+          {
+            "org_type": "Retailer",
+            "role": "Retail Ops",
+            "why_now": "Drive incremental visits with low price pressure"
+          },
+          {
+            "org_type": "CRM",
+            "role": "Lifecycle Manager",
+            "why_now": "Target members before Black Friday window"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Offer approval",
+            "narrative": "Confirm member benefit, margin guardrails, and RSVP capacity.",
+            "CTA": "Approve member offer",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "7",
+            "subject": "Pilot launch",
+            "narrative": "Open RSVP, enable POS redemptions, and send member communication.",
+            "CTA": "Enable offer in POS",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "28",
+            "subject": "Evaluate and scale",
+            "narrative": "Compare margin impact and 90-day repeat versus control cohort.",
+            "CTA": "Decide scale",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "medium",
+        "strategy_tag": "collab-led holiday"
+      },
+      "play_name": "Loyalty-for-Experience Exchange",
+      "pillar": "Customer Loyalty"
+    },
+    {
+      "display": {
+        "pillar": "Studio & Media",
+        "play_name": "Pop-up Micro-Studio for Local Content + Commerce",
+        "card_title": "Short pilot producing local content and driving immediate visits",
+        "persona": "Head of Studio / Head of Partnerships",
+        "best_fit": "Brands needing rapid content and direct local conversion",
+        "not_for": "Locations without power, permits, or adequate footfall",
+        "thresholds_summary": "Target event CPA ≤ 0.8× baseline and measure content-attributed visits daily.",
+        "why_now": "Early-window discovery compounds with content; short production windows still yield tradeable media.",
+        "proof_point": "High-footfall weekend windows magnify local content distribution and site visits.",
+        "approach_name": "store-as-studio / media-led holiday",
+        "time_horizon": "pilot",
+        "placement_options": [
+          "In-store micro-studio",
+          "Mall kiosk",
+          "Hotel lobby activation"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Studio",
+        "collaborator": "Brand Creative",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "cpa": "≤0.8× baseline",
+          "content_attributed_visits": "track daily vs control",
+          "min_content_outputs": "≥4 short-form assets per day"
+        },
+        "prerequisites": [
+          "Permits for temporary build",
+          "Camera kit and small crew",
+          "Product samples and talent release forms",
+          "Measurement tags and short links"
+        ],
+        "target_map": [
+          {
+            "org_type": "Studio",
+            "role": "Creative Lead",
+            "why_now": "Create amplifiable local content for early window"
+          },
+          {
+            "org_type": "Brand",
+            "role": "Performance Marketing",
+            "why_now": "Use local content to drive measured visits"
+          },
+          {
+            "org_type": "Property",
+            "role": "Retail Partnerships",
+            "why_now": "Place activation in high-footfall nodes"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Creative brief",
+            "narrative": "Confirm content pillars, asset list, and distribution plan.",
+            "CTA": "Confirm content pillar",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "3",
+            "subject": "Production prep",
+            "narrative": "Lock crew, product list, and measurement short links.",
+            "CTA": "Provide hero product",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "14",
+            "subject": "Go live",
+            "narrative": "Execute pop-up, publish assets, and track store-level attribution.",
+            "CTA": "Activate studio",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": false,
+        "ops_drag": "high",
+        "strategy_tag": "store-as-studio / media-led holiday"
+      },
+      "play_name": "Pop-up Micro-Studio for Local Content + Commerce",
+      "pillar": "Studio & Media",
+      "overflow_notes": [
+        "Controlled discount bands tied to place activations | Small place-based gains convert to outsized early purchase share; limit price erosion. | 6-week"
+      ]
+    }
+  ],
+  "risk_radar": [
+    {
+      "risk_name": "Window compression squeezes loyalty value",
+      "scan_line": "Risk: early-window capture concentrates purchases and marginalizes loyalty offers",
+      "trigger": "Holiday buying concentrates in a short Black Friday weekend window, making broad loyalty discounts redundant or poorly timed",
+      "detection": "Track daily footfall and transactions by channel; measure loyalty-attributed conversion share and redemption timing in daily buckets; flag declining loyalty-attributed share during peak days",
+      "mitigation": "Reallocate loyalty dollars to place-based activations and time-limited experience offers in the Black Friday window; run event vs control at store level",
+      "severity": 3,
+      "likelihood": 3,
+      "approach_exposure": "all",
+      "citations": [
+        1,
+        3
+      ]
+    },
+    {
+      "risk_name": "Discount spiral erodes margin and conditions buyers",
+      "scan_line": "Risk: deep, broad discounts drive volume but destroy margin and raise long-term price expectations",
+      "trigger": "Competitors or internal teams escalate across-the-board discounts during holiday, triggering reactive price cuts",
+      "detection": "Monitor promo depth by SKU, margin per transaction, promo frequency to repeat buyers, and short-term elasticity vs baseline; set alerts for margin drop >X%",
+      "mitigation": "Replace blanket discounts with targeted offers and experiential tradeoffs (service, priority access); test price hold controls and targeted promo cohorts before scaling",
+      "severity": 3,
+      "likelihood": 2,
+      "approach_exposure": "discount-heavy holiday",
+      "citations": [
+        2,
+        4
+      ]
+    },
+    {
+      "risk_name": "Collaborations lift visits but not purchase conversion",
+      "scan_line": "Risk: collab-led activations increase traffic without converting to sustainable sales",
+      "trigger": "High-profile collaborations drive awareness and visits but lack SKU fit, inventory, or checkout optimization",
+      "detection": "Compare visit uplift to add-to-cart and conversion rates by cohort; instrument dwell time, SKU-level conversion, and post-event repeat purchase rate",
+      "mitigation": "Pair collabs to SKU conversion thresholds and reserved inventory; run A/B of collab creative vs product-centric creative and measure conversion lift",
+      "severity": 2,
+      "likelihood": 2,
+      "approach_exposure": "collab-led holiday",
+      "citations": [
+        3
+      ]
+    },
+    {
+      "risk_name": "Store-as-studio investments cannibalize ROAS",
+      "scan_line": "Risk: media-led store activations create measurable impressions but deliver negative channel-level ROI",
+      "trigger": "High production and media spend for in-store content without tight channel attribution or CTAs",
+      "detection": "Track channel-level ROAS, cost-per-visit, in-store vs online margin, and use event-specific redemption codes or POS tags to attribute sales",
+      "mitigation": "Tie store events to measurable CTAs and limit media spend with minimum ROAS gates; run geographic holdouts to isolate incrementality",
+      "severity": 2,
+      "likelihood": 2,
+      "approach_exposure": "store-as-studio / media-led holiday",
+      "citations": [
+        3,
+        5
+      ]
+    }
+  ],
+  "future_outlook": [
+    {
+      "horizon": "6-month",
+      "headline": "Win the early window with place-based activations",
+      "scan_line": "If true, we will see a measurable uplift in early-window footfall and buyer share within 2 months",
+      "description": "Targeted store activations during the Black Friday weekend will drive incremental visits without deeper loyalty discounts [^1]. Small footfall gains convert to outsized early purchase share, so tests that trade loyalty discount dollars for place-based events should show higher conversion and spend per visit [^1][^3]. Instrument daily event-vs-control visits, conversion, and buyer activity share to validate lift within the first two weeks after activations [^3].",
+      "operator_watch": "Early-window buyer share (transactions in first 72 hours of promotional window as % of category total)",
+      "collaboration_upside": "5–10 percentage-point lift in early-window buyer share while holding or improving average transaction value; lower loyalty-discount spend for equal or better share",
+      "dominant_approach": "store-as-studio / media-led holiday",
+      "confidence": 0.7,
+      "citations": [
+        1,
+        3
+      ]
+    },
+    {
+      "horizon": "12-month",
+      "headline": "Reduce discount reliance via scaled collabs and owned media",
+      "scan_line": "If true, we will see lower loyalty-discount spend and sustained early-window share gains within 9–12 months",
+      "description": "Scaling repeat place-based activations and partner-led promotions can shift buyer expectations away from deeper loyalty discounts [^1]. Blended approaches that combine store-as-studio activations, local partnerships, and targeted paid media sustain footfall and new-buyer acquisition at lower promotional cost over a year [^1][^3]. Track cost per early-window new buyer and loyalty-discount spend as a share of incremental sales to confirm durable movement across three quarter cycles [^3].",
+      "operator_watch": "Cost per early-window new buyer (event-attributed)",
+      "collaboration_upside": "Sustained early-window share with 20–30% lower promotional cost per new buyer, freeing budget for store experience and paid reach",
+      "dominant_approach": "mixed",
+      "confidence": 0.65,
+      "citations": [
+        1,
+        3
+      ]
+    }
+  ],
+  "comparison_map": {
+    "approach_map": [
+      {
+        "approach_name": "Ticketed early-access community events",
+        "who_it_is_for": "Retail ops and store marketing teams running high-footfall doors that can cap attendance.",
+        "strengths": "Front-loads demand by converting discovery into guaranteed buys using paid tickets and inventory allocation (S3). Shifts spend earlier without increasing promo depth by turning loyalty dollars into experiential value (S1, S2).",
+        "failure_modes": "If attendance or ticket take rate misses targets the event becomes a cost center and hurts margin (Discount spiral erodes margin). Concentrating buys too early can devalue timed loyalty offers and compress the window of loyalty relevance (Window compression squeezes loyalty value).",
+        "when_to_choose": "When loyalty point ROI is falling and you can reallocate a week of loyalty spend to a place-based activation.",
+        "when_not_to_choose": "Do not choose if stores cannot staff events, or ticketing/fulfillment cannot be operationalized in 2–3 weeks.",
+        "supporting_signals": [
+          "S1",
+          "S2",
+          "S3"
+        ],
+        "key_risks": [
+          "Window compression squeezes loyalty value",
+          "Discount spiral erodes margin"
+        ],
+        "key_metrics": [
+          "early_window_share",
+          "ticket_take_rate",
+          "spend_per_ticket_holder",
+          "margin_per_transaction",
+          "foot_traffic_uplift"
+        ]
+      },
+      {
+        "approach_name": "Store-as-studio brand collabs (media-led pop-ups)",
+        "who_it_is_for": "Brand marketing and partnerships teams that can secure complementary partners and dedicate flagship space.",
+        "strengths": "Drives discovery and non-loyalty buyer share by using partner inventory and paid partner media to fund reach (S4). Keeps promo depth capped because partners supply differentiated SKUs or experience instead of blanket discounts (S2).",
+        "failure_modes": "Partners demanding heavy discounts will recreate the discount spiral and depress margin (Discount spiral erodes margin). Poor partner fit or weak creative will generate footfall without conversion and steal loyalty spend without net gain (Window compression squeezes loyalty value).",
+        "when_to_choose": "When you can recruit partners with distinct product or experiential offers and align revenue-share or partner-paid media quickly.",
+        "when_not_to_choose": "Do not choose if partners cannot bring exclusive SKUs or partner-paid media, or if legal/merchant agreements block revenue-share pilots.",
+        "supporting_signals": [
+          "S4",
+          "S2"
+        ],
+        "key_risks": [
+          "Discount spiral erodes margin",
+          "Window compression squeezes loyalty value"
+        ],
+        "key_metrics": [
+          "buyer_activity_share",
+          "partner_paid_media_spend",
+          "conversion_rate",
+          "promo_depth_by_sku",
+          "average_ticket_value"
+        ]
+      },
+      {
+        "approach_name": "Loyalty-dollar reallocation pilot (event vs discount control)",
+        "who_it_is_for": "Heads of Loyalty/CRM and Finance who can flex loyalty budget for short pilots.",
+        "strengths": "Tests whether reallocating loyalty spend to place-based activations produces higher CPA-efficient spend and stronger 30-day spend per buyer (S1). Provides a direct control vs loyalty-discount cohort to prove causality in 4–6 weeks (S2).",
+        "failure_modes": "Pulling loyalty budget without an alternative offer can increase churn or member dissatisfaction (Window compression squeezes loyalty value). If competitors deepen discounts you may be forced to match and trigger a discount spiral (Discount spiral erodes margin).",
+        "when_to_choose": "When member engagement metrics and redemption ROI are declining and a single-week budget reallocation is possible.",
+        "when_not_to_choose": "Do not choose if loyalty funds are contractually reserved, or if loyalty redemptions drive legal guarantees or partner obligations.",
+        "supporting_signals": [
+          "S1",
+          "S2"
+        ],
+        "key_risks": [
+          "Window compression squeezes loyalty value",
+          "Discount spiral erodes margin"
+        ],
+        "key_metrics": [
+          "CPA",
+          "30_day_spend_per_buyer",
+          "loyalty_attributed_share",
+          "redemption_timing",
+          "buyer_retention_30d"
+        ]
+      }
+    ],
+    "buyer_guide": [
+      {
+        "option_name": "Traditional agency retainer",
+        "best_for": "Brands needing turnkey creative, production, and media coordination across many doors.",
+        "not_for": "Operators with little budget or who need rapid, tight-control pilots under 4 weeks.",
+        "commercial_shape": "Monthly retainer plus production and media budgets. Add performance bonuses tied to agreed KPIs such as foot-traffic lift or ticket sales.",
+        "proof_needed_before_scaling": "Two pilot stores show ≥15% foot-traffic lift and early_window_share ≥20% at CPA ≤0.8x baseline.",
+        "where_STI_fits": "STI supplies test design, KPI spec, A/B cohort setup, and reporting templates so agency execution maps to measurable operator outcomes."
+      },
+      {
+        "option_name": "In-house studio sprint",
+        "best_for": "Teams with creative and ops control who can run a 2–4 week pop-up and iterate fast.",
+        "not_for": "Small stores without event staff or teams lacking measurement discipline.",
+        "commercial_shape": "Fixed project fee for a short sprint plus defined media budget and store ops costs. Tight timeline: plan, build, launch within 2–3 weeks.",
+        "proof_needed_before_scaling": "Meet CPA ≤0.8x baseline and redemption ≥15% in two stores, with positive margin contribution per ticketed buyer.",
+        "where_STI_fits": "STI provides playbook templates, POS/event tagging, test cohorts, and the dashboard to evaluate early_window_share and margin impact."
+      },
+      {
+        "option_name": "Revenue-share pop-up collab",
+        "best_for": "Brands that can recruit partner brands or creators and prefer partner-funded reach.",
+        "not_for": "Organizations that need full control of inventory or cannot accept variable revenue splits.",
+        "commercial_shape": "Partner supplies product and media. Revenue-share split or fixed minimum guarantee plus ticket revenue. Operator keeps ticket margin to cover ops.",
+        "proof_needed_before_scaling": "Partner-paid media covers event CPA and two pilots show shift of 10–20% holiday spend into the early window without increasing promo depth.",
+        "where_STI_fits": "STI defines partner selection criteria, revenue-share models, counterfactual test design, and the measurement spec for partner-paid media efficiency."
+      }
+    ]
+  },
+  "signal_map_notes": "Prioritize event-led tests that shift spend from loyalty discounts to experience-driven discovery. Run tight finance models to see where loyalty redemptions blow past break-even in heavy-promo scenarios. Competing approaches: discount-heavy holiday buys volume now but raises break-even CPA and weakens loyalty economics; collab-led store-as-studio lifts early-window share and media ROI but requires experience KPIs (footfall lift, QR redemption, buyer activity share) be tracked against promo intensity. Track buyer activity share vs promo intensity side by side as the paired metric."
+}

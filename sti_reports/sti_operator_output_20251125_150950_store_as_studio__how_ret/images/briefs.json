@@ -1,0 +1,76 @@
+{
+  "hero": {
+    "core_tension": "Content releases create short, intense attention windows. Operators must decide how to convert that burst into sales instead of discount leakage. The mechanism is simple.",
+    "setting": "Flagship bookstore interior with modular pop-up bay. Three-quarter angle, shallow depth, materials: warm wood, matte metal, frosted glass.",
+    "persona": "Retail operator and indie studio creative director in close collaboration.",
+    "action": "Final setup of branded shop vignettes while testing lighting and mobile POS. Small team directing a 30-minute in-store episode.",
+    "urgency_symbol": "A half-drawn curtain and stepped light markers that suggest an opening window without a clock. The leverage point sits here.",
+    "props": [
+      "branded merch stacks",
+      "mobile POS tablet",
+      "modular shelf carts",
+      "compact lighting rig",
+      "foldable seating for live episodes"
+    ],
+    "lighting": "Polished editorial. Confident highlights. Clean negative space and soft edge shadows.",
+    "mood": "Precise, collaborative, confident.",
+    "alt": "Operator and studio lead arranging a branded pop-up in a flagship store mid-setup"
+  },
+  "signal_map": {
+    "structure": "Concentric rings for attention intensity with radial arcs for pricing levers and discrete nodes for stores. A simple diagram maps time to price and occupancy.",
+    "elements": [
+      "attention rings",
+      "pricing arcs",
+      "event nodes",
+      "lease daypart markers",
+      "data stream ribbons"
+    ],
+    "motion": "Flow from broad low attention to a narrow peak. Pricing compresses into the peak window. Momentum locks.",
+    "palette": "Matte neutrals with saturated accent on peak nodes; metallic lines for data streams; textured paper background.",
+    "alt": "Diagram of attention rings, pricing arcs, and event nodes across stores"
+  },
+  "case_studies": [
+    {
+      "scene": "A24 x Barnes & Noble pilot within a flagship store.",
+      "moment": "First weekend content drop and the first hour visitor spike.",
+      "persona": "Store general manager and studio event producer coordinating on the floor.",
+      "props": [
+        "curated merch displays",
+        "event signage",
+        "mobile checkout",
+        "camera rig for short episodes"
+      ],
+      "lighting": "High-contrast editorial highlights on merch with soft ambient fill.",
+      "mood": "Focused, theatrical, tactical.",
+      "alt": "Store GM and studio producer watching a spike of visitors at a branded pop-up"
+    },
+    {
+      "scene": "Agentic pricing pilot in three stores tying POS to catalog.",
+      "moment": "Backroom sync and a timed price adjustment before an evening event window.",
+      "persona": "Retail data lead with a floor manager executing a live price cadence.",
+      "props": [
+        "laptop showing unified dashboard",
+        "handheld scanner",
+        "shelf label printer",
+        "tablet for floor alerts"
+      ],
+      "lighting": "Clean editorial with crisp highlights on screens and hardware.",
+      "mood": "Precise, operational, confident.",
+      "alt": "Data lead and floor manager executing a timed price change across stores"
+    },
+    {
+      "scene": "Brand-retailer capsule running biweekly in-store classes.",
+      "moment": "Repeat visitors arriving for the second session and browsing the capsule.",
+      "persona": "Brand educator and local store operator hosting a short workshop.",
+      "props": [
+        "capsule product vignettes",
+        "registration tablet",
+        "folding stools",
+        "sample kits"
+      ],
+      "lighting": "Warm editorial highlights on faces and products, wide negative space around the capsule.",
+      "mood": "Inviting, practical, iterative.",
+      "alt": "Brand educator and store operator leading a small in-store class near a capsule"
+    }
+  ]
+}

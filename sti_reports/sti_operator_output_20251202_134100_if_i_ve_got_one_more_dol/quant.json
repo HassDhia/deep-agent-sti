@@ -1,0 +1,110 @@
+{
+  "spine_hook": "Success = incremental early-window visits per $1 that lift early-window buyer share to 20%+ while holding event CPA ≤0.8× baseline and QR redemptions ≥5% of footfall.",
+  "anchors": [
+    {
+      "id": "Q1",
+      "headline": "Current early-window buyer share",
+      "topic": "early-window buyer share",
+      "value_low": 12,
+      "value_high": 15,
+      "unit": "%",
+      "status": "observed",
+      "band": "base",
+      "owner": "Analytics",
+      "expression": "Share of total holiday-period buyers who transacted in Nov 18–Dec 02 window",
+      "source_ids": [],
+      "applies_to_signals": [
+        "S_early_window"
+      ]
+    },
+    {
+      "id": "Q2",
+      "headline": "Loyalty programs with emotional connection multiply visits",
+      "topic": "loyalty effectiveness",
+      "value_low": 8,
+      "value_high": 8,
+      "unit": "x",
+      "status": "observed",
+      "band": "stretch",
+      "owner": "Loyalty",
+      "expression": "Multiplier on visits and sales when loyalty programs drive emotional connection",
+      "source_ids": [
+        7
+      ],
+      "applies_to_signals": [
+        "S_loyalty_engagement"
+      ]
+    },
+    {
+      "id": "Q3",
+      "headline": "Target early-window foot-traffic uplift (base)",
+      "topic": "foot-traffic uplift",
+      "value_low": 10,
+      "value_high": 15,
+      "unit": "%",
+      "status": "target",
+      "band": "base",
+      "owner": "Retail Ops",
+      "expression": "Incremental store visits in Nov 18–Dec 02 vs prior comparable period",
+      "source_ids": [],
+      "applies_to_signals": [
+        "S_footfall"
+      ]
+    },
+    {
+      "id": "Q4",
+      "headline": "Event CPA ceiling",
+      "topic": "event CPA",
+      "value_low": 0,
+      "value_high": 0.8,
+      "unit": "x baseline",
+      "status": "target",
+      "band": "base",
+      "owner": "Finance",
+      "expression": "Event CPA expressed as multiple of baseline CPA for comparable holiday events",
+      "source_ids": [],
+      "applies_to_signals": [
+        "S_cpa"
+      ]
+    }
+  ],
+  "measurement_plan": [
+    {
+      "id": "M1",
+      "metric": "Incremental early-window visits per $1 by channel",
+      "expression": "(Visits_treatment − Visits_control) / Spend_treatment; run per-dollar test for: 1) $1 loyalty credit, 2) $1 retail media CPM-equivalent, 3) $1 collab reach spend",
+      "owner": "Growth",
+      "timeframe": "Nov 18 – Dec 02, 2025",
+      "status": "plan",
+      "why_it_matters": "Directly answers which $1 buys more early-window visits while limiting blanket discounts."
+    },
+    {
+      "id": "M2",
+      "metric": "Event CPA (incremental)",
+      "expression": "Spend_on_treatment / Incremental_buyers_at_event_window; compare to baseline CPA and target ≤0.8×",
+      "owner": "Finance",
+      "timeframe": "Nov 18 – Dec 02, 2025 (plus 7-day attribution)",
+      "status": "plan",
+      "why_it_matters": "Ensures the chosen dollar does not raise acquisition cost above target ceiling."
+    },
+    {
+      "id": "M3",
+      "metric": "QR redemption rate vs footfall",
+      "expression": "QR_scans_at_store / Total_store_visits; aim ≥5% of footfall from QR redemptions in pilot stores",
+      "owner": "Retail Ops",
+      "timeframe": "Nov 18 – Dec 02, 2025",
+      "status": "plan",
+      "why_it_matters": "Tracks conversion lift from collab in-store activation without blanket discounts."
+    },
+    {
+      "id": "M4",
+      "metric": "Buyer activity share vs promo intensity (paired metric)",
+      "expression": "Weekly buyer share by cohort / Promo intensity index (headline discount depth × reach); report side-by-side to detect dilution or dependence",
+      "owner": "Analytics",
+      "timeframe": "Baseline 2 weeks prior and Nov 18 – Dec 02 window",
+      "status": "plan",
+      "why_it_matters": "Shows whether share gains come from marginal buyers or from deeper discounting; guides whether to scale channel."
+    }
+  ],
+  "coverage": 0.85
+}

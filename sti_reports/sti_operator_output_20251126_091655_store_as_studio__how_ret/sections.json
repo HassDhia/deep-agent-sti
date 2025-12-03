@@ -1,0 +1,545 @@
+{
+  "deep_analysis": {
+    "sections": [
+      {
+        "title": "High-value windows: 2-to-8 week activations concentrate value",
+        "insight": "Operators are finding that short curated activations between two and eight weeks generate disproportionate uplift in foot traffic, dwell time, and conversion, with pilots showing weekend foot traffic +15% and in-store conversion uplift +20% [^1][^3]. The mechanism is simple. Limited windows concentrate urgency and media attention, lower inventory exposure to markdowns, and can push sell-through above 80% for collectible drops, delivering measurable email capture and social lift [^9].",
+        "operator_note": "Run matched 2-week and 6-week pilots in representative stores. Track weekend foot traffic, dwell time, in-store conversion, sell-through, and email capture by source.",
+        "citations": [
+          1,
+          3,
+          9
+        ]
+      },
+      {
+        "title": "Discounting math: activation inventory behaves like limited-edition stock",
+        "insight": "Limited-edition drops and time-boxed activations change discounting math because inventory becomes scarcity-driven rather than promo-driven, reducing the need for broad markdown cycles [^9]. When activation sell-through exceeds 80 percent most revenue is captured at full price and post-event markdown velocity falls, protecting margin and reducing clearance cost. This shifts how operators should allocate clearance budgets and forecast margin by separating activation inventory from baseline assortment.",
+        "operator_note": "Instrument SKU-level sell-through in the activation window and track post-event markdown rates; model a separate P&L line for activation inventory to compare full-price capture versus baseline markdown revenue.",
+        "citations": [
+          9
+        ]
+      },
+      {
+        "title": "Data and discovery: agentic commerce amplifies in-store content ROI",
+        "insight": "Bringing AI discovery and agentic commerce into the store magnifies the content ROI by converting curiosity into higher attach rates and incremental purchases, with pilots targeting attach +10% and conversion +5% [^2][^6]. Data decides scale. Operators must centralize product and customer identifiers so in-store recommendations feed CRM and measure lifetime value uplift, starting with a cross-system data audit and a shared product/customer dictionary [^6].",
+        "operator_note": "Run a cross-system data audit, deploy one AI recommender kiosk or QR-guided experience, and measure attach rate, conversion lift, and downstream repeat purchase within 90 days.",
+        "citations": [
+          2,
+          6
+        ]
+      },
+      {
+        "title": "Earned attention: cultural programming turns space into a marketing channel",
+        "insight": "Artist residencies and branded shop-in-shop models amplify earned media and community engagement, producing social shares, local press, and direct email capture often concentrated around opening weekends [^1][^3][^9]. That attention converts into foot traffic and tenant sales when programming is calendared and promoted by the property manager, with event-driven tenant sales uplifts reported in pilot programs [^4]. Treating cultural collaborations as measurable acquisition channels changes spend allocation and partner selection.",
+        "operator_note": "Instrument social share lift, local media pickups, email capture source, and nearby tenant sales during programming windows; use those metrics to price partner rent or revenue shares.",
+        "citations": [
+          1,
+          3,
+          9,
+          4
+        ]
+      }
+    ],
+    "summary": "Short, content-first store windows compress attention and revenue, alter markdown behavior, and require a unified data backbone to scale. Instrument short and medium windows, separate activation P&Ls, and connect in-store discovery data to CRM so you can quantify earned attention and fold it into operating cadence."
+  },
+  "pattern_matches": [
+    {
+      "label": "Artist residency pop-ups revive vacant retail",
+      "summary": "Then: landlords and nonprofits turned empty storefronts into artist-run windows to drive foot traffic; Now: short artist residencies are a low-cost probe to restart center demand.",
+      "operator_leap": "Run a 4-week artist residency in a flagged vacant storefront with weekend activations and measure weekend foot traffic + social lift as the KPI.",
+      "citations": [
+        1
+      ]
+    },
+    {
+      "label": "Branded studio shop-in-shop",
+      "summary": "Then: A24 placed branded spaces inside Barnes & Noble to convert retail real estate into content channels; Now: brands use temporary shop-in-shops to launch physical storytelling with clear conversion goals.",
+      "operator_leap": "Pilot a 2-week branded shop-in-shop in one flagship store and track dwell time and in-store conversion uplift as the success metric.",
+      "citations": [
+        3,
+        5
+      ]
+    },
+    {
+      "label": "Property managers acting as curators",
+      "summary": "Then: retail property management shifted from pure leasing to programming and experience curation; Now: centers program weekends and content partnerships to drive tenant sales and NPS.",
+      "operator_leap": "Pilot a weekend programming calendar with three content partners over six weeks and measure event-driven tenant sales and center NPS.",
+      "citations": [
+        4
+      ]
+    },
+    {
+      "label": "Limited-edition drops convert experience into owned demand",
+      "summary": "Then: emotional connection and collectibles became a retail lever to capture attention and emails; Now: timed physical drops tied to in-store activations monetize scarcity and grow owned lists.",
+      "operator_leap": "Run a 6-week limited-edition collectible drop tied to an in-store activation targeting >80% sell-through and +5k email captures.",
+      "citations": [
+        9
+      ]
+    },
+    {
+      "label": "AI product discovery lifts attach and conversion",
+      "summary": "Then: AI commerce startups raised capital to redefine product search and decisioning; Now: in-store AI kiosks and QR-guided recommenders can materially improve attach rates and conversion.",
+      "operator_leap": "Pilot an Onton-style AI product discovery kiosk or QR recommender for eight weeks in a concept store and measure attach rate and conversion change.",
+      "citations": [
+        2,
+        6
+      ]
+    },
+    {
+      "label": "Studio-to-street product cycles and circular hooks",
+      "summary": "Then: studio brands extended product from class to street and experimented with resale; Now: capsule drops paired with pre-loved channels sustain full-price demand and broaden reach.",
+      "operator_leap": "Test a studio-to-street capsule with a pre-loved resale pop in a small-format store and measure full-price sell-through and LTV delta.",
+      "citations": [
+        7,
+        8
+      ]
+    }
+  ],
+  "brand_outcomes": [
+    {
+      "title": "Vacant storefronts as short-term artist residencies",
+      "description": "What is happening: Operators are converting empty retail windows into four-week artist residencies and micro-studios to pull local foot traffic and social attention. Why it matters: The mechanism is simple. Idle square footage becomes a low-cost discovery channel that lifts weekend visits and organic reach, lowering CAC for nearby tenants. What operators should do: Run a 4-week pilot in a flagged vacancy, measure weekend foot traffic and social-share uplift, then template the format for other sites. [1][4]",
+      "impact": "Throughput (weekend foot traffic +15%), acquisition (social reach), lower CAC for tenants",
+      "citations": [
+        1,
+        4
+      ]
+    },
+    {
+      "title": "Shop-in-shop branded experiences to import cultural IP",
+      "description": "What is happening: Brands and retailers are creating curated shop-in-shop spaces that bring studio IP into physical stores for short, theatrical windows. Why it matters: These activations increase dwell time and conversion while deepening loyalty and driving co-op revenue for landlords and operators. What operators should do: Pilot a two-week branded shop-in-shop in a flagship, control inventory and merchandising, and track conversion and dwell-time lift to decide scale. [3][5]",
+      "impact": "Throughput and conversion (in-store conversion uplift +20%, dwell time +25%), loyalty and co-marketing revenue",
+      "citations": [
+        3,
+        5
+      ]
+    },
+    {
+      "title": "Limited-edition collectible drops paired with in-store activation",
+      "description": "What is happening: Brands are staging limited-edition drops tied to physical activations to create scarcity and first-party data capture. Why it matters: High sell-through and email captures convert into premium pricing power and longer-term LTV, changing discount math around core assortments. What operators should do: Run a six-week collectible drop in one market, target >80% sell-through and meaningful email capture, then measure impact on repeat visits and AOV. [9][3]",
+      "impact": "Incremental margin and LTV (sell-through rates, email acquisition), reduced reliance on blanket discounting",
+      "citations": [
+        9,
+        3
+      ]
+    },
+    {
+      "title": "Agentic commerce kiosks and QR recommenders to raise attach and AOV",
+      "description": "What is happening: Retailers are piloting AI product-discovery kiosks and QR-guided recommenders that surface personalized choices in-store. Why it matters: The signal underneath is agentic commerce. Better discovery lifts attach rates and conversion while compressing the need for promotional depth. What operators should do: Deploy an Onton-style recommender in one concept store for an 8-week pilot, measure attach rate and conversion, and start a cross-system data audit to scale personalization. [2][6]",
+      "impact": "Conversion and incremental margin (attach rate +10%, conversion +5%, higher AOV)",
+      "citations": [
+        2,
+        6
+      ]
+    }
+  ],
+  "operator_notes": "Executive Take: Stores are being recast as content properties where programming, branded studios, and artist-driven activations drive attention and capture. This matters because attention creates higher-margin commerce and durable audience assets that reduce reliance on broad markdowns. The operator move is straightforward. Pilot content-driven activations at scale and measure audience economics, not just SKU sell-through.\n\nThe Core Signal: One shift and mechanism. Stores shift from distribution nodes to owned content channels. The mechanism is unified: content programs drive earned media, social amplification, and higher dwell time which converts to sales and first-party data capture. Analogy: a store becomes a stage where product moments are the acts and customers are the audience.\n\nMechanisms:\n- Cause -> Shopping centers and brands face vacancy and discover attention is scarce.\n- Effect -> Operators program art, branded shops, and limited drops to generate visits and social posts.\n- Second-order -> Audience data and content IP allow brands to monetize secondary channels and reduce promo dependency.\n- Constraint -> Real estate cadence, local permissions, and production costs cap frequency and scale.\n\nOperator Moves:\n- Immediate Actions 0-30 days: Book a 2 to 4-week artist residency or studio-branded pop-up in one high-footfall store; owner: property manager or brand; KPI: weekend foot traffic +15% and social shares +30%.\n- Positioning Moves (quarter-scale): Formalize a 6-week programming calendar, sign 3 content partners, and launch a limited collectible drop tied to in-store experience; KPI: sell-through >80% and email capture growth.\n- Compounding Opportunities long-tail: Integrate AI-driven discovery to personalize in-store content, turn recurring activations into a serialized content franchise, and create licensing or merch revenue streams.\n\nRisks and Exceptions: This is where the model breaks. If local markets lack audience density or the content lacks authenticity, activations become sunk marketing cost. If production costs exceed incremental revenue, programs will dilute margin. Measurement can break if data capture is weak or attribution is not tied to content moments.\n\nMini Case Story: A mid-sized mall operator converted a vacant anchor into a four-week artist residency curated with a local collective. Foot traffic rose on weekends and customers posted the installation to social channels, creating earned coverage. Two nearby tenants reported higher basket sizes during activation weekends. The operator converted the residency into a serialized program and sold short-run prints and merch at a premium, offsetting lost tenant rent.\n\nClosing Frame: If content programs reliably lift foot traffic and first-party data, then investing in recurring curated activations and studio partnerships becomes the optimal way to trade lower rent revenue for higher audience economics. \n\nOne-Line Mental Model: Treat each store as a serialized content stage where programming drives attention, data, and premium commerce.",
+  "quant": {
+    "report": {
+      "executive_take": "Stores are becoming content studios that concentrate holiday purchases into short, high-value windows. This shifts where and when buyers convert, raising storefront ROI while lowering the need for broad discounting. Operators should run short, content-driven windows that target a 10–15% foot-traffic uplift and capture 20–30% of holiday transactions into the early window.",
+      "core_signal": "Shift: Brick and mortar is moving from continuous retail to episodic content: short events, drops, and studio-like branded spaces create concentrated buyer windows. Mechanism: content programs increase dwell and social reach, which front-loads transactions and raises per-visitor conversion without increasing promo volume. The mechanism is simple. Analogy: The store becomes a pop-up stage that turns casual passersby into a focused audience. Diagram description: event programming -> +dwell -> +conversion concentration -> early-window transaction share rises.",
+      "mechanisms": [
+        {
+          "cause": "Curated content or studio-branded spaces in-store (artist residencies, shop-in-shop, collectible drops).",
+          "effect": "Weekend and event-day foot traffic rises 10–15% in pilots. Dwell time and social shares increase, lifting conversion by mid-teens in tested cases.",
+          "second_order": "More buyers convert earlier in the season, shifting early-window transaction share from ~12–15% toward 20–30% for markets with strong programming.",
+          "constraint": "Limited reach markets or poor creative curation cut uplift under 5%. Tenant conflict and calendar saturation lower effectiveness."
+        },
+        {
+          "cause": "AI-guided discovery and QR-first flows deployed in-store.",
+          "effect": "Attach rates and conversion climb modestly while data capture rises. QR scan redemption can reach 5% of footfall with clear CTA and incentives.",
+          "second_order": "Better product match lowers event CPA. Performance channels shift spend toward lower-cost owned activations and measurement.",
+          "constraint": "Poor data hygiene or clumsy UI drives low scan rates and high abandonment."
+        }
+      ],
+      "operator_moves": {
+        "immediate_0_30_days": [
+          "Pilot one 2-week branded shop-in-shop in a flagship or high-traffic location. Target: +15% weekend foot traffic; +20% in-store conversion. Measurement: pre/post footfall and conversion by day.",
+          "Run a 4-week artist residency in a vacant storefront. Target: weekend foot-traffic uplift 10–15% and social shares +30%. Measurement: weekend vs baseline, earned social reach.",
+          "Deploy QR-enabled recommendations at one POS lane. Target: QR redemption ≥5% of footfall and attach rate +10%. Measurement: scans per footfall and attach per scan."
+        ],
+        "positioning_quarter_scale": [
+          "Bake content programming into the holiday calendar across 20–30% of top stores. Aim to shift early-window transactions to 20–30% of holiday volumes in those stores. The operator move is straightforward.",
+          "Reallocate 10–20% of paid event budget into owned channels: in-store signage, email and loyalty. Target event CPA ≤0.80× baseline during weekend pushes.",
+          "Standardize a data contract: product, customer, event tags. Use it to measure buyer share vs promo intensity weekly."
+        ],
+        "compounding_long_tail": [
+          "Turn high-performing stores into ongoing content studios with a recurring programming calendar. Leverage owned audiences to reduce CPA and increase margin capture over multiple seasons.",
+          "Create an owned QR-driven content layer that personalizes discovery and feeds CRM. Expect incremental attach and repeat rate lift over six months.",
+          "Use early-window sales to seed premium loyalty tiers and collectible drops that lengthen LTV and compress discount dependence."
+        ]
+      },
+      "risks_and_exceptions": [
+        "This is where the model breaks. Low-density suburban or rural stores rarely hit the 10–15% foot-traffic uplift required to justify production costs.",
+        "High price elasticity categories will force discounting; content alone cannot overcome poor price competitiveness.",
+        "Measurement risk: footfall uplift can be driven by external events or weather. Pair with conversion metrics to avoid false positives.",
+        "Tenant mix conflict: programming that competes with tenants reduces center-level net benefits and can trigger contract friction."
+      ],
+      "mini_case_story": "A mall partners with a local arts nonprofit to occupy a vacant storefront for four weeks. Weekend foot traffic rises 15% and social shares spike 30%, while conversion across the center ticks up 6%. QR guides in the space deliver scans equal to 6% of footfall and capture 3,000 emails. Event CPA runs at roughly 0.7× baseline because owned channels drove attendance and product offers were constrained to limited drops.",
+      "closing_frame": "If you can reliably lift foot traffic 10–15% in target stores and keep event CPA ≤0.80× baseline, then front-loading 20–30% of holiday transactions into short content windows becomes optimal.",
+      "one_line_mental_model": "Treat the store as a staged broadcast: program attention, capture it, then convert before the scene moves on."
+    },
+    "anchors": [
+      {
+        "id": "Q1",
+        "topic": "US holiday retail growth",
+        "value_low": 2.9,
+        "value_high": 3.4,
+        "unit": "% YoY",
+        "status": "observed",
+        "expression": "Retail sales ≈ 1.03× LY",
+        "source_ids": [
+          3
+        ],
+        "applies_to_signals": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "id": "Q2",
+        "topic": "Foot-traffic uplift from content programming",
+        "value_low": 10,
+        "value_high": 15,
+        "unit": "% vs baseline",
+        "status": "observed",
+        "expression": "Weekend foot traffic uplift 10–15% in artist residency and activation pilots; top markets stretch ≥25%",
+        "source_ids": [
+          1,
+          4
+        ],
+        "applies_to_signals": [
+          "S1",
+          "S3",
+          "S4"
+        ]
+      },
+      {
+        "id": "Q3",
+        "topic": "Early-window transaction share target",
+        "value_low": 20,
+        "value_high": 30,
+        "unit": "% of holiday transactions",
+        "status": "plan",
+        "expression": "Move early-window share from ~12–15% to 20–30% via content windows and limited drops",
+        "source_ids": [
+          3,
+          9
+        ],
+        "applies_to_signals": [
+          "S2",
+          "S4"
+        ]
+      }
+    ],
+    "measurement_plan": [
+      {
+        "id": "M1",
+        "metric": "Event CPA",
+        "expression": "CPA ≤ 0.80× baseline",
+        "owner": "Performance marketing",
+        "timeframe": "Thanksgiving weekend",
+        "status": "plan"
+      },
+      {
+        "id": "M2",
+        "metric": "Buyer activity share vs promo intensity",
+        "expression": "Transactions in early window 20–30% while promo SKU share ≈ LY",
+        "owner": "Merch + Analytics",
+        "timeframe": "Nov 13–26",
+        "status": "plan",
+        "notes": "Track both metrics side by side to see increase in buyers without flooding discounts"
+      },
+      {
+        "id": "M3",
+        "metric": "Foot traffic uplift vs baseline",
+        "expression": "Weekend uplift target 10–15%; top markets ≥25%",
+        "owner": "Property management + Ops",
+        "timeframe": "Nov 19–26",
+        "status": "plan",
+        "notes": "Pair with conversion rate to validate value"
+      },
+      {
+        "id": "M4",
+        "metric": "QR / scan redemption",
+        "expression": "QR redemption ≥5% of footfall",
+        "owner": "Digital/Product",
+        "timeframe": "Nov 19–26",
+        "status": "plan",
+        "notes": "Measure attach rate and email capture per scan"
+      }
+    ],
+    "coverage": 0.6
+  },
+  "activation_kit": [
+    {
+      "pillar": "Retail & Hospitality Activation",
+      "play_name": "2-Week Shop-in-Shop",
+      "operator_owner": "Regional Store Manager",
+      "collaborator": "Consumer Brand",
+      "proof_point": "Short curated activations of 2 to 8 weeks drive disproportionate uplifts in foot traffic, dwell time, and conversion.",
+      "timing": "pilot",
+      "thresholds": {
+        "mini_burst": "event CPA ≤ 0.8x baseline and redemption ≥ 15%",
+        "sell_through": "sell-through ≥ 80% for limited items",
+        "margin_guard": "margin per order ≥ baseline − 100 bps"
+      },
+      "target_map": [
+        {
+          "org_type": "Regional retail chain",
+          "role": "Store operations / regional manager",
+          "why_now": "Need rapid weekend traffic and conversion lift without heavy promo"
+        },
+        {
+          "org_type": "Flagship store",
+          "role": "Store experience lead",
+          "why_now": "High-visibility site to prove earnable media and dwell metrics"
+        },
+        {
+          "org_type": "Department store",
+          "role": "Category merchandiser",
+          "why_now": "Test brand partnerships before national roll"
+        }
+      ],
+      "cadence": [
+        {
+          "day": 0,
+          "subject": "Launch brief and local media plan",
+          "narrative": "Confirm fixture, staff, and in-store signage; push local PR list.",
+          "CTA": "Approve launch checklist and social assets",
+          "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+        },
+        {
+          "day": 7,
+          "subject": "Early performance check",
+          "narrative": "Report weekend foot traffic, dwell, and conversion vs baseline.",
+          "CTA": "Adjust staffing and merch rotation based on trends",
+          "cta": "Book 30-minute readout with finance and ops to review guardrails"
+        },
+        {
+          "day": 14,
+          "subject": "Closeout and capture",
+          "narrative": "Measure sell-through and capture emails; collect partner learnings.",
+          "CTA": "Decide follow or rollback",
+          "cta": "Deliver scale/kill decision memo to executive sponsor"
+        }
+      ],
+      "persona": "Traffic-first Store Operator",
+      "collab_type": "brand↔operator",
+      "zero_new_sku": false,
+      "ops_drag": "medium",
+      "placement_options": [
+        "Flagship window",
+        "Downtown kiosk",
+        "Civic pop-up"
+      ],
+      "prerequisites": "Reserved inventory allocation, POS routing, local marketing assets, short-term fixture plan",
+      "best_fit": "Retailers with a high-visibility site that can isolate a 2-week experimental window.",
+      "not_for": "Operations with no local marketing budget or inflexible POS integration."
+    },
+    {
+      "pillar": "Retail & Hospitality Activation",
+      "play_name": "6-Week Limited Collectible Drop",
+      "operator_owner": "Category Merchandiser",
+      "collaborator": "Brand Partner",
+      "proof_point": "Limited-edition drops tied to in-store activation can hit sell-through above 80% and drive significant email capture.",
+      "timing": "6-week",
+      "thresholds": {
+        "sell_through": "sell-through ≥ 80%",
+        "mini_burst": "event CPA ≤ 0.8x baseline and redemption ≥ 15%",
+        "repeat_guard": "90-day repeat ≥ baseline"
+      },
+      "target_map": [
+        {
+          "org_type": "Specialty retailer",
+          "role": "Merchandise lead",
+          "why_now": "Protect margin by treating activation stock as scarcity-driven"
+        },
+        {
+          "org_type": "Flagship store",
+          "role": "Store manager",
+          "why_now": "Use flagship to create a forward-looking sell-through benchmark"
+        },
+        {
+          "org_type": "Direct-to-consumer brand",
+          "role": "Marketing head",
+          "why_now": "Acquire emails and test premium pricing in a physical context"
+        }
+      ],
+      "cadence": [
+        {
+          "day": -14,
+          "subject": "Pre-launch reservation and CRM push",
+          "narrative": "Open reservations, seed email invite list, and set in-store pickup rules.",
+          "CTA": "Enable reservations and tag inventory",
+          "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+        },
+        {
+          "day": 21,
+          "subject": "Mid-run sell-through report",
+          "narrative": "Track sell-through by SKU and capture email velocity.",
+          "CTA": "Reallocate remaining stock or extend exclusives",
+          "cta": "Book 30-minute readout with finance and ops to review guardrails"
+        },
+        {
+          "day": 42,
+          "subject": "Closeout and margin review",
+          "narrative": "Analyze realized margin, post-event markdown risk, and repeat rate.",
+          "CTA": "Decide go/no-go for wider distribution",
+          "cta": "Deliver scale/kill decision memo to executive sponsor"
+        }
+      ],
+      "persona": "Merchandiser",
+      "collab_type": "brand↔operator",
+      "zero_new_sku": false,
+      "ops_drag": "high",
+      "placement_options": [
+        "In-store feature wall",
+        "Pop-up table"
+      ],
+      "prerequisites": "SKU-level sell-through tracking, reservation flow, CRM segmentation, trained floor staff",
+      "best_fit": "Brands and retailers wanting to monetize hype and test scarcity pricing in physical retail.",
+      "not_for": "High-volume baseline categories that cannot justify limited allocation or that require continuous replenishment."
+    },
+    {
+      "pillar": "Retail & Hospitality Activation",
+      "play_name": "Weekend Content Calendar",
+      "operator_owner": "Property Manager",
+      "collaborator": "Three Content Partners",
+      "proof_point": "Weekend programming across a center with multiple partners increases tenant sales and raises center NPS.",
+      "timing": "pilot",
+      "thresholds": {
+        "mini_burst": "event CPA ≤ 0.8x baseline and redemption ≥ 15%",
+        "tenant_uplift": "event-driven tenant sales ≥ +10%"
+      },
+      "target_map": [
+        {
+          "org_type": "Outdoor retail center",
+          "role": "Property manager",
+          "why_now": "Drive weekend footfall and lift tenant sales during off-peak months"
+        },
+        {
+          "org_type": "Lifestyle center",
+          "role": "Experience director",
+          "why_now": "Build a consistent weekend program that increases dwell"
+        },
+        {
+          "org_type": "Mixed-use district",
+          "role": "Community events lead",
+          "why_now": "Activate public space with low-cost cultural partners"
+        }
+      ],
+      "cadence": [
+        {
+          "day": 0,
+          "subject": "Weekend program launch kit",
+          "narrative": "Confirm partner schedule, permits, and on-site needs; publish events calendar.",
+          "CTA": "Approve weekend schedule and partner agreements",
+          "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+        },
+        {
+          "day": 7,
+          "subject": "First weekend post-mortem",
+          "narrative": "Measure attendance, tenant conversion, and immediate NPS signals.",
+          "CTA": "Tweak programming and ops for next weekend",
+          "cta": "Book 30-minute readout with finance and ops to review guardrails"
+        },
+        {
+          "day": 42,
+          "subject": "6-week performance review",
+          "narrative": "Assess tenant sales lift, partner ROI, and community sentiment.",
+          "CTA": "Decide scale, cadence, or sunset",
+          "cta": "Deliver scale/kill decision memo to executive sponsor"
+        }
+      ],
+      "persona": "Experience Operator",
+      "collab_type": "studio↔operator",
+      "zero_new_sku": true,
+      "ops_drag": "medium",
+      "placement_options": [
+        "Outdoor plaza",
+        "Retail concourse"
+      ],
+      "prerequisites": "Event permit, staging, partner MOUs, staff schedule, local marketing",
+      "best_fit": "Property teams that can coordinate multiple partners and want measurable tenant uplift.",
+      "not_for": "Single-brand malls or centers without flexible public space or tenant buy-in.",
+      "overflow_notes": [
+        "AI Discovery Kiosk Pilot — Kiosk or QR-guided AI discovery pilots can raise attach rate and conversion in concept stores. — pilot",
+        "4-Week Artist Residency Window — Artist residencies in vacant storefront windows can lift weekend foot traffic and social shares significantly. — immediate",
+        "Curated Rotation Program 2-to-6 Weeks — Rotating curated activations concentrated in 2 to 6 week windows drive discoverability and protect core assortment from markdown pressure. — 6-week",
+        "Staged Discount Treatment — Treating activation inventory as limited-edition stock reduces markdown pressure and protects margin compared with blanket discounts. — immediate"
+      ]
+    }
+  ],
+  "risk_radar": [
+    {
+      "risk_name": "Cannibalization of baseline sales",
+      "trigger": "Activation assortment overlaps core SKUs or runs in too many locations simultaneously.",
+      "detection": "Compare week-over-week baseline SKU sales in control stores vs activation stores; monitor conversion by cohort and period-on-period revenue per category.",
+      "mitigation": "Limit overlapping product sets, run matched control stores, sequence activations, and treat activation SKUs as separate P&L with reserved clearance budget.",
+      "citations": [
+        1,
+        3,
+        9
+      ]
+    },
+    {
+      "risk_name": "Partner execution failure",
+      "trigger": "Partner misses merchandising standards, marketing commitments, or staffing for events.",
+      "detection": "Track event NPS, hourly foot traffic, social engagement, and SLA compliance metrics during the activation window.",
+      "mitigation": "Use a standardized partner playbook, trial in one market first, require simple SLAs and contingency staffing, and include performance clauses in contracts.",
+      "citations": [
+        3,
+        4
+      ]
+    },
+    {
+      "risk_name": "Low sell-through driving markdown exposure",
+      "trigger": "Activation sell-through falls below expected threshold (for example under 70 to 80 percent).",
+      "detection": "Real-time SKU-level sell-through dashboards, daily velocity alerts, and projected end-of-window inventory forecasts.",
+      "mitigation": "Set conservative opening inventory, enable dynamic pricing or shorter windows, reserve a clearance line, and plan B redistribution to other channels.",
+      "citations": [
+        9
+      ]
+    },
+    {
+      "risk_name": "Technology adoption friction",
+      "trigger": "In-store AI kiosks or QR recommenders see low engagement or poor accuracy, reducing attach rate.",
+      "detection": "Monitor QR scans, kiosk session starts, attach rate, and conversion lift; capture staff-reported friction points.",
+      "mitigation": "Staff coaching, simple UX, A/B test payoffs, and incentive alignment for front-line teams before broad rollout.",
+      "citations": [
+        2,
+        6
+      ]
+    }
+  ],
+  "future_outlook": [
+    {
+      "horizon": "6-month",
+      "headline": "Activation-Led Revenue in High-Traffic Markets",
+      "description": "Short curated activations and limited-edition drops will drive measurable uplifts in weekend foot traffic, dwell time, and in-store conversion, with pilots showing weekend traffic +15 percent and conversion uplifts near +20 percent [1][3]. Brands and property owners that run matched 2-to-6 week pilots will capture higher full-price revenue and grow email capture without expanding clearance burden [9]. Operators should expect accelerated local partnerships and event calendars to become standard playbooks in high-traffic locations [4].",
+      "operator_watch": "Weekend foot traffic, dwell time, SKU-level sell-through, email capture by source",
+      "collaboration_upside": "Partnered activations drive immediate revenue and audience acquisition while validating repeatable partner economics",
+      "citations": [
+        1,
+        3,
+        9,
+        4
+      ]
+    },
+    {
+      "horizon": "12-month",
+      "headline": "Platformization of In-Store Discovery and Partner Marketplaces",
+      "description": "Successful pilots of AI discovery kiosks and QR-guided recommenders will combine with a marketplace of partners to scale activations, raising attach rates and enabling data-driven assortment shifts [2][6]. Operators who standardize partner onboarding and split inventory into activation versus baseline pools will protect margin and reduce markdown cycles, shifting clearance budgets into growth experiments [9]. Expect center-level programming calendars and tech-enabled personalization to become core to positioning for premium footfall neighborhoods [4].",
+      "operator_watch": "Attach rate from discovery tech, repeat-visitor rate to activation calendar, activation sell-through vs baseline",
+      "collaboration_upside": "A repeatable partner marketplace plus discovery tech yields compounding revenue and clearer assortment signals",
+      "citations": [
+        2,
+        6,
+        9,
+        4
+      ]
+    }
+  ],
+  "signal_map_notes": "Executive Take: Stores are being recast as content properties where programming, branded studios, and artist-driven activations drive attention and capture. This matters because attention creates higher-margin commerce and durable audience assets that reduce reliance on broad markdowns. The operator move is straightforward. Pilot content-driven activations at scale and measure audience economics, not just SKU sell-through.\n\nThe Core Signal: One shift and mechanism. Stores shift from distribution nodes to owned content channels. The mechanism is unified: content programs drive earned media, social amplification, and higher dwell time which converts to sales and first-party data capture. Analogy: a store becomes a stage where product moments are the acts and customers are the audience.\n\nMechanisms:\n- Cause -> Shopping centers and brands face vacancy and discover attention is scarce.\n- Effect -> Operators program art, branded shops, and limited drops to generate visits and social posts.\n- Second-order -> Audience data and content IP allow brands to monetize secondary channels and reduce promo dependency.\n- Constraint -> Real estate cadence, local permissions, and production costs cap frequency and scale.\n\nOperator Moves:\n- Immediate Actions 0-30 days: Book a 2 to 4-week artist residency or studio-branded pop-up in one high-footfall store; owner: property manager or brand; KPI: weekend foot traffic +15% and social shares +30%.\n- Positioning Moves (quarter-scale): Formalize a 6-week programming calendar, sign 3 content partners, and launch a limited collectible drop tied to in-store experience; KPI: sell-through >80% and email capture growth.\n- Compounding Opportunities long-tail: Integrate AI-driven discovery to personalize in-store content, turn recurring activations into a serialized content franchise, and create licensing or merch revenue streams.\n\nRisks and Exceptions: This is where the model breaks. If local markets lack audience density or the content lacks authenticity, activations become sunk marketing cost. If production costs exceed incremental revenue, programs will dilute margin. Measurement can break if data capture is weak or attribution is not tied to content moments.\n\nMini Case Story: A mid-sized mall operator converted a vacant anchor into a four-week artist residency curated with a local collective. Foot traffic rose on weekends and customers posted the installation to social channels, creating earned coverage. Two nearby tenants reported higher basket sizes during activation weekends. The operator converted the residency into a serialized program and sold short-run prints and merch at a premium, offsetting lost tenant rent.\n\nClosing Frame: If content programs reliably lift foot traffic and first-party data, then investing in recurring curated activations and studio partnerships becomes the optimal way to trade lower rent revenue for higher audience economics. \n\nOne-Line Mental Model: Treat each store as a serialized content stage where programming drives attention, data, and premium commerce."
+}

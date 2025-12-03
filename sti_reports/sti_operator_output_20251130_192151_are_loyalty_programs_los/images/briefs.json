@@ -1,0 +1,99 @@
+{
+  "hero": {
+    "core_tension": "Choose between burning loyalty dollars on deeper discounts or reallocating them to place-based activations that pull early-window purchases forward.",
+    "setting": "Backroom planning table in a flagship store. Composition cues: low-angle over-table shot, subject at center leaning into a map, materials: matte paper plans and metallic event badges.",
+    "persona": "Head of Retail",
+    "action": "Selecting a store-as-studio collab for Black Friday weekend instead of a deeper loyalty discount.",
+    "urgency_symbol": "Narrowing stage light beam as a symbolic cue for a closing early-window opportunity.",
+    "props": [
+      "Black Friday weekend activation map (labels: event vs control)",
+      "POS tags and sensor node mockups",
+      "Partner collateral for a collab-led holiday play"
+    ],
+    "lighting": "Polished editorial lighting with confident highlights and clean negative space.",
+    "mood": "Precise, decisive, collaborative.",
+    "anchor_section": "header",
+    "metric_focus": [
+      "early_window_share",
+      "footfall_lift"
+    ],
+    "alt": "Head of Retail choosing store-as-studio Black Friday event test to raise footfall and early-window share"
+  },
+  "signal_map": {
+    "structure": "Concentric rings and radial arcs with a lattice overlay; inner ring for early-window share slices, outer ring for footfall uplift bands.",
+    "elements": [
+      "Store tokens sized by expected uplift",
+      "Arc paths showing buyer activity share vs promo intensity",
+      "Event CPA markers at key nodes"
+    ],
+    "motion": "Radial pull toward the early-window node, visual flow from loyalty nodes into event nodes to show shifting share.",
+    "palette": "Matte black base, high-contrast brand accent color, metallic highlights for sensors and POS nodes.",
+    "anchor_section": "signals_and_thesis",
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share",
+      "event_cpa"
+    ],
+    "alt": "CMO reviewing signal map encoding footfall lift and early-window share for event vs loyalty tests"
+  },
+  "case_studies": [
+    {
+      "slot": "case_study_1",
+      "scene": "Midday community pop-up inside a mall storefront. Composition cues: eye-level crowd shot, subject clusters moving toward a branded activation, materials: fabric banners and paper wristbands.",
+      "moment": "First hour of a paid community event that precedes Black Friday keeping price depth stable.",
+      "persona": "Head of Partnerships",
+      "props": [
+        "Event wristbands with POS event tags",
+        "Footfall sensor visible on shelf edge",
+        "Signage reading: 'Local Makers Pop-up — Today'"
+      ],
+      "lighting": "Polished editorial with soft highlights to emphasize faces and movement.",
+      "mood": "Energetic, community-led, tactical.",
+      "anchor_section": "mini_case_story",
+      "metric_focus": [
+        "footfall_lift",
+        "qr_redemption"
+      ],
+      "alt": "Head of Partnerships running community pop-up test to boost Black Friday weekend footfall and QR redemption"
+    },
+    {
+      "slot": "case_study_2",
+      "scene": "Evening store-as-studio content shoot that integrates product and live commerce. Composition cues: three-quarter angle on a compact stage, subject framed with merchandise arrays, materials: polished wood counters and camera rigs.",
+      "moment": "A timed content drop aimed at shifting morning discovery into the early window without changing loyalty discounts.",
+      "persona": "CMO",
+      "props": [
+        "On-set brand collab signage",
+        "POS sample tagged for event attribution",
+        "Small live-stream camera and mic"
+      ],
+      "lighting": "High-contrast editorial with confident highlights on product and talent.",
+      "mood": "Experimental, media-led, performance-focused.",
+      "anchor_section": "deep_analysis",
+      "metric_focus": [
+        "early_window_share",
+        "event_cpa"
+      ],
+      "alt": "CMO piloting store-as-studio collab to shift early-window share and lower event CPA"
+    },
+    {
+      "slot": "case_study_3",
+      "scene": "Post-holiday morning measurement huddle. Composition cues: overhead shot of a small team around a printout measurement spine, subject pointing at clear metric bands, materials: glossy report sheets and sensor maps.",
+      "moment": "Review showing event vs control, with early-window wins and CPA below ceiling highlighted.",
+      "persona": "Head of Retail and CFO",
+      "props": [
+        "Measurement spine printout with buyer activity share vs promo intensity",
+        "Event vs control flags for stores",
+        "Annotated POS transaction tags"
+      ],
+      "lighting": "Polished editorial, cool highlights to signal clarity and resolution.",
+      "mood": "Confident, precise, outcome-focused.",
+      "anchor_section": "future_outlook",
+      "metric_focus": [
+        "early_window_share",
+        "footfall_lift",
+        "event_cpa"
+      ],
+      "alt": "Head of Retail reviewing results: early-window share up 25% and event CPA below 0.8x baseline"
+    }
+  ]
+}

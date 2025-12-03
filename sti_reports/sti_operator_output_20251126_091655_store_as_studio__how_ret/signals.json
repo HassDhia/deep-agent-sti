@@ -1,0 +1,101 @@
+[
+  {
+    "category": "Cultural",
+    "name": "Vacant Retail As Artist Canvas",
+    "description": "Developers and operators are converting empty storefronts into curated artist installations; Zero Empty Spaces now operates 33 locations nationwide to revitalize shopping centers. The mechanism is simple: art programs create social content, earned media, and foot traffic without traditional tenant rents.",
+    "operator_move": "Operator move: Mall owner (partner with Zero Empty Spaces or a local arts nonprofit) run a 4-week artist residency in a flagged vacant storefront, window 4 weeks, KPI: weekend foot traffic +15% and social shares +30%.",
+    "strength": 0.85,
+    "US_fit": 1.0,
+    "operationality": 0.8,
+    "support": [
+      1
+    ],
+    "on_spine": true,
+    "quant_support": "strong",
+    "source_grade": "B",
+    "citations": [
+      1
+    ],
+    "id": "S1"
+  },
+  {
+    "category": "Market",
+    "name": "Studio Branded Shop Partnerships",
+    "description": "A24 and Barnes & Noble launched branded in-store shop experiences that sell books, movies, and merch inside select stores. The signal underneath is that studios and content owners will use retail footprints as ongoing content channels.",
+    "operator_move": "Operator move: Brand plus bookstore operator (A24 + Barnes & Noble model) run a 2-week branded shop-in-shop in one flagship store, window 2 weeks, KPI: in-store conversion uplift +20% and dwell time +25%.",
+    "strength": 0.9,
+    "US_fit": 1.0,
+    "operationality": 0.9,
+    "support": [
+      3,
+      5
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      3,
+      5
+    ],
+    "id": "S2"
+  },
+  {
+    "category": "Market",
+    "name": "Property Managers As Experience Curators",
+    "description": "Retail property management is shifting from pure leasing to curating integrated, experiential and connected programming across assets. This changes one thing about how operators should think: centers will sell programming and audience, not just square feet.",
+    "operator_move": "Operator move: Property manager pilot a weekend programming calendar with three content partners across an outdoor center, window 6 weeks, KPI: event-driven tenant sales +10% and center NPS up.",
+    "strength": 0.8,
+    "US_fit": 1.0,
+    "operationality": 0.8,
+    "support": [
+      4
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      4
+    ],
+    "id": "S3"
+  },
+  {
+    "category": "Cultural",
+    "name": "Retail As Emotional Content Engine",
+    "description": "Imagine Studio's Q4 trends highlight how brands are using emotional intelligence to turn retail, out-of-home, and collectibles into durable customer connections. The leverage point sits here: limited-run physical content and collectibles let operators reprice value away from coupons.",
+    "operator_move": "Operator move: Brand owner run a 6-week limited-edition collectible drop tied to an in-store activation in one market, window 6 weeks, KPI: sell-through >80% and +5k email captures.",
+    "strength": 0.78,
+    "US_fit": 0.95,
+    "operationality": 0.75,
+    "support": [
+      9
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      9
+    ],
+    "id": "S4"
+  },
+  {
+    "category": "Technology",
+    "name": "Agentic AI Commerce Enables In-Store Personalization",
+    "description": "AI commerce startups like Onton and the agentic commerce paradigm are unifying product, customer, and transaction data to power discovery and personalized in-store experiences. The mechanism is simple: unified data plus AI turns a store into a personalized content engine that distributes tailored offers and narratives.",
+    "operator_move": "Operator move: Retailer pilot an Onton-style AI product discovery kiosk or QR-guided recommender in one concept store, window 8 weeks, KPI: attach rate +10% and conversion +5%.",
+    "strength": 0.82,
+    "US_fit": 0.9,
+    "operationality": 0.7,
+    "support": [
+      2,
+      6
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      2,
+      6
+    ],
+    "id": "S5"
+  }
+]

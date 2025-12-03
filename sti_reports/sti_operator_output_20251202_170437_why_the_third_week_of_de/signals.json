@@ -1,0 +1,74 @@
+[
+  {
+    "category": "Behavioral",
+    "name": "Crowds Without Conversion",
+    "description": "Stores are seeing record Black Friday foot traffic while shoppers find fewer standout bargains and curb spending. High traffic that does not convert raises the value of exclusives and experiences that materially change purchase choice rather than shallow price cuts.",
+    "operator_move": "Run an in-store exclusive giveaway on Nov 28 owned by Head of Retail + CMO, measure QR redemptions as ≥5% of footfall and conversion uplift versus baseline.",
+    "operator_scan": "Measure conversion rate per hour alongside average ticket and promo depth.",
+    "spine_hook": "High store traffic is not guaranteeing sales unless offers convert.",
+    "time_horizon": "6-week",
+    "strength": 0.85,
+    "US_fit": 1.0,
+    "operationality": 0.88,
+    "support": [
+      2,
+      6
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      2,
+      6
+    ],
+    "id": "S2"
+  },
+  {
+    "category": "Market",
+    "name": "Exclusive Giveaways Drive Store Wins",
+    "description": "Retail winners this season leaned on exclusives and in-store giveaways to pull shoppers into stores despite flat online discounts. That tactic creates a clear collaboration wedge where brands can buy upstream attention and convert visits into full-price or premium purchases.",
+    "operator_move": "Pilot two retailer-exclusive SKUs or drops Dec 15–21 with Head of Brand Partnerships, target a 25% foot traffic uplift in test stores and QR redemption ≥5%.",
+    "operator_scan": "Track sales lift for exclusive SKUs vs. comparable non-exclusive SKUs.",
+    "spine_hook": "Exclusives and drops are outperforming shallow online discounts.",
+    "time_horizon": "6-week",
+    "strength": 0.82,
+    "US_fit": 0.95,
+    "operationality": 0.85,
+    "support": [
+      6,
+      1
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      6,
+      1
+    ],
+    "id": "S3"
+  },
+  {
+    "category": "Cultural",
+    "name": "Store-as-Studio Becomes a Media Buy",
+    "description": "Retailers are using stores as production and media venues to run events and exclusive experiences that create owned attention. That turns partnerships into a hybrid media buy where brands capture high-intent impressions and measurable in-store actions rather than competing on sitewide discounts.",
+    "operator_move": "Book five store pop-up media days Dec 18–20 with Head of Retail, measure event CPA ≤0.8× baseline and QR redemption ≥5% of foot traffic.",
+    "operator_scan": "Count in-store media impressions, QR scans, and attributed purchases per event day.",
+    "spine_hook": "Stores are being sold as event-driven media inventory.",
+    "time_horizon": "quarter",
+    "strength": 0.79,
+    "US_fit": 0.9,
+    "operationality": 0.8,
+    "support": [
+      6,
+      1
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      6,
+      1
+    ],
+    "id": "S5"
+  }
+]

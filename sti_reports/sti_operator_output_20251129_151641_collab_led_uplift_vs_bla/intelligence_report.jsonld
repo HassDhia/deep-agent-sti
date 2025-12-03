@@ -1,0 +1,47 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Report",
+  "name": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+  "about": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+  "abstract": "You need to win holiday footfall and early buys with partner-led activations instead of blanket discounts inside the next two planning cycles; the objective is to drive early-window demand while keeping event CPA in check. This matters because the target is **foot-traffic uplift** of **10-15%** (stretch **≥25%**), lift **early-window share** from **12-15%** toward **20-30%**, and hold **event_cpa** at or below **≤0.80×** baseline while securing **QR redemption ≥5%** of footfall. Favor a collab-led holiday / store-as-studio approach and, in the next 30 days, the Head of Retail, Head of Partnerships, and CFO must stand up a 4–6 week pilot that replaces one weekend 20% sitewide discount with a co-branded in-store activation in test stores and a finance model comparing blanket vs co-funded promo scenarios; measure foot_traffic_uplift, buyer_activity_share, net margin per transaction, and event_cpa to decide scale by week three. Use the pilot to convert promo dollars into media-like store impressions and require partner funding or media trade to meaningfully reduce net markdown spend [^1].",
+  "datePublished": "2025-11-29T23:23:44.182677",
+  "temporalCoverage": "2025-11-22/2025-11-29",
+  "hasPart": [
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.reuters.com/business/companies-tone-down-price-hike-talk-tariff-fog-clears-2025-11-24/"
+      ],
+      "about": "Market"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.reuters.com/business/companies-tone-down-price-hike-talk-tariff-fog-clears-2025-11-24/"
+      ],
+      "about": "Behavioral"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.reuters.com/business/companies-tone-down-price-hike-talk-tariff-fog-clears-2025-11-24/"
+      ],
+      "about": "Market"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.reuters.com/business/companies-tone-down-price-hike-talk-tariff-fog-clears-2025-11-24/"
+      ],
+      "about": "Cultural"
+    }
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": 0.818
+  }
+}

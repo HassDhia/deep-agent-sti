@@ -1,0 +1,714 @@
+{
+  "deep_analysis": {
+    "sections": [
+      {
+        "title": "Early-window returns concentrate on engaged customers",
+        "spine_position": "what",
+        "priority": 1,
+        "scan_line": "Early-window lifts come from engaged loyalty and collab-driven reach.",
+        "insight": "Early-window foot-traffic and sales lift is concentrated among emotionally engaged loyalty members and during high-touch collab activations[^7][^4]. Emotional connection multiplies visits and sales for loyalty members, while collabs drive fast trial but convert primarily through one-time trial mechanics unless tied into repeat engines[^7][^4]. That means loyalty spend buys higher margin-per-visit; collab spend buys reach and new-buyer share but often needs additional mechanics to turn trial into repeat[^5].",
+        "operator_note": "Prioritize the extra dollar where it preserves contribution margin and reliably shifts early-window share. Start by targeting a $1 credit at top decile loyalty members for Nov18–Dec02, and run a matched collab activation that includes an in-store capture mechanic. Compare incremental visits and margin per visit rather than raw redemption counts.",
+        "instrument_next": "Instrument early-window incremental visits, incremental spend per visit, and contribution margin segmented by treatment: loyalty-targeted $1 credit vs collab media spend, measured daily.",
+        "citations": [
+          7,
+          4,
+          5
+        ]
+      },
+      {
+        "title": "Targeted credits change discounting math",
+        "spine_position": "so_what",
+        "priority": 1,
+        "scan_line": "Targeted credits reduce headline discount depth and lower event CPA.",
+        "insight": "Reallocating spend from blanket discounts to targeted loyalty credits reduces headline discount depth while raising visits among high-LTV segments[^5][^7]. Concentrating small credits on identified repeat prospects increases share-of-wallet and keeps average discount per incremental visit lower than mass promotions; retail media without targeting can expand reach but often raises CPA and compresses contribution margin if attribution is weak[^5][^7]. Collab activations can boost early-window buyer acquisition but will skew discount math if you need to run sampling or temporary price cuts to secure trial[^4].",
+        "operator_note": "Do not treat dollar-for-dollar media and loyalty as interchangeable. Run a three-arm micro-test: (A) $1 targeted loyalty credit, (B) $1 equivalent retail media buy to drive impressions, (C) $1 collab spend focused on sampling or exclusive SKU placement. Track CPA and contribution margin; stop the arm that exceeds your CPA ceiling or deepens average discount depth.",
+        "instrument_next": "Instrument event CPA, incremental contribution margin per visit, headline discount depth, and buyer activity share by treatment arm.",
+        "citations": [
+          5,
+          7,
+          4
+        ]
+      },
+      {
+        "title": "Reallocation breaks forecasts and ops unless piloted",
+        "spine_position": "so_what",
+        "priority": 3,
+        "scan_line": "Moving budget breaks forecasting, creative flow, and inventory if not piloted.",
+        "insight": "Shifting even small per-customer spend from mass promos to targeted loyalty or collabs exposes gaps in segmentation, creative production, and SKU readiness[^2][^5]. Forecasts that assume uniform uplift will miss concentration effects and overstate supply needs; collab demand can spike specific SKUs and create stockouts that kill CPA and repeat potential. Loyalty reallocation scales through existing CRM; collab and retail media require tighter ops and attribution wiring to avoid negative surprises.",
+        "operator_note": "Treat the one-dollar reallocation as an operations stress test. Run a narrow geographic pilot that exercises CRM segments, creative variants, SKU allocation, and attribution wiring before broad rollout. Use the pilot to set guardrails for stock, creative cadence, and attribution SLAs.",
+        "instrument_next": "Instrument forecast error, SKU stockouts, creative cycle time, and attribution latency during the pilot window.",
+        "citations": [
+          2,
+          5
+        ]
+      },
+      {
+        "title": "Store media turns collab reach into accountable footfall",
+        "spine_position": "now_what",
+        "priority": 2,
+        "scan_line": "In-store media plus QR capture ties reach to footfall and shortens CPA.",
+        "insight": "Pairing collab or retail-media spend with in-store triggers (QR, POS-linked coupons, loyalty enrollment) converts reach into measurable redemptions and reveals true retail media ROI[^5][^4]. When you can attribute a QR redemption or POS-linked promo to a paid impression or collab SKU, you shorten the time to judge CPA and adjust spend in the same planning cycle. Without that capture, retail media and collab results will look like reach but leave CPA and margin unknown.",
+        "operator_note": "Design collab activations as store-as-studio tests. Require a discrete in-store activation (QR redemption, POS promo code, or loyalty opt-in) that feeds back into CRM within 48 hours. Use that feed to calculate CPA and short-term repeat rate before scaling.",
+        "instrument_next": "Instrument QR redemptions as percent of footfall, incremental basket size for redeemers, and time-to-repeat for redeemers versus control.",
+        "citations": [
+          5,
+          4
+        ]
+      }
+    ],
+    "summary": "For Nov 18–Dec 02, spend the extra dollar where it preserves margin and proves short-term attribution. Targeted loyalty credits buy higher-margin, repeatable early-window lift; collabs buy reach and new-buyer share but must include in-store capture to prove CPA; retail media only justifies scale when attribution is wired and CPA targets hold. Run three-arm pilots, wire QR/POS-to-CRM capture, and measure incremental visits, contribution margin, and CPA before scaling. Instrument those metrics daily and stop the approach that misses the CPA or margin thresholds."
+  },
+  "pattern_matches": [
+    {
+      "label": "Emotional multiplier for loyalty",
+      "then": "ITA Group research found emotional connection can multiply the impact of loyalty programs by up to eight times.",
+      "now": "Brands can spend a small extra amount to convert a transactional reward into an emotional experience and drive disproportionate repeat visits.",
+      "operator_leap": "Run a two-week A/B: $1 targeted emotional reward (exclusive collab content + $0.50 store credit) vs $1 plain store credit; track early-window footfall uplift, QR redemptions, and event CPA.",
+      "supports_approach": "discount-heavy holiday",
+      "citations": [
+        7
+      ]
+    },
+    {
+      "label": "Creator collab drives trial and reach",
+      "then": "A large beverage company credited a collaboration with a young TikTok star for outsized attention and strong product trial.",
+      "now": "A micro-influencer collab can turn one-dollar media spend into store trial when paired with a redeemable in-store QR offer.",
+      "operator_leap": "Spend $1 CPM-equivalent on creator content that points to a single-use QR coupon redeemable in store; measure QR redemption rate, incremental footfall, and CPA against a matched retail media buy.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        4
+      ]
+    },
+    {
+      "label": "Modernize loyalty, stop blanket cuts",
+      "then": "Convenience chains moved beyond one-size-fits-all loyalty by partnering with specialized platforms to personalize rewards and offers.",
+      "now": "Instead of broad markdowns, you can use loyalty data to apply micro-credits that steer high-value buyers into the early window.",
+      "operator_leap": "A/B test $1 allocated as a targeted loyalty credit to top 20% customers versus $1 spent on broad retail media; measure early-window buyer share and event CPA.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        5
+      ]
+    },
+    {
+      "label": "Local retail hub as media sink",
+      "then": "JPMorgan relocated staff to a centralized local office to build out a digital retail bank presence and scale customer acquisition locally.",
+      "now": "Physical locations can be treated as media assets where a small local ad spend plus in-store activation converts awareness into immediate visits.",
+      "operator_leap": "Allocate $1 per store to a hyperlocal media buy plus an in-store QR activation for a collab SKU; measure footfall uplift within a 1 km radius and event CPA versus stores without the buy.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        3
+      ]
+    },
+    {
+      "label": "Reframing loyalty amid shifting allegiance",
+      "then": "Younger real estate agents have started rethinking loyalty to brokerages, signaling that traditional loyalty assumptions can break quickly.",
+      "now": "Customer loyalty can erode if it feels rigid; flexible, immediate-value offers win short-term behavior during crowded holiday windows.",
+      "operator_leap": "Pilot converting $1 into an instant POS micro-reward for staff to hand to shoppers (sample, instant discount, experience); track conversion lift and repeat visit rate versus standard loyalty communication.",
+      "supports_approach": "",
+      "citations": [
+        2
+      ]
+    },
+    {
+      "label": "Collab SKU as a loss leader for footfall",
+      "then": "Entertainment and celebrity product tie-ins have historically driven cross-category attention and short-term spikes in store visits.",
+      "now": "A limited collab SKU with a fast-moving cultural partner can justify a shallow margin hit and bring incremental early-window buyers.",
+      "operator_leap": "Launch one limited collab SKU with in-store only availability, fund $1 per-store promo support (signage + small media push), and measure incremental footfall, QR redemptions, and event CPA against control stores.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        4,
+        8
+      ]
+    }
+  ],
+  "brand_outcomes": [
+    {
+      "title": "Spend $1 as targeted loyalty credit to move 20% of demand into the early window",
+      "description": "Allocate the extra dollar as a time-bound, personalized credit for high-value customers to redeem Nov 18 to Dec 02. Target customers with recent visit frequency and high basket value. Keep the face discount applied only at checkout for this cohort to preserve headline price integrity. Loyalty personalization increases visit frequency and multiplies program impact when paired with emotional cues, so small credits drive outsized behavior change without blanket markdowns [^7][^5].",
+      "impact": "Early-window share to 20%+; throughput and incremental margin preserved; lower event CPA to ≤0.8× baseline",
+      "time_horizon": "Nov 18 \t6 Dec 02, 2025",
+      "owner": "CRM / Loyalty",
+      "citations": [
+        7,
+        5
+      ]
+    },
+    {
+      "title": "Buy a focused retail-media burst to shift attention to stores in the first two weeks",
+      "description": "Use the dollar to fund a tight retail-media buy on owned channels and partner feeds that run only in the Nov 18\t6 Dec 02 window. Creative should feature store-as-studio content and a single CTA: visit this week for an exclusive collab SKU or time-bound reward. Short, high-frequency placements reduce CPA and concentrate demand earlier without broader discounting; influencer-driven collabs raise reach efficiency when paired with media spend [^4].",
+      "impact": "Foot-traffic uplift 10\t615% (base); event CPA reduction via concentrated reach; early-window share improvement toward 20\t630%",
+      "time_horizon": "Next 30 days (plan and execute for Nov 18 \t6 Dec 02)",
+      "owner": "Retail Media / Brand Marketing",
+      "citations": [
+        4
+      ]
+    },
+    {
+      "title": "Activate a collab SKU + in-store QR test to measure incremental visits and margin",
+      "description": "Launch one limited collab SKU tied to an in-store QR that delivers a small experiential reward or upsell. Place the SKU as a destination in high-traffic zones and seed it via a micro-influencer push the week before Nov 18. Use QR redemptions as the primary signal of incremental demand and attribute footfall lift to the collab. Local events and partner activations concentrate attention and convert passersby into visits when merch and content align [^1][^4].",
+      "impact": "QR redemption >=5% of collab footfall; incremental margin capture via SKU pricing; foot-traffic uplift toward stretch \u00025% with measured CPA",
+      "time_horizon": "Next 60 days (design, produce, seed by Nov 18)",
+      "owner": "Partnerships / Retail Ops",
+      "citations": [
+        1,
+        4
+      ]
+    },
+    {
+      "title": "Run a two-week measurement guardrail and stop rule to avoid deepening blanket discounts",
+      "description": "Track buyer activity share vs promo intensity daily across channels. Predefine stop rules: pause headline discounts once incremental buyer share flattens for three consecutive days or event CPA rises above 0.8× baseline. Use paired metrics to compare loyalty credit versus retail media versus collab SKU for the Nov 18 window and reallocate the next planning cycle based on incremental margin per dollar spent [^5][^7].",
+      "impact": "Protect incremental margin; keep event CPA ≤0.8× baseline; ensure early-window share gains are durable and cost-effective",
+      "time_horizon": "Immediate; monitor Nov 18 \t6 Dec 02 and adjust next 7 days",
+      "owner": "Analytics / Revenue Ops",
+      "citations": [
+        5,
+        7
+      ]
+    }
+  ],
+  "operator_notes": "Prioritize pilots that reallocate incremental dollar from blanket discounts into three linked bets: (1) emotion-first loyalty nudges delivered via retail media, (2) limited collab SKUs with in-store creative, and (3) localized loyalty offers enabled by partner platforms. Measure buyer activity share against promo intensity and insist on these thresholds for success: foot traffic uplift 10–15% base (stretch ≥25%), early-window share move from ~12–15% toward 20–30%, event CPA ≤0.80× baseline, and QR redemption ≥5% of footfall. Competing approach: broad discounting still wins short-term volume but erodes margin and reduces signal clarity; only pursue if pilots cannot meet CPA or early-window share targets within the Nov 18 – Dec 02 window.",
+  "quant": {
+    "spine_hook": "Success = incremental early-window visits per $1 that lift early-window buyer share to 20%+ while holding event CPA ≤0.8× baseline and QR redemptions ≥5% of footfall.",
+    "anchors": [
+      {
+        "id": "Q1",
+        "headline": "Current early-window buyer share",
+        "topic": "early-window buyer share",
+        "value_low": 12,
+        "value_high": 15,
+        "unit": "%",
+        "status": "observed",
+        "band": "base",
+        "owner": "Analytics",
+        "expression": "Share of total holiday-period buyers who transacted in Nov 18–Dec 02 window",
+        "source_ids": [],
+        "applies_to_signals": [
+          "S_early_window"
+        ]
+      },
+      {
+        "id": "Q2",
+        "headline": "Loyalty programs with emotional connection multiply visits",
+        "topic": "loyalty effectiveness",
+        "value_low": 8,
+        "value_high": 8,
+        "unit": "x",
+        "status": "observed",
+        "band": "stretch",
+        "owner": "Loyalty",
+        "expression": "Multiplier on visits and sales when loyalty programs drive emotional connection",
+        "source_ids": [
+          7
+        ],
+        "applies_to_signals": [
+          "S_loyalty_engagement"
+        ]
+      },
+      {
+        "id": "Q3",
+        "headline": "Target early-window foot-traffic uplift (base)",
+        "topic": "foot-traffic uplift",
+        "value_low": 10,
+        "value_high": 15,
+        "unit": "%",
+        "status": "target",
+        "band": "base",
+        "owner": "Retail Ops",
+        "expression": "Incremental store visits in Nov 18–Dec 02 vs prior comparable period",
+        "source_ids": [],
+        "applies_to_signals": [
+          "S_footfall"
+        ]
+      },
+      {
+        "id": "Q4",
+        "headline": "Event CPA ceiling",
+        "topic": "event CPA",
+        "value_low": 0,
+        "value_high": 0.8,
+        "unit": "x baseline",
+        "status": "target",
+        "band": "base",
+        "owner": "Finance",
+        "expression": "Event CPA expressed as multiple of baseline CPA for comparable holiday events",
+        "source_ids": [],
+        "applies_to_signals": [
+          "S_cpa"
+        ]
+      }
+    ],
+    "measurement_plan": [
+      {
+        "id": "M1",
+        "metric": "Incremental early-window visits per $1 by channel",
+        "expression": "(Visits_treatment − Visits_control) / Spend_treatment; run per-dollar test for: 1) $1 loyalty credit, 2) $1 retail media CPM-equivalent, 3) $1 collab reach spend",
+        "owner": "Growth",
+        "timeframe": "Nov 18 – Dec 02, 2025",
+        "status": "plan",
+        "why_it_matters": "Directly answers which $1 buys more early-window visits while limiting blanket discounts."
+      },
+      {
+        "id": "M2",
+        "metric": "Event CPA (incremental)",
+        "expression": "Spend_on_treatment / Incremental_buyers_at_event_window; compare to baseline CPA and target ≤0.8×",
+        "owner": "Finance",
+        "timeframe": "Nov 18 – Dec 02, 2025 (plus 7-day attribution)",
+        "status": "plan",
+        "why_it_matters": "Ensures the chosen dollar does not raise acquisition cost above target ceiling."
+      },
+      {
+        "id": "M3",
+        "metric": "QR redemption rate vs footfall",
+        "expression": "QR_scans_at_store / Total_store_visits; aim ≥5% of footfall from QR redemptions in pilot stores",
+        "owner": "Retail Ops",
+        "timeframe": "Nov 18 – Dec 02, 2025",
+        "status": "plan",
+        "why_it_matters": "Tracks conversion lift from collab in-store activation without blanket discounts."
+      },
+      {
+        "id": "M4",
+        "metric": "Buyer activity share vs promo intensity (paired metric)",
+        "expression": "Weekly buyer share by cohort / Promo intensity index (headline discount depth × reach); report side-by-side to detect dilution or dependence",
+        "owner": "Analytics",
+        "timeframe": "Baseline 2 weeks prior and Nov 18 – Dec 02 window",
+        "status": "plan",
+        "why_it_matters": "Shows whether share gains come from marginal buyers or from deeper discounting; guides whether to scale channel."
+      }
+    ],
+    "coverage": 0.85
+  },
+  "activation_kit": [
+    {
+      "display": {
+        "pillar": "Loyalty-Led Early Window",
+        "play_name": "Top-Decile $1 Credit Mini-Burst",
+        "card_title": "Give $1 to top loyalty members to drive early-window visits",
+        "persona": "Head of Loyalty / Head of Retail",
+        "best_fit": "Programs with segmented digital coupon delivery and POS redemption tracking",
+        "not_for": "Brands without identifiable loyalty traffic or no digital coupon infrastructure",
+        "thresholds_summary": "Success if event CPA is ≤0.8× baseline and redemption ≥15% within the window.",
+        "why_now": "Early-window returns concentrate on engaged loyalty members for Nov18–Dec02; a small credit amplifies visits from your best customers.",
+        "proof_point": "Historical early-window lifts come disproportionately from emotionally engaged loyalty members.",
+        "approach_name": "Targeted Credit",
+        "time_horizon": "immediate",
+        "placement_options": [
+          "Loyalty inbox push / in-app coupon",
+          "POS redemption prompt at checkout",
+          "Mobile wallet / barcode coupon"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Loyalty",
+        "collaborator": "CRM / Brand Partnerships",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "cpa": "≤0.8× baseline",
+          "redemption": "≥15%"
+        },
+        "prerequisites": [
+          "Top decile loyalty segment list",
+          "Digital coupon issuance and POS redemption mapping",
+          "Daily incremental visit and margin telemetry"
+        ],
+        "target_map": [
+          {
+            "org_type": "Retailer",
+            "role": "Head of Loyalty",
+            "why_now": "Leverage known high-value members for early-window lift Nov18–Dec02"
+          },
+          {
+            "org_type": "Brand",
+            "role": "Brand Lead",
+            "why_now": "Quick test of incremental visits without adding new SKUs"
+          },
+          {
+            "org_type": "Analytics",
+            "role": "Measurement Lead",
+            "why_now": "Need daily incremental visit, spend per visit, and margin per visit"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Kickoff: define segment and creatives",
+            "narrative": "Agree target list, coupon mechanics, and tracking fields in one call.",
+            "CTA": "Approve segment and coupon",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "3",
+            "subject": "Instrumentation check",
+            "narrative": "Confirm coupon delivered, POS mapping live, and daily reports set up.",
+            "CTA": "Enable daily telemetry",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "7",
+            "subject": "Mid-burst readout",
+            "narrative": "Share early CPA, redemption, and margin-per-visit versus baseline.",
+            "CTA": "Decide scale or stop",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "low",
+        "strategy_tag": "Targeted Credit"
+      },
+      "play_name": "Top-Decile $1 Credit Mini-Burst",
+      "pillar": "Loyalty-Led Early Window"
+    },
+    {
+      "display": {
+        "pillar": "Collab Trial Capture",
+        "play_name": "Co-branded Trial with In-Store Capture",
+        "card_title": "Run a collab pop-up that captures trial buyers for follow-up",
+        "persona": "Head of Partnerships / Head of Retail Ops",
+        "best_fit": "High-footfall stores able to host sampling and capture opt-ins at POS",
+        "not_for": "Operators without staffing for in-store capture or no CRM link to purchases",
+        "thresholds_summary": "Aim for event CPA ≤0.8× baseline and redemption ≥15%; capture contact info to convert trials to repeat.",
+        "why_now": "Collabs drive fast trial in early-window but convert only when paired with a capture mechanic.",
+        "proof_point": "Collab spend buys reach and trial quickly but needs enrollment mechanics to lift repeat rates.",
+        "approach_name": "Collab Trial with Capture",
+        "time_horizon": "6-week",
+        "placement_options": [
+          "Front-of-store co-branded sampling table",
+          "Temporary endcap with POS upsell prompt",
+          "Staff-led pop-up with digital opt-in"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Partnerships",
+        "collaborator": "Brand Activation Team",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "cpa": "≤0.8× baseline",
+          "redemption": "≥15%",
+          "capture_rate": "≥20% of trialers captured as contacts"
+        },
+        "prerequisites": [
+          "Signed collab activation brief",
+          "In-store staff script and tablet for capture",
+          "Link between captured contact and purchase ID for measurement"
+        ],
+        "target_map": [
+          {
+            "org_type": "Retail Ops",
+            "role": "Field Ops Manager",
+            "why_now": "Coordinate staffing and placement during high-traffic early-window dates"
+          },
+          {
+            "org_type": "Brand",
+            "role": "Activation Lead",
+            "why_now": "Need fast trial and captured contacts to test conversion tactics"
+          },
+          {
+            "org_type": "CRM",
+            "role": "Growth Manager",
+            "why_now": "Prepare automated follow-up to convert captured trialers"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Operational kickoff",
+            "narrative": "Confirm pop-up location, staffing, capture flow, and measurement tags.",
+            "CTA": "Confirm placement and staff",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "3",
+            "subject": "Capture training and QA",
+            "narrative": "Run a 20-minute training with store staff and validate contact flow end-to-end.",
+            "CTA": "Validate capture flow",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "7",
+            "subject": "First-week performance",
+            "narrative": "Share CPA, redemption, and capture rate with recommended tweaks.",
+            "CTA": "Authorize adjustments",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": false,
+        "ops_drag": "medium",
+        "strategy_tag": "Collab Trial with Capture"
+      },
+      "play_name": "Co-branded Trial with In-Store Capture",
+      "pillar": "Collab Trial Capture"
+    },
+    {
+      "display": {
+        "pillar": "Convert Trial to Repeat",
+        "play_name": "Staged Discount Follow-Up",
+        "card_title": "Use staged discounts to protect margin while driving 90-day repeat",
+        "persona": "CMO / Head of Growth",
+        "best_fit": "Brands with CRM automation and ability to measure 90-day repeat by cohort",
+        "not_for": "Programs that cannot link repeat purchases to the initial trial",
+        "thresholds_summary": "Target margin per order no worse than baseline minus 100 bps and 90-day repeat at or above baseline.",
+        "why_now": "Trials from collabs and credits need a repeat engine to preserve share and margin after the window.",
+        "proof_point": "Targeted credit buys higher margin-per-visit; staged follow-up preserves contribution while driving repeat.",
+        "approach_name": "Staged Discount",
+        "time_horizon": "pilot",
+        "placement_options": [
+          "Targeted follow-up coupon via email or app",
+          "Next-visit in-receipt coupon"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Growth",
+        "collaborator": "CRM / Analytics",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "margin_per_order": "≥ baseline - 100 bps",
+          "90d_repeat": "≥ baseline"
+        },
+        "prerequisites": [
+          "Customer linking between trial and repeat purchase",
+          "Automated staged coupon flow",
+          "Baseline margin and 90-day repeat metrics"
+        ],
+        "target_map": [
+          {
+            "org_type": "CRM",
+            "role": "Lifecycle Manager",
+            "why_now": "Need to deploy staged offers to trial cohorts within days of purchase"
+          },
+          {
+            "org_type": "Finance",
+            "role": "FP&A Lead",
+            "why_now": "Approve margin floor and monitor contribution per cohort"
+          },
+          {
+            "org_type": "Brand",
+            "role": "Retention Lead",
+            "why_now": "Test discount depth and timing for converting trial buyers"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Define cohort and discount ladder",
+            "narrative": "Set test cohorts, discount depths, timing, and margin guardrails.",
+            "CTA": "Approve cohort and ladder",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "3",
+            "subject": "Enable automation and QA",
+            "narrative": "Activate staged coupon flows and run a validation purchase to confirm tracking.",
+            "CTA": "Start automation",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "7",
+            "subject": "Early cohort readout",
+            "narrative": "Report initial margin per order and early repeat indicators with recommended changes.",
+            "CTA": "Adjust discount ladder",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "medium",
+        "strategy_tag": "Staged Discount"
+      },
+      "play_name": "Staged Discount Follow-Up",
+      "pillar": "Convert Trial to Repeat"
+    }
+  ],
+  "risk_radar": [
+    {
+      "risk_name": "Collab trial that fails to generate repeat",
+      "scan_line": "Collab media drives trial but not repeat, inflating early-window lift.",
+      "trigger": "Large collab spend without a linked retention mechanic or in-store capture.",
+      "detection": "High share of single-visit buyers; low 28-day repeat rate; big gap between new-buyer share and repeat conversion; incremental margin per buyer falls vs baseline.",
+      "mitigation": "Attach an in-store capture or follow-up retention offer; run A/B of collab with vs without retention mechanic; measure incremental repeat rate and margin over 28 days.",
+      "severity": 3,
+      "likelihood": 2,
+      "approach_exposure": "collab activation",
+      "citations": [
+        4,
+        5,
+        7
+      ]
+    },
+    {
+      "risk_name": "Targeted credits erode contribution",
+      "scan_line": "Credits targeted poorly shift purchase timing or reward buyers who would purchase anyway.",
+      "trigger": "Credits delivered to high-frequency or high-margin users without caps or margin floors.",
+      "detection": "Redemption concentrated in top deciles; drop in contribution margin per visit; increased cannibalization rate; shorter interpurchase intervals without incremental margin.",
+      "mitigation": "Cap exposure and set credit so contribution margin stays positive; target a narrow decile (e.g., top 10%) only when ROI tests show positive incremental margin; run matched holdouts measuring margin per incremental visit.",
+      "severity": 3,
+      "likelihood": 3,
+      "approach_exposure": "targeted credits",
+      "citations": [
+        5
+      ]
+    },
+    {
+      "risk_name": "Short measurement windows misattribute lift",
+      "scan_line": "Early-window gains mask later cannibalization or deferred purchases.",
+      "trigger": "Using only short attribution windows or measuring only immediate redemptions.",
+      "detection": "Large drop-off between short-window incremental sales and 28-90 day cohort performance; reversal in net margin when including repeat behavior.",
+      "mitigation": "Extend measurement to 28 to 90 days for prioritized tests; track cohort-level repeat and margin; include rapid sequential checks to surface reversals within two planning cycles.",
+      "severity": 3,
+      "likelihood": 2,
+      "approach_exposure": "all",
+      "citations": [
+        7,
+        4,
+        5
+      ]
+    },
+    {
+      "risk_name": "Cross-treatment contamination from audience overlap",
+      "scan_line": "Overlapping targets leak exposure across treatments and bias lift estimates.",
+      "trigger": "Shared audience segments across loyalty, collab, and media activations without deduping.",
+      "detection": "High cross-exposure rate in targeting logs; reduced measured uplift in expected high-response cells; inconsistent lift across adjacent test cells.",
+      "mitigation": "Enforce mutual exclusivity in targeting; audit and block cross-exposures; add deduped holdout cells and measure contamination rate before scaling.",
+      "severity": 2,
+      "likelihood": 3,
+      "approach_exposure": "all",
+      "citations": [
+        7,
+        4
+      ]
+    }
+  ],
+  "future_outlook": [
+    {
+      "horizon": "6-month",
+      "headline": "Targeted loyalty credits plus collab capture compress early-window CPA",
+      "scan_line": "If true, we will see higher incremental visits and contribution margin per visit from targeted loyalty credits within 6 months.",
+      "description": "Early-window lift concentrates in emotionally engaged loyalty members; a small targeted credit yields more visits and higher margin-per-visit than blanket discounts[^7]. Collab activations drive fast trial and new-buyer reach but convert to repeat only when paired with an in-store or loyalty capture mechanic[^4]. Therefore, pairing a top-decile $1 credit with a matched collab activation should produce measurable incremental visits and preserved contribution margin within the holiday window[^5].",
+      "operator_watch": "Daily incremental visits, incremental spend per visit, and contribution margin per incremental visit segmented by treatment (loyalty-targeted credit vs collab-only vs blanket discount).",
+      "collaboration_upside": "Lower early-window CPA and higher margin per incremental visit; new-buyer reach from collabs funnels into repeat behavior via capture mechanics, enabling scaled promotions without blanket discounting.",
+      "dominant_approach": "mixed",
+      "confidence": 0.8,
+      "citations": [
+        7,
+        4,
+        5
+      ]
+    },
+    {
+      "horizon": "12-month",
+      "headline": "Defaulting to blanket discounts erodes margin and raises event CPA",
+      "scan_line": "If true, we will see a growing share of incremental holiday sales come from blanket discounts and falling contribution margin within 12 months.",
+      "description": "When operators fail to prioritize targeted credits and capture mechanics, collab-driven trial stays transient and overall lift requires deeper blanket discounts to hit targets[^5]. That discount creep reduces contribution margin as new-buyer reach does not reliably convert to repeat without loyalty integration[^7]. Over a year this forces higher CPA to sustain the same early-window volume and shrinks funds available for profitable customer retention[^4].",
+      "operator_watch": "Percentage of incremental holiday sales arising from blanket discounts and contribution margin per incremental visit over the peak period.",
+      "collaboration_upside": "Shift spend to targeted credits plus capture mechanics, reallocate budget from blanket promos to measurably lower-CPA loyalty incentives, and stabilize margin while preserving or growing early-window share.",
+      "dominant_approach": "discount-heavy holiday",
+      "confidence": 0.65,
+      "citations": [
+        5,
+        7,
+        4
+      ]
+    }
+  ],
+  "comparison_map": {
+    "approach_map": [
+      {
+        "approach_name": "Loyalty-Led $1 Targeted Credit",
+        "who_it_is_for": "Head of Loyalty or CRM with digital coupon delivery and POS tracking.",
+        "strengths": "Small, personalised credits convert engaged members into early-window visits using emotional cues and time bounds (S1, S3). Keeps headline prices intact while shifting demand into Nov 18 to Dec 02.",
+        "failure_modes": "Poor targeting or missing caps rewards buyers who would have purchased anyway, eroding contribution (Targeted credits erode contribution). Concentrated redemptions in top deciles reduce incrementality.",
+        "when_to_choose": "You can push a digital coupon to a clear top decile and measure POS redemptions within the two-week window.",
+        "when_not_to_choose": "You lack digital coupon delivery or cannot enforce redemption caps and margin floors.",
+        "supporting_signals": [
+          "S1",
+          "S3"
+        ],
+        "key_risks": [
+          "Targeted credits erode contribution"
+        ],
+        "key_metrics": [
+          "Event CPA vs baseline",
+          "Early-window visit share (Nov 18 to Dec 02)",
+          "Redemption rate among targeted cohort",
+          "Contribution margin per visit"
+        ]
+      },
+      {
+        "approach_name": "Collab-Led Micro-Influencer QR Pilot",
+        "who_it_is_for": "Head of Partnerships or Brand with ability to run single-use QR coupons in-store.",
+        "strengths": "Micro-influencer content turns $1 CPM-equivalent into store trial when paired with a redeemable QR coupon (S2). Fast reach and measurable in-store capture for two-week pilots.",
+        "failure_modes": "Generates trial without retention, inflating early-window lift but not lifetime value (Collab trial that fails to generate repeat). Spend concentrated on acquisition without a follow-up retention mechanic increases CPA.",
+        "when_to_choose": "You can deploy single-use QR coupons, track redemptions, and attach an immediate follow-up retention offer.",
+        "when_not_to_choose": "You cannot instrument POS to attribute QR redemptions or run a follow-up retention flow.",
+        "supporting_signals": [
+          "S2"
+        ],
+        "key_risks": [
+          "Collab trial that fails to generate repeat"
+        ],
+        "key_metrics": [
+          "QR redemption rate",
+          "Incremental footfall vs matched retail media buy",
+          "New-buyer share",
+          "28-day repeat rate",
+          "Event CPA"
+        ]
+      },
+      {
+        "approach_name": "Retail-Media Burst with Store-as-Studio Collab SKU",
+        "who_it_is_for": "Head of Retail or Head of Media with access to owned channels and partner feeds.",
+        "strengths": "A tight retail-media burst focused on owned and partner placements directs attention to stores for a time-bound collab SKU or reward (S4). Store-as-studio creative increases urgency and measurable footfall in the early window.",
+        "failure_modes": "High reach can produce many single-visit buyers if no retention mechanic is attached (Collab trial that fails to generate repeat). If creative or CTA is weak, spend dilutes without moving store visits or margins.",
+        "when_to_choose": "You can run concentrated paid placements Nov 18 to Dec 02 and promote a single CTA that maps to an in-store action or SKU.",
+        "when_not_to_choose": "You lack rapid creative, measurement of store visits, or a linked retention capture.",
+        "supporting_signals": [
+          "S4",
+          "S2",
+          "S1"
+        ],
+        "key_risks": [
+          "Collab trial that fails to generate repeat",
+          "Targeted credits erode contribution"
+        ],
+        "key_metrics": [
+          "Store visits in the window",
+          "Event CPA",
+          "Incremental margin per buyer",
+          "New-to-return buyer ratio"
+        ]
+      }
+    ],
+    "buyer_guide": [
+      {
+        "option_name": "Specialist Retail Agency (2-week sprint)",
+        "best_for": "Brands that need fast creative, media placement, and measurement without internal bandwidth.",
+        "not_for": "Brands with zero media budget or no time to coordinate approvals.",
+        "commercial_shape": "Fixed sprint fee for creative plus media budget. Payment on kickoff and on delivery of KPI report at end of two weeks.",
+        "proof_needed_before_scaling": "15%+ lift in early-window footfall or CPA at or below 0.8x baseline across two pilot markets.",
+        "where_STI_fits": "STI provides the playbook, target segments, A/B test plan, and KPI thresholds for the agency to execute."
+      },
+      {
+        "option_name": "In-house Store-as-Studio Sprint",
+        "best_for": "Operators with store ops and a basic production team who can convert stores into short-run media centers.",
+        "not_for": "Brands without store teams or inability to change in-store signage/experience quickly.",
+        "commercial_shape": "One-time production budget per store plus incremental staffing costs for the two-week window. No ongoing retainer required.",
+        "proof_needed_before_scaling": "QR redemptions >=10% per participating store and sustained week-over-week footfall beyond the campaign window in pilot stores.",
+        "where_STI_fits": "STI designs the creative frames, measurement tags, and the redemption funnel. We hand over scripts and KPI dashboard to ops."
+      },
+      {
+        "option_name": "Micro-Influencer Collab Managed by Partnerships",
+        "best_for": "Brands that want low-cost, high-engagement reach and can link creator content to a single-use in-store coupon.",
+        "not_for": "Brands that cannot instrument or attribute in-store redemptions.",
+        "commercial_shape": "Flat fee per creator plus a small performance bonus tied to QR redemptions. Campaign window limited to Nov 18 to Dec 02.",
+        "proof_needed_before_scaling": "QR redemption rate >=10% and event CPA at or below target in two matched territories.",
+        "where_STI_fits": "STI scopes creator brief, maps expected reach to redemption volume, and builds the attribution test against a retail media control."
+      },
+      {
+        "option_name": "Loyalty Personalization via Platform Partner",
+        "best_for": "Brands with active loyalty programs and the ability to push segmented coupons to members.",
+        "not_for": "Brands without a digital loyalty channel or POS coupon plumbing.",
+        "commercial_shape": "Platform fee for messaging plus per-member delivery cost and the $1 credit funding. Billing per campaign window.",
+        "proof_needed_before_scaling": "Redemption among targeted cohort >=15% and early-window share increased to 20% or more for treated segment.",
+        "where_STI_fits": "STI defines target segments, test/control assignment, uplift metrics, and stop/go thresholds for the loyalty team and platform."
+      }
+    ]
+  },
+  "signal_map_notes": "Prioritize pilots that reallocate incremental dollar from blanket discounts into three linked bets: (1) emotion-first loyalty nudges delivered via retail media, (2) limited collab SKUs with in-store creative, and (3) localized loyalty offers enabled by partner platforms. Measure buyer activity share against promo intensity and insist on these thresholds for success: foot traffic uplift 10–15% base (stretch ≥25%), early-window share move from ~12–15% toward 20–30%, event CPA ≤0.80× baseline, and QR redemption ≥5% of footfall. Competing approach: broad discounting still wins short-term volume but erodes margin and reduces signal clarity; only pursue if pilots cannot meet CPA or early-window share targets within the Nov 18 – Dec 02 window."
+}

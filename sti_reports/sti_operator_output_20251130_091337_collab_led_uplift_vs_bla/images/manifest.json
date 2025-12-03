@@ -1,0 +1,126 @@
+[
+  {
+    "type": "hero",
+    "slot": "hero",
+    "section": "Hero",
+    "anchor_section": "header",
+    "template": "hero_decision_window",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "scene": "store backroom staged studio pop up wall map",
+        "personas": "head retail",
+        "action": "placing collab event sticker two week pilot map",
+        "symbolism": "narrow band light slicing across stacked ticket stub",
+        "props": "two week pilot store map labeled control blanket",
+        "mood": "decisive collaborative focused",
+        "lighting": "Polished editorial with confident highlights and clean negative space",
+        "focal_point": "placing collab event sticker two week pilot map"
+      },
+      "style": {
+        "framing": "three-quarter view from eye level",
+        "lighting": "polished editorial lighting with soft shadows",
+        "palette": "ivory and charcoal with cyan pins",
+        "geometry": "clean architectural facets",
+        "environment": "measured spatial grid"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "early_window_share"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "Early-window share"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share"
+    ],
+    "alt": "Head of Retail staging a two-week collab event pilot to lift early-window share.",
+    "image": "images/hero_collab_led_uplift_vs_blanket_d.png"
+  },
+  {
+    "type": "section",
+    "section": "Signal Map",
+    "slot": "signal_map",
+    "anchor_section": "signals_and_thesis",
+    "template": "signal_map_concentric",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "context": "focus tests early access collabs price curve optimization",
+        "structure": "concentric rings radial arcs inner ring shows baseline",
+        "elements": "store tokens sized weekly footfall collab nodes highlighted",
+        "motion": "curved flows indicate buyer movement awareness store activity",
+        "direction": "focus tests early access collabs price curve optimization",
+        "palette": "matte neutrals single confident accent collab nodes metallic"
+      },
+      "style": {
+        "framing": "radial diagram posture",
+        "lighting": "calm perimeter glow",
+        "palette": "charcoal with muted teal overlays",
+        "geometry": "clean networked arcs",
+        "environment": "dark minimal background"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "early_window_share",
+        "event_cpa"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "Early-window share",
+        "Event CPA"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share",
+      "event_cpa"
+    ],
+    "alt": "Head of Partnerships reviews a signal map encoding footfall lift and early-window share for collab tests.",
+    "image": "images/section_signal_map_collab_led_uplift_vs_blanket_d.png"
+  },
+  {
+    "type": "section",
+    "section": "Case Study 1",
+    "slot": "case_study_1",
+    "anchor_section": "deep_analysis",
+    "template": "case_play_activation",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "scene": "floor level pilot day staff prepping collab pop",
+        "time": "first morning randomized two week pilot where collab",
+        "moment": "first morning randomized two week pilot where collab",
+        "personas": "retail ops manager",
+        "mood": "experimental data first urgent",
+        "lighting": "Polished editorial, directional highlights on the pop-up",
+        "props": "pilot assignment tags shelving stacked bundle packs branded",
+        "focal_point": "floor level pilot day staff prepping collab pop"
+      },
+      "style": {
+        "framing": "slightly elevated angle looking down",
+        "lighting": "diffused skylight with controlled highlights",
+        "palette": "slate base with subtle brass highlights",
+        "geometry": "minimal coaxial arcs",
+        "environment": "calm studio void"
+      },
+      "metric_focus": [
+        "early_window_share",
+        "footfall_lift"
+      ],
+      "metric_labels": [
+        "Early-window share",
+        "Foot-traffic uplift"
+      ]
+    },
+    "metric_focus": [
+      "early_window_share",
+      "footfall_lift"
+    ],
+    "alt": "Retail Ops Manager running a randomized two-week pilot testing collab events vs blanket discounts.",
+    "image": "images/section_case_study_1_collab_led_uplift_vs_blanket_d.png"
+  }
+]

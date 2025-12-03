@@ -1,0 +1,103 @@
+[
+  {
+    "category": "Market",
+    "name": "A24 Shop Experience Launches Inside Barnes & Noble",
+    "description": "Indie studio A24 and Barnes & Noble are rolling out branded in-store footprints that combine books, film merch and event programming inside select stores. The move treats bookstore real estate as a content stage tied to film drops and fandom programming rather than pure retail shelf space. ",
+    "operator_move": "Owner: Brand Partnerships; Window: 6 weeks from announcement; KPI: +20% dwell time in the branded zone and +10% conversion on A24 SKUs (test in one store cluster).",
+    "strength": 0.91,
+    "US_fit": 0.98,
+    "operationality": 0.86,
+    "support": [
+      3,
+      5
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      3,
+      5
+    ],
+    "id": "S1"
+  },
+  {
+    "category": "Market",
+    "name": "Property Managers Shift Toward Integrated Experiential Programming",
+    "description": "Retail property managers are retooling leasing and operations to prioritize curated experiences, pop-ups and programming over traditional long-term retail tenants. The trend treats centers as flexible content platforms that rotate narratives and creators to keep visitation high. ",
+    "operator_move": "Owner: Real Estate + Retail Ops; Window: 8 weeks to pilot a curated pop-up plan in one mall pod; KPI: incremental footfall during event weekends and event-driven revenue per square foot.",
+    "strength": 0.88,
+    "US_fit": 0.96,
+    "operationality": 0.82,
+    "support": [
+      4
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      4
+    ],
+    "id": "S2"
+  },
+  {
+    "category": "Behavioral",
+    "name": "Vacant Storefronts Converted Into Artist Canvases And Mini-Stages",
+    "description": "Developers and nonprofits are filling empty retail with artist-led activations and micro-galleries, using short-term occupancy to drive discovery and local buzz. These activations convert low-yield square footage into social content generators and community touchpoints. ",
+    "operator_move": "Owner: Community Engagement / Local Marketing; Window: 4 weeks to convert a vacant bay into a weekend artist residency; KPI: social impressions and RSVP-to-visit conversion rate for the activation.",
+    "strength": 0.8,
+    "US_fit": 0.92,
+    "operationality": 0.78,
+    "support": [
+      1
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      1
+    ],
+    "id": "S3"
+  },
+  {
+    "category": "Technology",
+    "name": "Agentic Commerce Tools Make Event-Driven Merch And Inventory Work",
+    "description": "Agentic commerce and AI systems promise automated orchestration of event SKUs, local inventory and on-shelf presentation so stores can act like timed content drops. The technology reduces operational friction for short-run merchandising and aligns product availability to content schedules. ",
+    "operator_move": "Owner: Head of Commerce / Data; Window: 6 to 8 weeks to deploy an event-SKU orchestration pilot for a single region; KPI: reduction in event stockouts and increase in event conversion rate versus baseline.",
+    "strength": 0.86,
+    "US_fit": 0.9,
+    "operationality": 0.84,
+    "support": [
+      2,
+      7
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      2,
+      7
+    ],
+    "id": "S4"
+  },
+  {
+    "category": "Cultural",
+    "name": "Emotional Content Formats Turn Stores Into Collectible Marketplaces",
+    "description": "Brands are using emotional storytelling and collectibles to convert store visits into higher-value transactions, treating stores as production studios for culturally resonant moments. This creates durable revenue from limited-edition merch and event-linked products rather than from routine discounting. ",
+    "operator_move": "Owner: Creative / Merchandising; Window: 6 weeks around a content moment; KPI: average order value on limited editions and repeat visitation rate in the month after the drop.",
+    "strength": 0.82,
+    "US_fit": 0.85,
+    "operationality": 0.8,
+    "support": [
+      6,
+      9
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      6,
+      9
+    ],
+    "id": "S5"
+  }
+]

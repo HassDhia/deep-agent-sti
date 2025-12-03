@@ -1,0 +1,37 @@
+{
+  "total": 9,
+  "core": 0,
+  "support": 9,
+  "unique_domains": 9,
+  "domain_counts": {
+    "facebook.com": 1,
+    "bapexadidasnmdr1.com": 1,
+    "reddit.com": 1,
+    "influencers-time.com": 1,
+    "vogue.com": 1,
+    "soleretriever.com": 1,
+    "indianretailer.com": 1,
+    "statista.com": 1,
+    "hbcumoney.com": 1
+  },
+  "data_heavy": 5,
+  "time_span_days": 0,
+  "tier_counts": {
+    "core": 9,
+    "context": 0
+  },
+  "dominant_ratio": 0.111,
+  "thin_evidence": true,
+  "thresholds": {
+    "total": true,
+    "core": false,
+    "domains": true,
+    "data": true,
+    "dominance": true,
+    "in_window": true,
+    "background": false,
+    "support_coverage": false
+  },
+  "support_coverage": 0.0,
+  "regime": "directional"
+}

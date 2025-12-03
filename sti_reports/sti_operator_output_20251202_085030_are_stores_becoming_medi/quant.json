@@ -1,0 +1,122 @@
+{
+  "spine_hook": "Raise full-price early-window buyer share to 20–30% while holding promo depth and event CPA ≤0.8× baseline, measured by paired tracking of buyer-share vs promo-intensity during Nov 18–Dec 02.",
+  "anchors": [
+    {
+      "id": "Q1",
+      "headline": "Observed early-window buyer share (current baseline)",
+      "topic": "Early-window share",
+      "value_low": 12,
+      "value_high": 15,
+      "unit": "% of buyers in-window",
+      "status": "observed",
+      "band": "base",
+      "owner": "Retail Analytics / Brand",
+      "expression": "Share of total holiday purchases occurring Nov 18–Dec 02 that are full-price and attributed to store-originated media/events",
+      "source_ids": [
+        0,
+        8
+      ],
+      "applies_to_signals": [
+        "brand↔brand",
+        "brick&mortar↔brand"
+      ]
+    },
+    {
+      "id": "Q2",
+      "headline": "Target foot-traffic uplift (base / stretch)",
+      "topic": "Foot traffic",
+      "value_low": 10,
+      "value_high": 25,
+      "unit": "% vs pre-window baseline",
+      "status": "target",
+      "band": "base",
+      "owner": "Store Operations",
+      "expression": "Percent increase in visits during Nov 18–Dec 02 vs average daily visits in the two weeks before Nov 18 (base = 10–15%, stretch ≥25%)",
+      "source_ids": [
+        0,
+        8
+      ],
+      "applies_to_signals": [
+        "brick&mortar↔brand"
+      ]
+    },
+    {
+      "id": "Q3",
+      "headline": "Event CPA ceiling (cost-efficiency guardrail)",
+      "topic": "Event CPA",
+      "value_low": 0,
+      "value_high": 0.8,
+      "unit": "x baseline CPA",
+      "status": "target",
+      "band": "base",
+      "owner": "Marketing / Partnerships / Finance",
+      "expression": "Total event-related spend (creator fees + incremental store cost + media) divided by full-price buyers acquired and reported relative to baseline channel CPA (target ≤0.8× baseline)",
+      "source_ids": [
+        0,
+        2
+      ],
+      "applies_to_signals": [
+        "brand↔brand",
+        "brick&mortar↔brand"
+      ]
+    },
+    {
+      "id": "Q4",
+      "headline": "QR redemption floor (attention to action)",
+      "topic": "QR redemption",
+      "value_low": 5,
+      "value_high": 5,
+      "unit": "% of footfall",
+      "status": "target",
+      "band": "base",
+      "owner": "Store Ops / Digital",
+      "expression": "Unique QR code redemptions tied to in-store media or events divided by store footfall during Nov 18–Dec 02 (floor ≥5%)",
+      "source_ids": [
+        0,
+        8
+      ],
+      "applies_to_signals": [
+        "brick&mortar↔brand"
+      ]
+    }
+  ],
+  "measurement_plan": [
+    {
+      "id": "M1",
+      "metric": "Early-window full-price buyer share",
+      "expression": "Full-price transactions attributed to store events / total transactions during Nov 18–Dec 02. Attribution via event tags, POS source code, or unique QR scan linkbacks.",
+      "owner": "Retail Analytics",
+      "timeframe": "Nov 18–Dec 02, 2025 + 14-day attribution window",
+      "status": "plan",
+      "why_it_matters": "Direct test of the job story: increases in this share mean more experience-driven buyers, not deeper discounts."
+    },
+    {
+      "id": "M2",
+      "metric": "Promo intensity (paired metric)",
+      "expression": "Weighted average discount depth across promoted SKUs and share of transactions with any discount, measured daily and aggregated for the window.",
+      "owner": "Pricing / Revenue Management",
+      "timeframe": "Daily during Nov 18–Dec 02, 2025",
+      "status": "plan",
+      "why_it_matters": "Paired with M1 to prove buyer-share growth occurred without increasing promo depth or frequency."
+    },
+    {
+      "id": "M3",
+      "metric": "Event CPA (relative to baseline)",
+      "expression": "Total event spend (creator fees + on-site ops + media) / full-price buyers attributed to the event. Report as x baseline CPA where baseline = average CPA for last pre-holiday period (owner to define baseline window).",
+      "owner": "Marketing Finance / Partnerships",
+      "timeframe": "Event window + 30 days for LTV follow-up",
+      "status": "plan",
+      "why_it_matters": "Ensures store-as-studio acquisition stays cost-efficient. Target ceiling ≤0.8× baseline CPA."
+    },
+    {
+      "id": "M4",
+      "metric": "QR redemption rate (attention -> action)",
+      "expression": "Unique QR redemptions linked to event or store media / measured store footfall, daily and aggregated for the window.",
+      "owner": "Store Ops / Digital",
+      "timeframe": "Daily during Nov 18–Dec 02, 2025",
+      "status": "plan",
+      "why_it_matters": "Checks that media-driven attention converts into measurable buyer signals. Target floor ≥5% of footfall."
+    }
+  ],
+  "coverage": 0.85
+}

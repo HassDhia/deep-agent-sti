@@ -1,0 +1,284 @@
+{
+  "generated_at": "2025-12-02T08:58:49.826119",
+  "query": "Are stores becoming media studios faster than brands can adapt?",
+  "time_window": {
+    "start": "2025-11-18",
+    "end": "2025-12-02",
+    "days": 14,
+    "label": "Nov 18 – Dec 02, 2025"
+  },
+  "confidence": {
+    "score": 0.28,
+    "display": 0.28,
+    "band": "Directional",
+    "dials": {
+      "strength": "light",
+      "coverage": "light",
+      "quant_support": "high",
+      "consistency": "high"
+    },
+    "breakdown": {
+      "average_strength": 0.0,
+      "coverage": 0.0,
+      "quant_support": 1.0,
+      "contradiction_penalty": 0.8
+    },
+    "note": "Directional evidence: 9 sources • 8 domains • 9 in-window / 0 background • support coverage 0%"
+  },
+  "files": [
+    "intelligence_report.md",
+    "market_path_report.md",
+    "market_path_report.pdf",
+    "intelligence_report.jsonld",
+    "metadata.json"
+  ],
+  "sections": [
+    "deep_analysis",
+    "pattern_matches",
+    "brand_outcomes",
+    "operator_notes",
+    "quant",
+    "activation_kit",
+    "risk_radar",
+    "future_outlook",
+    "comparison_map",
+    "signal_map_notes"
+  ],
+  "title": "Are stores becoming media studios faster than brands can adapt?",
+  "highlights": [
+    "Treat store attention as priced inventory: short creator slots and modular ad units convert attention into margin faster than blanket discounts [^2].",
+    "Creator-led activations raise AOV and retention when paired with product-focused offers and local inventory control; creators seed early-window demand [^3][^8].",
+    "Instrumentation matters: compare per-visit media revenue to markdown cost-per-buyer and track event CPA to ensure media substitutes for, not supplements, discounting [^2]."
+  ],
+  "executive_summary": "You need more full-price, experience-driven buyers from Nov 18 - Dec 02, 2025 without deepening holiday discounting. Treating stores as media studios can move footfall and buyer mix so you hit a **10-15%** base foot-traffic uplift (stretch **≥25%**) and shift early-window share from the current 12-15% toward **20-30%**, while holding event CPA at or below **≤0.80×** baseline and QR redemption at **≥5% of footfall** [^2][^8]. Favor a store-as-studio / media-led holiday approach: in the next 30 days align Stores, Marketing, Partnerships, and Analytics to price and sell short creator slots, deploy QR attribution, and instrument per-visit media revenue so you can compare incremental gross margin vs markdown cost. Measure success by the four unified metrics (foot-traffic uplift, early-window share, event CPA, QR redemption) and stop broad markdowns that exceed the markdown cost-per-buyer baseline [^2][^3].",
+  "top_operator_moves": [
+    "Price and offer a 20–60 minute creator headliner as a sellable in-store ad unit in 10–25 pilot stores and require a QR-driven call to action that maps to POS.",
+    "Reallocate a share of planned promo spend to local creator fees and paid in-store CPMs, instrument per-visit media revenue and compare incremental gross margin vs markdown baseline within two weeks of each event.",
+    "Set Analytics to report daily: foot-traffic uplift, early-window buyer share, event CPA vs baseline, and QR redemption as a percentage of footfall; pause formats that miss CPA or QR floors."
+  ],
+  "statistics": {
+    "word_count": 4024,
+    "signal_count": 0,
+    "source_count": 9
+  },
+  "read_time_minutes": 21,
+  "length_label": "~21 min read",
+  "qa": {
+    "issues": [
+      "Source coverage under minimum thresholds",
+      "Signal count outside required band",
+      "Read time exceeds target"
+    ],
+    "coverage": 0.0,
+    "quant_support": 1.0,
+    "contradiction_penalty": 0.8,
+    "appendix_count": 8,
+    "scope": {
+      "topic": "Are stores becoming media studios faster than brands can adapt?",
+      "time_window": {
+        "start": "2025-11-18",
+        "end": "2025-12-02",
+        "days": 14,
+        "label": "Nov 18 – Dec 02, 2025"
+      },
+      "target_region": "US",
+      "use_cases": [
+        "brand↔brand",
+        "brick&mortar↔brand"
+      ],
+      "must_answer": [
+        "When are the high-value windows",
+        "What changes discounting math"
+      ],
+      "approach_hints": [
+        "discount-heavy holiday",
+        "collab-led holiday",
+        "store-as-studio / media-led holiday"
+      ],
+      "unified_target_pack": {
+        "foot_traffic_uplift": {
+          "base": "10-15%",
+          "stretch": "≥25%"
+        },
+        "early_window_share": {
+          "current": "12-15%",
+          "goal": "20-30%"
+        },
+        "event_cpa": {
+          "ceiling": "≤0.80× baseline"
+        },
+        "qr_redemption": {
+          "floor": "≥5% of footfall"
+        },
+        "paired_metric": "Track buyer activity share vs promo intensity side by side"
+      },
+      "window_label": "Nov 18 – Dec 02, 2025",
+      "topic_kind": "store_as_studio",
+      "thin_evidence": true,
+      "operator_job_story": "How to get more full-price, experience-driven buyers from Nov 18 - Dec 02, 2025 without deepening holiday discounting.",
+      "search_shaped_variants": [
+        "How to drive early-window holiday purchases from stores-as-studio without worsening promo math",
+        "Test in-store media to shift foot traffic and buyer share during Nov 18 - Dec 02, 2025",
+        "Which store-produced content moves buyers before heavy discounts, and how to measure it",
+        "Run creator-led store events that hit QR redemption and CPA targets over the holiday window"
+      ],
+      "evidence_regime": "directional",
+      "evidence_note": "Directional evidence: 9 sources • 8 domains • 9 in-window / 0 background • support coverage 0%",
+      "pilot_spec": {
+        "scenario": "store_as_studio_early_window",
+        "store_count": 10,
+        "store_type": "flagship_and_high_traffic",
+        "duration_weeks": 2,
+        "window": "Nov 18 – Dec 02, 2025",
+        "primary_move": "Run creator-led in-store events plus short-run in-store media to increase early-window full-price buyer share without increasing promo intensity.",
+        "owner_roles": [
+          "Head of Retail",
+          "Head of Partnerships",
+          "Finance"
+        ],
+        "location_radius_miles": 5,
+        "key_metrics": [
+          "early_window_full_price_share",
+          "promo_intensity",
+          "event_cpa_rel_baseline",
+          "foot_traffic_uplift_pct",
+          "qr_redemption_rate"
+        ],
+        "window_label": "Nov 18 – Dec 02, 2025"
+      },
+      "metric_spec": {
+        "early_window_full_price_share": {
+          "label": "Early-window full-price buyer share",
+          "target_range": [
+            20.0,
+            30.0
+          ],
+          "unit": "percent",
+          "stage": "target",
+          "owner": "Retail Analytics",
+          "target_text": "Increase full-price transactions attributed to store events to 20-30% of total transactions during Nov 18\u0013Dec 02.",
+          "notes": ""
+        },
+        "promo_intensity": {
+          "label": "Promo intensity (weighted discount depth and share of discounted transactions)",
+          "target_range": [
+            0.0,
+            0.0
+          ],
+          "unit": "Percent Change",
+          "stage": "guardrail",
+          "owner": "Pricing / Revenue Management",
+          "target_text": "No increase versus baseline in weighted average discount depth or share of transactions with any discount during the window.",
+          "notes": ""
+        },
+        "event_cpa_rel_baseline": {
+          "label": "Event CPA relative to baseline",
+          "target_range": [
+            0.8,
+            0.8
+          ],
+          "unit": "X Baseline",
+          "stage": "target",
+          "owner": "Head of Partnerships",
+          "target_text": "Campaign-level event CPA must be \b8% of baseline or lower (<=0.8x baseline).",
+          "notes": ""
+        },
+        "foot_traffic_uplift_pct": {
+          "label": "Foot traffic uplift",
+          "target_range": [
+            10.0,
+            25.0
+          ],
+          "unit": "percent",
+          "stage": "target",
+          "owner": "Retail Analytics",
+          "target_text": "Lift foot traffic 10-15% base with stretch to >=25% for high-performing locations.",
+          "notes": ""
+        },
+        "qr_redemption_rate": {
+          "label": "QR redemption rate of footfall",
+          "target_range": [
+            5.0,
+            5.0
+          ],
+          "unit": "percent",
+          "stage": "guardrail",
+          "owner": "Retail Analytics",
+          "target_text": "Achieve at least 5% of footfall redeeming QR links; 15% redemption preferred for mini-burst economics.",
+          "notes": ""
+        }
+      },
+      "role_actions": {
+        "Head of Retail": [
+          "Select the pilot stores and enable the specified in-store media placements and QR codes for Nov 18\u0013Dec 02. Deliver daily door counts, POS event tags, and QR linkback logs to Retail Analytics so they can report Foot Traffic Uplift Pct, Early Window Full Price Share, and Qr Redemption Rate."
+        ],
+        "Head of Partnerships": [
+          "Book creator-led in-store activations and sell short-run in-store media; cap total event spend per store to meet Event Cpa Rel Baseline. Provide an itemized spend plan and expected buyer yield to Finance before activation."
+        ],
+        "Finance": [
+          "Approve funds only if modeled event CPA <= 0.8x baseline and Promo Intensity model shows no increase versus baseline. Hold funding if either condition fails."
+        ]
+      },
+      "pilot_spec_issues": [],
+      "spec_version": "v1",
+      "spec_ok": true,
+      "spec_notes": []
+    },
+    "read_time": 21,
+    "high_quality_signals": true,
+    "observed_quant": true,
+    "tier1_market_signals": true
+  },
+  "agent": "EnhancedSTIAgent",
+  "model": "gpt-5-mini-2025-08-07",
+  "source_stats": {
+    "total": 9,
+    "core": 0,
+    "support": 9,
+    "unique_domains": 8,
+    "domain_counts": {
+      "cbbc.org": 1,
+      "qsrmagazine.com": 1,
+      "vogue.com": 1,
+      "moviemaker.com": 1,
+      "msn.com": 2,
+      "riverjournalonline.com": 1,
+      "retailtouchpoints.com": 1,
+      "phys.org": 1
+    },
+    "data_heavy": 4,
+    "time_span_days": 0,
+    "tier_counts": {
+      "core": 9,
+      "context": 0
+    },
+    "dominant_ratio": 0.222,
+    "thin_evidence": true,
+    "thresholds": {
+      "total": true,
+      "core": false,
+      "domains": true,
+      "data": true,
+      "dominance": true,
+      "in_window": true,
+      "background": false,
+      "support_coverage": false
+    },
+    "support_coverage": 0.0,
+    "regime": "directional"
+  },
+  "renderers": [
+    "market_path_markdown",
+    "market_path_pdf",
+    "legacy_html"
+  ],
+  "artifact_paths": [
+    "sti_reports/sti_operator_output_20251202_085030_are_stores_becoming_medi/market_path_report.md",
+    "sti_reports/sti_operator_output_20251202_085030_are_stores_becoming_medi/market_path_report.pdf"
+  ],
+  "social_media_content": {
+    "confidence": 0.28,
+    "teaser_mode": true,
+    "sources_used": ""
+  }
+}

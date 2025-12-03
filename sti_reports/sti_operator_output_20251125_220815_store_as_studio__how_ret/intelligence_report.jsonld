@@ -1,0 +1,58 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Report",
+  "name": "Holiday Flagship Early-Access & Pop-up Tests",
+  "about": "Store as Studio:\nHow retail stores are becoming content properties",
+  "abstract": "A two-week early-access holiday program paired with a pop-up lab and an Arm A vs Arm B A/B test (Arm A legacy markdown vs Arm B bundle+GWP+loyalty) concentrates attention and converts vacant retail bays into measurable commerce channels [^3][^4][^5]. Target the unified holiday pack: foot-traffic uplift **10–15%** (stretch **≥25%** in top markets), early-window transaction share **20–30%** (vs ~12–15% baseline), event CPA ≤**0.80×** baseline, and QR/scan redemption **≥5%** of footfall. In the next **30 days**, Real Estate, Retail Ops, Marketing, Commerce/Data, and Merchandising must lock pilot sites, instrument door counts and QR→POS flows, define A/B holdouts, tag event SKUs and wire dashboards to track early-window share and CPA [^1][^2][^7]. The operator move is straightforward: run the two-arm early-access in a converted bay, measure incremental footfall and CPA, then scale the winning arm into a cluster of stores [^4][^3].",
+  "datePublished": "2025-11-26T06:15:53.752745",
+  "temporalCoverage": "2025-11-19/2025-11-26",
+  "hasPart": [
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.msn.com/en-us/movies/news/a24-barnes-noble-partner-on-branded-in-store-spaces-for-indie-studios-books-movies-merch/ar-AA1R7Fqi?ocid=BingNewsVerp",
+        "https://www.msn.com/en-us/movies/news/a24-barnes-noble-partner-on-branded-in-store-spaces-for-indie-studios-books-movies-merch/ar-AA1R7Fqi"
+      ],
+      "about": "Market"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.bisnow.com/new-york/news/retail/retail-property-management-cushmanwakefield-studiob-131980"
+      ],
+      "about": "Market"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.bisnow.com/national/news/retail/vacant-retail-space-becomes-a-blank-canvas-for-artists-132069"
+      ],
+      "about": "Behavioral"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.forbes.com/councils/forbesbusinesscouncil/2025/11/25/how-agentic-commerce-is-reshaping-retail-and-cpg-strategy/",
+        "https://www.forbes.com/sites/sap/2025/11/19/learn-how-agentic-ai-and-business-suites-put-the-perfect-store-within-reach/"
+      ],
+      "about": "Technology"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.forbes.com/councils/forbescommunicationscouncil/2025/11/25/how-to-choose-the-right-creative-formats-to-cut-through-content-overload/",
+        "https://www.marketwatch.com/press-release/imagine-s-q4-trends-highlights-emotional-connections-in-retail-out-of-home-and-collectibles-34421084"
+      ],
+      "about": "Cultural"
+    }
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": 0.681
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Report",
+  "name": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+  "about": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+  "abstract": "You need to drive higher-value store and partner-led holiday activity without broad margin-eroding sitewide discounts inside the next six weeks. Focused co-branded early windows and store-as-studio content can move buyers forward and into higher-margin bundles while aiming for **foot-traffic uplift** of **10–15%** (stretch **≥25%**) and raising **early_window_share** from **12–15%** to **20–30%**, with event CPA kept ≤**0.8x** baseline and QR redemption ≥**5%** [^4][^2][^8]. In the next 30 days Brand Partnerships, Merch, Store Ops and Marketing must launch a coordinated A/B test that replaces a sitewide cut with tiered co-branded bundles, three weekend in-store activations, and a short store-as-studio micro-influencer series. Measure success by progress toward **20–30%** early-window share, **10–15%** base foot-traffic uplift, event CPA ≤**0.8x**, and QR redemption ≥**5%**, since the collab-led / store-as-studio approach preserves blended margin versus blanket discounts [^2][^4].",
+  "datePublished": "2025-11-29T20:41:41.453720",
+  "temporalCoverage": "2025-11-22/2025-11-29",
+  "hasPart": [
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://influencity.com/blog/en/hands-on-influencer-marketing-strategies-trends-and-campaign-ideas-for-thanksgiving-2025",
+        "https://krcrtv.com/news/nation-world/expert-analysis-dc-maryland-virginia-families-small-business-saturday-black-friday-cyber-monday-deals-holiday-prices-shopping-consumer-debt-klarna-affirm-afterpay-zip-inflation-tariffs-economy-government-shutdown-federal-layoffs-credit-cards-retail",
+        "https://www.getmonetizely.com/articles/how-to-structure-volume-discounts-that-scale-with-growth"
+      ],
+      "about": "Cultural"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://influencity.com/blog/en/hands-on-influencer-marketing-strategies-trends-and-campaign-ideas-for-thanksgiving-2025",
+        "https://krcrtv.com/news/nation-world/expert-analysis-dc-maryland-virginia-families-small-business-saturday-black-friday-cyber-monday-deals-holiday-prices-shopping-consumer-debt-klarna-affirm-afterpay-zip-inflation-tariffs-economy-government-shutdown-federal-layoffs-credit-cards-retail",
+        "https://www.northbeam.io/blog"
+      ],
+      "about": "Behavioral"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.vendavo.com/all/price-curve-optimization/",
+        "https://www.getmonetizely.com/articles/how-to-structure-volume-discounts-that-scale-with-growth"
+      ],
+      "about": "Market"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://influencity.com/blog/en/hands-on-influencer-marketing-strategies-trends-and-campaign-ideas-for-thanksgiving-2025",
+        "https://www.aboutamazon.com/news/community/amazon-arlington-virginia-news",
+        "https://www.northbeam.io/blog"
+      ],
+      "about": "Technology"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://krcrtv.com/news/nation-world/expert-analysis-dc-maryland-virginia-families-small-business-saturday-black-friday-cyber-monday-deals-holiday-prices-shopping-consumer-debt-klarna-affirm-afterpay-zip-inflation-tariffs-economy-government-shutdown-federal-layoffs-credit-cards-retail",
+        "https://www.northbeam.io/blog"
+      ],
+      "about": "Market"
+    }
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": 0.892
+  }
+}

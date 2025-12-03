@@ -1,0 +1,35 @@
+{
+  "total": 9,
+  "core": 0,
+  "support": 9,
+  "unique_domains": 7,
+  "domain_counts": {
+    "finance.yahoo.com": 2,
+    "skift.com": 1,
+    "cmswire.com": 1,
+    "greaterfool.ca": 1,
+    "familydestinationsguide.com": 2,
+    "ny1.com": 1,
+    "outlookindia.com": 1
+  },
+  "data_heavy": 1,
+  "time_span_days": 0,
+  "tier_counts": {
+    "core": 9,
+    "context": 0
+  },
+  "dominant_ratio": 0.222,
+  "thin_evidence": true,
+  "thresholds": {
+    "total": true,
+    "core": false,
+    "domains": true,
+    "data": true,
+    "dominance": true,
+    "in_window": true,
+    "background": false,
+    "support_coverage": false
+  },
+  "support_coverage": 0.0,
+  "regime": "directional"
+}

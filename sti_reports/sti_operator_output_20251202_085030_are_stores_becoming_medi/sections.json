@@ -1,0 +1,744 @@
+{
+  "deep_analysis": {
+    "sections": [
+      {
+        "title": "In-store media can be a direct margin lever",
+        "spine_position": "what",
+        "priority": 1,
+        "scan_line": "Sell attention to protect margin when product costs rise",
+        "insight": "Wholesale and tariff-driven cost pressure is squeezing low-margin categories, leaving little room for holiday markdowns [^2]. In-store media and brand experiences create sellable attention and direct revenue per visit, converting attention into margin instead of deeper discounts [^2][^8]. Shifting spend from blanket markdowns to in-store media raises per-visit margin when measured against markdown cost-per-buyer, but it requires operational inventory of attention and a measurable media product.",
+        "operator_note": "Treat store attention as an inventory you can price. Prioritize simple, sellable in-store ad units and short creator slots that convert purchases or affiliate media revenue. Do not assume media covers all lost margin; focus on high-frequency SKUs and adjacent media revenue first.",
+        "instrument_next": "Instrument per-visit media revenue, incremental gross margin lift versus markdown baseline, and media CPM relative to local digital ad CPM.",
+        "citations": [
+          2,
+          8
+        ]
+      },
+      {
+        "title": "Creator and community activations lift AOV and loyalty",
+        "spine_position": "what",
+        "priority": 2,
+        "scan_line": "Creators bring attention that converts into higher AOV and retention",
+        "insight": "Brands that target Gen Z creatives use curated creator-led events and storytelling to convert attention into purchase intent and higher average order value [^3][^8]. Local operators and smaller brands show that community-driven programming can scale local reach without large national ad budgets, creating efficient, high-intent foot traffic [^7]. Compared with straightforward discounts, creator activations typically produce fewer but higher-value buyers and stronger repeat behavior if events include exclusive SKUs and follow-up offers.",
+        "operator_note": "Book creators who map to product use and local community. Design events with clear product moments and post-event follow-up (email or QR gated offers). Price limited SKUs above baseline to measure premium capture.",
+        "instrument_next": "Instrument event-level metrics: event CPA, QR redemption rate, AOV and full-price share versus matched non-event days, and 30-day repeat rate for attendees.",
+        "citations": [
+          3,
+          8,
+          7
+        ]
+      },
+      {
+        "title": "Early-window buyers are reachable before deep discounting",
+        "spine_position": "so_what",
+        "priority": 1,
+        "scan_line": "Capture Nov 18–Dec 02 buyers before Black Friday discount madness",
+        "insight": "Holiday discounting peaks around Black Friday and Cyber Monday, compressing purchase timing and pushing full-price buyers into discounts [^5][^6]. The pre-peak window is a scarce opportunity to shift buyer share toward full-price sales by offering experiences, exclusives, or creator events that reward early purchase [^8]. Compared with discount-heavy tactics, experience-led activations trade lower raw foot traffic for higher full-price conversion and longer-term loyalty if you own the content and timing.",
+        "operator_note": "Own the early window with time-limited experiences and limited-run SKUs. Schedule 2-week creator activations and exclusive product drops starting Nov 18. Keep promos off these SKUs and reserve a portion of inventory for event-day buyers.",
+        "instrument_next": "Instrument early-window full-price transaction share, foot-traffic uplift for event days versus baseline, and QR redemption as percent of footfall during Nov 18–Dec 02.",
+        "citations": [
+          5,
+          6,
+          8
+        ]
+      },
+      {
+        "title": "What breaks and what must be proved in switching from promos to media",
+        "spine_position": "now_what",
+        "priority": 1,
+        "scan_line": "Test assumptions: foot traffic volume, conversion, and media scale",
+        "insight": "Discounts reliably drive volume; media and creator strategies reliably lift margin and buyer quality but not always raw foot traffic [^5][^2]. The switch breaks if in-store content does not scale attention or if event CPA exceeds markdown cost per buyer; it holds when media monetization or higher AOV offsets lost volume and when QR-driven measurement ties content to purchase [^2][^8]. Comparative tests across matched stores reveal the margin crossover point where media-led activations outperform discount-led traffic economically.",
+        "operator_note": "Run a controlled rollout: matched-store cohorts running discount-heavy, media-led, and hybrid approaches. Keep inventory, staffing, and weekday/weekend timing constant. Be ready to dial promos back in if event CPA breaches markdown alternative.",
+        "instrument_next": "Instrument matched-store cohort tests tracking foot-traffic lift, full-price buyer share, event CPA versus markdown cost-per-acquisition, media revenue per visit, and buyer activity share versus promo intensity.",
+        "citations": [
+          5,
+          2,
+          8
+        ]
+      }
+    ],
+    "summary": "Shift marketing from blanket holiday markdowns to tightly measured store-as-studio plays. Test in-store media and creator events in matched-store cohorts starting Nov 18. Measure per-visit media revenue, full-price share, event CPA, QR redemption, and AOV. Stop relying on discounts where media or creator-driven margin gains exceed markdown costs; scale where the media-product can be sold or where creator activations raise AOV and repeat behavior."
+  },
+  "pattern_matches": [
+    {
+      "label": "Event-as-customer-acquisition",
+      "then": "Industry conferences like China Consumer 2025 concentrated buyer attention and gave brands a single high-value moment to convert prospects.",
+      "now": "Retailers run frequent in-store launch nights and micro-events to produce shareable content and drive immediate purchases.",
+      "operator_leap": "Run three 90-minute in-store launches across top-performing stores between Nov 18 and Nov 25, promote each with one social clip and a QR offer, and measure event CPA and QR redemption versus baseline weekend traffic.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        1,
+        8
+      ]
+    },
+    {
+      "label": "In-store media as margin defense",
+      "then": "QSR chains used in-store digital media to protect margins when wholesale and tariff pressures rose.",
+      "now": "Retailers can use curated in-store content loops to steer buyers to full-price bundles instead of markdowns during holiday cost pressure.",
+      "operator_leap": "A/B test a 30-second in-store video promoting a full-price holiday bundle versus standard shelf signage in 10 matched stores for 7 days and track buyer activity share and average order value.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        2,
+        8
+      ]
+    },
+    {
+      "label": "Hire-for-voice turned into store creators",
+      "then": "Brands like Nothing hired Gen Z creative leads to recalibrate brand voice and reach younger audiences.",
+      "now": "Retailers and brands can scale that idea by turning store staff and local creators into repeatable content producers and event hosts.",
+      "operator_leap": "Book two creator-hosted sessions in five high-footfall stores, film short verticals on-site, run the content for 10 days, and compare event CPA and early-window full-price purchases to control stores.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        3,
+        8
+      ]
+    },
+    {
+      "label": "Studio tech shortens production lag",
+      "then": "Film studios adopted cloud workflows to reduce production cycles and ship work faster.",
+      "now": "Retailers can deploy lightweight cloud editing templates to turn store-shot footage into publishable ads within 48 hours.",
+      "operator_leap": "Pilot a 48-hour capture-to-publish pipeline in six stores: capture 3 clips per day, edit with templates, publish to paid and organic channels, and measure lift in early-window share and conversion within 72 hours of publish.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        4,
+        8
+      ]
+    },
+    {
+      "label": "Local content outperforms big-budget reach",
+      "then": "Local businesses without NYC-size budgets succeeded online by leaning on community relevance.",
+      "now": "Neighborhood-focused store content can draw earlier full-price buyers better than generic national holiday creative.",
+      "operator_leap": "Create neighborhood-specific creatives for 10 stores with localized CTAs and offers, run them native to local channels for two weeks, and compare foot traffic uplift and QR redemption to national creative.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        7,
+        8
+      ]
+    },
+    {
+      "label": "Experience add-ons beat shallow discounts",
+      "then": "Black Friday and Cyber Monday discount waves compress margins and move price-sensitive buyers into late windows.",
+      "now": "Experience-driven add-ons produced in-store can capture early-window buyers at full price while avoiding a price race.",
+      "operator_leap": "Test an experience add-on (on-site personalization or creator meet-and-greet) sold at full price versus a 20 percent markdown in matched stores during Nov 18 to Dec 2 and track early-window share, CPA, and discount dollars.",
+      "supports_approach": "discount-heavy holiday",
+      "citations": [
+        5,
+        6,
+        8
+      ]
+    }
+  ],
+  "brand_outcomes": [
+    {
+      "title": "Shift 20% of demand into the early window without deeper discounting",
+      "description": "Run creator-led, in-store experience days from Nov 18 to Dec 2 that package full-price bundles and timed access. Use short-form store content and paid in-store media to drive awareness, then capture visitors with QR-gated add-ons that are full-price or value-packed rather than coupon-based. Sequence offers so promotional depth stays for the later window while experiences pull advance purchases[^8][^2][^5].",
+      "impact": "Increase early_window_share to 20%–30%; foot_traffic_uplift 10%–15%; protect incremental margin vs deeper early discounts; event CPA <= 0.8x baseline.",
+      "time_horizon": "Nov 18 - Dec 02, 2025",
+      "owner": "Retail ops + Partnerships + CRM",
+      "citations": [
+        8,
+        2,
+        5
+      ]
+    },
+    {
+      "title": "Turn priority stores into measurable content studios",
+      "description": "Deploy a lean store-production kit and a two-week content calendar in top 10% stores. Produce 15–30 second clips and live sessions that highlight in-store experiences and full-price offers. Route content to paid local feeds and in-store screens to amplify reach and measure conversion by store-level uplift and QR scans[^8][^2][^7].",
+      "impact": "Foot-traffic uplift stretch to >=25% in treated stores; measurable incremental sales per store; paired metric: buyer activity share vs promo intensity.",
+      "time_horizon": "next 90 days to test; scale into holiday 2025",
+      "owner": "Retail ops + Creative + Analytics",
+      "citations": [
+        8,
+        2,
+        7
+      ]
+    },
+    {
+      "title": "Use QR-anchored experience offers to protect price integrity",
+      "description": "Replace blanket early discounts with QR-first experiential offers: priority shopping slots, gift-wrapping, or on-site demos unlocked by scanning. Track QR redemption as the conversion signal and limit paper coupons. This converts footfall into loyalty and first-party data while avoiding headline price cuts[^8][^5][^6].",
+      "impact": "QR_redemption >= 5% of footfall; event CPA <= 0.8x baseline; higher loyalty lift vs discount-driven buyers.",
+      "time_horizon": "pilot in next 30 days; activate for Nov 18 - Dec 02",
+      "owner": "CRM + Retail ops",
+      "citations": [
+        8,
+        5,
+        6
+      ]
+    },
+    {
+      "title": "Throttle early discounting and reallocate spend to in-store reach",
+      "description": "Cap early-window markdowns and redeploy the budget to paid in-store media and creator amplification. Use store media to monetize attention and offset margin pressure from supply costs, rather than widening coupons. Monitor promo depth by store and pause deeper discounts where experience-driven buys are rising[^2][^5][^6].",
+      "impact": "Protect incremental margin; reduce overall promo depth in early window; maintain ability to deploy deeper, targeted discounts later if needed.",
+      "time_horizon": "next 90 days to set new promo rules; enforce through holiday 2025",
+      "owner": "Pricing + Marketing + Finance",
+      "citations": [
+        2,
+        5,
+        6
+      ]
+    }
+  ],
+  "operator_notes": "Focus tests on pairing buyer-activity share with promo intensity as the primary paired metric across experiments. Prioritize quick, measurable bets: convert a subset of stores to content production, run creator activations, and a small set of hyperlocal programs; measure foot-traffic uplift, QR redemptions, early-window buyer share, and event CPA against matched controls. Competing approaches: deep discounting will still buy volume but worsens margins; if tests show event CPA >0.8× baseline or QR <5%, stop and reallocate spend to tighter targeted promos or higher-content quality. Keep tests short (≤6 weeks) and use control stores to isolate content effect from broad holiday noise.",
+  "quant": {
+    "spine_hook": "Raise full-price early-window buyer share to 20–30% while holding promo depth and event CPA ≤0.8× baseline, measured by paired tracking of buyer-share vs promo-intensity during Nov 18–Dec 02.",
+    "anchors": [
+      {
+        "id": "Q1",
+        "headline": "Observed early-window buyer share (current baseline)",
+        "topic": "Early-window share",
+        "value_low": 12,
+        "value_high": 15,
+        "unit": "% of buyers in-window",
+        "status": "observed",
+        "band": "base",
+        "owner": "Retail Analytics / Brand",
+        "expression": "Share of total holiday purchases occurring Nov 18–Dec 02 that are full-price and attributed to store-originated media/events",
+        "source_ids": [
+          0,
+          8
+        ],
+        "applies_to_signals": [
+          "brand↔brand",
+          "brick&mortar↔brand"
+        ]
+      },
+      {
+        "id": "Q2",
+        "headline": "Target foot-traffic uplift (base / stretch)",
+        "topic": "Foot traffic",
+        "value_low": 10,
+        "value_high": 25,
+        "unit": "% vs pre-window baseline",
+        "status": "target",
+        "band": "base",
+        "owner": "Store Operations",
+        "expression": "Percent increase in visits during Nov 18–Dec 02 vs average daily visits in the two weeks before Nov 18 (base = 10–15%, stretch ≥25%)",
+        "source_ids": [
+          0,
+          8
+        ],
+        "applies_to_signals": [
+          "brick&mortar↔brand"
+        ]
+      },
+      {
+        "id": "Q3",
+        "headline": "Event CPA ceiling (cost-efficiency guardrail)",
+        "topic": "Event CPA",
+        "value_low": 0,
+        "value_high": 0.8,
+        "unit": "x baseline CPA",
+        "status": "target",
+        "band": "base",
+        "owner": "Marketing / Partnerships / Finance",
+        "expression": "Total event-related spend (creator fees + incremental store cost + media) divided by full-price buyers acquired and reported relative to baseline channel CPA (target ≤0.8× baseline)",
+        "source_ids": [
+          0,
+          2
+        ],
+        "applies_to_signals": [
+          "brand↔brand",
+          "brick&mortar↔brand"
+        ]
+      },
+      {
+        "id": "Q4",
+        "headline": "QR redemption floor (attention to action)",
+        "topic": "QR redemption",
+        "value_low": 5,
+        "value_high": 5,
+        "unit": "% of footfall",
+        "status": "target",
+        "band": "base",
+        "owner": "Store Ops / Digital",
+        "expression": "Unique QR code redemptions tied to in-store media or events divided by store footfall during Nov 18–Dec 02 (floor ≥5%)",
+        "source_ids": [
+          0,
+          8
+        ],
+        "applies_to_signals": [
+          "brick&mortar↔brand"
+        ]
+      }
+    ],
+    "measurement_plan": [
+      {
+        "id": "M1",
+        "metric": "Early-window full-price buyer share",
+        "expression": "Full-price transactions attributed to store events / total transactions during Nov 18–Dec 02. Attribution via event tags, POS source code, or unique QR scan linkbacks.",
+        "owner": "Retail Analytics",
+        "timeframe": "Nov 18–Dec 02, 2025 + 14-day attribution window",
+        "status": "plan",
+        "why_it_matters": "Direct test of the job story: increases in this share mean more experience-driven buyers, not deeper discounts."
+      },
+      {
+        "id": "M2",
+        "metric": "Promo intensity (paired metric)",
+        "expression": "Weighted average discount depth across promoted SKUs and share of transactions with any discount, measured daily and aggregated for the window.",
+        "owner": "Pricing / Revenue Management",
+        "timeframe": "Daily during Nov 18–Dec 02, 2025",
+        "status": "plan",
+        "why_it_matters": "Paired with M1 to prove buyer-share growth occurred without increasing promo depth or frequency."
+      },
+      {
+        "id": "M3",
+        "metric": "Event CPA (relative to baseline)",
+        "expression": "Total event spend (creator fees + on-site ops + media) / full-price buyers attributed to the event. Report as x baseline CPA where baseline = average CPA for last pre-holiday period (owner to define baseline window).",
+        "owner": "Marketing Finance / Partnerships",
+        "timeframe": "Event window + 30 days for LTV follow-up",
+        "status": "plan",
+        "why_it_matters": "Ensures store-as-studio acquisition stays cost-efficient. Target ceiling ≤0.8× baseline CPA."
+      },
+      {
+        "id": "M4",
+        "metric": "QR redemption rate (attention -> action)",
+        "expression": "Unique QR redemptions linked to event or store media / measured store footfall, daily and aggregated for the window.",
+        "owner": "Store Ops / Digital",
+        "timeframe": "Daily during Nov 18–Dec 02, 2025",
+        "status": "plan",
+        "why_it_matters": "Checks that media-driven attention converts into measurable buyer signals. Target floor ≥5% of footfall."
+      }
+    ],
+    "coverage": 0.85
+  },
+  "activation_kit": [
+    {
+      "display": {
+        "pillar": "Retail & Hospitality Activation",
+        "play_name": "Monetize Store Attention — Short-Run In-Store Media",
+        "card_title": "Sell attention, not markdowns",
+        "persona": "Head of Retail Operations / Head of Partnerships",
+        "best_fit": "Stores with digital/endcap inventory and measurable foot traffic",
+        "not_for": "Locations without screens or reliable door counts",
+        "thresholds_summary": "Target mini-burst economics: campaign CPA ≤ 0.8× baseline and redemption ≥ 15%; media CPM should be competitive with local digital CPM and lift incremental margin versus markdown baseline.",
+        "why_now": "Tariff and cost pressure is compressing margin; converting attention to media revenue offsets markdowns this season.",
+        "proof_point": "In-store media packages convert visit attention into per-visit revenue that protects margin versus blanket markdowns.",
+        "approach_name": "Media-to-Margin",
+        "time_horizon": "immediate",
+        "placement_options": [
+          "Checkout-area digital screens",
+          "Endcap ad panels adjacent to high-frequency SKUs",
+          "Queue and POS banner placements"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Retail Ops",
+        "collaborator": "Brand Partnerships Lead",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "cpa": "≤0.8× baseline",
+          "redemption_rate": "≥15%",
+          "media_cpm": "≤1.0× local_digital_cpm",
+          "incremental_margin_per_visit": "≥ markdown_cost_per_buyer"
+        },
+        "prerequisites": [
+          "Door counts or traffic proxy for pilot stores",
+          "Inventory of screen/endcap locations and dims",
+          "Billing path for campaign media revenue",
+          "Measurement tag or POS redemption code"
+        ],
+        "target_map": [
+          {
+            "org_type": "Retailer",
+            "role": "Head of Retail Ops",
+            "why_now": "Need to protect margin under rising product costs"
+          },
+          {
+            "org_type": "Brand",
+            "role": "Partnerships Lead",
+            "why_now": "Wants measurable retail media and immediate visibility"
+          },
+          {
+            "org_type": "Finance",
+            "role": "Commercial Finance",
+            "why_now": "Needs revenue uplift that offsets markdown spend"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Media pilot kickoff",
+            "narrative": "Align stores, inventory, thresholds, and measurement approach for a 2-week pilot.",
+            "CTA": "Book the pilot stores",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "3",
+            "subject": "Creative + measurement reconfirm",
+            "narrative": "Confirm ad assets, CPM pricing, POS codes, and tagging to ensure attribution.",
+            "CTA": "Deliver assets and tracking",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "14",
+            "subject": "Pilot wrap and decision",
+            "narrative": "Share pilot results versus CPA and incremental margin thresholds and agree next steps.",
+            "CTA": "Approve scale or stop",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "medium",
+        "strategy_tag": "Media-to-Margin"
+      },
+      "play_name": "Monetize Store Attention — Short-Run In-Store Media",
+      "pillar": "Retail & Hospitality Activation"
+    },
+    {
+      "display": {
+        "pillar": "Studio Collaboration",
+        "play_name": "Creator-Led Short-Form Pop-Ups",
+        "card_title": "Use creators to lift AOV and repeat",
+        "persona": "CMO / Head of Experiential",
+        "best_fit": "Brands targeting Gen Z / stores with flexible event space and CRM reach",
+        "not_for": "Large format rollouts without staff bandwidth or CRM lists",
+        "thresholds_summary": "Treat as a mini-burst: event CPA should be ≤ 0.8× baseline with redemption ≥ 15% and maintain or improve 90-day repeat versus baseline.",
+        "why_now": "Creators drive attention and higher AOV during holiday windows; short bursts reduce calendar risk and test conversion.",
+        "proof_point": "Curated creator sessions increase immediate AOV and boost short-term retention when paired with targeted CRM invites.",
+        "approach_name": "Creator-Led Conversion",
+        "time_horizon": "6-week",
+        "placement_options": [
+          "In-store creator sessions at fixture or demo counter",
+          "Evening community pop-ups in store with limited-capacity RSVP",
+          "Short creator demos embedded in checkout flow (5–10 minute slots)"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Experiential",
+        "collaborator": "Brand Marketing / Creator Agency",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "cpa": "≤0.8× baseline",
+          "redemption_rate": "≥15%",
+          "90_day_repeat": "≥ baseline"
+        },
+        "prerequisites": [
+          "List of prioritized stores with event footprint",
+          "CRM segments for RSVP invites",
+          "Event redemption codes and POS configuration",
+          "Signed creator brief and short-form content assets"
+        ],
+        "target_map": [
+          {
+            "org_type": "Brand",
+            "role": "Head of Marketing",
+            "why_now": "Needs high-converting creative channels ahead of peak season"
+          },
+          {
+            "org_type": "Retailer",
+            "role": "Store Manager / Events Lead",
+            "why_now": "Wants footfall and AOV lifts with limited operational disruption"
+          },
+          {
+            "org_type": "Analytics",
+            "role": "Retention Manager",
+            "why_now": "Track 90-day repeat after event cohorts"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Event brief and target metrics",
+            "narrative": "Agree creator scope, stores, CPA and redemption thresholds, and measurement plan.",
+            "CTA": "Confirm creator and stores",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "7",
+            "subject": "Logistics and invite check",
+            "narrative": "Finalize floorplan, staff roles, CRM invites, and POS redemption setup.",
+            "CTA": "Share floorplan and redemption codes",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "21",
+            "subject": "Post-event measurement",
+            "narrative": "Deliver cohort-level conversion, AOV lift, redemption and 90-day repeat readout.",
+            "CTA": "Approve scale or iterate",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "high",
+        "strategy_tag": "Creator-Led Conversion"
+      },
+      "play_name": "Creator-Led Short-Form Pop-Ups",
+      "pillar": "Studio Collaboration"
+    },
+    {
+      "display": {
+        "pillar": "Retail & Hospitality Activation",
+        "play_name": "Staged Discount + Media Bundle",
+        "card_title": "Protect margin with time-limited bundles",
+        "persona": "CFO / Head of Merch",
+        "best_fit": "High-frequency SKUs with thin margins and existing POS bundling capability",
+        "not_for": "Categories with abundant inventory-driven discounting or heavy seasonality risk",
+        "thresholds_summary": "Staged discount must preserve margin per order within 100 basis points of baseline and maintain 90-day repeat at or above baseline; redemption should clear minimum pilot economics.",
+        "why_now": "When baseline markdowns erode margin, staged discounts tied to media or event exposure can drive conversion without a permanent price cut.",
+        "proof_point": "Bundling media exposure or creator events with staged discounts converts attention while limiting margin erosion versus blanket markdowns.",
+        "approach_name": "Staged-Discount",
+        "time_horizon": "pilot",
+        "placement_options": [
+          "POS-limited bundle offers (buy X get Y at discount)",
+          "QR-triggered time-limited discount linked to in-store media or event RSVP"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Merch / Pricing",
+        "collaborator": "Brand Pricing Lead",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "margin_per_order": "≥ baseline − 100bps",
+          "90_day_repeat": "≥ baseline",
+          "redemption_rate": "meets pilot minimum"
+        },
+        "prerequisites": [
+          "Pricing approval and margin guardrails",
+          "POS bundling or promo code capability",
+          "Inventory check for bundled SKUs",
+          "Measurement for incremental vs baseline orders"
+        ],
+        "target_map": [
+          {
+            "org_type": "Retailer",
+            "role": "Head of Merch",
+            "why_now": "Need tactical offers that limit margin erosion"
+          },
+          {
+            "org_type": "Finance",
+            "role": "CFO",
+            "why_now": "Wants controlled experiments that protect gross margin"
+          },
+          {
+            "org_type": "Brand",
+            "role": "Commercial Lead",
+            "why_now": "Seeks conversion lift without long-term price risk"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Pilot terms and margin guardrails",
+            "narrative": "Agree bundle structure, margin floor, and stores for the staged discount pilot.",
+            "CTA": "Approve pilot terms",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "3",
+            "subject": "Instrumentation and POS setup",
+            "narrative": "Confirm promo codes, POS configuration, and tracking for incremental margin attribution.",
+            "CTA": "Implement POS codes",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "14",
+            "subject": "Pilot review and go/no-go",
+            "narrative": "Compare margin per order and 90-day cohort projection against thresholds and decide scale.",
+            "CTA": "Decide scale or stop",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "medium",
+        "strategy_tag": "Staged-Discount"
+      },
+      "play_name": "Staged Discount + Media Bundle",
+      "pillar": "Retail & Hospitality Activation"
+    }
+  ],
+  "risk_radar": [
+    {
+      "risk_name": "Selection bias in test vs control",
+      "scan_line": "Risk: baseline mismatch creates false uplift",
+      "trigger": "Non-random allocation or post-allocation churn changes customer mix in test units",
+      "detection": "Pre-period KPI divergence, differing visit frequency, basket size or customer segments between test and control",
+      "mitigation": "Randomize at the decision unit and stratify on key pre-period metrics; hold a seeded pure holdout for validation",
+      "severity": 3,
+      "likelihood": 2,
+      "approach_exposure": "matched_control",
+      "citations": [
+        1,
+        7
+      ]
+    },
+    {
+      "risk_name": "In-store media cannibalizes promotion effectiveness",
+      "scan_line": "Risk: media shifts demand timing and reduces markdown ROI",
+      "trigger": "Deploying sellable attention against SKUs that depend on promotional urgency",
+      "detection": "Rising AOV with falling promo redemptions; lower sell-through on promoted inventory during campaign windows",
+      "mitigation": "Target media to high-frequency, full-price SKUs; A/B test media versus markdown on comparable stores before scale",
+      "severity": 2,
+      "likelihood": 2,
+      "approach_exposure": "all",
+      "citations": [
+        2,
+        8
+      ]
+    },
+    {
+      "risk_name": "Creator activations produce reach but not purchase lift",
+      "scan_line": "Risk: high engagement without durable conversion",
+      "trigger": "Selecting creators for reach or style rather than conversion fit and call-to-action",
+      "detection": "High impressions and engagement, low promo code usage, weak same- and 30-day conversion and repeat rates",
+      "mitigation": "Require conversion-linked mechanics such as unique codes or affiliate links; run short randomized trials and measure 0–30 day LTV",
+      "severity": 2,
+      "likelihood": 3,
+      "approach_exposure": "campaign_lift",
+      "citations": [
+        3,
+        5
+      ]
+    },
+    {
+      "risk_name": "Measurement gaps from privacy and onboarding failure",
+      "scan_line": "Risk: loss of deterministic attribution inflates uncertainty in lift estimates",
+      "trigger": "Third-party signal loss, poor CRM onboarding, or gaps between POS and digital receipts",
+      "detection": "Rising share of un-attributed sales, lower match rates, and divergent digital vs POS lift estimates",
+      "mitigation": "Instrument first-party identifiers and deterministic matching; prioritize incrementality tests that do not rely on full attribution",
+      "severity": 3,
+      "likelihood": 3,
+      "approach_exposure": "all",
+      "citations": [
+        4,
+        6
+      ]
+    }
+  ],
+  "future_outlook": [
+    {
+      "horizon": "6-month",
+      "headline": "Convert markdown dollars into per-visit media margin",
+      "scan_line": "If true, we will see measurable per-visit media revenue and reduced markdown depth on targeted SKUs within 6 months",
+      "description": "Shifting spend from blanket holiday markdowns to short in-store media units creates a new per-visit revenue stream that can be priced against lost markdown margin [^2]. Early pilots that sell simple attention units and creator slots against high-frequency SKUs raise incremental gross margin versus a markdown baseline within a single season when instrumented correctly [^2][^8]. This requires simple sellable inventory, local CPM discipline, and tracking of media revenue per buyer before scaling [^8].",
+      "operator_watch": "incremental gross margin per visit versus markdown baseline",
+      "collaboration_upside": "Cover a meaningful share of planned holiday markdown dollars with media revenue while keeping full-price volume on high-frequency SKUs",
+      "dominant_approach": "store-as-studio / media-led holiday",
+      "confidence": 0.7,
+      "citations": [
+        2,
+        8
+      ]
+    },
+    {
+      "horizon": "12-month",
+      "headline": "Creators and store media raise full-price share and retention",
+      "scan_line": "If true, we will see higher share of full-price sales and sustained AOV lift within 12 months",
+      "description": "Combining creator-led activations with a repeatable in-store media product moves attention into purchase and loyalty rather than deeper discounting [^2]. Brands that treat stores as studios and price attention increase AOV and repeat rates among cohorts exposed to creator events and media, reducing the need for frequent promotions [^2][^8]. Scaling this requires standard units, local sales bundles, and cohort-level LTV tracking to prove promo reduction without sacrificing traffic [^8].",
+      "operator_watch": "share of full-price sales among customers exposed to media/creator activations",
+      "collaboration_upside": "Sustained AOV and repeat rate lift across cohorts, enabling lower promo cadence and higher lifetime value",
+      "dominant_approach": "mixed",
+      "confidence": 0.6,
+      "citations": [
+        2,
+        8
+      ]
+    }
+  ],
+  "comparison_map": {
+    "approach_map": [
+      {
+        "approach_name": "Collab-led micro events (launch nights)",
+        "who_it_is_for": "Head of Retail Ops and Head of Partnerships running high-footfall flagship and district stores.",
+        "strengths": "Concentrates buyer attention into single high-value moments and converts prospects at the door, as seen in event-driven acquisition patterns (S1). Short 90-minute launches create social clips and QR-gated offers that lift immediate full-price purchases and measurable CPA.",
+        "failure_modes": "Selection bias between test and control stores can create false uplift if allocation is non-random. Creator activations may deliver reach without purchase unless offers and redemption paths are hard-coded and tracked.",
+        "when_to_choose": "When you can run 2–3 micro events in top stores between Nov 18 and Nov 25 and support redemption with QR gated add-ons.",
+        "when_not_to_choose": "Do not choose if you cannot reliably staff events, measure CPA at store level, or if door counts are too low to hit CPA targets.",
+        "supporting_signals": [
+          "S1"
+        ],
+        "key_risks": [
+          "Selection bias in test vs control",
+          "Creator activations produce reach but not purchase"
+        ],
+        "key_metrics": [
+          "Event cost per acquisition versus baseline",
+          "QR redemption rate",
+          "Early-window share of total holiday demand",
+          "Add-on attach rate",
+          "Average order value lift"
+        ]
+      },
+      {
+        "approach_name": "Store-as-studio media-led bundles",
+        "who_it_is_for": "Head of Retail Ops and Head of Marketing with stores that have digital screens and reliable door counts.",
+        "strengths": "Uses in-store media loops to steer buyers toward full-price bundles and protect margin instead of resorting to markdowns, reflecting in-store media as margin defense (S2). Paid local and POS media converts visit attention into per-visit revenue and higher AOV when targeted to high-frequency SKUs.",
+        "failure_modes": "Media can shift timing and cannibalize markdown ROI if placed against SKUs that require promotional urgency. Selection bias or mismatched controls can overstate lift if store pairs are not stratified.",
+        "when_to_choose": "When you have digital placements in high-traffic stores and can A/B test media creative against standard signage for 7 days.",
+        "when_not_to_choose": "Do not choose if you lack screens, door counts, or if promoted SKUs rely on later markdown windows.",
+        "supporting_signals": [
+          "S2",
+          "S3"
+        ],
+        "key_risks": [
+          "In-store media cannibalizes promotion effectiveness",
+          "Selection bias in test vs control"
+        ],
+        "key_metrics": [
+          "Share of buyers choosing promoted full-price bundle",
+          "Average order value",
+          "Promo redemption rate for SKUs in the test",
+          "Media CPM versus local digital CPM",
+          "Incremental margin per visit versus markdown baseline"
+        ]
+      },
+      {
+        "approach_name": "Creator-led store content production and local amplification",
+        "who_it_is_for": "Head of Partnerships and CMO who can mobilize creators and fund local paid social.",
+        "strengths": "Turns priority stores into measurable content studios delivering 15–30 second clips and live sessions that drive store visits and QR conversions (brand outcomes S3). Short-form content routed to paid local feeds and in-store screens creates measurable store-level uplift.",
+        "failure_modes": "Creators can drive reach with weak purchase intent unless content and offers are sequenced to capture full-price purchases. Measurement mismatch and non-random allocation will distort attribution.",
+        "when_to_choose": "When top 10% stores can run a two-week content calendar and you can amplify with a local paid budget.",
+        "when_not_to_choose": "Do not choose if you cannot instrument store-level conversion or if you have no budget for local paid amplification.",
+        "supporting_signals": [
+          "S3",
+          "S1"
+        ],
+        "key_risks": [
+          "Creator activations produce reach but not purchase",
+          "Selection bias in test vs control"
+        ],
+        "key_metrics": [
+          "Store-level visit uplift",
+          "Social clip view to store-visit rate",
+          "QR scan to purchase conversion",
+          "CPA for paid local placements",
+          "Early-window share lift"
+        ]
+      }
+    ],
+    "buyer_guide": [
+      {
+        "option_name": "Specialist retail events agency",
+        "best_for": "Operators that need turnkey event production, talent booking and local paid amplification across many doors.",
+        "not_for": "Operators that cannot commit to multi-week retainers or have no local amplification budget.",
+        "commercial_shape": "Short campaign retainer plus per-event production fee; talent and paid media billed pass-through; typical window 4–6 weeks including prep and two-week amplification.",
+        "proof_needed_before_scaling": "Two pilot events with event CPA ≤ 0.8x baseline and QR redemption ≥ 15% before rolling to more stores.",
+        "where_STI_fits": "Provide test design, control matching, KPI thresholds and instrumentation templates so the agency measures CPA and store uplift properly."
+      },
+      {
+        "option_name": "In-house store-studio sprint",
+        "best_for": "Operators with internal ops and a small creative team who want faster iteration and lower unit cost.",
+        "not_for": "Teams with no video production experience or no local amplification capability.",
+        "commercial_shape": "One-time sprint fee for a two-week production calendar plus minimal kit purchase for lights/mics; content reused across channels.",
+        "proof_needed_before_scaling": "3 stores show consistent store-level uplift and QR conversion with CPA at or below forecasted cost within one planning cycle.",
+        "where_STI_fits": "Deliver playbook, scripts, measurement plan and A/B test templates; train store teams on rapid production and QR offer routing."
+      },
+      {
+        "option_name": "Pop-up collab with creators and partner brands",
+        "best_for": "Operators that want social-first experiences and earned reach to pull early-window demand without deep discounts.",
+        "not_for": "Operators that cannot operationalize redemption flows or measure store-level purchases.",
+        "commercial_shape": "Short-term revenue-share or fixed fee for creator bookings; partner brands co-fund production and offers; typical window 1–2 weeks per pop-up.",
+        "proof_needed_before_scaling": "Single pop-up achieves targeted AOV lift and early-window share increase of 15%+ at CPA ≤ 0.8x baseline.",
+        "where_STI_fits": "Design QR-gated offers, set measurement guardrails, and run matched-control tests to isolate attribution."
+      },
+      {
+        "option_name": "In-store screen network partner",
+        "best_for": "Operators that already monetize static screen inventory and want to test media-to-margin quickly.",
+        "not_for": "Stores without screens or reliable door counts.",
+        "commercial_shape": "Short campaign buy or revenue share on ad inventory; CPM-based billing for a 7–14 day A/B test window.",
+        "proof_needed_before_scaling": "A/B test shows higher incremental margin per visit versus a markdown baseline and media CPM competitive with local digital CPM.",
+        "where_STI_fits": "Specify test hypothesis, choose KPI thresholds, and provide analytics to compare media-driven AOV and promo-redemption trends against control stores."
+      }
+    ]
+  },
+  "signal_map_notes": "Focus tests on pairing buyer-activity share with promo intensity as the primary paired metric across experiments. Prioritize quick, measurable bets: convert a subset of stores to content production, run creator activations, and a small set of hyperlocal programs; measure foot-traffic uplift, QR redemptions, early-window buyer share, and event CPA against matched controls. Competing approaches: deep discounting will still buy volume but worsens margins; if tests show event CPA >0.8× baseline or QR <5%, stop and reallocate spend to tighter targeted promos or higher-content quality. Keep tests short (≤6 weeks) and use control stores to isolate content effect from broad holiday noise."
+}

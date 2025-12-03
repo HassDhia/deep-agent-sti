@@ -1,0 +1,82 @@
+[
+  {
+    "type": "hero",
+    "slot": "hero",
+    "section": "Hero",
+    "anchor_section": "header",
+    "template": "hero_decision_window",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "scene": "back store planning table facing storefront laminated pilot",
+        "personas": "head retail",
+        "action": "signing off 6 week s1 pilot swap one",
+        "symbolism": "sharp band directional light cutting table surface imply",
+        "props": "s1 pilot plan board 12 stores 6 weeks",
+        "mood": "precise decisive collaborative",
+        "lighting": "Polished editorial lighting, confident highlights, soft shadow negative space.",
+        "focal_point": "signing off 6 week s1 pilot swap one"
+      },
+      "style": {
+        "framing": "three-quarter view from eye level",
+        "lighting": "cool high-contrast lighting with crisp edges",
+        "palette": "ivory and charcoal with cyan pins",
+        "geometry": "layered geometric planes",
+        "environment": "structured architectural backdrop"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "event_cpa"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "Event CPA"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "event_cpa"
+    ],
+    "alt": "Head of Retail signing off on S1 6-week pilot replacing a weekend discount with co-branded activations.",
+    "image": "images/hero_collab_led_uplift_vs_blanket_d.png"
+  },
+  {
+    "type": "section",
+    "section": "Signal Map",
+    "slot": "signal_map",
+    "anchor_section": "signals_and_thesis",
+    "template": "signal_map_concentric",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "context": "all signals point testing partner led activations instead",
+        "structure": "concentric rings baseline stretch radial arcs time windows",
+        "elements": "store tokens sized expected footfall arcs labeled baseline",
+        "motion": "flow compresses toward bright lane representing early window",
+        "direction": "all signals point testing partner led activations instead",
+        "palette": "neutral editorial base warm gold baseline bands vivid"
+      },
+      "style": {
+        "framing": "radial diagram posture",
+        "lighting": "sheeted daylight gradients",
+        "palette": "mist gray with electric blue pulses",
+        "geometry": "floating planes and dots",
+        "environment": "soft gradient void"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "early_window_share"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "Early-window share"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share"
+    ],
+    "alt": "Head of Partnerships and Head of Retail viewing a signal map encoding footfall uplift and early-window share targets.",
+    "image": "images/section_signal_map_collab_led_uplift_vs_blanket_d.png"
+  }
+]

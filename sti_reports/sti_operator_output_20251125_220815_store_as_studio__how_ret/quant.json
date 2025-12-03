@@ -1,0 +1,132 @@
+{
+  "report": {
+    "executive_take": "Retail stores are shifting from point-of-sale to point-of-content. This increases event-driven footfall and early-window buying, changing how discount math and inventory must be managed. Operators should treat stores as short-run studios: design events that capture 10–30% of holiday volume while holding promotion intensity steady.",
+    "core_signal": "Shift: Physical stores are becoming content properties that drive concentrated buyer windows via curated branded activations. Mechanism: Branded in-store studios and curated pop-ups create distinct temporal scarcity that concentrates visits and purchases into early-event windows. The mechanism is simple. Analogy: Think of a retail store as a film festival venue where limited screenings (events) pull a crowd for a short time and sell premium merch at higher conversion. Diagram description: event calendar -> curated content -> concentrated footfall -> higher early-window transaction share.",
+    "mechanisms": [
+      {
+        "cause": "Brands and landlords curate studio-style activations (A24, artist residencies, tenant-curated pods).",
+        "effect": "Dwell time and conversion in the branded zone rise. Footfall becomes event-weighted on weekends and launch days.",
+        "second_order": "Early-window transactions concentrate, raising average order value on limited editions and creating repeat visitation in the following month.",
+        "constraint": "Inventory and promotion plans must shift from continuous markdowns to timed scarcity and tight stock orchestration."
+      },
+      {
+        "cause": "Agentic commerce and centralized product data enable event SKU orchestration.",
+        "effect": "Fewer stockouts during events and higher event conversion rates if orchestration is implemented.",
+        "second_order": "Marketing CPA for event-driven buyers can fall below baseline if media is tightly targeted and creative ties to in-store content.",
+        "constraint": "Requires 4–8 week deployment window and cross-functional alignment across commerce, ops, and real estate."
+      }
+    ],
+    "operator_moves": {
+      "immediate_0_30_days": [
+        "Define 1 pilot event in a single region with branded content, clear run dates, and 6–8 event SKUs.",
+        "Set measurement plan: detect foot-traffic uplift vs baseline (target 10–15%), early-window transaction share target 20–30%, event CPA ≤0.80× baseline, QR redemption ≥5% of footfall.",
+        "Hold promo SKU share at last-year levels for the pilot window. Measure buyer share and promo intensity side by side."
+      ],
+      "positioning_quarter_scale": [
+        "Roll a curated pop-up plan across a 3–5 store cluster. Use agentic orchestration to seed event SKUs and automate replenishment rules.",
+        "Negotiate revenue-per-square-foot guarantees with landlords tied to event weekends rather than flat rent concessions.",
+        "Create creative templates for brand partners to reduce production time to 4 weeks from brief to install."
+      ],
+      "compounding_long_tail": [
+        "Build a store-as-studio program that sequences monthly drops and artist residencies into a seasonal calendar to create habitual visitation.",
+        "Integrate first-party data streams to power predictive event assortment and lifetime value models for event buyers.",
+        "Monetize content through licensing, limited editions, and hybrid OOH commerce partnerships to grow margin above baseline retail."
+      ]
+    },
+    "risks_and_exceptions": "This is where the model breaks. If local demand is weak, events simply shift cost into empty hours without net lift. If partners drive heavy discounts to guarantee traffic, event buyers will be promotion-driven and not sticky. If data orchestration is not live, event stockouts will erode conversion and inflate CPA. Watch markets with low experiential spend or dense competing activations; the marginal uplift will be smaller.",
+    "mini_case_story": "A national bookseller partners with an indie studio to open branded micro-shops in select stores. The activation runs for six weeks and features limited merch and readings. The branded zone sees longer dwell times and a test cluster shows a 10% conversion lift on studio SKUs and a spike in weekend footfall. Marketing uses QR codes in-window to drive RSVPs; scan-to-visit conversion is tracked. The operator keeps standard promo levels steady and measures early-window sales share to attribute incremental revenue.",
+    "closing_frame": "If event windows drive 10–15% footfall uplift and early-window transactions reach 20–30% while event CPA stays ≤0.80× baseline, then scaling store-as-studio across region clusters becomes optimal.",
+    "one_line_mental_model": "Treat each store as a short-run studio: curate time, not price."
+  },
+  "quantifier": {
+    "anchors": [
+      {
+        "id": "Q1",
+        "topic": "US holiday retail growth",
+        "value_low": 2.9,
+        "value_high": 3.4,
+        "unit": "% YoY",
+        "status": "observed",
+        "expression": "Retail sales ≈ 1.03× LY",
+        "source_ids": [
+          9
+        ],
+        "applies_to_signals": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "id": "Q2",
+        "topic": "Foot-traffic uplift vs baseline",
+        "value_low": 10.0,
+        "value_high": 15.0,
+        "unit": "% lift vs baseline",
+        "status": "plan",
+        "expression": "Detect 10–15% uplift; top markets stretch ≥25%",
+        "source_ids": [
+          4,
+          1
+        ],
+        "applies_to_signals": [
+          "S2",
+          "S3"
+        ]
+      },
+      {
+        "id": "Q3",
+        "topic": "Early-window transaction share",
+        "value_low": 20.0,
+        "value_high": 30.0,
+        "unit": "% of holiday transactions",
+        "status": "plan",
+        "expression": "Move early-window share from ~12–15% to 20–30%",
+        "source_ids": [
+          7,
+          6
+        ],
+        "applies_to_signals": [
+          "S4",
+          "S5"
+        ]
+      }
+    ],
+    "measurement_plan": [
+      {
+        "id": "M1",
+        "metric": "Event CPA",
+        "expression": "CPA ≤ 0.80× baseline",
+        "owner": "Performance marketing",
+        "timeframe": "Thanksgiving weekend",
+        "status": "plan"
+      },
+      {
+        "id": "M2",
+        "metric": "Buyer activity share vs promo intensity",
+        "expression": "Transactions in early window 20–30% while promo SKU share ≈ LY",
+        "owner": "Merch + Analytics",
+        "timeframe": "Nov 13–26",
+        "status": "plan",
+        "notes": "Track both metrics side by side"
+      },
+      {
+        "id": "M3",
+        "metric": "QR / scan redemption",
+        "expression": "QR redemption ≥5% of footfall",
+        "owner": "Local Marketing",
+        "timeframe": "Thanksgiving weekend",
+        "status": "plan"
+      },
+      {
+        "id": "M4",
+        "metric": "Footfall uplift vs event revenue per sq ft",
+        "expression": "Footfall uplift 10–15% paired with incremental revenue per sq ft > LY",
+        "owner": "Real Estate + Ops",
+        "timeframe": "Nov 19–26",
+        "status": "plan",
+        "notes": "Measure uplift against baseline weekends and control stores"
+      }
+    ],
+    "coverage": 0.68
+  }
+}

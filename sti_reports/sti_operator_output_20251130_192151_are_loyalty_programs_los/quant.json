@@ -1,0 +1,117 @@
+{
+  "spine_hook": "Success = early-window buyer share reaches 20–30% while store footfall is up ≥10% without increasing loyalty discount depth.",
+  "anchors": [
+    {
+      "id": "Q1",
+      "headline": "Early-window buyer share — current",
+      "topic": "early_window_share",
+      "value_low": 12,
+      "value_high": 15,
+      "unit": "% of holiday transactions",
+      "status": "observed",
+      "band": "base",
+      "owner": "Merch + Analytics",
+      "expression": "Transactions in first 48 hours = 12–15% of holiday-period transactions",
+      "source_ids": [],
+      "applies_to_signals": [
+        "S1",
+        "S2"
+      ]
+    },
+    {
+      "id": "Q2",
+      "headline": "Foot traffic uplift — target",
+      "topic": "foot_traffic_uplift",
+      "value_low": 10,
+      "value_high": 15,
+      "unit": "% vs LY",
+      "status": "target",
+      "band": "base",
+      "owner": "Retail Ops",
+      "expression": "Store footfall +10–15% vs LY (base); stretch ≥25%",
+      "source_ids": [
+        1
+      ],
+      "applies_to_signals": [
+        "S1",
+        "S3"
+      ]
+    },
+    {
+      "id": "Q3",
+      "headline": "Event CPA — ceiling",
+      "topic": "event_cpa",
+      "value_low": 0.8,
+      "value_high": 0.8,
+      "unit": "× baseline CPA",
+      "status": "target",
+      "band": "base",
+      "owner": "Performance marketing",
+      "expression": "CPA ≤ 0.80× baseline for event-driven acquisitions",
+      "source_ids": [],
+      "applies_to_signals": [
+        "S2",
+        "S4"
+      ]
+    },
+    {
+      "id": "Q4",
+      "headline": "QR redemption — minimum",
+      "topic": "qr_redemption",
+      "value_low": 5,
+      "value_high": 5,
+      "unit": "% of footfall",
+      "status": "target",
+      "band": "base",
+      "owner": "Stores + Ops",
+      "expression": "QR-code redemptions ≥5% of counted in-store visits for event offers",
+      "source_ids": [],
+      "applies_to_signals": [
+        "S3",
+        "S4"
+      ]
+    }
+  ],
+  "measurement_plan": [
+    {
+      "id": "M1",
+      "metric": "Event CPA",
+      "expression": "CPA ≤ 0.80× baseline",
+      "owner": "Performance marketing",
+      "timeframe": "Nov 27–30 (Thanksgiving weekend)",
+      "status": "plan",
+      "why_it_matters": "Keeps acquisition cost efficient so events scale without deeper loyalty discounts."
+    },
+    {
+      "id": "M2",
+      "metric": "Buyer activity share vs promo intensity",
+      "expression": "Early-window share 20–30% while promo SKU share ≈ LY",
+      "owner": "Merch + Analytics",
+      "timeframe": "Nov 24–Dec 1",
+      "status": "plan",
+      "notes": "Track early-window transactions and percent of assortment on promo daily; pair-side-by-side.",
+      "why_it_matters": "Shows whether buyer growth came from new buyers (good) or from heavier discounting (bad)."
+    },
+    {
+      "id": "M3",
+      "metric": "QR redemption rate per footfall",
+      "expression": "QR redemptions ≥ 5% of counted footfall",
+      "owner": "Stores + Ops",
+      "timeframe": "Nov 24–Dec 1",
+      "status": "plan",
+      "notes": "Use turnstile or POS door-count baseline; capture redemption id to tie to buyer origin.",
+      "why_it_matters": "Validates event-driven discovery and measures clean take-up without loyalty price cuts."
+    },
+    {
+      "id": "M4",
+      "metric": "Loyalty discount depth vs incremental sales",
+      "expression": "Do not increase average loyalty discount depth > 2 percentage points vs current; measure incremental sales from loyalty redemptions separately",
+      "owner": "Loyalty + Finance",
+      "timeframe": "Nov 24–Dec 1",
+      "status": "plan",
+      "notes": "Report discount depth, redemption share, and incremental revenue daily.",
+      "why_it_matters": "Protects margin and proves events, not deeper loyalty cuts, drove growth."
+    }
+  ],
+  "coverage": 0.75
+}

@@ -1,0 +1,14 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Report",
+  "name": "If I’ve got one more dollar to spend, do I put it into loyalty, retail media, or collab‑driven reach?",
+  "about": "If I’ve got one more dollar to spend, do I put it into loyalty, retail media, or collab‑driven reach?",
+  "abstract": "You must decide whether one additional dollar goes to loyalty, retail media, or collab-driven reach to lift early-window foot traffic and lower event CPA in the Nov 18 – Dec 02, 2025 holiday window without deepening blanket discounts. This matters because the plan must deliver **10–15%** base foot-traffic uplift (stretch **≥25%**), move current early-window share from **12–15%** toward **20–30%**, and keep event CPA at or below **≤0.80×** baseline to justify spend [^7][^4]. Favor a collab-led holiday paired with a targeted loyalty microcredit: use the $1 to activate top-decile members while running a collab SKU with in-store capture so trial converts to repeat [^7][^4]. In the next 30 days, cross-functional teams must launch a two-week pilot (Nov 18–Dec 02), instrument daily incremental visits, incremental spend per visit, and contribution margin by treatment, and use foot-traffic uplift, early-window share, and event CPA as pass/fail metrics [^5].",
+  "datePublished": "2025-12-02T21:50:53.917839",
+  "temporalCoverage": "2025-11-18/2025-12-02",
+  "hasPart": [],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": 0.28
+  }
+}

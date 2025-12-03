@@ -1,0 +1,129 @@
+[
+  {
+    "type": "hero",
+    "slot": "hero",
+    "section": "Hero",
+    "anchor_section": "header",
+    "template": "hero_decision_window",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "scene": "retail floor staged small studio low footprint pop",
+        "personas": "head retail deciding between markdowns media led creator",
+        "action": "approving short creator slot schedule pricing sellable store",
+        "symbolism": "narrow bands light across floor implying countdown high",
+        "props": "printed per visit media revenue sheet labeled 'vs",
+        "mood": "precise decisive collaborative",
+        "lighting": "Polished editorial: confident highlights on the operator and media panels, deep clean negative space around the pop-up",
+        "focal_point": "approving short creator slot schedule pricing sellable store"
+      },
+      "style": {
+        "framing": "tight medium shot on the collaboration moment",
+        "lighting": "diffused skylight with controlled highlights",
+        "palette": "slate base with subtle brass highlights",
+        "geometry": "clean architectural facets",
+        "environment": "structured architectural backdrop"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "conversion_rate",
+        "early_window_share"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "Conversion rate",
+        "Early-window share"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "conversion_rate",
+      "early_window_share"
+    ],
+    "alt": "Head of Retail approving a store-as-studio creator pop-up test",
+    "image": "images/hero_are_stores_becoming_media_stud.png"
+  },
+  {
+    "type": "section",
+    "section": "Signal Map",
+    "slot": "signal_map",
+    "anchor_section": "signals_and_thesis",
+    "template": "signal_map_concentric",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "context": "focus tests pairing buyer activity share promo intensity",
+        "structure": "concentric rings street storefront store attention checkout vertical",
+        "elements": "creator nodes small podium tokens brand ad tokens",
+        "motion": "curved paths show attention funneling street ring store",
+        "direction": "focus tests pairing buyer activity share promo intensity",
+        "palette": "matte retail greys neutral stone accent safety yellow"
+      },
+      "style": {
+        "framing": "gentle isometric framing",
+        "lighting": "soft studio glow with restrained highlights",
+        "palette": "graphite base with cyan sparks",
+        "geometry": "clean networked arcs",
+        "environment": "dark minimal background"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "qr_redemption",
+        "event_cpa"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "QR redemption",
+        "Event CPA"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "qr_redemption",
+      "event_cpa"
+    ],
+    "alt": "CMO and analytics lead mapping footfall lift and QR redemption targets",
+    "image": "images/section_signal_map_are_stores_becoming_media_stud.png"
+  },
+  {
+    "type": "section",
+    "section": "Case Study 1",
+    "slot": "case_study_1",
+    "anchor_section": "mini_case_story",
+    "template": "case_play_activation",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "scene": "back store ops desk where store operations lead",
+        "time": "lead compares printed cpm store media local digital",
+        "moment": "lead compares printed cpm store media local digital",
+        "personas": "store operations lead executing 'in store media margin",
+        "mood": "practical data driven tactical",
+        "lighting": "Directed editorial light on the calculator and ad panel, cooler fill on surrounding shelves to isolate the test focal point.",
+        "props": "fold out margin calculator markdown baseline column small",
+        "focal_point": "back store ops desk where store operations lead"
+      },
+      "style": {
+        "framing": "grounded eye-level framing focused on the active bay",
+        "lighting": "cool high-contrast lighting with crisp edges",
+        "palette": "graphite and steel with restrained teal",
+        "geometry": "layered geometric planes",
+        "environment": "measured spatial grid"
+      },
+      "metric_focus": [
+        "conversion_rate",
+        "partner_value"
+      ],
+      "metric_labels": [
+        "Conversion rate",
+        "Partner value"
+      ]
+    },
+    "metric_focus": [
+      "conversion_rate",
+      "partner_value"
+    ],
+    "alt": "Store Ops Lead testing sellable in-store ad slots and measuring conversion lift",
+    "image": "images/section_case_study_1_are_stores_becoming_media_stud.png"
+  }
+]

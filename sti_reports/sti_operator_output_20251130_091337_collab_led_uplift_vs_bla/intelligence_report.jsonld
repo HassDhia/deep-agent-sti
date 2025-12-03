@@ -1,0 +1,14 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Report",
+  "name": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+  "about": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+  "abstract": "You need to drive store footfall and buyer activity with collaboration-led offers instead of blanket discounts within the next 6 weeks without sacrificing margin. Targeted collab events can shift purchases into high-value early windows and capture share while delivering **10–15%** foot-traffic uplift (stretch **≥25%**), moving early-window share from 12–15% toward **20–30%**, and lowering event CPA to ≤**0.80×** baseline compared with sitewide percent-offs that hollow margins. Favor a store-as-studio / media-led holiday approach: in the next 30 days cross-functional teams must run a randomized 2-week pilot comparing control, blanket-percent, and collaboration-event stores, instrument daily early-window share, foot traffic, buyer activity share vs promo intensity, and QR redemption, and treat success as hitting the uplift and early-window share targets while holding event CPA ≤0.80× baseline [^1][^5].",
+  "datePublished": "2025-11-30T17:21:46.973535",
+  "temporalCoverage": "2025-11-23/2025-11-30",
+  "hasPart": [],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": 0.28
+  }
+}

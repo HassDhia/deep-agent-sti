@@ -1,0 +1,722 @@
+{
+  "deep_analysis": {
+    "sections": [
+      {
+        "title": "Store-as-studio converts creators into owned reach",
+        "spine_position": "what",
+        "priority": 2,
+        "scan_line": "Local creators turn in-store moments into ongoing media and visits.",
+        "insight": "Hosting local creators in-store produces authentic short-form content that amplifies discovery and drives repeat visits when timed with drops or events [^4][^5]. The mechanism: creator residencies generate daily micro-moments that feed TikTok discovery cycles and increase early-window purchaser share when creators have overlapping local audiences [^5][^6]. This holds only if creators have local follower overlap; paid megainfluencers increase reach but dilute local conversion per-dollar versus micro-creators tuned to the neighborhood [^4].",
+        "operator_note": "Prioritize micro-creators within a five-mile radius and reserve inventory specifically for creator-driven claims. Structure agreements for on-site content within a fixed window and require a shoppable CTA tied to a unique code to trace conversions.",
+        "instrument_next": "Instrument creator attribution: unique QR or UTM per creator, same-day POS entry for creator-driven purchases, and social lift metrics (views, saves) tied to local store footfall.",
+        "citations": [
+          4,
+          5,
+          6
+        ]
+      },
+      {
+        "title": "Discounts buy traffic, erode margin",
+        "spine_position": "so_what",
+        "priority": 1,
+        "scan_line": "Discounts increase footfall but compress margin and buyer value.",
+        "insight": "Blanket holiday discounts reliably lift store visits but reduce per-buyer margin and reset future price expectations [^8][^1]. The mechanism is volume-for-margin: broad price cuts bring lower-intent shoppers and lower AOV, forcing deeper subsequent promotions to protect sales velocity. Compared to collab-led drops, discount-led traffic is wider but shallower; collabs concentrate early-window, higher-margin buyers but require tighter inventory and local hype to match traffic volumes [^6][^2].",
+        "operator_note": "Run a controlled test across adjacent flagships: one executes a sitewide discount, the other executes a geo-locked limited drop with creator-driven activation. Measure footfall lift, early-window purchase share, AOV, and gross margin per buyer over the first 7 days and the following 30 days to capture rebound/cannibalization.",
+        "instrument_next": "Instrument per-store POS tags for promo type, door sensors for minute-level footfall, buyer-level AOV and margin, and a holdout control store to measure cannibalization.",
+        "citations": [
+          8,
+          1,
+          6,
+          2
+        ]
+      },
+      {
+        "title": "Scaling local pilots breaks exclusivity and ops",
+        "spine_position": "so_what",
+        "priority": 2,
+        "scan_line": "What works in pilots fractures when rolled broadly without controls.",
+        "insight": "Pilot-level lift from creator residencies and limited drops depends on strict geo, inventory, and timing controls; when you scale broadly, exclusivity erodes and replenishment costs rise, turning media lift into margin leak [^1][^2]. The mechanism is operational friction and cannibalization: more doors offering the same scarcity removes the local novelty and requires more complex SKU controls and tighter replenishment cadence. Discount-based scaling avoids some ops complexity but entrenches lower price expectations across channels and cohorts [^1][^8].",
+        "operator_note": "Do not scale across the network until you have per-store KPIs for cannibalization and marginal margin. Use strict roll rules: per-store caps, geo-locked SKUs, and limited event windows to protect scarcity economics.",
+        "instrument_next": "Instrument a roll-up dashboard capturing SKU allocation per store, event time windows, cannibalization versus matched-control stores, and marginal margin per event cohort.",
+        "citations": [
+          1,
+          2,
+          8
+        ]
+      },
+      {
+        "title": "QR mechanics: small floor, big upside with scarcity",
+        "spine_position": "now_what",
+        "priority": 1,
+        "scan_line": "QRs underperform without exclusivity; scarcity boosts redemption.",
+        "insight": "Generic QR experiences rarely hit meaningful redemption rates; attaching QR to limited claims, raffles, or early access boosts immediate conversion and early-window purchases [^6][^4]. Mechanically, scarcity converts passive scans into purchase intent because the reward is time- or quantity-limited, creating a short decision horizon at POS. Collab drops and creator activations show higher QR-to-purchase conversion versus blanket discounts where QR becomes redundant [^6][^2].",
+        "operator_note": "Deploy QR as a transaction trigger, not a brochure. Tie each QR to a single-use claim or raffle entry, require email/phone capture, and exchange for a time-stamped POS token so you can link scan to purchase within the early-window.",
+        "instrument_next": "Instrument per-door QR scans with unique offer codes, capture redemption timestamps, map scans-to-POS transactions and early-window purchase share, and report QR conversion by event type.",
+        "citations": [
+          6,
+          4,
+          2
+        ]
+      }
+    ],
+    "summary": "Test three levers in parallel over 4–6 weeks: a sitewide discount control, a geo-locked collab drop with creator residency, and a QR-driven scarcity activation. Instrument attribution at door, QR, creator, and POS levels to measure early-window share, footfall lift, AOV, and marginal margin. Use per-store caps and holdout controls to prevent scaling from turning local scarcity into network-wide margin erosion."
+  },
+  "pattern_matches": [
+    {
+      "label": "Collab-fueled micro-drops",
+      "then": "Iconic limited collaborations like BAPE x adidas concentrated demand into short, high-value store events that preserved margin.",
+      "now": "Run neighborhood-limited collab drops at flagships to create urgency without sitewide markdowns.",
+      "operator_leap": "Pilot a 4-week micro-drop at one flagship with local RSVPs and a neighborhood ticket pool; target footfall uplift 10-15% (stretch >=25%), early-window share +8-15 points toward 20-30%, event CPA <=0.8x baseline, and QR redemption >=5% of footfall.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        2,
+        6,
+        5
+      ]
+    },
+    {
+      "label": "Creator residencies as conversion engines",
+      "then": "Brands and hospitality operators have used short-term resident creators to make stores feel like community hubs and drive repeat visits.",
+      "now": "Place local micro-creators in flagship windows and shift them to run content-led in-store activations that convert passersby into buyers.",
+      "operator_leap": "Run a 2-week residency with 3 neighborhood creators creating in-store activations; measure footfall uplift vs baseline (target 10-15%), QR redemption >=5%, and buyer activity share vs promo intensity within one planning cycle.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        4,
+        5
+      ]
+    },
+    {
+      "label": "Scarcity-first releases vs blanket discounting",
+      "then": "Scarcity-driven sneaker drops historically protected pricing power while driving concentrated spend.",
+      "now": "Replace broad holiday markdowns with limited-inventory local releases and invite tiers to protect margin and focus spend.",
+      "operator_leap": "Run one limited-inventory release tied to neighborhood loyalty touchpoints over a 3-week window; compare margin per buyer and promo intensity to a matched sitewide-discount cohort and aim to reduce overall discount depth while keeping early-window share within target range.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        2,
+        6
+      ]
+    },
+    {
+      "label": "Local culture tie-ins to convert adjacent communities",
+      "then": "Brands that aligned activations to local sports and cultural calendars created habitual, high-value local demand.",
+      "now": "Map adjacent micro-communities and run drops or events synced to local cultural moments to recruit habitual buyers.",
+      "operator_leap": "Identify one cultural touchpoint per flagship neighborhood and run a 1–2 day event tied to it; measure repeat visit rate, buyer activity share, and track early-window share uplift toward 20-30% within six weeks.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        9,
+        6
+      ]
+    },
+    {
+      "label": "Neighborhood micro-influencer reallocation",
+      "then": "Mass influencer campaigns plateaued; niche creators historically delivered higher local credibility and conversion.",
+      "now": "Shift spend to neighborhood micro-creators on platforms like TikTok to reach untapped local segments outside flagships.",
+      "operator_leap": "Reallocate ~15% of paid creator budget to 8–12 nearby micro-creators for a 4-week pilot; measure event CPA (target <=0.8x baseline), QR redemption floor >=5%, and improvement in buyer activity share vs promo intensity.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        4,
+        5
+      ]
+    }
+  ],
+  "brand_outcomes": [
+    {
+      "title": "Move 20% of holiday demand into an earlier window with local limited drops",
+      "description": "Run a 4-week sequence of micro-drops at the flagship timed with paid local creators and RSVP-only windows. Use raffle/reservation mechanics and modest product-level premiums instead of sitewide discounts to attract footfall and urgency while protecting margin [^6][^4][^2].",
+      "impact": "Incremental margin and throughput. Target: shift 20% of projected holiday demand into the early window; early-window share to 20-30%; foot traffic uplift 10-25%; event CPA ≤0.8× baseline; QR redemptions ≥5% of footfall.",
+      "time_horizon": "next 6 weeks",
+      "owner": "Partnerships + Retail ops",
+      "citations": [
+        6,
+        4,
+        2
+      ]
+    },
+    {
+      "title": "4-week creator residency pilot to convert adjacent micro-communities",
+      "description": "Recruit 6–8 local creators for staged in-store residencies. Compensate with revenue share or exclusive SKU access. Require daily content windows and two RSVP ticketed sessions per creator to measure conversion from content to footfall and purchases [^4][^5].",
+      "impact": "Loyalty and high-value buyer share. Targets: foot-traffic uplift +12–20%; QR redemption 5–10%; increase in high-ticket buyer share vs baseline.",
+      "time_horizon": "next 6 weeks",
+      "owner": "Partnerships + Store Marketing",
+      "citations": [
+        4,
+        5
+      ]
+    },
+    {
+      "title": "QR-to-tender funnel: isolate in-store conversion and CPA",
+      "description": "Deploy SKU-specific QR codes on window displays and creator content that open reservation + one-time offer flows. Track QR scans to footfall, in-store redemption, and final purchase to measure real event CPA and buyer activity share vs promo intensity [^6][^4].",
+      "impact": "Throughput and measurable CPA. Targets: QR redemption ≥5% of footfall; event CPA ≤0.8× baseline; paired metric of buyer activity share vs promo intensity.",
+      "time_horizon": "next 6 weeks",
+      "owner": "CRM + Retail ops",
+      "citations": [
+        6,
+        4
+      ]
+    },
+    {
+      "title": "Paired test: collab-led flagship event versus sitewide holiday discount",
+      "description": "Run matched-week experiments: one week flagship collab event (limited stock, creators, RSVP) and one week sitewide discount. Hold product mix and promotional INR constant. Measure buyer share, margin per sale, and foot-traffic uplift to decide scale or stop discounts [^2][^8][^6].",
+      "impact": "Incremental margin and promotional spend efficiency. Targets: lift high-value buyer share while keeping margin loss < sitewide discount baseline; measure which lever yields lower CPA and higher repeat rate.",
+      "time_horizon": "next 90 days (pilot in first 6 weeks, analyze next 30 days)",
+      "owner": "Retail ops + Analytics",
+      "citations": [
+        2,
+        8,
+        6
+      ]
+    }
+  ],
+  "operator_notes": "Focus pilots on four levers: (1) local creator residencies to shift early-window share, (2) release-backed reservation mechanics to concentrate footfall, (3) pop-up collabs to test shallower in-store discounts, and (4) paired measurement of buyer activity share versus promo intensity. Prioritize 4–6 week experiments that report foot_traffic_uplift, QR_redemption, early_window_share, and event CPA. Competing approaches: blanket discount-heavy holiday tactics win short-term volume but force deeper cuts across channels; store-as-studio and media-led local collabs trade some scale for higher margin per buyer and quicker learning on community conversion. Run the cheapest orthogonal test first: one flagship creator residency plus a single drop to validate QR and conversion mechanics before scaling promo substitution pilots.",
+  "quant": {
+    "spine_hook": "Success = flagship footfall +10–15% with early-window buyer share rising to 20–30% while event CPA stays ≤0.80× baseline and QR redemptions ≥5% of footfall.",
+    "anchors": [
+      {
+        "id": "Q1",
+        "headline": "Foot traffic uplift (base target)",
+        "topic": "Local flagship footfall",
+        "value_low": 10.0,
+        "value_high": 15.0,
+        "unit": "% vs baseline week",
+        "status": "target",
+        "band": "base",
+        "owner": "Store Operations",
+        "expression": "In-store footfall +10–15% vs a pre-campaign baseline week",
+        "source_ids": [],
+        "applies_to_signals": [
+          "store_as_studio",
+          "local_creators"
+        ]
+      },
+      {
+        "id": "Q2",
+        "headline": "Early-window buyer share (current baseline)",
+        "topic": "Share of transactions within first 48 hours of event/drop",
+        "value_low": 12.0,
+        "value_high": 15.0,
+        "unit": "% of weekly transactions",
+        "status": "observed",
+        "band": "base",
+        "owner": "Merchandising + Analytics",
+        "expression": "Currently 12–15% of weekly transactions occur in early-window",
+        "source_ids": [],
+        "applies_to_signals": [
+          "store_as_studio",
+          "release_events"
+        ]
+      },
+      {
+        "id": "Q3",
+        "headline": "Event CPA ceiling",
+        "topic": "Acquisition efficiency for store-driven events",
+        "value_low": 0.0,
+        "value_high": 0.8,
+        "unit": "× baseline CPA",
+        "status": "target",
+        "band": "base",
+        "owner": "Performance Marketing",
+        "expression": "Event-level CPA ≤0.80× baseline paid-acq CPA",
+        "source_ids": [],
+        "applies_to_signals": [
+          "local_paid_media",
+          "creator_amplification"
+        ]
+      },
+      {
+        "id": "Q4",
+        "headline": "QR redemption minimum",
+        "topic": "On-site physical-to-digital conversion",
+        "value_low": 5.0,
+        "value_high": 100.0,
+        "unit": "% of footfall",
+        "status": "target",
+        "band": "base",
+        "owner": "Store Ops + CRM",
+        "expression": "At least 5% of footfall redeems QR-linked offer or registers",
+        "source_ids": [],
+        "applies_to_signals": [
+          "in-store_qr",
+          "pop-up_interaction"
+        ]
+      }
+    ],
+    "measurement_plan": [
+      {
+        "id": "M1",
+        "metric": "Event CPA",
+        "expression": "CPA ≤ 0.80× baseline",
+        "owner": "Performance Marketing",
+        "timeframe": "2025-11-24 to 2025-12-01",
+        "status": "plan",
+        "why_it_matters": "Keeps acquisition efficient so in-store tests do not trade margin for footfall."
+      },
+      {
+        "id": "M2",
+        "metric": "Buyer activity share vs promo intensity",
+        "expression": "Early-window transactions rise to 20–30% while promo SKU share does not exceed LY by >5p.p.",
+        "owner": "Merchandising + Analytics",
+        "timeframe": "2025-11-24 to 2025-12-01",
+        "status": "plan",
+        "notes": "Track early-window buyer share and percent of assortment on promotion side by side daily.",
+        "why_it_matters": "Paired metrics show whether buyer mix improves or growth is just deeper discounting."
+      },
+      {
+        "id": "M3",
+        "metric": "Flagship footfall delta",
+        "expression": "Footfall +10–15% vs prior 4-week average (measured daily)",
+        "owner": "Store Operations",
+        "timeframe": "2025-11-24 to 2025-12-01",
+        "status": "plan",
+        "why_it_matters": "Direct test of whether local activations pull community traffic without sitewide promos."
+      },
+      {
+        "id": "M4",
+        "metric": "QR redemption to footfall ratio (incremental activation)",
+        "expression": "QR redemptions ≥5% of counted footfall with tracked conversion lift",
+        "owner": "Store Ops + CRM",
+        "timeframe": "2025-11-24 to 2025-12-01",
+        "status": "plan",
+        "notes": "Use QR scans with promo codes and POS link to attribute purchases; include control days with no QR.",
+        "why_it_matters": "Shows measurable physical-to-digital capture and direct buyer conversion from micro-community engagement."
+      }
+    ],
+    "coverage": 0.95
+  },
+  "activation_kit": [
+    {
+      "display": {
+        "pillar": "Store Activation",
+        "play_name": "Micro-creator Residency",
+        "card_title": "Host local creators as in-store studios",
+        "persona": "Head of Retail / Partnerships",
+        "best_fit": "Flagship or high-footfall neighborhood stores with available staging space",
+        "not_for": "Low-traffic locations without staff bandwidth or POS tagging",
+        "thresholds_summary": "Target event CPA ≤ 0.8× baseline and creator-driven redemptions ≥ 15%; creators should have measurable local follower overlap within 5 miles.",
+        "why_now": "Short-form content algorithms favor local micro-moments; holiday windows amplify discovery and repeat visits.",
+        "proof_point": "Local micro-creators produce short-form content that increases early-window purchaser share and drives store visits when follower overlap is high.",
+        "approach_name": "store-as-studio / media-led holiday",
+        "time_horizon": "pilot",
+        "placement_options": [
+          "Flagship window stage",
+          "Pop-up corner inside high-traffic aisle",
+          "Weekend in-store studio table"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Retail Partnerships",
+        "collaborator": "Local micro-creators or creator agency",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "cpa": "≤0.8× baseline",
+          "redemption": "≥15%",
+          "local_overlap": "≥20% follower overlap within 5 miles"
+        },
+        "prerequisites": [
+          "Door counts and store footfall baseline",
+          "Signed creator on-site content agreement",
+          "Unique QR/UTM per creator and POS tagging for same-day attribution"
+        ],
+        "target_map": [
+          {
+            "org_type": "Retailer",
+            "role": "Retail ops",
+            "why_now": "Vacant bay or flexible display space available this month"
+          },
+          {
+            "org_type": "Marketing",
+            "role": "Growth/Performance Lead",
+            "why_now": "Need for low-cost discovery content feeding short-form channels"
+          },
+          {
+            "org_type": "Partnerships",
+            "role": "Creator Manager",
+            "why_now": "Access to local creator pool and short booking windows"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Kickoff: scope residency",
+            "narrative": "Confirm store dates, space, creator list, and attribution method.",
+            "CTA": "Book the residency slot",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "3",
+            "subject": "Reconfirm logistics",
+            "narrative": "Validate instrument tags, staffing, inventory reservation, and on-site schedule.",
+            "CTA": "Share instrumentation details",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "7",
+            "subject": "Pre-launch check",
+            "narrative": "Final walk-through and approval of display, signage, and creator brief.",
+            "CTA": "Sign off launch",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "medium",
+        "strategy_tag": "store-as-studio / media-led holiday"
+      },
+      "play_name": "Micro-creator Residency",
+      "pillar": "Store Activation"
+    },
+    {
+      "display": {
+        "pillar": "Promotions",
+        "play_name": "Creator-coded Drop",
+        "card_title": "Time-limited product drop driven by creator codes",
+        "persona": "Head of Growth / CMO",
+        "best_fit": "Brands with existing SKUs, trackable POS, and mobile checkout",
+        "not_for": "Products requiring new packaging or long lead times",
+        "thresholds_summary": "Aim for event CPA ≤ 0.8× baseline and code redemption ≥ 15% while keeping margin per order above baseline minus 100 bps.",
+        "why_now": "Creators can concentrate demand in short windows; codes isolate attribution and reduce paid reach waste during holidays.",
+        "proof_point": "Creator-driven drops convert better locally when creators’ followers overlap with store trade areas and use shoppable CTAs.",
+        "approach_name": "collab-led holiday",
+        "time_horizon": "6-week",
+        "placement_options": [
+          "Checkout endcap with QR for creator code",
+          "Dedicated landing page + in-store QR pickup",
+          "Pop-up pick-up table near store entrance"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Growth Marketing",
+        "collaborator": "Creator roster or influencer partner",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "cpa": "≤0.8× baseline",
+          "redemption": "≥15%",
+          "margin_per_order": "≥ baseline − 100 bps"
+        },
+        "prerequisites": [
+          "Unique creator promo codes and landing page",
+          "POS tagging and inventory reservation per code",
+          "Short-form creative assets and UGC usage rights"
+        ],
+        "target_map": [
+          {
+            "org_type": "Marketing",
+            "role": "Performance Lead",
+            "why_now": "Need traceable short-window acquisitions with owned attribution"
+          },
+          {
+            "org_type": "Retailer",
+            "role": "Store Manager",
+            "why_now": "Drive footfall with a visible pick-up experience"
+          },
+          {
+            "org_type": "Ops",
+            "role": "Merchandising",
+            "why_now": "Allocate display and reserved inventory for the drop"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Launch plan",
+            "narrative": "Confirm codes, landing page, in-store pickup flow, and creator post schedule.",
+            "CTA": "Activate the creator codes",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "7",
+            "subject": "Mid-campaign check",
+            "narrative": "Measure redemptions, CPA, and top-performing creators; reallocate support if needed.",
+            "CTA": "Adjust media or support",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "21",
+            "subject": "Wrap and measure",
+            "narrative": "Report CPA, redemption, margin impact, and 30-day repeat signal for winners.",
+            "CTA": "Decide scale or stop",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "medium",
+        "strategy_tag": "collab-led holiday"
+      },
+      "play_name": "Creator-coded Drop",
+      "pillar": "Promotions"
+    },
+    {
+      "display": {
+        "pillar": "Pricing & Promo",
+        "play_name": "Staged Discount Test",
+        "card_title": "Time-boxed staged discounts to protect margin",
+        "persona": "CFO / Head of Revenue",
+        "best_fit": "Categories with elastic short-term demand and stable 90-day repeat",
+        "not_for": "Low-margin categories where baseline margin cannot absorb discounts",
+        "thresholds_summary": "Run only if margin per order stays ≥ baseline − 100 bps and 90-day repeat meets baseline; mini-bursts must hit CPA ≤ 0.8× baseline and redemption ≥ 15%.",
+        "why_now": "Holiday discount pressure is high; staged tests protect margin while isolating repeat behavior.",
+        "proof_point": "Blanket discounts increase footfall but compress buyer value; staged tests isolate acquisition vs retention costs.",
+        "approach_name": "discount-heavy holiday",
+        "time_horizon": "immediate",
+        "placement_options": [
+          "Email + in-store signage flash",
+          "App timed flash sale with countdown",
+          "Endcap promoted clearance bundle"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Revenue / Pricing Lead",
+        "collaborator": "Brand Trade or Finance",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "margin_per_order": "≥ baseline − 100 bps",
+          "repeat_90d": "≥ baseline",
+          "mini_burst_cpa": "≤0.8× baseline",
+          "mini_burst_redemption": "≥15%"
+        },
+        "prerequisites": [
+          "Baseline margin and 90-day repeat benchmarks",
+          "Price change approval workflow",
+          "POS tagging and ability to run segmented discounts"
+        ],
+        "target_map": [
+          {
+            "org_type": "Finance",
+            "role": "Pricing Lead",
+            "why_now": "Need to defend margin while testing promotional elasticity"
+          },
+          {
+            "org_type": "Marketing",
+            "role": "CRM Lead",
+            "why_now": "Ability to micro-target cohorts for staged discounts"
+          },
+          {
+            "org_type": "Retailer",
+            "role": "Store Ops",
+            "why_now": "Prepare signage and staff script for short bursts"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Approve cohort and price",
+            "narrative": "Set cohort, discount depth, and POS instrumentation for the staged test.",
+            "CTA": "Approve price cohort",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "3",
+            "subject": "Launch mini-burst",
+            "narrative": "Run the targeted discount, monitor CPA, redemptions, and margin in real time.",
+            "CTA": "Monitor and throttle",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "14",
+            "subject": "Assess lift and repeat",
+            "narrative": "Compare margin per order and 90-day repeat signal to baseline and decide next step.",
+            "CTA": "Scale or stop the test",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "high",
+        "strategy_tag": "discount-heavy holiday"
+      },
+      "play_name": "Staged Discount Test",
+      "pillar": "Pricing & Promo"
+    }
+  ],
+  "risk_radar": [
+    {
+      "risk_name": "Margin compression from blanket discounts",
+      "scan_line": "Risk: discounts increase footfall but compress margin and buyer value",
+      "trigger": "Applying wide holiday sitewide codes or blanket percent-off promos",
+      "detection": "Track gross margin by cohort, promo redemptions, incremental revenue vs baseline, new-vs-repeat buyer LTV over 30/90 days",
+      "mitigation": "Limit discounts to targeted cohorts; run narrow-window promo tests and require margin floors per SKU",
+      "severity": 3,
+      "likelihood": 3,
+      "approach_exposure": "discount-heavy holiday",
+      "citations": [
+        1
+      ]
+    },
+    {
+      "risk_name": "Creator-local mismatch dilutes conversion",
+      "scan_line": "Risk: national influencers dilute local conversion per dollar",
+      "trigger": "Hiring megainfluencers without local follower overlap for store-driven activations",
+      "detection": "Measure creator-specific QR/UTM conversions, same-day POS entries, local store footfall lift, and conversion per creator",
+      "mitigation": "Prioritize micro-creators within a five-mile radius and reserve inventory for creator-driven claims",
+      "severity": 2,
+      "likelihood": 2,
+      "approach_exposure": "store-as-studio",
+      "citations": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "risk_name": "Stockouts from creator drops or collabs",
+      "scan_line": "Risk: limited drops spike demand and cause sell-through or regional stockouts",
+      "trigger": "Announcing small-batch drops or creator pushes without protected supply or throttles",
+      "detection": "Monitor first-24/48h sell-through by SKU and location, backorder rates, cancellation rates, and local vs online stock ratios",
+      "mitigation": "Allocate protected inventory per creator/channel and enable reservation or preorder with throttled release",
+      "severity": 3,
+      "likelihood": 2,
+      "approach_exposure": "collab-led holiday",
+      "citations": [
+        5,
+        6
+      ]
+    },
+    {
+      "risk_name": "Attribution blind spots inflate creator ROI",
+      "scan_line": "Risk: weak attribution overstates creator-driven sales",
+      "trigger": "Relying on vanity metrics or lacking creator-specific UTMs, QR codes, or holdouts",
+      "detection": "Instrument unique codes per creator, correlate social lift with store footfall, and run holdout incrementality tests",
+      "mitigation": "Require unique shoppable CTAs per creator and run incremental holdouts before scaling spend",
+      "severity": 2,
+      "likelihood": 3,
+      "approach_exposure": "all",
+      "citations": [
+        4,
+        5
+      ]
+    }
+  ],
+  "future_outlook": [
+    {
+      "horizon": "6-month",
+      "headline": "Creator-led in-store activations lift local conversion quickly",
+      "scan_line": "If true, we will see measurable creator-attributed visits and purchases within 2 months.",
+      "description": "Hosting micro-creators within a five-mile radius, with reserved inventory and shoppable CTAs, generates short-form content that increases local discovery and same-week footfall [^4]. When creators have overlapping local audiences, conversion per marketing dollar and traceable attribution improves versus paying megainfluencers [^5]. This requires POS-level attribution and inventory holds; it trades media cost for margin protection compared with blanket discounts [^6].",
+      "operator_watch": "Creator-attributed conversion rate (purchases per unique QR/UTM)",
+      "collaboration_upside": "Repeat local buyers rise and AOV increases while discount reliance falls",
+      "dominant_approach": "store-as-studio / media-led holiday",
+      "confidence": 0.75,
+      "citations": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "horizon": "12-month",
+      "headline": "Scale creators or default to discounting; attribution decides the winner",
+      "scan_line": "If true, we will see either durable local buyer share growth within 9-12 months or persistent margin pressure from repeated discounts.",
+      "description": "Scaling creator residencies across flagships converts micro-communities into owned media channels, growing repeat buyer share and AOV in targeted ZIPs [^4]. If operators revert to blanket discounts instead, short-term footfall rises but buyer value and margin erode, reducing budget for experiential investments [^6]. The tipping point is operational: with live attribution and inventory controls the creator model compounds; without them discounts become the path of least resistance [^5].",
+      "operator_watch": "Repeat purchase rate within 90 days from targeted local ZIP cohorts",
+      "collaboration_upside": "Networked creators deliver year-over-year local AOV and repeat-rate growth, enabling lower discount intensity",
+      "dominant_approach": "mixed",
+      "confidence": 0.6,
+      "citations": [
+        4,
+        5,
+        6
+      ]
+    }
+  ],
+  "comparison_map": {
+    "approach_map": [
+      {
+        "approach_name": "collab-led micro-drops",
+        "who_it_is_for": "Head of Partnerships and Head of Retail running flagship events with controlled inventory.",
+        "strengths": "Concentrates demand into short, high-value store events to protect margin and create urgency (see S1, S3). Proven to lift early-window purchaser share and capture premium buyers without sitewide markdowns.",
+        "failure_modes": "If promos leak or inventory allocation fails, you trigger margin compression and stockouts that erode trust (see risk: Margin compression from blanket discounts; Stockouts). If creators lack local overlap, conversion per dollar drops (see risk: Creator-local mismatch dilutes conversion).",
+        "when_to_choose": "When you can reserve limited SKUs for RSVP/raffle windows and want to shift demand earlier without broad discounts.",
+        "when_not_to_choose": "Do not choose if you cannot enforce reservation mechanics or reserve inventory for the local drop window.",
+        "supporting_signals": [
+          "S1",
+          "S3"
+        ],
+        "key_risks": [
+          "Margin compression from blanket discounts",
+          "Stockouts from creator demand concentration",
+          "Creator-local mismatch dilutes conversion"
+        ],
+        "key_metrics": [
+          "foot_traffic_uplift",
+          "early_window_share",
+          "event_CPA",
+          "incremental_margin",
+          "qr_redemption",
+          "average_order_value"
+        ]
+      },
+      {
+        "approach_name": "store-as-studio media residency",
+        "who_it_is_for": "Head of Retail and Head of Marketing operating a flagship with staging space and local creator access.",
+        "strengths": "Turns the store into a content engine that drives repeat visits, higher-quality buyer share, and measurable creator-driven purchases (see S2, S4). Short residencies produce local short-form content that lifts footfall and early-window conversion when follower overlap is high.",
+        "failure_modes": "Operational strain or poor POS tagging will hide impact and waste spend; creators without local audiences dilute conversion (see risk: Operational bandwidth and Creator-local mismatch dilutes conversion).",
+        "when_to_choose": "When you can staff daily content windows, measure creator-attributed conversions, and reserve limited product for residency activations.",
+        "when_not_to_choose": "Do not choose if the store lacks staff bandwidth, a simple POS tagging flow, or nearby creators with local follower overlap.",
+        "supporting_signals": [
+          "S2",
+          "S4"
+        ],
+        "key_risks": [
+          "Creator-local mismatch dilutes conversion",
+          "Operational bandwidth and POS tagging failures",
+          "Stockouts from creator demand concentration"
+        ],
+        "key_metrics": [
+          "foot_traffic_uplift",
+          "qr_redemption",
+          "same_day_conversion_rate",
+          "creator_conversion_rate",
+          "creator_CPA"
+        ]
+      },
+      {
+        "approach_name": "targeted narrow-window promos (discount-light)",
+        "who_it_is_for": "Head of CRM and CFO owners who can segment local cohorts and apply controlled promo mechanics.",
+        "strengths": "Provides a lever to lift local footfall while preserving overall margin if discounts are narrowly targeted and tied to local channels (addresses risk in R1). Works as a complement to in-store activations to capture lower-intent passersby.",
+        "failure_modes": "If codes leak or targeting is broad, you trigger the same margin compression as blanket promos; you also risk training buyers to wait for offers (see risk: Margin compression from blanket discounts).",
+        "when_to_choose": "When CRM segmentation, single-use codes, or geo-targeted digital ads can limit redemption to defined neighborhoods and windows.",
+        "when_not_to_choose": "Do not choose if you cannot enforce per-customer use, reserve inventory, or track redemption by store/cohort.",
+        "supporting_signals": [
+          "S3",
+          "S1"
+        ],
+        "key_risks": [
+          "Margin compression from blanket discounts",
+          "Customer promo conditioning",
+          "Stockouts from mis-timed demand"
+        ],
+        "key_metrics": [
+          "incremental_revenue_vs_baseline",
+          "gross_margin_by_cohort",
+          "promo_redemption_rate",
+          "new_vs_repeat_buyer_share",
+          "event_CPA"
+        ]
+      }
+    ],
+    "buyer_guide": [
+      {
+        "option_name": "Local creator agency sprint",
+        "best_for": "Brands that lack local creator relationships and need turnkey recruitment and event ops.",
+        "not_for": "Brands that already have in-house creator networks or cannot commit to conversion measurement.",
+        "commercial_shape": "4-week fixed-fee sprint plus creator payouts; optional performance bonus or revenue share on ticketed sessions.",
+        "proof_needed_before_scaling": "One flagship pilot that hits foot-traffic uplift >=10% and creator-driven redemptions >=5% of footfall or event CPA <=0.8x baseline.",
+        "where_STI_fits": "STI provides signal definitions, KPI thresholds, QR/UTM instrumentation, and a decision gate to move from pilot to scale."
+      },
+      {
+        "option_name": "In-house studio residency",
+        "best_for": "Operators with retail production capacity and staff to run daily content windows.",
+        "not_for": "Low-traffic doors or teams without POS/QR tagging capability.",
+        "commercial_shape": "Internal cost allocation for 2–4 week residency; creators paid by fixed fee, revenue share, or exclusive SKU access.",
+        "proof_needed_before_scaling": "Sustained foot-traffic uplift 12–20% and early-window purchaser share moved into 20–30% in two sequential weeks.",
+        "where_STI_fits": "STI configures tracking, defines creator attribution, and sets go/no-go thresholds for scaling residencies across doors."
+      },
+      {
+        "option_name": "Pop-up collab with RSVP drops",
+        "best_for": "Partnerships teams that can negotiate short-term space and control limited inventory for ticketed drops.",
+        "not_for": "Brands that cannot hold inventory or enforce RSVP/raffle mechanics.",
+        "commercial_shape": "Short-term revenue share or percentage on limited SKU sales; ticket revenue can cover production costs.",
+        "proof_needed_before_scaling": "Early-window sales share increases by 8–15 points and AOV stays at or above baseline for drop purchasers.",
+        "where_STI_fits": "STI designs the test cell, recommends reservation mechanics, and monitors margin impact by cohort to validate scale decisions."
+      }
+    ]
+  },
+  "signal_map_notes": "Focus pilots on four levers: (1) local creator residencies to shift early-window share, (2) release-backed reservation mechanics to concentrate footfall, (3) pop-up collabs to test shallower in-store discounts, and (4) paired measurement of buyer activity share versus promo intensity. Prioritize 4–6 week experiments that report foot_traffic_uplift, QR_redemption, early_window_share, and event CPA. Competing approaches: blanket discount-heavy holiday tactics win short-term volume but force deeper cuts across channels; store-as-studio and media-led local collabs trade some scale for higher margin per buyer and quicker learning on community conversion. Run the cheapest orthogonal test first: one flagship creator residency plus a single drop to validate QR and conversion mechanics before scaling promo substitution pilots."
+}

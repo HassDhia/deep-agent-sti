@@ -1,0 +1,101 @@
+{
+  "hero": {
+    "slot": "hero",
+    "core_tension": "Choose between broad percent-off volumes and targeted collab events during a short early-holiday capture window.",
+    "setting": "Store backroom staged as a studio pop-up with a wall map of stores, event posters, and a pegboard of partner SKUs.",
+    "persona": "Head of Retail",
+    "action": "Placing a collab-event sticker on a two-week pilot map while directing staff on timing and inventory allocation.",
+    "urgency_symbol": "A narrow band of light slicing across stacked ticket-stub silhouettes to imply finite slots.",
+    "props": [
+      "two-week pilot store map labeled control, blanket-discount, collab-event",
+      "collab posters referencing 'Holiday windows are deal-hungry'",
+      "price-curve sketch pinned near sample SKUs"
+    ],
+    "lighting": "Polished editorial with confident highlights and clean negative space",
+    "mood": "Decisive, collaborative, focused",
+    "anchor_section": "header",
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share"
+    ],
+    "alt": "Head of Retail staging a two-week collab event pilot to lift early-window share."
+  },
+  "signal_map": {
+    "slot": "signal_map",
+    "structure": "Concentric rings and radial arcs; inner ring shows baseline, outer ring shows stretch targets; nodes connect stores to event types.",
+    "elements": [
+      "store tokens sized by weekly footfall",
+      "collab nodes highlighted with bold accent",
+      "discount nodes rendered as neutral tokens"
+    ],
+    "motion": "Curved flows indicate buyer movement from awareness to in-store activity; thicker paths encode higher lift.",
+    "palette": "Matte neutrals with a single confident accent for collab nodes, metallic accents for measurement labels",
+    "anchor_section": "signals_and_thesis",
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share",
+      "event_cpa"
+    ],
+    "alt": "Head of Partnerships reviews a signal map encoding footfall lift and early-window share for collab tests."
+  },
+  "case_studies": [
+    {
+      "slot": "case_study_1",
+      "scene": "Floor-level pilot day with staff prepping a collab pop-up; nearby a small wall chart shows day-by-day early-window share.",
+      "moment": "First morning of a randomized two-week pilot where collab-event stores open an exclusive bundle.",
+      "persona": "Retail Ops Manager",
+      "props": [
+        "pilot assignment tags on shelving",
+        "stacked bundle packs branded with partner logo",
+        "paper log for daily early-window share metrics"
+      ],
+      "lighting": "Polished editorial, directional highlights on the pop-up",
+      "mood": "Experimental, data-first, urgent",
+      "anchor_section": "deep_analysis",
+      "metric_focus": [
+        "early_window_share",
+        "footfall_lift"
+      ],
+      "alt": "Retail Ops Manager running a randomized two-week pilot testing collab events vs blanket discounts."
+    },
+    {
+      "slot": "case_study_2",
+      "scene": "Small strategy session around a table with a printed price-curve and partner sample boxes; a staff member pins QR-redemption targets.",
+      "moment": "Deploying price-curve optimization on collaboration inventory and tagging items with event-only QR codes.",
+      "persona": "Head of Pricing",
+      "props": [
+        "printed price-curve optimization chart",
+        "QR code redemption tags attached to samples",
+        "partner activation checklist labeled 'store-as-studio / media-led holiday'"
+      ],
+      "lighting": "Polished editorial, crisp side light for texture",
+      "mood": "Analytical, margin-protective, collaborative",
+      "anchor_section": "mini_case_story",
+      "metric_focus": [
+        "event_cpa",
+        "qr_redemption"
+      ],
+      "alt": "Head of Pricing deploying a price-curve test on collab inventory to lower event CPA and boost QR redemption."
+    },
+    {
+      "slot": "case_study_3",
+      "scene": "After-action display that reads as resolved: sold tags, redeemed QR strips, and a tidy stack of partner invoices with margin notes.",
+      "moment": "End of pilot where collab-led stores exceed early-window share goals and event CPA sits below ceiling.",
+      "persona": "Head of Partnerships",
+      "props": [
+        "printed metric cards showing footfall lift and early-window share",
+        "redeemed QR stubs forming a ribbon of redeemed actions",
+        "compact partner value ledger with margin-preservation notes"
+      ],
+      "lighting": "Polished editorial, confident highlights that emphasize positive outcomes",
+      "mood": "Resolved, scalable, evidence-led",
+      "anchor_section": "future_outlook",
+      "metric_focus": [
+        "footfall_lift",
+        "early_window_share",
+        "event_cpa"
+      ],
+      "alt": "Head of Partnerships confirming collab model hit 25% footfall lift and met early-window share targets."
+    }
+  ]
+}

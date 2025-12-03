@@ -1,0 +1,93 @@
+{
+  "hero": {
+    "core_tension": "Decide to replace a weekend 20% sitewide discount with a partner-led in-store activation within one planning cycle; choose speed versus scale of markdown.",
+    "setting": "Back-of-store planning table facing the storefront; laminated pilot boards, partner mockups, and a folded store map on a matte wood table.",
+    "persona": "Head of Retail",
+    "action": "Signing off on a 6-week S1 pilot: swap one weekend 20% sitewide discount for a co-branded in-store activation across 12 pilot stores.",
+    "urgency_symbol": "A sharp band of directional light cutting the table surface to imply a narrowing holiday window (symbolic closing moment).",
+    "props": [
+      "S1 pilot plan board (12 stores, 6 weeks)",
+      "Co-branded activation mockup referencing S2 exclusive drop possibilities",
+      "Printed P&L snapshot flagging event_cpa targets from S3"
+    ],
+    "lighting": "Polished editorial lighting, confident highlights, soft shadow negative space.",
+    "mood": "Precise, decisive, collaborative.",
+    "anchor_section": "header",
+    "metric_focus": [
+      "footfall_lift",
+      "event_cpa"
+    ],
+    "alt": "Head of Retail signing off on S1 6-week pilot replacing a weekend discount with co-branded activations."
+  },
+  "signal_map": {
+    "structure": "Concentric rings (baseline to stretch) with radial arcs for time windows and node clusters for stores; two labeled goal bands embedded in the rings.",
+    "elements": [
+      "Store tokens sized by expected footfall",
+      "Arcs labeled with baseline and goal numbers (10-15% -> ≥25%)",
+      "Nodes tagged for week-one drop windows and activation dates"
+    ],
+    "motion": "Flow compresses toward a bright lane representing the early-window demand pulse; vectors show customer funnel velocity into week-one.",
+    "palette": "Neutral editorial base, warm gold for baseline bands, vivid teal for goal/ stretch bands, matte metallic accents.",
+    "anchor_section": "signals_and_thesis",
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share"
+    ],
+    "alt": "Head of Partnerships and Head of Retail viewing a signal map encoding footfall uplift and early-window share targets."
+  },
+  "case_study_1": {
+    "scene": "High-traffic store front corner staged as a mini drop with limited-stock pedestal and branded co-presentation.",
+    "moment": "First-hour cadence: team funnels footfall to the drop, physical queue tokens and staff prompts convert early buys.",
+    "persona": "Head of Partnerships",
+    "props": [
+      "Exclusive product drop staging (S2)",
+      "Numbered physical queue tokens to imply measured early-window demand",
+      "Co-brand signage hinting at partner-funded pricing"
+    ],
+    "lighting": "Editorial spotlight on product pedestal, deep negative space around the crowd to isolate the drop moment.",
+    "mood": "Anticipatory, tactical, measurement-focused.",
+    "anchor_section": "mini_case_story",
+    "metric_focus": [
+      "early_window_share",
+      "qr_redemption"
+    ],
+    "alt": "Head of Partnerships launching a week-one exclusive drop test to lift early-window share."
+  },
+  "case_study_2": {
+    "scene": "Small strategy huddle at a long table with P&L sheets, two scenario stacks labeled '20% blanket' and '15% co-funded', and a partner term sheet.",
+    "moment": "CFO and Head of Partnerships compare modeled event_cpa and partner_value to decide funding mix before pilot roll-out.",
+    "persona": "CFO",
+    "props": [
+      "Printed P&L scenarios contrasting blanket discount vs co-funded collaboration (S3)",
+      "Partner term sheet and marginal margin callouts",
+      "Simple physical ledger tokens representing partner contributions"
+    ],
+    "lighting": "Cool, even editorial highlights for clarity, subtle rim light on documents.",
+    "mood": "Analytical, risk-aware, ready to operationalize.",
+    "anchor_section": "deep_analysis",
+    "metric_focus": [
+      "event_cpa",
+      "partner_value"
+    ],
+    "alt": "CFO and Head of Partnerships modeling P&L tradeoffs for co-funded 15% collaboration vs 20% discount."
+  },
+  "future_outlook": {
+    "scene": "Front-of-store display wall arranged like a scoreboard: stacked sales tags, footfall tokens, and a cleared product lane showing conversion flow.",
+    "moment": "Post-pilot review where the team confirms the collab-led holiday approach met stretch targets and replaces the blanket markdown playbook.",
+    "persona": "Head of Retail",
+    "props": [
+      "Physical success tokens labeled with metric anchors (footfall +%, early-window %)",
+      "A resolved activation route from storefront to checkout representing buyer activity share",
+      "Co-branded signage folded into a long-form merchandising run"
+    ],
+    "lighting": "Confident editorial light with a calm highlight band sweeping the display to imply an achieved window.",
+    "mood": "Confident, evidence-driven, operationally ready to scale.",
+    "anchor_section": "future_outlook",
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share",
+      "event_cpa"
+    ],
+    "alt": "Head of Retail reviewing pilot results: foot traffic +25% and early-window share 28% after collab activations."
+  }
+}

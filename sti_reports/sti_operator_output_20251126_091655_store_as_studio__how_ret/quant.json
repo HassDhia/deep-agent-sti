@@ -1,0 +1,137 @@
+{
+  "report": {
+    "executive_take": "Stores are becoming content studios that concentrate holiday purchases into short, high-value windows. This shifts where and when buyers convert, raising storefront ROI while lowering the need for broad discounting. Operators should run short, content-driven windows that target a 10–15% foot-traffic uplift and capture 20–30% of holiday transactions into the early window.",
+    "core_signal": "Shift: Brick and mortar is moving from continuous retail to episodic content: short events, drops, and studio-like branded spaces create concentrated buyer windows. Mechanism: content programs increase dwell and social reach, which front-loads transactions and raises per-visitor conversion without increasing promo volume. The mechanism is simple. Analogy: The store becomes a pop-up stage that turns casual passersby into a focused audience. Diagram description: event programming -> +dwell -> +conversion concentration -> early-window transaction share rises.",
+    "mechanisms": [
+      {
+        "cause": "Curated content or studio-branded spaces in-store (artist residencies, shop-in-shop, collectible drops).",
+        "effect": "Weekend and event-day foot traffic rises 10–15% in pilots. Dwell time and social shares increase, lifting conversion by mid-teens in tested cases.",
+        "second_order": "More buyers convert earlier in the season, shifting early-window transaction share from ~12–15% toward 20–30% for markets with strong programming.",
+        "constraint": "Limited reach markets or poor creative curation cut uplift under 5%. Tenant conflict and calendar saturation lower effectiveness."
+      },
+      {
+        "cause": "AI-guided discovery and QR-first flows deployed in-store.",
+        "effect": "Attach rates and conversion climb modestly while data capture rises. QR scan redemption can reach 5% of footfall with clear CTA and incentives.",
+        "second_order": "Better product match lowers event CPA. Performance channels shift spend toward lower-cost owned activations and measurement.",
+        "constraint": "Poor data hygiene or clumsy UI drives low scan rates and high abandonment."
+      }
+    ],
+    "operator_moves": {
+      "immediate_0_30_days": [
+        "Pilot one 2-week branded shop-in-shop in a flagship or high-traffic location. Target: +15% weekend foot traffic; +20% in-store conversion. Measurement: pre/post footfall and conversion by day.",
+        "Run a 4-week artist residency in a vacant storefront. Target: weekend foot-traffic uplift 10–15% and social shares +30%. Measurement: weekend vs baseline, earned social reach.",
+        "Deploy QR-enabled recommendations at one POS lane. Target: QR redemption ≥5% of footfall and attach rate +10%. Measurement: scans per footfall and attach per scan."
+      ],
+      "positioning_quarter_scale": [
+        "Bake content programming into the holiday calendar across 20–30% of top stores. Aim to shift early-window transactions to 20–30% of holiday volumes in those stores. The operator move is straightforward.",
+        "Reallocate 10–20% of paid event budget into owned channels: in-store signage, email and loyalty. Target event CPA ≤0.80× baseline during weekend pushes.",
+        "Standardize a data contract: product, customer, event tags. Use it to measure buyer share vs promo intensity weekly."
+      ],
+      "compounding_long_tail": [
+        "Turn high-performing stores into ongoing content studios with a recurring programming calendar. Leverage owned audiences to reduce CPA and increase margin capture over multiple seasons.",
+        "Create an owned QR-driven content layer that personalizes discovery and feeds CRM. Expect incremental attach and repeat rate lift over six months.",
+        "Use early-window sales to seed premium loyalty tiers and collectible drops that lengthen LTV and compress discount dependence."
+      ]
+    },
+    "risks_and_exceptions": [
+      "This is where the model breaks. Low-density suburban or rural stores rarely hit the 10–15% foot-traffic uplift required to justify production costs.",
+      "High price elasticity categories will force discounting; content alone cannot overcome poor price competitiveness.",
+      "Measurement risk: footfall uplift can be driven by external events or weather. Pair with conversion metrics to avoid false positives.",
+      "Tenant mix conflict: programming that competes with tenants reduces center-level net benefits and can trigger contract friction."
+    ],
+    "mini_case_story": "A mall partners with a local arts nonprofit to occupy a vacant storefront for four weeks. Weekend foot traffic rises 15% and social shares spike 30%, while conversion across the center ticks up 6%. QR guides in the space deliver scans equal to 6% of footfall and capture 3,000 emails. Event CPA runs at roughly 0.7× baseline because owned channels drove attendance and product offers were constrained to limited drops.",
+    "closing_frame": "If you can reliably lift foot traffic 10–15% in target stores and keep event CPA ≤0.80× baseline, then front-loading 20–30% of holiday transactions into short content windows becomes optimal.",
+    "one_line_mental_model": "Treat the store as a staged broadcast: program attention, capture it, then convert before the scene moves on."
+  },
+  "anchors": [
+    {
+      "id": "Q1",
+      "topic": "US holiday retail growth",
+      "value_low": 2.9,
+      "value_high": 3.4,
+      "unit": "% YoY",
+      "status": "observed",
+      "expression": "Retail sales ≈ 1.03× LY",
+      "source_ids": [
+        3
+      ],
+      "applies_to_signals": [
+        "S1",
+        "S2"
+      ]
+    },
+    {
+      "id": "Q2",
+      "topic": "Foot-traffic uplift from content programming",
+      "value_low": 10,
+      "value_high": 15,
+      "unit": "% vs baseline",
+      "status": "observed",
+      "expression": "Weekend foot traffic uplift 10–15% in artist residency and activation pilots; top markets stretch ≥25%",
+      "source_ids": [
+        1,
+        4
+      ],
+      "applies_to_signals": [
+        "S1",
+        "S3",
+        "S4"
+      ]
+    },
+    {
+      "id": "Q3",
+      "topic": "Early-window transaction share target",
+      "value_low": 20,
+      "value_high": 30,
+      "unit": "% of holiday transactions",
+      "status": "plan",
+      "expression": "Move early-window share from ~12–15% to 20–30% via content windows and limited drops",
+      "source_ids": [
+        3,
+        9
+      ],
+      "applies_to_signals": [
+        "S2",
+        "S4"
+      ]
+    }
+  ],
+  "measurement_plan": [
+    {
+      "id": "M1",
+      "metric": "Event CPA",
+      "expression": "CPA ≤ 0.80× baseline",
+      "owner": "Performance marketing",
+      "timeframe": "Thanksgiving weekend",
+      "status": "plan"
+    },
+    {
+      "id": "M2",
+      "metric": "Buyer activity share vs promo intensity",
+      "expression": "Transactions in early window 20–30% while promo SKU share ≈ LY",
+      "owner": "Merch + Analytics",
+      "timeframe": "Nov 13–26",
+      "status": "plan",
+      "notes": "Track both metrics side by side to see increase in buyers without flooding discounts"
+    },
+    {
+      "id": "M3",
+      "metric": "Foot traffic uplift vs baseline",
+      "expression": "Weekend uplift target 10–15%; top markets ≥25%",
+      "owner": "Property management + Ops",
+      "timeframe": "Nov 19–26",
+      "status": "plan",
+      "notes": "Pair with conversion rate to validate value"
+    },
+    {
+      "id": "M4",
+      "metric": "QR / scan redemption",
+      "expression": "QR redemption ≥5% of footfall",
+      "owner": "Digital/Product",
+      "timeframe": "Nov 19–26",
+      "status": "plan",
+      "notes": "Measure attach rate and email capture per scan"
+    }
+  ],
+  "coverage": 0.6
+}

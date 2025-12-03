@@ -1,0 +1,648 @@
+{
+  "deep_analysis": {
+    "sections": [
+      {
+        "title": "Local demand outpaces centralized plans",
+        "spine_position": "what",
+        "priority": 1,
+        "scan_line": "Nearby stores can convert more demand than corporate plans expect.",
+        "insight": "Small-format local openings show demand often exceeds corporate supply forecasts and turns visits into higher-margin transactions[^6]. This happens because convenience and immediacy create willingness to pay and repeat visits at the neighborhood level, not because sitewide promos drive that lift[^6].",
+        "operator_note": "Pick top-performing neighborhood stores that already show above-benchmark weekly demand and treat them as experimental islands. Swap sitewide discounting for time-limited local premium offers and tighter inventory allocation for two weeks. Keep offers narrow: one premium SKU, one bundle, and clear messaging tied to in-store pickup or exclusive stock.",
+        "instrument_next": "Instrument store-level A/B tests that compare foot traffic uplift, conversion rate, and margin per transaction between local premium windows and equivalent sitewide discounts.",
+        "citations": [
+          6
+        ]
+      },
+      {
+        "title": "Creator co-launches shift media value to stores",
+        "spine_position": "so_what",
+        "priority": 1,
+        "scan_line": "Creators convert attention into store visits and premium willingness to pay.",
+        "insight": "Creator-led marketplaces and co-created products are shifting media value from broadly purchased reach to owned demand funnels that land customers in physical locations[^7]. Creator-driven launches raise intent and preserve margin compared with broad discounting, but they concentrate fulfillment needs and require local exclusivity to work[^7].",
+        "operator_note": "Run a short creator co-launch in 8 to 12 high-demand stores: limited SKU, creator-generated in-store content, and a higher price vs historical promo. Avoid rolling this out to all stores. Coordinate local inventory holds and signage so the in-store experience matches creator messaging.",
+        "instrument_next": "Instrument a creator vs discount comparison measuring event CPA, per-visit spend, margin per transaction, and buyer-origin attribution (creator content vs paid ads).",
+        "citations": [
+          7
+        ]
+      },
+      {
+        "title": "Platform blackouts raise the value of owned store media",
+        "spine_position": "so_what",
+        "priority": 2,
+        "scan_line": "Third-party media outages make owned in-store channels more strategic.",
+        "insight": "High-profile distribution disputes highlight that paid digital reach can vanish quickly, creating conversion and revenue gaps for national campaigns[^1]. Shifting some spend to in-store media and owned creator content reduces exposure to those outages, but it lowers pure reach and requires better local measurement to ensure ROI[^1].",
+        "operator_note": "Allocate a tranche of digital spend to store-level media and in-store content in a controlled cohort of stores. Use that budget to amplify creator co-launchs and local premium windows instead of buying broad reach. Keep the test short and tightly tracked so you can reverse the reallocation if CPA rises.",
+        "instrument_next": "Instrument a budget-shift test moving 10 to 20 percent of digital spend to store media and compare CPA, foot traffic lift, and gross margin per incremental sale across matched test and control stores.",
+        "citations": [
+          1
+        ]
+      },
+      {
+        "title": "Operational constraints set the ceiling on uplift",
+        "spine_position": "now_what",
+        "priority": 1,
+        "scan_line": "Inventory, staffing, and checkout capacity cap achievable traffic lift.",
+        "insight": "Stores with stockouts, understaffing, or slow checkout turn potential uplift into frustration and lost margin; local demand spikes fail if operational capacity is not increased in tandem[^6]. Resolving these constraints requires OPEX and local coordination, which can erase margin gains if not priced into the test design[^6].",
+        "operator_note": "Only run premium or creator events in stores with buffer inventory, flexible staffing, and POS capacity to add short-term checkout lanes. Pre-stage inventory, add one dedicated event staffer per shift, and set a conservative daily sales cap to prevent stockouts.",
+        "instrument_next": "Instrument monitoring of stockouts, average queue time, staff-to-sales ratio, and incremental sales per staffed hour during events versus baseline.",
+        "citations": [
+          6
+        ]
+      }
+    ],
+    "summary": "Near-term opportunity is at the store level. Treat selected nearby stores as media channels and commerce pilots. Replace blanket sitewide discounting with short local premium windows and creator co-launches in stores that can absorb demand operationally. Reallocate a small share of digital budget to store media, measure CPA and margin per incremental sale, and stop any test where stockouts, queues, or margin erosion appear within the first week."
+  },
+  "pattern_matches": [
+    {
+      "label": "Micro-store premium capture",
+      "then": "Retailers historically opened seasonal kiosks and pop-ups at peak shopping corridors to sell exclusive SKUs at full price.",
+      "now": "Local chef opened Juneberry To Go to convert unmet neighborhood demand into repeat, higher-margin transactions.",
+      "operator_leap": "Pilot a 10–14 day micro-store in three high-value zip codes offering a store-only bundle priced 10–15% above site price, no sitewide discounts; measure foot_traffic_uplift, QR_redemption, and early_window_share.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        6
+      ]
+    },
+    {
+      "label": "Creator co-launchs land traffic, not just reach",
+      "then": "Celebrity collaborations used to drive big first-day lines at department stores and justify premium pricing.",
+      "now": "Creator marketplaces are giving creators direct commerce tools to launch products and drive on-the-ground demand.",
+      "operator_leap": "Run a limited creator co-launch with in-store exclusivity for two weeks; set higher ASP, cap inventory, and track event_CPA against baseline and buyer activity share vs promo intensity.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        7
+      ]
+    },
+    {
+      "label": "Treat third-party media as brittle",
+      "then": "Networks and retailers have lost distribution or ad control after platform disputes, forcing revenue reroutes.",
+      "now": "The Disney YouTube TV blackout shows platform disputes can suddenly remove a major audience and pressure margins.",
+      "operator_leap": "Shift 20% of paid digital spend for Nov 18–Dec 02 into geo-targeted OOH, in-store media, and neighborhood creator paid activations; track event_CPA and compare to platform baseline.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        1
+      ]
+    },
+    {
+      "label": "Small-format convenience lets you avoid sitewide discounting",
+      "then": "Convenience counters and local markets historically captured impulse margin that catalog and sitewide promos could not touch.",
+      "now": "A grab-and-go market converted excess demand into a new higher-margin channel with limited footprint.",
+      "operator_leap": "Test a grab-and-go assortment at four stores with a 10% premium, no coupon stacking, and a 5% QR redemption target; report buyer activity share vs promo intensity after 2 weeks.",
+      "supports_approach": "discount-heavy holiday",
+      "citations": [
+        6
+      ]
+    },
+    {
+      "label": "Store-as-studio turns content spend into immediate sales",
+      "then": "Flagsip store events used to broadcast launches and drove same-day conversion in-store.",
+      "now": "Creators and local teams can film in-store drops and sell limited runs that convert audience views into foot traffic.",
+      "operator_leap": "Book two creator shoots per high-volume store during Nov 18–Dec 02, sell shoot-exclusive bundles in-store only, and measure lift in early_window_share and event_CPA.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        7,
+        6
+      ]
+    },
+    {
+      "label": "Local scarcity changes discount math",
+      "then": "Limited local runs historically let brands hold price because shoppers could not easily buy elsewhere.",
+      "now": "Hyperlocal supply constraints are being monetized by new small-format launches and creator exclusives.",
+      "operator_leap": "Launch store-only limited SKUs with capped inventory and local promos; price at +15% and compare margin retention against a matched online promo cohort.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        6,
+        7
+      ]
+    }
+  ],
+  "brand_outcomes": [
+    {
+      "title": "Move 20% of demand into an earlier window with store‑only early-bird drops",
+      "description": "Run limited-quantity, in-store early-bird bundles and time-limited premium SKUs that are not available online. Reserve allocation by store, promote locally, and price at a small premium to avoid margin erosion. Track early-window share vs baseline and ramp stores that hit conversion thresholds. This lever uses the existing local demand pattern in nearby stores to capture holiday intent without broad sitewide discounts [^6][^1].",
+      "impact": "Early-window share to 20%+ (from 12-15%); foot-traffic uplift 10-25%; protects incremental margin",
+      "time_horizon": "next 6 weeks",
+      "owner": "Retail ops & Merchandising",
+      "citations": [
+        6,
+        1
+      ]
+    },
+    {
+      "title": "Deploy store-as-studio creator co-launches to beat digital CPA",
+      "description": "Book short-form creator tapings and pop-up launches in high-potential stores. Drive pre-booked attendance and content capture for paid local media. Measure event CPA against digital baseline and target <=0.8x baseline while tracking uplift in store buyers. Use creator marketplaces and local talent to scale repeats quickly [^7].",
+      "impact": "Lower event CPA to <=0.8x baseline; increase throughput and foot-traffic; higher conversion per visit",
+      "time_horizon": "next 2–6 weeks",
+      "owner": "Partnerships & Local Marketing",
+      "citations": [
+        7
+      ]
+    },
+    {
+      "title": "Convert walk-ins with QR-first micro experiences hitting >=5% redemption",
+      "description": "Install QR funnels at entry and key displays that unlock small, immediate value (time-limited add-ons, early access, or registration for a premium pickup). Keep the offer narrow and high-perceived-value to avoid sitewide discounting. Measure QR redemption as share of footfall and tie redemptions to incremental basket lift and buyer share vs promo intensity [^6][^7].",
+      "impact": "QR redemption >=5% of footfall; improved buyer activity share vs promo intensity; lower reliance on broad discounts",
+      "time_horizon": "next 30 days",
+      "owner": "CRM & Retail ops",
+      "citations": [
+        6,
+        7
+      ]
+    },
+    {
+      "title": "Replace sitewide discounts with localized price fences and premium in-store assortments",
+      "description": "Shift depth away from broad promotions and test narrow price fences: store-only assortments, location-limited bundles, loyalty-tiered extras, and service add-ons. Monitor incremental margin per transaction and foot-traffic lift by store. Stop blanket sitewide codes for stores where local fences outperform on margin [^1][^6].",
+      "impact": "Improved incremental margin; maintains foot-traffic uplift while reducing overall discount spend",
+      "time_horizon": "next 90 days (holiday window)",
+      "owner": "Merchandising & Retail ops",
+      "citations": [
+        1,
+        6
+      ]
+    }
+  ],
+  "operator_notes": "These signals form a compact test plan: prioritize short, local pilots that reallocate part of digital spend to store-owned media, creator pop-ups, and grab-and-go experiences. Measure paired metrics weekly: foot-traffic uplift, QR redemption (floor >=5%), buyer activity share versus promo intensity, and event CPA (target <=0.8x digital baseline). Competing heavy approaches include sitewide deep discounts and large third-party video buys; test those as control arms and stop them where in-store pilots meet footprint targets (10–15% base, >=25% stretch) and margin goals within two planning cycles.",
+  "quant": {
+    "spine_hook": "Success = local pilots produce >=10% net foot-traffic lift and event CPA <=0.8× digital while early-window sales share moves from ~12–15% toward 20–30%.",
+    "anchors": [
+      {
+        "id": "Q1",
+        "headline": "Foot-traffic uplift target (base)",
+        "topic": "store footfall lift vs matched control",
+        "value_low": 10,
+        "value_high": 15,
+        "unit": "% vs baseline week",
+        "status": "target",
+        "band": "base",
+        "owner": "Retail Ops",
+        "expression": "Relative lift = (Footfall_treatment - Footfall_control) / Footfall_control, measured week-over-week or vs prior 4-week average",
+        "source_ids": [
+          6,
+          7
+        ],
+        "applies_to_signals": [
+          "foot_traffic"
+        ]
+      },
+      {
+        "id": "Q2",
+        "headline": "Early-window share (current)",
+        "topic": "share of holiday sales occurring Nov 18–Dec 02",
+        "value_low": 12,
+        "value_high": 15,
+        "unit": "% of holiday-period sales",
+        "status": "observed",
+        "band": "base",
+        "owner": "Brand Analytics",
+        "expression": "Early-window share = Sales_Nov18–Dec02 / Sales_total_holiday_window",
+        "source_ids": [
+          6
+        ],
+        "applies_to_signals": [
+          "early_window_share"
+        ]
+      },
+      {
+        "id": "Q3",
+        "headline": "Event-level CPA ceiling",
+        "topic": "event CPA relative to digital baseline",
+        "value_low": 0,
+        "value_high": 0.8,
+        "unit": "x baseline digital CPA",
+        "status": "target",
+        "band": "base",
+        "owner": "Performance Marketing",
+        "expression": "Relative CPA = (Event_marketing_spend / Incremental_event_buyers) / Baseline_digital_CPA; target <= 0.8",
+        "source_ids": [
+          7,
+          1
+        ],
+        "applies_to_signals": [
+          "event_cpa"
+        ]
+      },
+      {
+        "id": "Q4",
+        "headline": "QR redemption floor",
+        "topic": "QR-code redemptions as percent of footfall",
+        "value_low": 5,
+        "value_high": 15,
+        "unit": "% of footfall",
+        "status": "target",
+        "band": "base",
+        "owner": "Store Ops",
+        "expression": "QR redemption rate = Unique_QR_redemptions / Total_in-Store Footfall during event",
+        "source_ids": [
+          6,
+          7
+        ],
+        "applies_to_signals": [
+          "qr_redemption"
+        ]
+      }
+    ],
+    "measurement_plan": [
+      {
+        "id": "M1",
+        "metric": "Incremental foot-traffic lift (A/B stores)",
+        "expression": "(Footfall_treatment - Footfall_control) / Footfall_control, per-store, aggregated to test cohort",
+        "owner": "Retail Ops",
+        "timeframe": "2 weeks (Nov 18–Dec 02), report daily + cumulative at end",
+        "status": "plan",
+        "why_it_matters": "Direct test of 10–15% uplift without sitewide discounts; primary lever for margin preservation."
+      },
+      {
+        "id": "M2",
+        "metric": "Event CPA vs digital baseline",
+        "expression": "Event_CPA_ratio = (Event_spend / Incremental_event_buyers) / Baseline_digital_CPA; track per event and cohort",
+        "owner": "Performance Marketing",
+        "timeframe": "Per event, reported weekly; evaluate 2–6 weeks for learning",
+        "status": "plan",
+        "why_it_matters": "Shows whether in-store activations beat 0.8× CPA ceiling and justify local media spend over broad discounts."
+      },
+      {
+        "id": "M3",
+        "metric": "Buyer activity share vs promo intensity (paired metric)",
+        "expression": "Buyer_share_by_radius = Buyers_from_target_radius / Total_buyers; Promo_intensity = Average Discount Depth for those buyers; track together weekly",
+        "owner": "Analytics",
+        "timeframe": "Weekly during Nov 18–Dec 02; compare to prior holiday weeks",
+        "status": "plan",
+        "why_it_matters": "Reveals tradeoff between increasing local buyer share and margin loss from deeper discounts; informs discount depth guardrail."
+      },
+      {
+        "id": "M4",
+        "metric": "QR redemption capture rate",
+        "expression": "QR_rate = Unique_QR_redemptions / Total_footfall per store per event",
+        "owner": "Store Ops",
+        "timeframe": "Per event, immediate post-event reconciliation",
+        "status": "plan",
+        "why_it_matters": "Validates attribution and capture funnel; floor 5% signals sufficient measurable conversion to scale local activations."
+      }
+    ],
+    "coverage": 0.9
+  },
+  "activation_kit": [
+    {
+      "display": {
+        "pillar": "Retail Activation",
+        "play_name": "Neighborhood Premium Window",
+        "card_title": "Run short premium windows in high-demand neighborhood stores",
+        "persona": "Head of Retail",
+        "best_fit": "Small-format stores showing above-benchmark weekly demand",
+        "not_for": "Low-traffic big-box locations or calendar-bound sitewide promos",
+        "thresholds_summary": "Run mini-bursts where CPA is ≤ 0.8× baseline and redemption is ≥ 15%.",
+        "why_now": "Local demand is outpacing centralized plans; short premium windows capture willingness to pay quickly.",
+        "proof_point": "Small-format openings routinely convert nearby demand into higher-margin transactions versus sitewide promos.",
+        "approach_name": "Local-vs-Sitewide",
+        "time_horizon": "6-week",
+        "placement_options": [
+          "Exclusive premium SKU window in selected neighborhood stores",
+          "In-store exclusive bundle available for reserve-and-pickup",
+          "Two-week timed premium stock allocation with on-site signage"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Retail Operations",
+        "collaborator": "Brand Partnerships",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "mini_burst": {
+            "cpa": "≤0.8× baseline",
+            "redemption_rate": "≥15%"
+          }
+        },
+        "prerequisites": [
+          "List of top-performing neighborhood stores (≥ baseline weekly demand)",
+          "Inventory set-aside for a single premium SKU or bundle",
+          "POS signage and in-store creative",
+          "Tracking tokens: POS code / QR / UTM for redemption attribution",
+          "Baseline CPA and margin benchmarks"
+        ],
+        "target_map": [
+          {
+            "org_type": "Retailer",
+            "role": "Retail ops / Store GMs",
+            "why_now": "Deploy tests where local demand already exceeds corporate forecasts."
+          },
+          {
+            "org_type": "Marketing",
+            "role": "Growth / Local marketing",
+            "why_now": "Shift spend from sitewide reach to store-targeted creatives for immediate conversion."
+          },
+          {
+            "org_type": "Partnerships",
+            "role": "Brand partnerships",
+            "why_now": "Approve exclusive SKU, margin split, and limited-time placement."
+          },
+          {
+            "org_type": "Property",
+            "role": "Inventory planning",
+            "why_now": "Allocate short-run stock and prioritize replenishment cadence for the window."
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Pilot kickoff",
+            "narrative": "Align objectives, pick stores, and lock budget and SKU for the two-week window.",
+            "CTA": "Confirm stores and budgets",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "3",
+            "subject": "Instrumentation check",
+            "narrative": "Validate tracking tokens, POS codes, and delivery of in-store creative to stores.",
+            "CTA": "Deploy tracking and assets",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "14",
+            "subject": "Initial read",
+            "narrative": "Review CPA, redemption, margin per order and decide scale, iterate, or stop.",
+            "CTA": "Approve scale or stop",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "medium",
+        "strategy_tag": "Local-vs-Sitewide"
+      },
+      "play_name": "Neighborhood Premium Window",
+      "pillar": "Retail Activation"
+    },
+    {
+      "display": {
+        "pillar": "Partnerships & Studio Collaboration",
+        "play_name": "Creator Co-Launch Store Funnel",
+        "card_title": "Convert creator attention into in-store visits and premium purchases",
+        "persona": "Head of Partnerships / CMO",
+        "best_fit": "Creators with measurable local pull or frequent in-person audiences",
+        "not_for": "Creators with only national reach or no trackable local audience",
+        "thresholds_summary": "Target margin per order within 100 bps of baseline and 90-day repeat at or above baseline.",
+        "why_now": "Creators are shifting media value into owned demand funnels that land customers in stores.",
+        "proof_point": "Creator-led co-launches drive store visits and higher willingness to pay compared with broad reach media.",
+        "approach_name": "Creator-driven Owned Demand",
+        "time_horizon": "pilot",
+        "placement_options": [
+          "Creator-hosted in-store pop-up with exclusive bundle",
+          "Online reserve plus in-store pickup for a creator-curated bundle",
+          "Time-limited creator promo that redeems only in selected stores"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Partnerships",
+        "collaborator": "Creator / Studio",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "margin_per_order": "≥ baseline -100 bps",
+          "90_day_repeat": "≥ baseline",
+          "store_visit_signal": "positive delta vs control (trackable via redemption or footfall)"
+        },
+        "prerequisites": [
+          "Signed creator brief with deliverables and measurement SLAs",
+          "Inventory allocation for exclusive bundle or promo",
+          "Redemption mechanism (POS code / QR tied to creator)",
+          "Measurement plan linking social creative to store visits and orders",
+          "Baseline margin and repeat benchmarks"
+        ],
+        "target_map": [
+          {
+            "org_type": "Partnerships",
+            "role": "Brand partnerships",
+            "why_now": "Activate creators who can drive owned demand into stores rather than just reach."
+          },
+          {
+            "org_type": "Studio",
+            "role": "Creative production",
+            "why_now": "Deliver short-form assets optimized for creator lanes and in-store signage."
+          },
+          {
+            "org_type": "Retailer",
+            "role": "Local ops / Store managers",
+            "why_now": "Prepare staff, inventory and redemption flow for pop-up or reserve pickups."
+          },
+          {
+            "org_type": "Marketing",
+            "role": "Growth / Analytics",
+            "why_now": "Tag paid and organic creator media to measure store-attributed LTV."
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Scope and sign",
+            "narrative": "Agree on dates, deliverables, exclusive bundle, and measurement targets with creator.",
+            "CTA": "Sign creator brief and confirm dates",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "5",
+            "subject": "Pre-launch ops",
+            "narrative": "Confirm inventory, POS redemption, staffing, and delivery of social and in-store assets.",
+            "CTA": "Deliver assets and redemption codes",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "21",
+            "subject": "Post-event read",
+            "narrative": "Measure margin per order, store visit lift, and 90-day repeat to decide scale or iterate.",
+            "CTA": "Decide scale or iterate",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": false,
+        "ops_drag": "high",
+        "strategy_tag": "Creator-driven Owned Demand"
+      },
+      "play_name": "Creator Co-Launch Store Funnel",
+      "pillar": "Partnerships & Studio Collaboration"
+    }
+  ],
+  "risk_radar": [
+    {
+      "risk_name": "Local demand exceeds centralized allocation",
+      "scan_line": "Nearby stores convert more demand than corporate supply forecasts expect.",
+      "trigger": "High local foot traffic or creator-driven attention without corresponding local inventory or premium offers.",
+      "detection": "Store-level sell-through > forecast; conversion and basket size spikes at specific stores; inventory days-on-hand falls faster than network average.",
+      "mitigation": "Reallocate inventory and replace sitewide discounts with a two-week local premium window in top-performing stores; measure conversion, margin per transaction, and stockouts.",
+      "severity": 3,
+      "likelihood": 3,
+      "approach_exposure": "centralized allocation",
+      "citations": [
+        6
+      ]
+    },
+    {
+      "risk_name": "Creator-driven demand misattributed",
+      "scan_line": "Creator traffic lands in stores but appears as organic or other channels in reports.",
+      "trigger": "Use of untagged links, UTM stripping, or attribution models that default to last touch.",
+      "detection": "Mismatch between creator campaign activity and reported channel conversions; store uplift without matching digital attribution; spikes in direct traffic after creator posts.",
+      "mitigation": "Require tagged links and unique in-store redemption codes for creator activations; run geo-lift tests that randomize creator exposure and compare store visits and incremental sales.",
+      "severity": 3,
+      "likelihood": 3,
+      "approach_exposure": "last-touch attribution",
+      "citations": [
+        7
+      ]
+    },
+    {
+      "risk_name": "Cannibalization across adjacent stores",
+      "scan_line": "Local tests move demand between nearby locations and hide true net lift.",
+      "trigger": "Running different offers or inventory strategies in stores with overlapping catchments.",
+      "detection": "Positive lift in test store offset by negative lift in neighboring stores; net market sales flat while per-store variance rises.",
+      "mitigation": "Expand test geography to full catchments and use geo-pair holdouts; report net incremental sales across the market, not per store alone.",
+      "severity": 2,
+      "likelihood": 2,
+      "approach_exposure": "store-level A/B",
+      "citations": [
+        6
+      ]
+    },
+    {
+      "risk_name": "Short windows miss downstream LTV effects",
+      "scan_line": "Quick wins in conversion hide later churn or margin loss.",
+      "trigger": "Evaluating campaigns on immediate conversion metrics over 7-14 days when offers change repeat behavior or product mix.",
+      "detection": "Early cohort shows improved conversion but lower repeat purchase rate and lower margin per customer at 30-90 days.",
+      "mitigation": "Extend evaluation to 30/60/90-day cohort LTV and margin; include repeat rate and return rate in primary test KPIs.",
+      "severity": 2,
+      "likelihood": 3,
+      "approach_exposure": "all",
+      "citations": []
+    }
+  ],
+  "future_outlook": [
+    {
+      "horizon": "6-month",
+      "headline": "Neighborhood premium windows lift margin without sitewide discounts",
+      "scan_line": "If true, we will see targeted stores raise margin per transaction by 15% within 2 months",
+      "description": "Running narrow, time-limited premium offers in top-performing neighborhood stores converts convenience demand into higher-margin purchases while removing the need for broad sitewide discounts [^6]. Partnering with creators for co-launches tied to in-store events shifts media value into owned demand funnels that drive foot traffic and willingness to pay [^7]. Combined, these moves raise margin per transaction in tested stores and force fewer sitewide promotions, whereas failure to act leads to deeper national discounting to hit volume targets [^6][^7].",
+      "operator_watch": "Margin per transaction in targeted stores (median and 75th percentile)",
+      "collaboration_upside": "Top 20% stores sustain +15-25% margin per transaction and 10-20% foot traffic lift while national promotional spend falls 5-10%",
+      "dominant_approach": "store-as-studio / media-led holiday",
+      "confidence": 0.7,
+      "citations": [
+        6,
+        7
+      ]
+    },
+    {
+      "horizon": "12-month",
+      "headline": "Creator-store ecosystems scale owned demand and reduce promo pressure",
+      "scan_line": "If true, we will see regional rollouts replace category-wide discounting within 9 months",
+      "description": "Systematizing local premium windows and repeat creator co-launches creates regional clusters that act as self-sustaining demand funnels, lifting repeat visits and average transaction margin [^6][^7]. Media spend reallocates from broad reach to creator-led amplification for store events, lowering CAC for in-store purchases and increasing short-term LTV from neighborhood cohorts [^7]. Operators that fail to adopt this playbook will cede neighborhood share and be forced back into reactive sitewide discounting that compresses margin [^6].",
+      "operator_watch": "Percentage of regional sales tied to creator-linked store events and 90-day repeat rate from those events",
+      "collaboration_upside": "Regional clusters responsible for 30-50% of holiday sales in-market with sustained +20% gross margin vs prior year and a 15% reduction in national promo spend",
+      "dominant_approach": "collab-led holiday",
+      "confidence": 0.6,
+      "citations": [
+        6,
+        7
+      ]
+    }
+  ],
+  "comparison_map": {
+    "approach_map": [
+      {
+        "approach_name": "Neighborhood Premium Window",
+        "who_it_is_for": "Head of Retail / Retail Operations running nearby stores with steady pre-holiday demand.",
+        "strengths": "Converts existing local intent into higher-margin transactions by reserving short, in-store-only bundles and premium SKUs (see micro-store premium capture and early-window drops). Works fast: measurable foot-traffic and sell-through in 10–14 days.",
+        "failure_modes": "Can outstrip centralized inventory plans, creating stockouts and broken promises to shoppers. Performance can look weak if redemption and foot-traffic are not tagged to the local window.",
+        "when_to_choose": "When small-format or neighborhood stores show above-benchmark weekly demand and you can allocate limited local inventory for 10–14 days.",
+        "when_not_to_choose": "Do not choose if DC allocation is tight across the network or you cannot reserve 10–15% local inventory for exclusive windows.",
+        "supporting_signals": [
+          "S1",
+          "S3"
+        ],
+        "key_risks": [
+          "Local demand exceeds centralized allocation",
+          "Creator-driven demand misattributed"
+        ],
+        "key_metrics": [
+          "Foot traffic uplift (store-level)",
+          "Early-window share of holiday demand",
+          "Redemption rate for in-store bundles",
+          "Average selling price premium vs site"
+        ]
+      },
+      {
+        "approach_name": "Creator Co-Launch Pop-ups",
+        "who_it_is_for": "Head of Partnerships / Head of Marketing running creator-led activations to drive store visits.",
+        "strengths": "Creators drive on-the-ground attendance and justify higher ASPs when paired with in-store exclusives (creator co-launch signal). Content doubles as paid local media to extend the reach quickly.",
+        "failure_modes": "Attribution can be lost if links, UTMs or tills are not instrumented, making ROI invisible. High local demand from creator posts can reveal allocation gaps and cause stockouts.",
+        "when_to_choose": "When you can prebook attendance and require higher ASPs with capped inventory for a 1–2 week launch.",
+        "when_not_to_choose": "Do not choose if you cannot enforce attribution tagging or if local inventory and fulfilment are brittle.",
+        "supporting_signals": [
+          "S2",
+          "S1"
+        ],
+        "key_risks": [
+          "Creator-driven demand misattributed",
+          "Local demand exceeds centralized allocation"
+        ],
+        "key_metrics": [
+          "Event CPA vs digital baseline",
+          "Prebooked attendance to buyer conversion",
+          "Incremental store buyers attributable to creator",
+          "ASP uplift and sell-through rate"
+        ]
+      },
+      {
+        "approach_name": "Store-as-Studio: Media-Led Premiuming",
+        "who_it_is_for": "Head of Marketing and Head of Retail who can execute in-store content capture and local paid amplification.",
+        "strengths": "Uses stores as content studios to create premium narratives and paid local campaigns that shift demand earlier without sitewide discounts (supports micro-store and early-window outcomes). Scales content that doubles as local ad creative.",
+        "failure_modes": "Fails if production-to-media cadence is slow or local media budgets are absent. Measurement gaps create ambiguity between content-driven uplift and baseline seasonal trends.",
+        "when_to_choose": "When you can capture short-form content in-store and run paid local media within 7–10 days to drive visits.",
+        "when_not_to_choose": "Do not choose if you lack local media budget or cannot instrument content-level attribution.",
+        "supporting_signals": [
+          "S3",
+          "S2"
+        ],
+        "key_risks": [
+          "Creator-driven demand misattributed",
+          "Local demand exceeds centralized allocation"
+        ],
+        "key_metrics": [
+          "Event-level CPA",
+          "Paid local CTR and visit lift",
+          "Reserve-and-pickup conversion",
+          "Margin per incremental transaction"
+        ]
+      }
+    ],
+    "buyer_guide": [
+      {
+        "option_name": "Local Activation Agency",
+        "best_for": "Brands that need turnkey planning, local media buy, and ops across many stores.",
+        "not_for": "Brands without budget for agency fees or that need rapid in-house pivots.",
+        "commercial_shape": "Short campaign retainer plus production and media buy. Performance bonus for hitting event CPA and foot-traffic targets over a 2-week pilot.",
+        "proof_needed_before_scaling": "Two pilot stores with event CPA <= 0.8x digital baseline and foot-traffic uplift 10–20%.",
+        "where_STI_fits": "STI supplies the signal map, activation thresholds, KPI templates, and an attribution checklist to onboard the agency quickly."
+      },
+      {
+        "option_name": "In-house Studio Sprint",
+        "best_for": "Retailers with content teams and store ops who want tight control and faster iteration.",
+        "not_for": "Teams lacking local media budget or production bandwidth.",
+        "commercial_shape": "One-time sprint fee for 7–10 day production plus allocated local media spend per region. Run as a two-week pilot per cluster.",
+        "proof_needed_before_scaling": "One pilot cluster with early-window share >= 20% and protected margin (premium >= 10% without sitewide promos).",
+        "where_STI_fits": "STI provides playbooks for store-as-studio shoots, A/B test designs, and real-time KPI dashboards for roll/no-roll decisions."
+      },
+      {
+        "option_name": "Creator Marketplace Partnership",
+        "best_for": "Brands that want fast creator-driven demand and built-in commerce tools.",
+        "not_for": "Brands unable to enforce attribution or cap local inventory.",
+        "commercial_shape": "Short exclusivity window (10–14 days); payment via guaranteed minimum + revenue share or creator fee. Fulfillment fee per order if marketplace handles commerce.",
+        "proof_needed_before_scaling": "Event CPA <= 0.8x baseline and measurable incremental in-store buyer lift in 1–2 launches.",
+        "where_STI_fits": "STI supplies tagging standards, inventory allocation rules, and conversion benchmarks to validate creator ROI."
+      },
+      {
+        "option_name": "Micro-store / Pop-up Operator",
+        "best_for": "Brands testing a physical premium capture in high-value zip codes with minimal build.",
+        "not_for": "Large-format locations or brands that need long-term lease commitments.",
+        "commercial_shape": "Short lease or revenue-share for 10–14 days; SKU consignment or dedicated stock pool with clear sell-through terms.",
+        "proof_needed_before_scaling": "Foot-traffic uplift 10–25% and ASP premium of 10–15% plus maintained margin on sold units.",
+        "where_STI_fits": "STI provides selection criteria for zip codes, local allocation thresholds, and the test matrix for deciding which stores to scale."
+      }
+    ]
+  },
+  "signal_map_notes": "These signals form a compact test plan: prioritize short, local pilots that reallocate part of digital spend to store-owned media, creator pop-ups, and grab-and-go experiences. Measure paired metrics weekly: foot-traffic uplift, QR redemption (floor >=5%), buyer activity share versus promo intensity, and event CPA (target <=0.8x digital baseline). Competing heavy approaches include sitewide deep discounts and large third-party video buys; test those as control arms and stop them where in-store pilots meet footprint targets (10–15% base, >=25% stretch) and margin goals within two planning cycles."
+}

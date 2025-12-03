@@ -1,0 +1,512 @@
+{
+  "deep_analysis": {
+    "sections": [
+      {
+        "title": "Experiential curation shifts retail economics",
+        "insight": "Physical retail is moving from commodity shelf space to curated content spaces that borrow brand storytelling and studio formats. Retail property managers are rethinking lease dayparts and event packages to drive attendance and higher rent per square foot, which changes how retail real estate captures value [^3]. The A24 and Barnes Noble pilots show flagship branded shops act as attention multipliers when timed with content releases, compressing promotion windows into measurable visit spikes [^2][^4].",
+        "operator_note": "Pilot branded shop experiences in 3 flagship stores over a 4 to 8 week window and track dwell time, conversion, and rent per square foot uplift.",
+        "citations": [
+          3,
+          2,
+          4
+        ]
+      },
+      {
+        "title": "Agentic commerce rewrites discounting math",
+        "insight": "When POS and catalog data feed an agentic pricing flow, retailers can shrink promotional depth while protecting margins by targeting event windows and individual SKUs [^1][^6]. The mechanism is simple. Real time unified product and transactional data lets you raise price outside attention windows and concentrate markdowns into short high-conversion windows to avoid margin leakage [^1].",
+        "operator_note": "Integrate POS, catalog, and promotion history into an agentic pricing pilot across 3 stores for tightly timed event windows and measure gross margin hold or lift.",
+        "citations": [
+          1,
+          6
+        ]
+      },
+      {
+        "title": "Content-timed windows amplify conversion",
+        "insight": "Short content drops and in-store episodes create discrete high-value windows where attention is concentrated and conversion is predictable [^5][^8]. Running 30-minute in-store episodes or weekend drops produces visit spikes and concentrated sell-through that outperforms steady-state promotions because social clips and earned reach amplify the window [^5][^8]. This changes one thing about how operators should think: time matters more than constant discounting.",
+        "operator_note": "Run four 30-minute in-store episodes over four weekends during a product drop and measure visit spikes, sell-through on drop SKUs, and social clip reach.",
+        "citations": [
+          5,
+          8
+        ]
+      },
+      {
+        "title": "Behavioral hooks convert experience into repeat revenue",
+        "insight": "Studio-curated capsules plus programming like classes create behavioral loops that lift repeat visit rates and increase capsule sell-through [^7][^9]. The leverage point sits here. Regular events convert first visits into habitual customers and reduce reliance on permanent price cuts by creating community and purpose around the SKU set [^7].",
+        "operator_note": "Deploy a capsule in 5 stores with biweekly in-store classes for 8 weeks and track repeat visit rate and capsule sell-through during the period.",
+        "citations": [
+          7,
+          9
+        ]
+      }
+    ],
+    "summary": "The signal map matters because combining branded studio spaces, tight content windows, agentic pricing, and programmed behavioral hooks turns stores into high-return attention assets. Operators should instrument short pilots with firm KPIs for dwell, conversion, margin, and repeat behavior to prove the new economics."
+  },
+  "pattern_matches": [
+    {
+      "label": "Studio-anchored branded shops",
+      "summary": "Indie studio A24 partnered with Barnes & Noble to create branded in-store spaces that coincide with releases, turning bookstores into content distribution nodes.",
+      "operator_leap": "Pilot a branded shop in 3 flagship stores timed to the next content release window and measure dwell, conversion, and incremental revenue.",
+      "citations": [
+        2,
+        4
+      ]
+    },
+    {
+      "label": "Retail property operators shifting to experiential leasing",
+      "summary": "Mall and retail property managers are re-pricing and repositioning assets toward experiential, event-driven leases to curate footfall.",
+      "operator_leap": "Reprice two weekend evening slots as event-daypart packages to brands for 8 weeks and measure rent per square foot uplift and attendance.",
+      "citations": [
+        3
+      ]
+    },
+    {
+      "label": "Studio-to-street product translations",
+      "summary": "Lifestyle and studio brands like Alo move studio products into everyday wear, enabling in-store capsule experiences and classes tied to product.",
+      "operator_leap": "Place a studio-curated capsule in 5 stores and run biweekly in-store classes over 8 weeks to drive repeat visits and sell-through.",
+      "citations": [
+        7,
+        9
+      ]
+    },
+    {
+      "label": "Agentic commerce enabling dynamic event pricing",
+      "summary": "Agentic AI and unified data stacks are described as foundations for putting the right product on the right shelf at the right moment, enabling pricing that favors event premiums over blanket discounts.",
+      "operator_leap": "Integrate POS and catalog data into an agentic pricing flow for event windows across 3 stores; target reduced promotional depth while holding or lifting gross margin percent.",
+      "citations": [
+        1,
+        6
+      ]
+    },
+    {
+      "label": "Content-formatted in-store episodes to drive visits",
+      "summary": "Brands and retailers are testing short in-store episodes and pop-ups that create visit spikes and social clip reach.",
+      "operator_leap": "Run four 30-minute in-store episodes across 4 weekends during a product drop and measure visit spikes, sell-through and social clip reach.",
+      "citations": [
+        5,
+        8
+      ]
+    }
+  ],
+  "brand_outcomes": [
+    {
+      "title": "Branded Shop Pilots in Flagship Stores",
+      "description": "Executive Take: Stores are becoming curated content spaces. Brands that test a studio-curated shop during a content release window capture higher dwell and conversion. Operators should run a 3-store pilot and measure dwell time, conversion, and incremental revenue.\n\nThe Core Signal: Shift: transient, brand-run shop within a retailer drives attention and spend through staging and exclusivity. Mechanism: curated product selection plus theatrical presentation increases visit time and basket size. The mechanism is simple. Analogy: a pop-up theater where product is the cast and the store is the stage.\n\nMechanisms:\n- Cause -> Effect -> Second-order -> Constraint: curated brand space pulls fans -> longer dwell and higher conversion -> stronger repeat visitation and word of mouth -> limited by store footprint and staff skills.\n\nOperator Moves:\n- Immediate 0-30 days: sign a three-store pilot with clear KPIs: dwell, conversion, incremental revenue vs baseline. Momentum lock.\n- Positioning (quarter): expand to 8–12 flags, standardize fixtures and merchandising playbook, train hosts for storytelling.\n- Compounding (long-tail): negotiate revenue-share shelf fees and develop a template to roll to partner retailers during every major content drop.\n\nRisks and Exceptions: Works best for brands with emotional IP and physical SKUs. This breaks when items are low-margin or require heavy local ops. Measurement noise from nearby promotions can mislead results.\n\nMini Case Story: An indie studio rents space in three flagship stores timed to a film release. They stage merchandise, run screenings, and staff hosts. Visits increase, sell-through on drop SKUs doubles, and social clips drive new foot traffic. The retailer sees a measurable uplift in weekend spend.\n\nClosing Frame: If a brand can align a physical drop with a content window, running a branded shop pilot becomes optimal.\n\nOne-Line Mental Model: Store as staged product theater.",
+      "impact": "Throughput, dwell time, incremental revenue, repeat visitation",
+      "citations": [
+        2,
+        4
+      ]
+    },
+    {
+      "title": "Event-Daypart Leasing to Monetize Evening Weekend Windows",
+      "description": "Executive Take: Malls can reprice and package high-attendance evening weekend slots as event-dayparts. This converts unused temporal value into higher rent per square foot and sponsorship revenue. Operators should test two weekend evening packages over eight weeks and track rent uplift and attendance.\n\nThe Core Signal: Shift: time-based leasing sells scarcity, not just space. Mechanism: brands pay a premium for concentrated, high-attention hour blocks that deliver better ROI than standard daytime exposure. The mechanism is simple. Analogy: sell the stadium when the lights come on.\n\nMechanisms:\n- Cause -> Effect -> Second-order -> Constraint: repackaging underused hours -> creates premium scarcity -> attracts experiential activations and higher PR value -> constrained by local noise ordinances and retailer willingness.\n\nOperator Moves:\n- Immediate 0-30 days: pick two weekend evenings, price event-daypart packages for brands, and pilot with local partners. Momentum lock.\n- Positioning (quarter): create standard event-daypart terms, audience guarantees, and measurement bundles for sponsors.\n- Compounding (long-tail): build a calendar of themed weekends and premium recurring partners to lift baseline rent per square foot.\n\nRisks and Exceptions: Not all centers have foot traffic to support evening events. This breaks where security costs, permit limits, or tenant objections exceed revenue uplift.\n\nMini Case Story: A regional mall re-prices two Saturday evenings as branded event slots. A fitness brand hosts classes and a lifestyle brand runs a pop shop. Attendance rises, nightly rent per square foot increases, and promoters pay for repeat dates.\n\nClosing Frame: If a property has latent evening demand, packaging event-dayparts becomes optimal.\n\nOne-Line Mental Model: Time is a rentable asset.",
+      "impact": "Rent per square foot, event attendance, incremental landlord margin",
+      "citations": [
+        3
+      ]
+    },
+    {
+      "title": "Agentic Pricing and Inventory Flow for Event Windows",
+      "description": "Executive Take: Integrating POS and catalog data into agentic pricing flows reduces promotional depth while protecting margin. This matters because shorter, sharper event windows reward higher price integrity. Operators should connect three stores to a pricing flow and test over the next 6 weeks.\n\nThe Core Signal: Shift: automated, context-aware price actions during content or event windows. Mechanism: price and inventory change in near real time to match demand spikes and limit over-discounting. The signal underneath is agentic commerce reacting to store-level signals.\n\nMechanisms:\n- Cause -> Effect -> Second-order -> Constraint: unified data from POS and catalog -> dynamic price moves tailored to local demand -> higher realized margin and fewer blunt promotions -> constrained by data quality and integration latency.\n\nOperator Moves:\n- Immediate 0-30 days: run a pilot linking POS and catalog for three stores and simulate event-window pricing scenarios. Momentum lock.\n- Positioning (quarter): deploy agentic decision rules across a cohort and measure reduction in promotional depth versus control stores.\n- Compounding (long-tail): fold behavioral cohorts into pricing logic and export learnings to national assortment planning.\n\nRisks and Exceptions: This breaks with poor data hygiene or rigid legacy systems. Pricing automation can amplify mistakes if guardrails are weak.\n\nMini Case Story: A retailer syncs POS and catalog for three locations before a product drop. The agentic flow raises prices where demand spikes and reassigns inventory across stores. Gross margin percentage holds while sell-through rises, reducing the need for end-of-window markdowns.\n\nClosing Frame: If data is centralized and clean, deploying agentic pricing during event windows becomes optimal.\n\nOne-Line Mental Model: Prices should move with attention, not on a calendar.",
+      "impact": "Incremental margin, promotion depth, gross margin percentage",
+      "citations": [
+        1,
+        6
+      ]
+    },
+    {
+      "title": "Short-Form In-Store Episodes and Class Series to Drive Repeat Visits",
+      "description": "Executive Take: Short, live in-store content episodes and classes turn one-off visits into repeat behaviors. This matters because repeat visitation drives lifetime value and reduces CAC. Operators should run four 30-minute episodes across four weekends and track visit spikes and sell-through on drop SKUs.\n\nThe Core Signal: Shift: micro-content events as traffic drivers embedded in retail. Mechanism: scheduled, sharable moments bring audiences and convert them on-site. The mechanism is simple. Analogy: the store becomes a neighborhood broadcast slot for brand stories.\n\nMechanisms:\n- Cause -> Effect -> Second-order -> Constraint: regular short events -> predictable foot-traffic spikes -> higher repeat visit rate and social amplification -> constrained by staffing and neighborhood fit.\n\nOperator Moves:\n- Immediate 0-30 days: run four 30-minute episodes across four weekends tied to a product drop and measure visit, sell-through, and clip reach. Momentum lock.\n- Positioning (quarter): bundle episodes into seasonal programming and offer brands measured promo uplift guarantees.\n- Compounding (long-tail): build a resident series that converts local communities into habitual visitors and data-rich cohorts.\n\nRisks and Exceptions: Not every product category benefits from live formats. This breaks for brands that cannot create short, compelling moments or lack capturable SKUs.\n\nMini Case Story: A lifestyle label runs weekend 30-minute demos and biweekly classes in five stores during a capsule drop. Each episode generates a visit spike, the capsule sells through faster, and short clips extend reach online. Repeat visit rates climb over the eight-week period.\n\nClosing Frame: If a brand can turn product lessons into short, sharable moments, episodic in-store programming becomes optimal.\n\nOne-Line Mental Model: Small, regular shows build habit and higher LTV.",
+      "impact": "Repeat visitation, conversion on drop SKUs, social reach, loyalty",
+      "citations": [
+        5,
+        8,
+        7,
+        9
+      ]
+    }
+  ],
+  "operator_notes": "Executive Take: Stores are becoming content properties. This shifts value from steady footfall to concentrated windows tied to releases and episodes. Operators should sell time, not just space, and test dynamic pricing during those windows.\n\nThe Core Signal: One shift and mechanism. Stores now operate like studios that produce episodic moments. The mechanism is simple. A content event concentrates demand into short windows, creating premium capture opportunities analogous to prime-time TV slots.\n\nMechanisms:\n- Cause -> Brands and studios want owned stages for launches.\n- Effect -> Retailers host branded shops and episodes that drive spikes in visits and dwell time.\n- Second-order -> Landlords and tech vendors reprice time slots and enable moment pricing, lowering the need for blanket discounts.\n- Constraint -> Success depends on tight data links and predictable attendance; without that, markdown pressure returns.\n\nOperator Moves:\n- Immediate Actions (0–30 days): Line up one branded pilot tied to a near-term release; reserve weekend evening slots; instrument POS for dwell and conversion tracking. Owner: retailer + brand; Window: next 4–8 weeks; KPI: dwell time, conversion lift.\n- Positioning Moves (quarter-scale): Convert top-performing hosts into recurring episodic slots and sell them as packaged dayparts to brands. Owner: mall operator; Window: quarterly rollouts; KPI: rent per sq ft and event ROI.\n- Compounding Opportunities (long-tail): Embed agentic commerce for automated moment pricing and assortment to minimize broad markdowns and maximize capture across episodes. Owner: retailer + tech partner; Window: 3–9 months; KPI: promo depth reduction and margin improvement.\n\nRisks and Exceptions: This is where the model breaks. If data integration is poor, dynamic pricing misfires and alienates customers. If a brand’s content flops, episodes depress baseline traffic. If local regulations or landlord rules block events, time-as-space pricing fails.\n\nMini Case Story: Barnes & Noble partners with a studio to open a branded shop timed to a film release. The shop runs short live Q&As and exclusive merch drops on launch weekend. Foot traffic concentrates, dwell time rises, and the merch sells at premium with minimal discounts. The landlord tests evening event pricing and books the slot for other brands the next month.\n\nClosing Frame: If brands can reliably create episodic storefront demand, then selling time and enabling moment pricing becomes optimal.\n\nOne-Line Mental Model: Treat your store like a primetime slot; sell the audience, not just the square feet.",
+  "quant": {
+    "report": "Executive Take:\nStore as Studio activations are pulling meaningful incremental visits and shifting purchase timing toward early holiday windows. This matters because brands can win higher-margin, lower-discount sales by converting content-driven dwell into early transactions. Operators should pilot 3 flagship studios now, measure buyer share and CPA, and hold promo depth steady.\n\nThe Core Signal:\nOne shift and mechanism. The signal underneath is a reclassification of stores from distribution nodes into content properties that create scheduled visit spikes and higher early-window conversion. The mechanism is simple. Content events concentrate attention into shorter windows, converting casual foot traffic into intent buyers earlier in the season. Analogy. Think of stores as small theaters that turn walk-ins into ticket buyers during showtimes. Diagram description. Time on x axis, visits on y axis; content episode creates a narrow peak in visits and a higher conversion slope within the peak.\n\nMechanisms:\n- Cause -> Brands run short, studio-like in-store episodes and curated capsules during product drops. \n- Effect -> Foot traffic concentrates and dwell time rises, producing 10 to 15 percent lift in mid-market pilots and up to 25 percent in top markets. Momentum locks.\n- Second-order -> Early-window transactions rise from a baseline near 12 to 15 percent of holiday volume toward 20 to 30 percent, improving unit economics by shifting sales out of deeper-discount periods. \n- Constraint -> Carrying costs: staff hours and event logistics limit scale. Inventory must be ringfenced or conversion falls.\n\nOperator Moves:\nImmediate Actions 0-30 days\n- Launch 3 flagship single-brand shop-in-shop pilots during the next content release window. Track dwell, conversion, QR scans, and sale timing. Target QR redemption of at least 5 percent of footfall. \n- Set CPA guardrail in campaign briefs: event CPA target ≤ 0.80× baseline. Hold marketing spend constant while re-routing creative to event-dayparts.\n- Reserve a small set of full-price SKUs for the capsule. Do not expand promo SKU share above last year.\n\nPositioning Moves quarter-scale (90 days)\n- Integrate POS and catalog into a dynamic event pricing flow across 3 stores to reduce promotional depth while protecting gross margin percentage. The leverage point sits here. \n- Reprice and sell weekend evening dayparts as packaged experiences to brands. Measure rent uplift per square foot and event attendance. \n- Build a content calendar that converts drops into four 30-minute in-store episodes per month with cross-posted clips for social reach.\n\nCompounding Opportunities long-tail\n- Standardize event KPI suite and roll to 20 stores. Use agentic pricing to automate margin preservation during events. \n- License the studio format to partners for recurring revenue from brand placements. \n- Use repeat visit cohorts from classes and capsules to raise lifetime value and compress customer acquisition costs.\n\nRisks and Exceptions:\n- This is where the model breaks. If baseline footfall is below a scale threshold, studio events add cost without conversion. Measure lift per square foot before scaling. \n- If brands require deep discounting to hit sell-through, margin erosion will outpace any CPA savings. Track promo SKU share versus last year. \n- Social reach does not equal store conversion. Clip views can mislead if not tied to store-level KPIs.\n\nMini Case Story:\nA bookseller hosts an indie studio pop-up across three flagships during a film release week. The events create concentrated evening peaks and a 12 percent lift in visits at two stores and a 26 percent lift in a flagship market. QR-enabled drop SKUs drive 6 percent of footfall into immediate transactions. The retailer kept promotional depth flat and hit an event CPA near 0.75× baseline while early-window transactions rose to 22 percent of weekend sales.\n\nClosing Frame:\nIf studio activations reliably lift foot traffic 10 to 15 percent and early-window share moves to 20 to 30 percent while event CPA stays ≤ 0.8× baseline, then prioritizing content-led store episodes over broad discounting becomes the optimal allocation of marketing and real estate dollars.\n\nOne-Line Mental Model:\nTurn stores into scheduled shows; the showtime converts attention into earlier, higher-margin sales.\n\nNotes on measurement and targets. Two hard numbers to watch. Target foot-traffic uplift 10 to 15 percent in pilots, stretch to 25 percent in top markets. Target early-window transaction share 20 to 30 percent of holiday transactions. Event CPA target ≤ 0.80× baseline. QR redemption plan ≥ 5 percent of footfall.\n",
+    "anchors": [
+      {
+        "id": "Q1",
+        "topic": "US holiday retail growth",
+        "value_low": 2.9,
+        "value_high": 3.4,
+        "unit": "% YoY",
+        "status": "observed",
+        "expression": "Retail sales ≈ 1.03× LY",
+        "source_ids": [
+          3
+        ],
+        "applies_to_signals": [
+          "S1",
+          "S2"
+        ]
+      },
+      {
+        "id": "Q2",
+        "topic": "Foot-traffic uplift from studio activations",
+        "value_low": 10,
+        "value_high": 15,
+        "unit": "% uplift vs baseline",
+        "status": "plan",
+        "expression": "Pilot target 10–15% lift; stretch ≥25% in top markets",
+        "source_ids": [
+          2,
+          4
+        ],
+        "applies_to_signals": [
+          "S4",
+          "S5"
+        ]
+      },
+      {
+        "id": "Q3",
+        "topic": "Early-window transaction share",
+        "value_low": 20,
+        "value_high": 30,
+        "unit": "% of holiday transactions",
+        "status": "plan",
+        "expression": "Move from ~12–15% → 20–30% in event windows",
+        "source_ids": [
+          5,
+          8
+        ],
+        "applies_to_signals": [
+          "S1",
+          "S4"
+        ]
+      },
+      {
+        "id": "Q4",
+        "topic": "Event CPA guardrail",
+        "value_low": 0.8,
+        "value_high": 0.8,
+        "unit": "× baseline",
+        "status": "plan",
+        "expression": "Event CPA ≤ 0.80× baseline",
+        "source_ids": [
+          1,
+          6
+        ],
+        "applies_to_signals": [
+          "S3",
+          "S2"
+        ]
+      }
+    ],
+    "measurement_plan": [
+      {
+        "id": "M1",
+        "metric": "Event CPA",
+        "expression": "CPA ≤ 0.80× baseline",
+        "owner": "Performance marketing",
+        "timeframe": "Thanksgiving weekend",
+        "status": "plan"
+      },
+      {
+        "id": "M2",
+        "metric": "Buyer activity share vs promo intensity",
+        "expression": "Transactions in early window 20–30% while promo SKU share ≈ LY",
+        "owner": "Merch + Analytics",
+        "timeframe": "Nov 13–26",
+        "status": "plan",
+        "notes": "Track both metrics side by side"
+      },
+      {
+        "id": "M3",
+        "metric": "Footfall uplift and QR redemption",
+        "expression": "Foot-traffic uplift 10–15% and QR redemption ≥5% of footfall",
+        "owner": "Retail ops + CRM",
+        "timeframe": "Event windows Nov 18–25",
+        "status": "plan",
+        "notes": "Pair store counts with QR-scan conversions to map attention to purchase"
+      }
+    ],
+    "coverage": 0.65
+  },
+  "activation_kit": [
+    {
+      "pillar": "Operator Workflow",
+      "play_name": "Agentic Event Pricing Pilot",
+      "operator_owner": "Head of Pricing",
+      "collaborator": "Pricing tech vendor",
+      "proof_point": "Integrating POS and catalog into an agentic pricing flow lets retailers compress markdowns into short event windows and hold or lift gross margin.",
+      "timing": "6-week",
+      "thresholds": {
+        "mini_burst_success": "event CPA <= 0.8x baseline and redemption >= 15%",
+        "staged_discount_success": "margin per order >= baseline minus 100 bps and 90-day repeat >= baseline"
+      },
+      "target_map": [
+        {
+          "org_type": "regional chain",
+          "role": "Head of Pricing",
+          "why_now": "need to stop margin leakage during promotions"
+        },
+        {
+          "org_type": "store operations",
+          "role": "Store Manager",
+          "why_now": "need predictable event staffing and yields"
+        },
+        {
+          "org_type": "tech",
+          "role": "CTO",
+          "why_now": "POS and catalog data access windows exist now"
+        }
+      ],
+      "cadence": [
+        {
+          "day": 0,
+          "subject": "Kickoff and baseline metrics",
+          "narrative": "Align KPIs and data feeds.",
+          "CTA": "Enable POS and catalog exports",
+          "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+        },
+        {
+          "day": 21,
+          "subject": "Mid-pilot pricing review",
+          "narrative": "Compare promotional depth and margin vs baseline.",
+          "CTA": "Approve parameter tweaks",
+          "cta": "Book 30-minute readout with finance and ops to review guardrails"
+        },
+        {
+          "day": 42,
+          "subject": "Final evaluation",
+          "narrative": "Assess margin hold and repeat lift.",
+          "CTA": "Decide scale or rollback",
+          "cta": "Deliver scale/kill decision memo to executive sponsor"
+        }
+      ],
+      "persona": "pricing operator",
+      "collab_type": "operator↔tech",
+      "zero_new_sku": true,
+      "ops_drag": "high",
+      "placement_options": [],
+      "prerequisites": [
+        "Unified POS access across pilot stores",
+        "Clean catalog and SKU mapping",
+        "Analytics to compute baseline margins and CPA"
+      ],
+      "best_fit": "Mid-size chains with centralized pricing and unified POS.",
+      "not_for": "Single-location stores or fragmented franchise POS."
+    },
+    {
+      "pillar": "Operator Workflow",
+      "play_name": "Flagship Branded Shop Pilot",
+      "operator_owner": "Retail Marketing Director",
+      "collaborator": "Brand partner",
+      "proof_point": "Flagship branded shops timed with content releases act as attention multipliers and compress visit spikes into measurable windows.",
+      "timing": "pilot",
+      "thresholds": {
+        "mini_burst_success": "event CPA <= 0.8x baseline and redemption >= 15%",
+        "staged_discount_success": "margin per order >= baseline minus 100 bps and 90-day repeat >= baseline"
+      },
+      "target_map": [
+        {
+          "org_type": "flagship retailer",
+          "role": "Marketing Director",
+          "why_now": "content calendar matches release windows"
+        },
+        {
+          "org_type": "brand",
+          "role": "Brand Marketing Lead",
+          "why_now": "need physical touchpoint for drops"
+        },
+        {
+          "org_type": "store ops",
+          "role": "Store Manager",
+          "why_now": "can staff short-term pop-ups"
+        }
+      ],
+      "cadence": [
+        {
+          "day": 0,
+          "subject": "Launch plan",
+          "narrative": "Confirm placement, inventory, and storytelling moments.",
+          "CTA": "Lock installation window",
+          "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+        },
+        {
+          "day": 14,
+          "subject": "Early performance check",
+          "narrative": "Measure dwell and conversion trends.",
+          "CTA": "Adjust merchandising and staffing",
+          "cta": "Book 30-minute readout with finance and ops to review guardrails"
+        },
+        {
+          "day": 42,
+          "subject": "Post-pilot metrics",
+          "narrative": "Compare uplift to baseline and rent per sqft.",
+          "CTA": "Decide scale or sunset",
+          "cta": "Deliver scale/kill decision memo to executive sponsor"
+        }
+      ],
+      "persona": "experiential ops lead",
+      "collab_type": "brand↔operator",
+      "zero_new_sku": false,
+      "ops_drag": "medium",
+      "placement_options": [
+        "Flagship window",
+        "Downtown kiosk",
+        "Civic pop-up"
+      ],
+      "prerequisites": [
+        "Permissioned retail footprint or kiosk permits",
+        "Visual merchandising resource",
+        "Sufficient inventory or consignment agreement"
+      ],
+      "best_fit": "Retailers with high-profile flagships and a brand release calendar.",
+      "not_for": "Small stores without flexible space or permitting capability."
+    },
+    {
+      "pillar": "Operator Workflow",
+      "play_name": "Event Daypart Lease Repack",
+      "operator_owner": "Leasing Manager",
+      "collaborator": "Brand or promoter",
+      "proof_point": "Repricing weekend evening slots as event-dayparts lifts rent per square foot and concentrates attendance into targetable windows.",
+      "timing": "immediate",
+      "thresholds": {
+        "mini_burst_success": "event CPA <= 0.8x baseline and redemption >= 15%",
+        "staged_discount_success": "margin per order >= baseline minus 100 bps and 90-day repeat >= baseline"
+      },
+      "target_map": [
+        {
+          "org_type": "mall operator",
+          "role": "Leasing Director",
+          "why_now": "underused evening inventory exists"
+        },
+        {
+          "org_type": "brand",
+          "role": "Activation Manager",
+          "why_now": "seeking short-term physical windows"
+        },
+        {
+          "org_type": "events",
+          "role": "Promoter",
+          "why_now": "demand for weekend experiential packages"
+        }
+      ],
+      "cadence": [
+        {
+          "day": 0,
+          "subject": "Offer event-daypart package",
+          "narrative": "Present pricing and staffing expectations.",
+          "CTA": "Reserve weekend slots",
+          "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+        },
+        {
+          "day": 7,
+          "subject": "Confirm logistics",
+          "narrative": "Finalize security, power, and POS.",
+          "CTA": "Submit event rider",
+          "cta": "Book 30-minute readout with finance and ops to review guardrails"
+        },
+        {
+          "day": 30,
+          "subject": "Event debrief",
+          "narrative": "Report attendance and rent uplift.",
+          "CTA": "Decide repeat or refine terms",
+          "cta": "Deliver scale/kill decision memo to executive sponsor"
+        }
+      ],
+      "persona": "commercial leasing lead",
+      "collab_type": "brand↔operator",
+      "zero_new_sku": true,
+      "ops_drag": "low",
+      "placement_options": [
+        "Weekend evening package"
+      ],
+      "prerequisites": [
+        "Leasing flexibility and short-form agreements",
+        "Basic event operations playbook",
+        "POS or cashless payment options for vendors"
+      ],
+      "best_fit": "Property managers with slack evening inventory and event-friendly common areas.",
+      "not_for": "Retail centers with strict anchor tenancy exclusives.",
+      "overflow_notes": [
+        "Weekend Micro-episodes Series — Short in-store episodes timed to drops generate visit spikes and social clip reach while boosting sell-through on drop SKUs. — pilot",
+        "Capsule with Biweekly Classes — Studio-curated capsules plus in-store classes drive repeat visits and accelerate capsule sell-through over an 8-week window. — pilot",
+        "Capsule Inventory Feedback Loop — Using POS signals from curated capsules informs rapid replenishment and reduces overstocks during short campaigns. — 6-week",
+        "Content-Timed Drop Weekend — Content-timed windows and paired live episodes create measurable visit spikes and drive sell-through on drop SKUs. — immediate",
+        "Hospitality Pop-up Partnerships — Repurposing hotel lobbies and restaurant spaces for brand activations captures evening foot traffic and creates low friction test markets. — immediate",
+        "Event-Linked Dynamic Pricing Loop — Tying agentic pricing to event windows reduces promotional depth while protecting margins during activation periods. — 6-week"
+      ]
+    }
+  ],
+  "risk_radar": [
+    {
+      "risk_name": "Data plumbing failure",
+      "trigger": "Incomplete or delayed POS-catalog integration causes incorrect pricing or inventory signals during events.",
+      "detection": "Mismatch rate between POS and catalog entries above 5 percent; SKU sell-through anomalies; pricing latency over 15 minutes.",
+      "mitigation": "Run a 21-day data mapping sprint before pilots, implement manual override gates for the first 2 events, and instrument real-time alerts for SKU mismatches. Roll agentic pricing on a small SKU cohort first. Cite: [1, 6]",
+      "citations": [
+        1,
+        6
+      ]
+    },
+    {
+      "risk_name": "Audience mismatch",
+      "trigger": "Event creative fails to drive intended foot traffic or attracts low-converting visitors.",
+      "detection": "No material increase in dwell time or conversion during events versus baseline; low social clip engagement; repeat visit rate under target.",
+      "mitigation": "A/B test two content formats in adjacent stores, measure 7-day repeat visit, and pause expansion until conversion lift is proven. Use local creators and micro-incentives to seed initial attendance. Cite: [2, 4, 5]",
+      "citations": [
+        2,
+        4,
+        5
+      ]
+    },
+    {
+      "risk_name": "Landlord commercial resistance",
+      "trigger": "Mall or landlord refuses short-term daypart pricing or demands long fixed leases.",
+      "detection": "Time-to-contract drifts beyond 30 days; landlord counters that remove revenue sharing; lack of pilot slots.",
+      "mitigation": "Propose revenue-share or minimum-guarantee pilot packages for 6 to 8 weeks, offer event revenue reporting, and use one flagship success case to renegotiate. Cite: [3]",
+      "citations": [
+        3
+      ]
+    },
+    {
+      "risk_name": "Algorithmic margin leakage",
+      "trigger": "Agentic pricing rules over-discount or fail to apply protections, causing gross margin erosion.",
+      "detection": "Gross margin percentage declines on event SKUs; promotional depth increases unexpectedly; price rollback frequency spikes.",
+      "mitigation": "Embed hard guardrails into pricing agent, require manual approval for exceptions during initial rollout, and monitor GM% daily with automated rollback. Cite: [1, 6]",
+      "citations": [
+        1,
+        6
+      ]
+    }
+  ],
+  "future_outlook": [
+    {
+      "horizon": "6-month",
+      "headline": "Eventized retail gains measurable traction",
+      "description": "Short, branded content windows and event dayparts will produce measurable uplifts in dwell and conversion when paired with tight POS experiments. Early pilots show landlords and brands willing to pay for evening and weekend dayparts as attendance becomes predictable, enabling short term rent uplifts [^2][^3][^4]. Agentic pricing pilots will demonstrate margin protection during events where data is clean [^1][^6].",
+      "operator_watch": "Dwell time, conversion rate during event windows, rent per square foot for event dayparts, promotional depth vs historical baseline.",
+      "collaboration_upside": "A repeatable branded-window playbook that increases conversion and creates a new event-daypart revenue stream for property managers.",
+      "citations": [
+        2,
+        3,
+        4,
+        1,
+        6
+      ]
+    },
+    {
+      "horizon": "12-month",
+      "headline": "Scaled studio-shop networks and pricing agents emerge",
+      "description": "Successful pilots will produce standardized studio-shop formats and event licensing models that scale across portfolios, turning flagship stores into attention hubs. Simultaneously, retailers with integrated POS and catalog systems will productize agentic pricing, shrinking promotional leakage and improving gross margins across eventized windows [^5][^7][^8][^1][^6].",
+      "operator_watch": "Number of licensed studio-shop rollouts, share of leases with event-daypart terms, margin delta attributable to agentic pricing, repeat visit rate for programming-based capsules.",
+      "collaboration_upside": "A platform of branded studio-shops and pricing services that increases store-level LTV and creates recurring revenue for operators and landlords.",
+      "citations": [
+        5,
+        7,
+        8,
+        1,
+        6
+      ]
+    }
+  ],
+  "signal_map_notes": "Executive Take: Stores are becoming content properties. This shifts value from steady footfall to concentrated windows tied to releases and episodes. Operators should sell time, not just space, and test dynamic pricing during those windows.\n\nThe Core Signal: One shift and mechanism. Stores now operate like studios that produce episodic moments. The mechanism is simple. A content event concentrates demand into short windows, creating premium capture opportunities analogous to prime-time TV slots.\n\nMechanisms:\n- Cause -> Brands and studios want owned stages for launches.\n- Effect -> Retailers host branded shops and episodes that drive spikes in visits and dwell time.\n- Second-order -> Landlords and tech vendors reprice time slots and enable moment pricing, lowering the need for blanket discounts.\n- Constraint -> Success depends on tight data links and predictable attendance; without that, markdown pressure returns.\n\nOperator Moves:\n- Immediate Actions (0–30 days): Line up one branded pilot tied to a near-term release; reserve weekend evening slots; instrument POS for dwell and conversion tracking. Owner: retailer + brand; Window: next 4–8 weeks; KPI: dwell time, conversion lift.\n- Positioning Moves (quarter-scale): Convert top-performing hosts into recurring episodic slots and sell them as packaged dayparts to brands. Owner: mall operator; Window: quarterly rollouts; KPI: rent per sq ft and event ROI.\n- Compounding Opportunities (long-tail): Embed agentic commerce for automated moment pricing and assortment to minimize broad markdowns and maximize capture across episodes. Owner: retailer + tech partner; Window: 3–9 months; KPI: promo depth reduction and margin improvement.\n\nRisks and Exceptions: This is where the model breaks. If data integration is poor, dynamic pricing misfires and alienates customers. If a brand’s content flops, episodes depress baseline traffic. If local regulations or landlord rules block events, time-as-space pricing fails.\n\nMini Case Story: Barnes & Noble partners with a studio to open a branded shop timed to a film release. The shop runs short live Q&As and exclusive merch drops on launch weekend. Foot traffic concentrates, dwell time rises, and the merch sells at premium with minimal discounts. The landlord tests evening event pricing and books the slot for other brands the next month.\n\nClosing Frame: If brands can reliably create episodic storefront demand, then selling time and enabling moment pricing becomes optimal.\n\nOne-Line Mental Model: Treat your store like a primetime slot; sell the audience, not just the square feet."
+}

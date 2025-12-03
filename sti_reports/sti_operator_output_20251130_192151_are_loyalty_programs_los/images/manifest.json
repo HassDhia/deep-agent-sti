@@ -1,0 +1,126 @@
+[
+  {
+    "type": "hero",
+    "slot": "hero",
+    "section": "Hero",
+    "anchor_section": "header",
+    "template": "hero_decision_window",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "scene": "backroom planning table flagship store composition cues low",
+        "personas": "head retail",
+        "action": "selecting store studio collab black friday weekend instead",
+        "symbolism": "narrowing stage light beam symbolic cue closing early",
+        "props": "black friday weekend activation map labels event vs",
+        "mood": "precise decisive collaborative",
+        "lighting": "Polished editorial lighting with confident highlights and clean negative space.",
+        "focal_point": "selecting store studio collab black friday weekend instead"
+      },
+      "style": {
+        "framing": "tight medium shot on the collaboration moment",
+        "lighting": "polished editorial lighting with soft shadows",
+        "palette": "dark neutrals with electric blue accents",
+        "geometry": "clean architectural facets",
+        "environment": "measured spatial grid"
+      },
+      "metric_focus": [
+        "early_window_share",
+        "footfall_lift"
+      ],
+      "metric_labels": [
+        "Early-window share",
+        "Foot-traffic uplift"
+      ]
+    },
+    "metric_focus": [
+      "early_window_share",
+      "footfall_lift"
+    ],
+    "alt": "Head of Retail choosing store-as-studio Black Friday event test to raise footfall and early-window share",
+    "image": "images/hero_are_loyalty_programs_losing_po.png"
+  },
+  {
+    "type": "section",
+    "section": "Signal Map",
+    "slot": "signal_map",
+    "anchor_section": "signals_and_thesis",
+    "template": "signal_map_concentric",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "context": "prioritize event led tests shift spend loyalty discounts",
+        "structure": "concentric rings radial arcs lattice overlay inner ring",
+        "elements": "store tokens sized expected uplift arc paths showing",
+        "motion": "radial pull toward early window node visual flow",
+        "direction": "prioritize event led tests shift spend loyalty discounts",
+        "palette": "matte black base high contrast brand accent color"
+      },
+      "style": {
+        "framing": "gentle isometric framing",
+        "lighting": "half-toned studio wash",
+        "palette": "cool slate with ivory bands",
+        "geometry": "disciplined concentric ribbons",
+        "environment": "calm studio backdrop"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "early_window_share",
+        "event_cpa"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "Early-window share",
+        "Event CPA"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share",
+      "event_cpa"
+    ],
+    "alt": "CMO reviewing signal map encoding footfall lift and early-window share for event vs loyalty tests",
+    "image": "images/section_signal_map_are_loyalty_programs_losing_po.png"
+  },
+  {
+    "type": "section",
+    "section": "Case Study 1",
+    "slot": "case_study_1",
+    "anchor_section": "mini_case_story",
+    "template": "case_play_activation",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "scene": "midday community pop up inside mall storefront composition",
+        "time": "first hour paid community event precedes black friday",
+        "moment": "first hour paid community event precedes black friday",
+        "personas": "head partnerships",
+        "mood": "energetic community led tactical",
+        "lighting": "Polished editorial with soft highlights to emphasize faces and movement.",
+        "props": "event wristbands pos event tags footfall sensor visible",
+        "focal_point": "midday community pop up inside mall storefront composition"
+      },
+      "style": {
+        "framing": "slightly elevated angle looking down",
+        "lighting": "diffused skylight with controlled highlights",
+        "palette": "dark neutrals with electric blue accents",
+        "geometry": "layered geometric planes",
+        "environment": "calm studio void"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "qr_redemption"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "QR redemption"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "qr_redemption"
+    ],
+    "alt": "Head of Partnerships running community pop-up test to boost Black Friday weekend footfall and QR redemption",
+    "image": "images/section_case_study_1_are_loyalty_programs_losing_po.png"
+  }
+]

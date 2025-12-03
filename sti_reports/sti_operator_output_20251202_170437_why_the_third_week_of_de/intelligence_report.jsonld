@@ -1,0 +1,42 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Report",
+  "name": "Why the Third Week of December Is the New Black Friday",
+  "about": "Why the Third Week of December Is the New Black Friday",
+  "abstract": "You need to win share and profitable store visits late in the season without getting drawn into month-long blanket discounts that bleed margin. Targeted third-week exclusives and events can deliver **10-15%** foot-traffic uplift (stretch **≥25%**), move early-window share toward **20-30%**, keep event CPA at or below **≤0.80×** baseline, and secure QR redemptions of **≥5%** of footfall. Favor a collab-led holiday with store-as-studio pop-ups; in the next 30 days Head of Retail, Head of Brand Partnerships, and the CMO must lock two retailer-exclusive drops and book five pop-up media days, measuring QR redemption and event CPA to decide scale-up [^6][^2].",
+  "datePublished": "2025-12-03T01:17:57.030803",
+  "temporalCoverage": "2025-11-19/2025-12-03",
+  "hasPart": [
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.reuters.com/business/retail-consumer/record-us-black-friday-crowds-find-fewer-bargains-amid-high-prices-2025-11-24/",
+        "https://www.retaildive.com/news/winners-losers-black-friday-2025/806610/"
+      ],
+      "about": "Behavioral"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.retaildive.com/news/winners-losers-black-friday-2025/806610/",
+        "https://www.morningstar.com/news/business-wire/20251109924136/its-the-season-for-savings-amazons-black-friday-week-and-cyber-monday-deal-events-offer-deep-discounts-on-customer-favorite-brands-from-november-20-through-december-1"
+      ],
+      "about": "Market"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.retaildive.com/news/winners-losers-black-friday-2025/806610/",
+        "https://www.morningstar.com/news/business-wire/20251109924136/its-the-season-for-savings-amazons-black-friday-week-and-cyber-monday-deal-events-offer-deep-discounts-on-customer-favorite-brands-from-november-20-through-december-1"
+      ],
+      "about": "Cultural"
+    }
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": 0.6
+  }
+}

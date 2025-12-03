@@ -1,0 +1,129 @@
+[
+  {
+    "type": "hero",
+    "slot": "hero",
+    "section": "Hero",
+    "anchor_section": "header",
+    "template": "hero_decision_window",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "scene": "small format urban storefront cleared counter branded premium",
+        "personas": "head retail leaning toward store studio execution ground",
+        "action": "finalizing two week local premium window sku selection",
+        "symbolism": "half lit clock face background shadow suggesting closing",
+        "props": "single premium sku pedestal limited quantity tag printed",
+        "mood": "decisive collaborative margin first",
+        "lighting": "Polished editorial; confident highlights on the premium SKU, soft negative space in the storefront depth.",
+        "focal_point": "finalizing two week local premium window sku selection"
+      },
+      "style": {
+        "framing": "slightly elevated angle looking down",
+        "lighting": "cool high-contrast lighting with crisp edges",
+        "palette": "graphite and steel with restrained teal",
+        "geometry": "layered geometric planes",
+        "environment": "calm studio void"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "conversion_rate",
+        "qr_redemption"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "Conversion rate",
+        "QR redemption"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "conversion_rate",
+      "qr_redemption"
+    ],
+    "alt": "Head of Retail finalizing local premium-window A/B test at storefront",
+    "image": "images/hero_are_brands_finally_waking_up_t.png"
+  },
+  {
+    "type": "section",
+    "section": "Signal Map",
+    "slot": "signal_map",
+    "anchor_section": "signals_and_thesis",
+    "template": "signal_map_concentric",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "context": "these signals form compact test plan prioritize short",
+        "structure": "concentric rings neighborhood city radial arcs linking stores",
+        "elements": "store tokens sized baseline foot traffic creator touchpoints",
+        "motion": "flows creator nodes toward stores thicker arcs show",
+        "direction": "these signals form compact test plan prioritize short",
+        "palette": "matte paper textures warm retail tones high contrast"
+      },
+      "style": {
+        "framing": "radial diagram posture",
+        "lighting": "calm perimeter glow",
+        "palette": "cool slate with ivory bands",
+        "geometry": "stacked line work",
+        "environment": "architectural plinth"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "early_window_share",
+        "event_cpa"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "Early-window share",
+        "Event CPA"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share",
+      "event_cpa"
+    ],
+    "alt": "CMO studying rings map showing footfall uplift and early-window share for local tests",
+    "image": "images/section_signal_map_are_brands_finally_waking_up_t.png"
+  },
+  {
+    "type": "section",
+    "section": "Case Study 1",
+    "slot": "case_study_1",
+    "anchor_section": "mini_case_story",
+    "template": "case_play_activation",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "scene": "compact neighborhood store reconfigured experimental island narrow shelves",
+        "time": "store manager swaps sitewide discount tag time limited",
+        "moment": "store manager swaps sitewide discount tag time limited",
+        "personas": "store manager executing store level b test 'local",
+        "mood": "focused empirical margin aware",
+        "lighting": "Focused key light on the bundle, softer fill across staff faces; clean shadows for clarity.",
+        "props": "two clipboard sheets labeled b traffic counters tightly",
+        "focal_point": "compact neighborhood store reconfigured experimental island narrow shelves"
+      },
+      "style": {
+        "framing": "three-quarter view from eye level",
+        "lighting": "diffused skylight with controlled highlights",
+        "palette": "graphite and steel with restrained teal",
+        "geometry": "minimal coaxial arcs",
+        "environment": "calm studio void"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "conversion_rate"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "Conversion rate"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "conversion_rate"
+    ],
+    "alt": "Store Manager running local premium-window A/B test checking footfall and conversion",
+    "image": "images/section_case_study_1_are_brands_finally_waking_up_t.png"
+  }
+]

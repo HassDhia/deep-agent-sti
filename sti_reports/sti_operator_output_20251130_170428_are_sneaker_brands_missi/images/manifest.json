@@ -1,0 +1,126 @@
+[
+  {
+    "type": "hero",
+    "slot": "hero",
+    "section": "Hero",
+    "anchor_section": "header",
+    "template": "hero_decision_window",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "scene": "flagship storefront edge polished concrete floor reserved display",
+        "personas": "head retail",
+        "action": "selecting creator roster tagging reserved inventory 4 6",
+        "symbolism": "converging light bands narrowing toward focused highlight imply",
+        "props": "creator roster board labeled '5 mile radius' shelf",
+        "mood": "precise collaborative confident",
+        "lighting": "Polished editorial, confident highlights on the operator and reserved inventory, soft fill to keep negative space clean.",
+        "focal_point": "selecting creator roster tagging reserved inventory 4 6"
+      },
+      "style": {
+        "framing": "tight medium shot on the collaboration moment",
+        "lighting": "cool high-contrast lighting with crisp edges",
+        "palette": "ivory and charcoal with cyan pins",
+        "geometry": "layered geometric planes",
+        "environment": "structured architectural backdrop"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "early_window_share",
+        "qr_redemption"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "Early-window share",
+        "QR redemption"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share",
+      "qr_redemption"
+    ],
+    "alt": "Head of Retail assigning creator residencies and unique QR tests for a 4–6 week flagship pilot",
+    "image": "images/hero_are_sneaker_brands_missing_the.png"
+  },
+  {
+    "type": "section",
+    "section": "Signal Map",
+    "slot": "signal_map",
+    "anchor_section": "signals_and_thesis",
+    "template": "signal_map_concentric",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "context": "focus pilots four levers 1 local creator residencies",
+        "structure": "concentric rings radial arcs outer ring general holiday",
+        "elements": "node tokens micro creators size local follower overlap",
+        "motion": "directional flows sidewalks store then early window purchase",
+        "direction": "focus pilots four levers 1 local creator residencies",
+        "palette": "matte concrete textures neon accent lines show signal"
+      },
+      "style": {
+        "framing": "planar orthographic layout",
+        "lighting": "soft studio glow with restrained highlights",
+        "palette": "mist gray with electric blue pulses",
+        "geometry": "stacked line work",
+        "environment": "dark minimal background"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "early_window_share"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "Early-window share"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share"
+    ],
+    "alt": "Head of Partnerships viewing a rings map encoding footfall uplift and early-window share for creator-led drops",
+    "image": "images/section_signal_map_are_sneaker_brands_missing_the.png"
+  },
+  {
+    "type": "section",
+    "section": "Case Study 1",
+    "slot": "case_study_1",
+    "anchor_section": "mini_case_story",
+    "template": "case_play_activation",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "scene": "store residency day micro creator filming short form",
+        "time": "operator creator align shoppable cta scan flow right",
+        "moment": "operator creator align shoppable cta scan flow right",
+        "personas": "head partnerships",
+        "mood": "operational test focused accountable",
+        "lighting": "Polished editorial; highlight on QR pad and creator face; clean negative space around inventory.",
+        "props": "qr redemption pad unique creator code reserved shelf",
+        "focal_point": "store residency day micro creator filming short form"
+      },
+      "style": {
+        "framing": "grounded eye-level framing focused on the active bay",
+        "lighting": "warm directional light with gentle falloff",
+        "palette": "dark neutrals with electric blue accents",
+        "geometry": "clean architectural facets",
+        "environment": "structured architectural backdrop"
+      },
+      "metric_focus": [
+        "qr_redemption",
+        "early_window_share"
+      ],
+      "metric_labels": [
+        "QR redemption",
+        "Early-window share"
+      ]
+    },
+    "metric_focus": [
+      "qr_redemption",
+      "early_window_share"
+    ],
+    "alt": "Head of Partnerships running a creator residency test with unique QR to trace same-day purchases",
+    "image": "images/section_case_study_1_are_sneaker_brands_missing_the.png"
+  }
+]

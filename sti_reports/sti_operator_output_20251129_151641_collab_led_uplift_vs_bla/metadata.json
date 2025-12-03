@@ -1,0 +1,140 @@
+{
+  "generated_at": "2025-11-29T15:23:08.499877",
+  "query": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+  "time_window": {
+    "start": "2025-11-22",
+    "end": "2025-11-29",
+    "days": 7
+  },
+  "confidence": {
+    "score": 0.818,
+    "display": 0.82,
+    "band": "Medium",
+    "dials": {
+      "strength": "high",
+      "coverage": "medium",
+      "quant_support": "high",
+      "consistency": "high"
+    },
+    "breakdown": {
+      "average_strength": 0.8200000000000001,
+      "coverage": 0.667,
+      "quant_support": 1.0,
+      "contradiction_penalty": 0.9
+    }
+  },
+  "files": [
+    "intelligence_report.md",
+    "market_path_report.md",
+    "market_path_report.pdf",
+    "intelligence_report.jsonld",
+    "metadata.json"
+  ],
+  "sections": [
+    "deep_analysis",
+    "pattern_matches",
+    "brand_outcomes",
+    "operator_notes",
+    "quant",
+    "activation_kit",
+    "risk_radar",
+    "future_outlook",
+    "comparison_map",
+    "signal_map_notes"
+  ],
+  "title": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+  "highlights": [
+    "Co-branded drops shift timing: exclusives concentrate buys in week one and lift early-window share without deeper markdowns.",
+    "Partner funding converts headline discounts into activation spend, preserving ticket price and protecting net margin per transaction.",
+    "Store-as-studio pop-ups drive buyer activity share per promo dollar and raise QR redemption toward the **≥5%** floor when paired with in-store exclusives."
+  ],
+  "executive_summary": "You need to win holiday footfall and early buys with partner-led activations instead of blanket discounts inside the next two planning cycles; the objective is to drive early-window demand while keeping event CPA in check. This matters because the target is **foot-traffic uplift** of **10-15%** (stretch **≥25%**), lift **early-window share** from **12-15%** toward **20-30%**, and hold **event_cpa** at or below **≤0.80×** baseline while securing **QR redemption ≥5%** of footfall. Favor a collab-led holiday / store-as-studio approach and, in the next 30 days, the Head of Retail, Head of Partnerships, and CFO must stand up a 4–6 week pilot that replaces one weekend 20% sitewide discount with a co-branded in-store activation in test stores and a finance model comparing blanket vs co-funded promo scenarios; measure foot_traffic_uplift, buyer_activity_share, net margin per transaction, and event_cpa to decide scale by week three. Use the pilot to convert promo dollars into media-like store impressions and require partner funding or media trade to meaningfully reduce net markdown spend [^1].",
+  "top_operator_moves": [
+    "Run a 6-week pilot in 12 stores replacing one weekend 20% sitewide discount with a co-branded in-store activation and track foot_traffic_uplift and buyer_activity_share versus the weekend baseline.",
+    "Have CFO and Head of Partnerships complete a 3-week P&L comparison of a 20% blanket discount versus a co-funded 15% collaboration and set a go/no-go trigger at event_cpa ≤ **0.80×** baseline.",
+    "Launch a 4-week exclusive product drop in 15 high-traffic stores in week one of the campaign to test lifting early-window share toward **20-30%** without deeper markdowns."
+  ],
+  "statistics": {
+    "word_count": 4087,
+    "signal_count": 4,
+    "source_count": 1
+  },
+  "read_time_minutes": 21,
+  "length_label": "~21 min read",
+  "qa": {
+    "issues": [
+      "Signal count outside required band",
+      "Read time exceeds target"
+    ],
+    "coverage": 0.667,
+    "quant_support": 1.0,
+    "contradiction_penalty": 0.9,
+    "appendix_count": 2,
+    "scope": {
+      "topic": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+      "time_window": {
+        "start": "2025-11-22",
+        "end": "2025-11-29",
+        "days": 7
+      },
+      "target_region": "US",
+      "use_cases": [
+        "brand↔brand",
+        "brick&mortar↔brand"
+      ],
+      "must_answer": [
+        "When are the high-value windows",
+        "What changes discounting math"
+      ],
+      "approach_hints": [
+        "discount-heavy holiday",
+        "collab-led holiday",
+        "store-as-studio / media-led holiday"
+      ],
+      "unified_target_pack": {
+        "foot_traffic_uplift": {
+          "base": "10-15%",
+          "stretch": "≥25%"
+        },
+        "early_window_share": {
+          "current": "12-15%",
+          "goal": "20-30%"
+        },
+        "event_cpa": {
+          "ceiling": "≤0.80× baseline"
+        },
+        "qr_redemption": {
+          "floor": "≥5% of footfall"
+        },
+        "paired_metric": "Track buyer activity share vs promo intensity side by side"
+      },
+      "operator_job_story": "How to win holiday footfall and early buys with partner-led activations instead of blanket discounts inside the next two planning cycles without sacrificing event CPA.",
+      "search_shaped_variants": [
+        "How to replace a weekend sitewide discount with a co-branded in-store activation in 6 weeks",
+        "Test exclusive product drops to lift early-window share to 20-30% without deeper markdowns",
+        "Model partner-funded promotions versus blanket discounts to hold event CPA ≤0.80x baseline",
+        "Convert promo dollars into store-as-studio media to raise buyer activity share vs promo intensity"
+      ]
+    },
+    "read_time": 21,
+    "high_quality_signals": true,
+    "observed_quant": true,
+    "tier1_market_signals": false
+  },
+  "agent": "EnhancedSTIAgent",
+  "model": "gpt-5-mini-2025-08-07",
+  "renderers": [
+    "market_path_markdown",
+    "market_path_pdf",
+    "legacy_html"
+  ],
+  "artifact_paths": [
+    "sti_reports/sti_operator_output_20251129_151641_collab_led_uplift_vs_bla/market_path_report.md",
+    "sti_reports/sti_operator_output_20251129_151641_collab_led_uplift_vs_bla/market_path_report.pdf"
+  ],
+  "social_media_content": {
+    "confidence": 0.82,
+    "teaser_mode": false,
+    "sources_used": "reuters.com"
+  }
+}

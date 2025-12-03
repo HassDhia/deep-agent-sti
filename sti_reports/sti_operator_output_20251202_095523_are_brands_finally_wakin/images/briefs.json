@@ -1,0 +1,84 @@
+{
+  "hero": {
+    "slot": "hero",
+    "core_tension": "Choose narrower, higher-margin local windows over broad sitewide discounts during the holiday surge.",
+    "setting": "Small-format urban storefront with a cleared counter, branded premium display, and neighborhood footpath visible through glass.",
+    "persona": "Head of Retail leaning toward store-as-studio execution with on-the-ground team and a creator partner in frame.",
+    "action": "Finalizing a two-week local premium window: SKU selection, inventory tags, and messaging for in-store pickup.",
+    "urgency_symbol": "Half-lit clock face in background shadow suggesting a closing promotional window",
+    "props": [
+      "single premium SKU on pedestal with limited-quantity tag",
+      "printed local offer card showing pickup slot times",
+      "stack of QR cards for in-store activation",
+      "handwritten two-week calendar on kraft paper"
+    ],
+    "lighting": "Polished editorial; confident highlights on the premium SKU, soft negative space in the storefront depth.",
+    "mood": "Decisive, collaborative, margin-first",
+    "anchor_section": "header",
+    "metric_focus": [
+      "footfall_lift",
+      "conversion_rate",
+      "qr_redemption"
+    ],
+    "alt": "Head of Retail finalizing local premium-window A/B test at storefront"
+  },
+  "signal_map": {
+    "slot": "signal_map",
+    "structure": "Concentric rings (neighborhood to city) with radial arcs linking stores to creator events; inner ring is high-intent catchment.",
+    "elements": [
+      "store tokens sized by baseline foot traffic",
+      "creator touchpoints as flagged nodes",
+      "arcs labeled with % uplift and CPA ratios"
+    ],
+    "motion": "Flows from creator nodes toward stores; thicker arcs show higher footfall uplift and lower event CPA.",
+    "palette": "Matte paper textures, warm retail tones, high-contrast accent for KPI labels; brass and slate materials for tokens.",
+    "anchor_section": "signals_and_thesis",
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share",
+      "event_cpa"
+    ],
+    "alt": "CMO studying rings map showing footfall uplift and early-window share for local tests"
+  },
+  "case_studies": [
+    {
+      "slot": "case_study_1",
+      "scene": "Compact neighborhood store reconfigured as an experimental island with narrow shelves and premium bundle riser.",
+      "moment": "Store manager swaps a sitewide discount tag for a time-limited premium bundle and checks stock allocation list.",
+      "persona": "Store Manager executing store-level A/B test from the 'Local demand outpaces centralized plans' play.",
+      "props": [
+        "two clipboard sheets labeled A and B with traffic counters",
+        "tightly tagged premium bundle",
+        "local pickup sign with short window times"
+      ],
+      "lighting": "Focused key light on the bundle, softer fill across staff faces; clean shadows for clarity.",
+      "mood": "Focused, empirical, margin-aware",
+      "anchor_section": "mini_case_story",
+      "metric_focus": [
+        "footfall_lift",
+        "conversion_rate"
+      ],
+      "alt": "Store Manager running local premium-window A/B test checking footfall and conversion"
+    },
+    {
+      "slot": "case_study_2",
+      "scene": "Creator co-launch in the back of a store with a small camera rig and creator handing a co-branded pack to an arriving customer.",
+      "moment": "Creator-driven moment where a QR card prompts an in-store pickup and registers redemption at the counter.",
+      "persona": "Partnerships Lead testing creator co-launch funnels from the 'Creator co-launches shift media value to stores' insight.",
+      "props": [
+        "co-branded product box",
+        "stack of QR pickup cards in a dispenser",
+        "paper guestlist with time slots"
+      ],
+      "lighting": "Polished editorial rim light on creator and product; soft ambient fill to keep focus on interaction.",
+      "mood": "Energetic, social, conversion-focused",
+      "anchor_section": "mini_case_story",
+      "metric_focus": [
+        "qr_redemption",
+        "event_cpa",
+        "early_window_share"
+      ],
+      "alt": "Partnerships Lead running creator co-launch QR pickup test and measuring redemption"
+    }
+  ]
+}

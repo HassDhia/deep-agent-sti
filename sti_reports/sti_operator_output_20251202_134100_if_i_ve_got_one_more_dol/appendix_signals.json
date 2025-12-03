@@ -1,0 +1,146 @@
+[
+  {
+    "name": "Brokerage Loyalty Reconsideration (HousingWire)",
+    "reason": "Non-retail vertical insights and weaker operational fit for US consumer retail collaboration thesis; strength < 0.78 for retail activation use."
+  },
+  {
+    "name": "Local Arts Event (NewsTribune)",
+    "reason": "Local event reporting with no material insight for national retail collab or media deployment; non-strategic."
+  },
+  {
+    "name": "JPMorgan Germany Staffing (Reuters)",
+    "reason": "Non-US retail context and irrelevant to collab vs loyalty budget allocation."
+  },
+  {
+    "name": "Celebrity Fashion Drop (E! Online)",
+    "reason": "Consumer fashion drop example is celebrity-focused and not directly tied to retail-media or loyalty mechanics for store-driven footfall; weaker operational leverage."
+  },
+  {
+    "name": "Political News (MSN)",
+    "reason": "Irrelevant content to commercial retail collaboration decisions."
+  },
+  {
+    "category": "Behavioral",
+    "name": "Emotional Connection Multiplies Loyalty ROI",
+    "description": "New research claims emotional connection can multiply loyalty program impact by up to eight times. This changes spend math: small, targeted investments that deepen emotional relevance can beat blanket discounting for visit and spend lift.",
+    "operator_move": "Test a targeted loyalty nudge seeded through retail media (Owner: CRM/Media Partnerships; Window: Nov 18 – Dec 02; KPI: buyer activity share vs promo intensity, event CPA ≤0.80× baseline).",
+    "operator_scan": "Measure visit and spend lift from emotionally framed loyalty messages.",
+    "spine_hook": "Emotional connection amplifies loyalty returns.",
+    "time_horizon": "6-week",
+    "strength": 0.88,
+    "US_fit": 0.95,
+    "operationality": 0.85,
+    "support": [
+      7
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "C",
+    "citations": [
+      7
+    ],
+    "id": "S1",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Technology",
+    "name": "C-stores Push Personalized Loyalty With Platform Partners",
+    "description": "Convenience retailers are moving past one-size-fits-all programs by layering partner tech for segmentation and local offers. That operational model is portable: retail teams can run targeted, inventory-linked offers that raise conversion without raising headline discount depth.",
+    "operator_move": "Run a localized loyalty offer via a partner platform in 10 stores (Owner: Retail Ops/Partnerships; Window: Nov 18 – Dec 02; KPI: foot traffic uplift 10–15% base, QR redemption ≥5% of footfall).",
+    "operator_scan": "Track redemption rates by cohort and store, not just headline redemptions.",
+    "spine_hook": "Localized loyalty tech replaces blanket discounts.",
+    "time_horizon": "6-week",
+    "strength": 0.82,
+    "US_fit": 0.95,
+    "operationality": 0.8,
+    "support": [
+      5
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      5
+    ],
+    "id": "S2",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Market",
+    "name": "Creator Collabs Drive Reach That Offsets Discount Need",
+    "description": "Recent brand-creator collaborations are being framed as reach-boosting, margin-protecting launches by major beverage players. For operators, limited collab SKUs can create urgency and earned media that reduce reliance on price promotions to drive early-window visits.",
+    "operator_move": "Pilot a limited-edition collab SKU and influencer-led in-store display in 12 stores (Owner: Brand Partnerships; Window: Nov 18 – Dec 02; KPI: QR redemption ≥5% of footfall and event CPA ≤0.80× baseline).",
+    "operator_scan": "Measure earned reach, footfall uplift, and CPA for collab SKU vs standard SKU.",
+    "spine_hook": "Limited collab SKUs can replace discounting for reach.",
+    "time_horizon": "6-week",
+    "strength": 0.8,
+    "US_fit": 1.0,
+    "operationality": 0.78,
+    "support": [
+      4
+    ],
+    "on_spine": true,
+    "quant_support": "none",
+    "source_grade": "B",
+    "citations": [
+      4
+    ],
+    "id": "S3",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Market",
+    "name": "Collab-Led Holiday Shifts Discounting Math",
+    "description": "When brands co-release experiential or limited products, shoppers respond to novelty and social proof more than incremental price cuts. That means operators can protect margin by shifting one-dollar promotional levers into collab marketing and in-store exclusives instead of deeper across-the-board discounts.",
+    "operator_move": "Reallocate $1 per-transaction promotional budget into a co-branded in-store experience (Owner: Head of Promotions/Brand Partnerships; Window: Nov 18 – Dec 02; KPI: early-window share increase to 20–30% and event CPA ≤0.80× baseline).",
+    "operator_scan": "Compare margin and footfall from collab activation vs equivalent dollar in discounting.",
+    "spine_hook": "Collaborations can reduce the need for deep discounts.",
+    "time_horizon": "6-week",
+    "strength": 0.8,
+    "US_fit": 0.9,
+    "operationality": 0.8,
+    "support": [
+      4,
+      7
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      4,
+      7
+    ],
+    "id": "S4",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Technology",
+    "name": "Store-As-Studio: Retail Media Amplifies Collabs On Footfall",
+    "description": "Retail media and in-store activations let operators turn stores into short-run content studios that amplify collab launches. That reduces wasted media spend and gives a clean path to measure event-level CPA and QR redemption tied to physical visits.",
+    "operator_move": "Run in-store media + retail media placement for one collab activation in high-traffic stores (Owner: Retail Media/Store Ops; Window: Nov 18 – Dec 02; KPI: event CPA ≤0.80× baseline and QR redemption ≥5% footfall).",
+    "operator_scan": "Track media-to-store conversion and QR redemption by placement.",
+    "spine_hook": "Use retail media to convert collab buzz into visits.",
+    "time_horizon": "6-week",
+    "strength": 0.79,
+    "US_fit": 0.9,
+    "operationality": 0.8,
+    "support": [
+      5,
+      7
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      5,
+      7
+    ],
+    "id": "S5",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  }
+]

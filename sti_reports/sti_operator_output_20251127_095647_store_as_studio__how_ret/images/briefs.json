@@ -1,0 +1,69 @@
+{
+  "hero": {
+    "core_tension": "Decision tension: choose when to convert flagship hours into content-first activations to maximize footfall and earned media. The mechanism is simple. This maps to the Store-as-Studio signal and the 6-week flagship pilot activation play (S1).",
+    "setting": "Wide, spare flagship interior. Low fixtures. Clean negative space. Composition cue: three-quarter angle, shallow depth, polished concrete floor, warm wood accents.",
+    "persona": "Brand marketing director and creative producer in rehearsal. Both standing center-left, collaborating over a layout board referencing the four branded content sessions.",
+    "action": "Staging a branded content session setup. One operator adjusts lighting while another marks RSVP counts on a small clipboard. Movement is deliberate.",
+    "urgency_symbol": "A band of confident light across the floor that arcs toward the entry. Symbolizes high-value windows without literal timing props.",
+    "props": [
+      "schedule board labeled '6-week flagship pilot' (S1)",
+      "folding riser platform",
+      "reflective bounce panel"
+    ],
+    "lighting": "Polished editorial lighting with confident highlights and deep but clean shadows. High-key on subjects. Soft falloff to negative space.",
+    "mood": "Precise, collaborative, assured. The leverage point sits here.",
+    "alt": "Brand lead and creative producer stage a content session in a flagship store during a high-value activation."
+  },
+  "signal_map": {
+    "structure": "Concentric rings radiating from a central flagship node. Inner ring footfall. Mid ring social reach. Outer ring partner value and sales arcs.",
+    "elements": [
+      "tokens for S1 S2 S3 S4 S5",
+      "pathways showing attention flow",
+      "nodes for 'walk-in', 'RSVP', 'shop-in-shop'"
+    ],
+    "motion": "Arrows flow clockwise from attention to earned media to partner conversions. Momentum locks at the flagship node to show concentrated lift during high-value windows.",
+    "palette": "Matte stone neutrals with a single punch accent in warm gold for earned media and teal for data signals. Materials: paper texture for rings, glass sheen for nodes.",
+    "alt": "Circular signal map linking footfall, social reach, and partner value around a Store-as-Studio flagship node."
+  },
+  "case_studies": [
+    {
+      "scene": "Vacant storefront turned artist residency.",
+      "moment": "Property manager reviews tenant inquiries next to an artist setting up a modular installation. A site plan labeled 'rotating artist residency 8-week test' (S2) rests nearby.",
+      "persona": "Property manager and local artist. Framed in three-quarter profile. Materials: painted brick, temporary gallery plinths.",
+      "props": [
+        "site plan with '8-week' annotation",
+        "stackable plinths",
+        "gallery label cards"
+      ],
+      "lighting": "Polished editorial side light. Soft rim on subjects. Clean negative foreground.",
+      "mood": "Practical, opportunistic, civic-minded. This changes one thing about how operators should think.",
+      "alt": "Property manager and artist prepare a rotating residency in a vacant storefront to boost mall dwell time."
+    },
+    {
+      "scene": "Brand experiential team shooting social assets in a short-term booked space.",
+      "moment": "A photographer and producer capture a sequence while a producer logs asset counts. A small tag reads 'book two vacant spaces, 4-week window, six assets' (S4).",
+      "persona": "Experiential producer and photographer. Tight medium frame. Materials: studio cloth, portable grip equipment.",
+      "props": [
+        "tagged shot list '6 assets'",
+        "portable grip kit",
+        "branded backdrop swatch"
+      ],
+      "lighting": "Polished editorial key with confident highlights. High contrast on subject. Negative space left for copy.",
+      "mood": "Efficient, results-driven, creative. The operator move is straightforward.",
+      "alt": "Experiential team produces social assets in a booked vacant retail space across a short activation window."
+    },
+    {
+      "scene": "Data and CRM team setting up a cross-system audit and in-store personalized offer pilot.",
+      "moment": "Two analysts map data flows on a translucent board. A sticky note reads 'cross-system audit 6 weeks, deploy offer to 1,000' (S5).",
+      "persona": "Data lead and CRM manager. Overhead three-quarter angle. Materials: frosted glass board, printed data dictionary excerpt.",
+      "props": [
+        "translucent data flow board",
+        "printed customer segment list",
+        "laptop with anonymized dashboard"
+      ],
+      "lighting": "Polished editorial cool key with warm rim. Highlights on hands and notes. Clean negative space around the board.",
+      "mood": "Analytic, methodical, anticipatory. The signal underneath is S5.",
+      "alt": "Data lead and CRM manager map a cross-system audit before deploying a personalized in-store offer to 1,000 customers."
+    }
+  ]
+}

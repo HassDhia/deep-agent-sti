@@ -1,0 +1,126 @@
+{
+  "spine_hook": "Success = Nov 19–Dec 03 test stores deliver ≥10% incremental footfall, early-window share moves toward 20–30%, event CPA ≤0.8× baseline and QR redemptions ≥5% of entries.",
+  "anchors": [
+    {
+      "id": "Q1",
+      "headline": "Current early-window share of season footfall",
+      "topic": "season timing",
+      "value_low": 12,
+      "value_high": 15,
+      "unit": "% of season footfall",
+      "status": "observed",
+      "band": "base",
+      "owner": "Head of Analytics",
+      "expression": "Share of total Nov 1–Dec 31 footfall that occurs during Nov 19–Dec 03",
+      "source_ids": [
+        4,
+        7,
+        8
+      ],
+      "applies_to_signals": [
+        "S3",
+        "S5"
+      ]
+    },
+    {
+      "id": "Q2",
+      "headline": "Target foot-traffic uplift in test stores",
+      "topic": "store visits",
+      "value_low": 10,
+      "value_high": 15,
+      "unit": "%",
+      "status": "target",
+      "band": "base",
+      "owner": "Head of Retail",
+      "expression": "Incremental footfall vs matched-control stores during Nov 19–Dec 03",
+      "source_ids": [
+        6,
+        1
+      ],
+      "applies_to_signals": [
+        "S3",
+        "S2",
+        "S5"
+      ]
+    },
+    {
+      "id": "Q3",
+      "headline": "Event CPA ceiling vs baseline",
+      "topic": "media efficiency",
+      "value_low": 0.0,
+      "value_high": 0.8,
+      "unit": "× baseline CPA",
+      "status": "target",
+      "band": "base",
+      "owner": "Head of Performance Marketing",
+      "expression": "Paid-media cost per in-store conversion during event period as a ratio to baseline CPA (October average)",
+      "source_ids": [
+        6,
+        2
+      ],
+      "applies_to_signals": [
+        "S5"
+      ]
+    },
+    {
+      "id": "Q4",
+      "headline": "QR redemption rate as percent of footfall",
+      "topic": "activation quality",
+      "value_low": 5,
+      "value_high": 15,
+      "unit": "% of footfall",
+      "status": "target",
+      "band": "base",
+      "owner": "Head of Retail Operations",
+      "expression": "Number of event QR redemptions divided by store entries during Nov 19–Dec 03",
+      "source_ids": [
+        2,
+        6
+      ],
+      "applies_to_signals": [
+        "S2",
+        "S3",
+        "S5"
+      ]
+    }
+  ],
+  "measurement_plan": [
+    {
+      "id": "M1",
+      "metric": "Incremental footfall uplift (%)",
+      "expression": "Test stores with exclusives/drops vs matched-control stores, normalized for weekday, weather, and baseline trends",
+      "owner": "Head of Retail",
+      "timeframe": "Nov 19–Dec 03 (14 days) with 7-day post window",
+      "status": "plan",
+      "why_it_matters": "Direct test of whether exclusives drive the 10–15% base uplift without broad price cuts."
+    },
+    {
+      "id": "M2",
+      "metric": "Early-window share (%)",
+      "expression": "Event-period footfall (Nov 19–Dec 03) / season footfall (Nov 1–Dec 31)",
+      "owner": "Head of Analytics",
+      "timeframe": "Daily measurement; cumulative report on Dec 04",
+      "status": "plan",
+      "why_it_matters": "Shows whether traffic is shifting into the late window to approach the 20–30% goal."
+    },
+    {
+      "id": "M3",
+      "metric": "Event CPA ratio",
+      "expression": "Paid-media $ allocated to event ÷ attributable in-store conversions during event, divided by baseline CPA (October avg)",
+      "owner": "Head of Performance Marketing",
+      "timeframe": "Campaign runtime + 7-day conversion attribution",
+      "status": "plan",
+      "why_it_matters": "Immediate guardrail on media spend. Pause or reallocate if ratio exceeds 0.8."
+    },
+    {
+      "id": "M4",
+      "metric": "QR redemption rate and buyer-activity share vs promo intensity",
+      "expression": "QR redemptions / store entries; buyer activity share = buyers from QR / total buyers; promo intensity = average advertised % discount on featured items",
+      "owner": "Head of Retail Operations / Head of Analytics",
+      "timeframe": "Measure daily; compare test vs control stores during Nov 19–Dec 03",
+      "status": "plan",
+      "why_it_matters": "Pairs conversion quality to promo depth so we drive buyers not bargain browsers. Use as go/no-go on broader discounting."
+    }
+  ],
+  "coverage": 0.9
+}

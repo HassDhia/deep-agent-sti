@@ -1,0 +1,119 @@
+{
+  "spine_hook": "Success = local pilots produce >=10% net foot-traffic lift and event CPA <=0.8× digital while early-window sales share moves from ~12–15% toward 20–30%.",
+  "anchors": [
+    {
+      "id": "Q1",
+      "headline": "Foot-traffic uplift target (base)",
+      "topic": "store footfall lift vs matched control",
+      "value_low": 10,
+      "value_high": 15,
+      "unit": "% vs baseline week",
+      "status": "target",
+      "band": "base",
+      "owner": "Retail Ops",
+      "expression": "Relative lift = (Footfall_treatment - Footfall_control) / Footfall_control, measured week-over-week or vs prior 4-week average",
+      "source_ids": [
+        6,
+        7
+      ],
+      "applies_to_signals": [
+        "foot_traffic"
+      ]
+    },
+    {
+      "id": "Q2",
+      "headline": "Early-window share (current)",
+      "topic": "share of holiday sales occurring Nov 18–Dec 02",
+      "value_low": 12,
+      "value_high": 15,
+      "unit": "% of holiday-period sales",
+      "status": "observed",
+      "band": "base",
+      "owner": "Brand Analytics",
+      "expression": "Early-window share = Sales_Nov18–Dec02 / Sales_total_holiday_window",
+      "source_ids": [
+        6
+      ],
+      "applies_to_signals": [
+        "early_window_share"
+      ]
+    },
+    {
+      "id": "Q3",
+      "headline": "Event-level CPA ceiling",
+      "topic": "event CPA relative to digital baseline",
+      "value_low": 0,
+      "value_high": 0.8,
+      "unit": "x baseline digital CPA",
+      "status": "target",
+      "band": "base",
+      "owner": "Performance Marketing",
+      "expression": "Relative CPA = (Event_marketing_spend / Incremental_event_buyers) / Baseline_digital_CPA; target <= 0.8",
+      "source_ids": [
+        7,
+        1
+      ],
+      "applies_to_signals": [
+        "event_cpa"
+      ]
+    },
+    {
+      "id": "Q4",
+      "headline": "QR redemption floor",
+      "topic": "QR-code redemptions as percent of footfall",
+      "value_low": 5,
+      "value_high": 15,
+      "unit": "% of footfall",
+      "status": "target",
+      "band": "base",
+      "owner": "Store Ops",
+      "expression": "QR redemption rate = Unique_QR_redemptions / Total_in-Store Footfall during event",
+      "source_ids": [
+        6,
+        7
+      ],
+      "applies_to_signals": [
+        "qr_redemption"
+      ]
+    }
+  ],
+  "measurement_plan": [
+    {
+      "id": "M1",
+      "metric": "Incremental foot-traffic lift (A/B stores)",
+      "expression": "(Footfall_treatment - Footfall_control) / Footfall_control, per-store, aggregated to test cohort",
+      "owner": "Retail Ops",
+      "timeframe": "2 weeks (Nov 18–Dec 02), report daily + cumulative at end",
+      "status": "plan",
+      "why_it_matters": "Direct test of 10–15% uplift without sitewide discounts; primary lever for margin preservation."
+    },
+    {
+      "id": "M2",
+      "metric": "Event CPA vs digital baseline",
+      "expression": "Event_CPA_ratio = (Event_spend / Incremental_event_buyers) / Baseline_digital_CPA; track per event and cohort",
+      "owner": "Performance Marketing",
+      "timeframe": "Per event, reported weekly; evaluate 2–6 weeks for learning",
+      "status": "plan",
+      "why_it_matters": "Shows whether in-store activations beat 0.8× CPA ceiling and justify local media spend over broad discounts."
+    },
+    {
+      "id": "M3",
+      "metric": "Buyer activity share vs promo intensity (paired metric)",
+      "expression": "Buyer_share_by_radius = Buyers_from_target_radius / Total_buyers; Promo_intensity = Average Discount Depth for those buyers; track together weekly",
+      "owner": "Analytics",
+      "timeframe": "Weekly during Nov 18–Dec 02; compare to prior holiday weeks",
+      "status": "plan",
+      "why_it_matters": "Reveals tradeoff between increasing local buyer share and margin loss from deeper discounts; informs discount depth guardrail."
+    },
+    {
+      "id": "M4",
+      "metric": "QR redemption capture rate",
+      "expression": "QR_rate = Unique_QR_redemptions / Total_footfall per store per event",
+      "owner": "Store Ops",
+      "timeframe": "Per event, immediate post-event reconciliation",
+      "status": "plan",
+      "why_it_matters": "Validates attribution and capture funnel; floor 5% signals sufficient measurable conversion to scale local activations."
+    }
+  ],
+  "coverage": 0.9
+}

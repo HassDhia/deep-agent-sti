@@ -1,0 +1,99 @@
+{
+  "hero": {
+    "slot": "hero",
+    "core_tension": "Choose between broad discounting that drives footfall but erodes margin and a local creator residency that trades reach for higher-value buyers in a narrow window.",
+    "setting": "Flagship storefront edge: polished concrete floor, reserved display pegs, visible back-room inventory shelf, sidewalk visible through glass.",
+    "persona": "Head of Retail",
+    "action": "Selecting a creator roster and tagging reserved inventory for a 4-6 week in-store residency pilot.",
+    "urgency_symbol": "Converging light bands narrowing toward a focused highlight to imply a closing testing window.",
+    "props": [
+      "creator roster board labeled '5-mile radius',",
+      "shelf tags marked 'creator drop — unique QR',",
+      "small stack of returnable drop boxes (no logos)"
+    ],
+    "lighting": "Polished editorial, confident highlights on the operator and reserved inventory, soft fill to keep negative space clean.",
+    "mood": "Precise, collaborative, confident",
+    "anchor_section": "header",
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share",
+      "qr_redemption"
+    ],
+    "alt": "Head of Retail assigning creator residencies and unique QR tests for a 4–6 week flagship pilot"
+  },
+  "signal_map": {
+    "slot": "signal_map",
+    "structure": "Concentric rings and radial arcs: outer ring for general holiday traffic, inner arcs for early-window purchasers, linked nodes for creator activations.",
+    "elements": [
+      "node tokens for micro-creators (size = local follower overlap),",
+      "arc widths labeled with % uplift,",
+      "QR nodes anchored to store entry points"
+    ],
+    "motion": "Directional flows from sidewalks into store and then into early-window purchase arcs; pulses indicate measurement touchpoints.",
+    "palette": "Matte concrete textures with neon accent lines to show signal strength and warm metallic tokens for creators.",
+    "anchor_section": "signals_and_thesis",
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share"
+    ],
+    "alt": "Head of Partnerships viewing a rings map encoding footfall uplift and early-window share for creator-led drops"
+  },
+  "case_studies": [
+    {
+      "slot": "case_study_1",
+      "scene": "In-store residency day: a micro-creator filming short-form content at a reserved shelf while staff manage a shoppable QR station nearby.",
+      "moment": "Operator and creator align a shoppable CTA and scan flow right after a limited drop to capture same-day conversions.",
+      "persona": "Head of Partnerships",
+      "props": [
+        "QR redemption pad with unique creator code,",
+        "reserved shelf tag 'local drop',",
+        "small sign noting 'same-day POS trace code'"
+      ],
+      "lighting": "Polished editorial; highlight on QR pad and creator face; clean negative space around inventory.",
+      "mood": "Operational, test-focused, accountable",
+      "anchor_section": "mini_case_story",
+      "metric_focus": [
+        "qr_redemption",
+        "early_window_share"
+      ],
+      "alt": "Head of Partnerships running a creator residency test with unique QR to trace same-day purchases"
+    },
+    {
+      "slot": "case_study_2",
+      "scene": "Side-by-side comparison: a collab-led pop-up with limited-edition stock vs. a discount corner; manager annotates margin and buyer value on a tablet.",
+      "moment": "Decision point measuring buyer share and margin impact after a weekend event vs sitewide holiday discount.",
+      "persona": "CFO (Retail Ops)",
+      "props": [
+        "two product islands labeled 'collab drop' and 'discount stack',",
+        "tablet showing event CPA and conversion_rate overlays"
+      ],
+      "lighting": "Confident highlights on product islands; high-contrast to separate the two mechanisms.",
+      "mood": "Analytical, tradeoff-focused",
+      "anchor_section": "deep_analysis",
+      "metric_focus": [
+        "conversion_rate",
+        "event_cpa"
+      ],
+      "alt": "CFO comparing collab pop-up buyer share and event CPA versus blanket discounts"
+    },
+    {
+      "slot": "case_study_3",
+      "scene": "Resolved storefront: operators review a slim dashboard printout pinned to the wall showing measured lifts and QR traces after the pilot.",
+      "moment": "Post-pilot alignment where creator residencies met target early-window share and footfall goals, inventory reserved and traced.",
+      "persona": "Head of Retail",
+      "props": [
+        "pinned metric printouts labeled 'footfall +25% / early-window 28%',",
+        "empty reserved-boxes staged to suggest turnover rate"
+      ],
+      "lighting": "Warm editorial highlight on the metric printouts; clean shadow on surrounding space to show focus.",
+      "mood": "Confident, practical, evidence-driven",
+      "anchor_section": "future_outlook",
+      "metric_focus": [
+        "footfall_lift",
+        "early_window_share",
+        "qr_redemption"
+      ],
+      "alt": "Head of Retail reviewing post-pilot metrics showing footfall lift and early-window share targets hit"
+    }
+  ]
+}

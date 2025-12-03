@@ -1,0 +1,37 @@
+{
+  "total": 9,
+  "core": 2,
+  "support": 7,
+  "unique_domains": 9,
+  "domain_counts": {
+    "morningstar.com": 1,
+    "reuters.com": 1,
+    "investopedia.com": 1,
+    "mashable.com": 1,
+    "theblackfriday.com": 1,
+    "retaildive.com": 1,
+    "windowscentral.com": 1,
+    "cnbc.com": 1,
+    "nypost.com": 1
+  },
+  "data_heavy": 6,
+  "time_span_days": 0,
+  "tier_counts": {
+    "core": 9,
+    "context": 0
+  },
+  "dominant_ratio": 0.111,
+  "thin_evidence": true,
+  "thresholds": {
+    "total": true,
+    "core": false,
+    "domains": true,
+    "data": true,
+    "dominance": true,
+    "in_window": true,
+    "background": false,
+    "support_coverage": false
+  },
+  "support_coverage": 0.333,
+  "regime": "directional"
+}

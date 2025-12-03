@@ -1,0 +1,141 @@
+{
+  "generated_at": "2025-11-29T12:41:10.300583",
+  "query": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+  "time_window": {
+    "start": "2025-11-22",
+    "end": "2025-11-29",
+    "days": 7
+  },
+  "confidence": {
+    "score": 0.892,
+    "display": 0.89,
+    "band": "Medium",
+    "dials": {
+      "strength": "high",
+      "coverage": "high",
+      "quant_support": "high",
+      "consistency": "high"
+    },
+    "breakdown": {
+      "average_strength": 0.8560000000000001,
+      "coverage": 0.833,
+      "quant_support": 1.0,
+      "contradiction_penalty": 1.0
+    }
+  },
+  "files": [
+    "intelligence_report.md",
+    "market_path_report.md",
+    "market_path_report.pdf",
+    "intelligence_report.jsonld",
+    "metadata.json"
+  ],
+  "sections": [
+    "deep_analysis",
+    "pattern_matches",
+    "brand_outcomes",
+    "operator_notes",
+    "quant",
+    "activation_kit",
+    "risk_radar",
+    "future_outlook",
+    "comparison_map",
+    "signal_map_notes"
+  ],
+  "title": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+  "highlights": [
+    "Replace blanket percent cuts with selective value transfer: exclusive SKUs and tiered bundles shift timing and mix without uniform margin loss.",
+    "In-store activations reliably lift foot traffic; pair QR gating to measure redemption and convert walk-ins into tracked early-window buys.",
+    "Store-as-studio content amplifies partner exclusives and concentrates buyer activity early, lowering event CPA when audience and offers align."
+  ],
+  "executive_summary": "You need to drive higher-value store and partner-led holiday activity without broad margin-eroding sitewide discounts inside the next six weeks. Focused co-branded early windows and store-as-studio content can move buyers forward and into higher-margin bundles while aiming for **foot-traffic uplift** of **10–15%** (stretch **≥25%**) and raising **early_window_share** from **12–15%** to **20–30%**, with event CPA kept ≤**0.8x** baseline and QR redemption ≥**5%** [^4][^2][^8]. In the next 30 days Brand Partnerships, Merch, Store Ops and Marketing must launch a coordinated A/B test that replaces a sitewide cut with tiered co-branded bundles, three weekend in-store activations, and a short store-as-studio micro-influencer series. Measure success by progress toward **20–30%** early-window share, **10–15%** base foot-traffic uplift, event CPA ≤**0.8x**, and QR redemption ≥**5%**, since the collab-led / store-as-studio approach preserves blended margin versus blanket discounts [^2][^4].",
+  "top_operator_moves": [
+    "Run a six-week A/B test: control = sitewide 20% off; variant = co-branded early-window with tiered bundles and exclusive SKUs; track early_window_share, blended margin, event_cpa, and QR_redemption.",
+    "Schedule three weekend collab activations across representative stores to test foot-traffic uplift, QR-driven redemption, and local partner pull.",
+    "Launch a four-episode store-as-studio micro-influencer series to push awareness into the early window and measure buyer activity share versus promo intensity."
+  ],
+  "statistics": {
+    "word_count": 4288,
+    "signal_count": 5,
+    "source_count": 9
+  },
+  "read_time_minutes": 22,
+  "length_label": "~22 min read",
+  "qa": {
+    "issues": [
+      "Read time exceeds target"
+    ],
+    "coverage": 0.833,
+    "quant_support": 1.0,
+    "contradiction_penalty": 1.0,
+    "appendix_count": 3,
+    "scope": {
+      "topic": "Collab‑Led Uplift vs Blanket Discounts in Low‑Growth Environments",
+      "time_window": {
+        "start": "2025-11-22",
+        "end": "2025-11-29",
+        "days": 7
+      },
+      "target_region": "US",
+      "use_cases": [
+        "brand↔brand",
+        "brick&mortar↔brand"
+      ],
+      "must_answer": [
+        "When are the high-value windows",
+        "What changes discounting math"
+      ],
+      "approach_hints": [
+        "discount-heavy holiday",
+        "collab-led holiday",
+        "store-as-studio / media-led holiday"
+      ],
+      "unified_target_pack": {
+        "foot_traffic_uplift": {
+          "base": "10-15%",
+          "stretch": "≥25%"
+        },
+        "early_window_share": {
+          "current": "12-15%",
+          "goal": "20-30%"
+        },
+        "event_cpa": {
+          "ceiling": "≤0.80× baseline"
+        },
+        "qr_redemption": {
+          "floor": "≥5% of footfall"
+        },
+        "paired_metric": "Track buyer activity share vs promo intensity side by side"
+      },
+      "operator_job_story": "How to drive higher-value store and partner-led holiday activity without broad margin-eroding sitewide discounts inside the next 6 weeks.",
+      "search_shaped_variants": [
+        "How to get 20–30% of holiday buys into an early collab window without cutting blanket price",
+        "Test in-store brand partnerships that lift foot traffic 10–25% while keeping event CPA ≤0.8x baseline",
+        "Swap a sitewide discount for tiered collab offers and measure buyer share vs promo intensity",
+        "Use store-as-studio content drops to shift early-window share up, not just lower AOV through discounts"
+      ]
+    },
+    "read_time": 22,
+    "high_quality_signals": true,
+    "observed_quant": true,
+    "tier1_market_signals": false
+  },
+  "agent": "EnhancedSTIAgent",
+  "model": "gpt-5-mini-2025-08-07",
+  "renderers": [
+    "market_path_markdown",
+    "market_path_pdf",
+    "legacy_html"
+  ],
+  "artifact_paths": [
+    "sti_reports/sti_operator_output_20251129_123451_collab_led_uplift_vs_bla/market_path_report.md",
+    "sti_reports/sti_operator_output_20251129_123451_collab_led_uplift_vs_bla/market_path_report.pdf",
+    "sti_reports/sti_operator_output_20251129_123451_collab_led_uplift_vs_bla/intelligence_report.html",
+    "sti_reports/sti_operator_output_20251129_123451_collab_led_uplift_vs_bla/market_path_report.html"
+  ],
+  "social_media_content": {
+    "confidence": 0.89,
+    "teaser_mode": false,
+    "sources_used": "influencity.com | krcrtv.com | getmonetizely.com"
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "spine_hook": "Success = early-window buyer share 20–30% + store foot-traffic uplift ≥10% while event CPA stays ≤0.8× baseline and QR redemptions ≥5% of footfall.",
+  "anchors": [
+    {
+      "id": "Q1",
+      "headline": "Current early-window buyer share",
+      "topic": "Early-window purchase concentration",
+      "value_low": 12,
+      "value_high": 15,
+      "unit": "% of total holiday transactions",
+      "status": "observed",
+      "band": "base",
+      "owner": "Brand Partnerships",
+      "expression": "Early-window buys ≈ 12–15% of holiday transactions (current)",
+      "source_ids": [
+        8,
+        5
+      ],
+      "applies_to_signals": [
+        "S1",
+        "S4"
+      ]
+    },
+    {
+      "id": "Q2",
+      "headline": "Store foot-traffic uplift target",
+      "topic": "Foot-traffic lift from collab activations",
+      "value_low": 10,
+      "value_high": 15,
+      "unit": "% lift vs baseline",
+      "status": "target",
+      "band": "base",
+      "owner": "Store Ops",
+      "expression": "Visits ≈ 1.10–1.15× baseline during activation weekends",
+      "source_ids": [
+        5,
+        1
+      ],
+      "applies_to_signals": [
+        "S2",
+        "S5"
+      ]
+    },
+    {
+      "id": "Q3",
+      "headline": "Event CPA ceiling for partner-led activity",
+      "topic": "Cost per acquisition vs baseline",
+      "value_low": 0,
+      "value_high": 0.8,
+      "unit": "× baseline CPA",
+      "status": "target",
+      "band": "base",
+      "owner": "Performance marketing",
+      "expression": "Event CPA ≤ 0.80× baseline CPA (ceiling to protect margin)",
+      "source_ids": [
+        2,
+        5
+      ],
+      "applies_to_signals": [
+        "S3",
+        "S4"
+      ]
+    },
+    {
+      "id": "Q4",
+      "headline": "QR redemption floor",
+      "topic": "In-store activation capture rate",
+      "value_low": 5,
+      "value_high": 5,
+      "unit": "% of footfall",
+      "status": "target",
+      "band": "base",
+      "owner": "Store Ops / CRM",
+      "expression": "QR-driven redemptions ≥ 5% of visiting shoppers during activations",
+      "source_ids": [
+        8,
+        5
+      ],
+      "applies_to_signals": [
+        "S1",
+        "S2"
+      ]
+    }
+  ],
+  "measurement_plan": [
+    {
+      "id": "M1",
+      "metric": "Event CPA",
+      "expression": "CPA ≤ 0.80× baseline CPA",
+      "owner": "Performance marketing",
+      "timeframe": "Nov 22–29 (primary), extend per activation",
+      "status": "plan",
+      "why_it_matters": "Keeps paid acquisition from eroding margin when swapping sitewide discounts for partner-led offers."
+    },
+    {
+      "id": "M2",
+      "metric": "Buyer activity share vs promo intensity",
+      "expression": "Early-window transactions 20–30% while promo-SKU share ≈ last year (no blanket increase)",
+      "owner": "Merch + Analytics",
+      "timeframe": "Nov 29–Dec 12 (co-branded early window)",
+      "status": "plan",
+      "notes": "Track transactions in early window and percent of promo SKUs sold side by side weekly.",
+      "why_it_matters": "Protects margin by showing buyer growth came from time-limited collabs not broader discounting."
+    },
+    {
+      "id": "M3",
+      "metric": "Foot-traffic uplift (store-level)",
+      "expression": "Visits ↑ 10–15% vs matched-week baseline (stretch ≥25% for high-performing stores)",
+      "owner": "Store Ops",
+      "timeframe": "Next three weekend activations starting Nov 22–Dec 13",
+      "status": "plan",
+      "why_it_matters": "Direct test of whether in-store collabs drive incremental visits without price cuts."
+    },
+    {
+      "id": "M4",
+      "metric": "QR redemption rate",
+      "expression": "QR redemptions ≥ 5% of measured footfall during events",
+      "owner": "Store Ops + CRM",
+      "timeframe": "Per activation weekend (Nov 22–Dec 13)",
+      "status": "plan",
+      "why_it_matters": "Provides a measurable conversion lever that links foot traffic to measurable CRM-able outcomes."
+    }
+  ],
+  "coverage": 0.9
+}

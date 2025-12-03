@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Holiday Flagship Early-Access &amp; Pop-up Tests | Signal-Driven Brand Collaborations</title>
+    <style>
+        :root {
+            --bg: #f8f8fa;
+            --text: #1f2430;
+            --muted: #5c6475;
+            --accent: #004a77;
+            --border: #d8dde8;
+            --heading: #0b1524;
+            --panel: #f2f4f9;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Source Sans Pro", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 {
+            font-family: "Source Serif 4", "Georgia", serif;
+            color: var(--heading);
+            margin-top: 0;
+        }
+
+        h2 {
+            margin-top: 48px;
+            border-top: 2px solid var(--border);
+            padding-top: 28px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 56px 32px 96px;
+            background: #fff;
+        }
+
+        .small {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            font-size: 0.85rem;
+            color: var(--muted);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .meta-row span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .meta-row span::before {
+            content: attr(data-icon);
+            font-family: "Menlo", monospace;
+            font-size: 0.85rem;
+            color: var(--accent);
+        }
+
+        .overview {
+            display: flex;
+            gap: 32px;
+            margin-top: 32px;
+            align-items: flex-start;
+        }
+
+        .overview-text {
+            flex: 2;
+        }
+
+        .section-label {
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-bottom: 0.6rem;
+        }
+
+        .hero-figure {
+            flex: 1;
+            margin: 0;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        figure {
+            margin: 0;
+        }
+
+        figure img {
+            width: 100%;
+            display: block;
+        }
+
+        figure figcaption {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .key-points {
+            padding-left: 1.2rem;
+            margin: 0.4rem 0 1rem;
+        }
+
+        .key-points li + li {
+            margin-top: 0.3rem;
+        }
+
+        .cta-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 1rem;
+        }
+
+        .cta-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.45rem 0.95rem;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .grid-two {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .card {
+            border: 1px solid var(--border);
+            padding: 18px 18px 16px;
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        ul {
+            padding-left: 1.2rem;
+            margin: 0.25rem 0 0;
+        }
+
+        li + li {
+            margin-top: 0.25rem;
+        }
+
+        .moves-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.85rem;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .moves-grid li {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.5rem 0 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 8px 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f3f7;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        tbody tr:nth-child(odd) td {
+            background: #fbfcfe;
+        }
+
+        table td:nth-child(2),
+        table td:nth-child(3) {
+            text-align: right;
+        }
+
+        .signal-figure {
+            margin: 1.5rem 0;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        .figure-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .source-list {
+            counter-reset: source;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .source-list li {
+            counter-increment: source;
+            margin-bottom: 0.35rem;
+            padding-left: 1.6rem;
+            position: relative;
+        }
+
+        .source-list li::before {
+            content: "[" counter(source) "]";
+            position: absolute;
+            left: 0;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .related-links {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .related-links a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <h1>Holiday Flagship Early-Access &amp; Pop-up Tests</h1>
+            <p class="small">Unified holiday pack sets measurable targets: **10–15%** footfall, **20–30%** early-window share, CPA ≤**0.80×**, QR redemption ≥**5%**.</p>
+            <div class="meta-row">
+                <span data-icon="📅">2025-11-18 → 2025-11-25</span>
+                <span data-icon="🌎">US</span>
+                <span data-icon="🛡️">Confidence Medium</span>
+                <span data-icon="⏱️">~ min read</span>
+            </div>
+        </header>
+
+        <section class="overview">
+            <div class="overview-text">
+                <div class="section-label">Executive Take</div>
+                <h2>What is happening · Why it matters · Operator move</h2>
+                <p>Run a concentrated holiday early-access plus pop-up experiment to hit the unified holiday target pack: detectable foot-traffic uplift **10–15%** (stretch **≥25%** in top markets), early-window transaction share **20–30%** (vs ~12–15% baseline), event CPA ≤**0.80×** baseline, and QR/scan redemption **≥5%** of footfall. Momentum lock. Frame the test as an A/B inside the same two-week window: Arm A legacy markdown versus Arm B bundle+GWP+loyalty to isolate lift and CPA. Brand, operations, analytics, property and data teams must align on the event calendar, door-count instrumentation, QR→POS links and an A/B holdout to deploy **within 30 days** [^2][^1][^3].</p>
+                
+                <ul class="key-points">
+                    
+                    <li>Unified holiday pack sets measurable targets: **10–15%** footfall, **20–30%** early-window share, CPA ≤**0.80×**, QR redemption ≥**5%**.</li>
+                    
+                    <li>A/B frame compares legacy markdowns (Arm A) to bundle+GWP+loyalty (Arm B) inside the same two-week window to prove causality.</li>
+                    
+                    <li>Instrumented pop-up plus agentic merch scheduling prevents stockouts and makes discounting tactical, not blanket.</li>
+                    
+                </ul>
+                
+                
+                <div class="cta-links">
+                    
+                    <a href="market_path_report.pdf" download>Download PDF dossier</a>
+                    
+                    <a href="market_path_report.md" download>View Markdown brief</a>
+                    
+                </div>
+                
+            </div>
+            
+        </section>
+
+        <section class="grid-two">
+            <div class="card">
+                <h3>Operator Moves</h3>
+                <ul class="moves-grid">
+                
+                    <li>Stand up a two-week A/B in 5 pilot stores plus one pop-up market: Arm A legacy markdown vs Arm B bundle+GWP+loyalty; reserve featured SKUs.</li>
+                
+                    <li>Ship measurement: door counts or proxy, QR→POS linkage, early-window transaction flag and a randomized holdout for CPA benchmarking.</li>
+                
+                    <li>Activate agentic merchandising/scheduling to guarantee on-shelf availability for event SKUs and to shorten the event-to-shelf loop.</li>
+                
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Fit</h3>
+                <ul>
+                
+                </ul>
+                <p class="small">Best fit: Operators with measurement discipline</p>
+                
+            </div>
+        </section>
+
+        <section>
+            <h2>Signals and Thesis</h2>
+            <p>A24 Shop Experience Insi leads at 0.9 strength.</p>
+            <div class="grid-two">
+            
+                <div class="card">
+                    <h3>Market: A24 Shop Experience Inside Barnes &amp; Noble</h3>
+                    <p>A24 and Barnes &amp; Noble are rolling out studio-branded shop-in-shop spaces inside select stores, combining books, merch and film tie-ins. The move treats the retail footprint as a content stage that both sells product and generates social-first content for the studio.</p>
+                    
+                    <p class="small">Operator move: Barnes &amp; Noble (owner): run a 30-day branded shop-in-shop with 4 ticketed events; target +20% dwell time and +50% social video shares versus baseline, measurable within 30 days. (Support: [2],[4])</p>
+                    
+                </div>
+            
+                <div class="card">
+                    <h3>Market: Property Managers Pivot to Experience-First Leasing</h3>
+                    <p>Retail property management is shifting from purely transactional leases to curated, event-forward programming and mixed scheduling for spaces. Landlords are treating leases like programming slots sold to content owners and brands.</p>
+                    
+                    <p class="small">Operator move: Property manager (owner): convert one 5,000 sq ft anchor to an experience-first lease for a 45-day pilot with weekly ticketed activations; KPI: incremental foot traffic and event-driven short-term lease inquiries measured over 8 weeks. (Support: [3])</p>
+                    
+                </div>
+            
+                <div class="card">
+                    <h3>Technology: Agentic AI Enables Programmatic Store Programming</h3>
+                    <p>Forbes reports that agentic commerce and unified product and customer data let retailers program the right assortment and events at the right moment, making stores behave like programmable channels. This technical stack reduces friction for brand collaborations and time-boxed content activations.</p>
+                    
+                    <p class="small">Operator move: Retailer data team (owner): deploy an agentic merch and event scheduling pilot across 5 stores for 6 weeks; KPI: on-shelf availability lift and conversion lift for featured items, measured weekly. (Support: [1],[5])</p>
+                    
+                </div>
+            
+                <div class="card">
+                    <h3>Cultural: Emotional-First Retail Fuels Collectibles And Events</h3>
+                    <p>Imagine Studio’s Q4 trends highlight how emotional connection and collectibles convert in-store moments into loyalty and earned media. Brands are using drops and limited runs in physical stores to turn visits into content creation opportunities.</p>
+                    
+                    <p class="small">Operator move: Brand retail team (owner): execute a 30-day collectible drop with one live in-store activation; KPI: capture rate of registered collectors and repeat visit rate within 30 days. (Support: [8])</p>
+                    
+                </div>
+            
+            </div>
+            
+        </section>
+
+        <section>
+            <h2>Measurement Spine</h2>
+            <h3>Anchors</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                
+                    <tr>
+                        <td></td>
+                        <td>Retail sales ≈ 1.03× LY</td>
+                        <td>US holiday retail growth</td>
+                    </tr>
+                
+                    <tr>
+                        <td></td>
+                        <td>Target 10–15% typical, stretch ≥25% in top markets</td>
+                        <td>Foot-traffic uplift target for experiential pop-ups</td>
+                    </tr>
+                
+                    <tr>
+                        <td></td>
+                        <td>Move early-window share from ~12–15% → 20–30%</td>
+                        <td>Early-window transaction share</td>
+                    </tr>
+                
+                    <tr>
+                        <td></td>
+                        <td>Event CPA ≤ 0.80× baseline</td>
+                        <td>Event CPA target</td>
+                    </tr>
+                
+                </tbody>
+            </table>
+
+            <h3>Measurement Plan</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Expression</th>
+                        <th>Owner</th>
+                        <th>Timeframe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                
+                    <tr>
+                        <td>Event CPA</td>
+                        <td>CPA ≤ 0.80× baseline</td>
+                        <td>Performance marketing</td>
+                        <td>Thanksgiving weekend</td>
+                    </tr>
+                
+                    <tr>
+                        <td>Buyer activity share vs promo intensity</td>
+                        <td>Transactions in early window 20–30% while promo SKU share ≈ LY</td>
+                        <td>Merch + Analytics</td>
+                        <td>Nov 13–26</td>
+                    </tr>
+                
+                    <tr>
+                        <td>Foot-traffic uplift and QR redemption</td>
+                        <td>Foot-traffic uplift 10–15% (stretch 25%); QR scans ≥5% of footfall</td>
+                        <td>Store ops + CX</td>
+                        <td>30-day pilot</td>
+                    </tr>
+                
+                    <tr>
+                        <td>On-shelf availability lift and conversion for featured items</td>
+                        <td>Weekly OSA lift vs conversion delta for featured SKUs</td>
+                        <td>Retail data team</td>
+                        <td>6-week agentic merch pilot</td>
+                    </tr>
+                
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Analysis and Plays</h2>
+
+            
+            <div class="grid-two">
+            
+                <div class="card">
+                    <h3>High-value windows: events make stores sticky</h3>
+                    <p>Physical events create measurable concentration of value in short windows. Barnes &amp; Noble shop-in-shop pilots show ticketed activations can raise dwell and social amplification quickly, with operator targets like +20% dwell time and +50% social video shares achievable within 30 days [^2][^4]. The mechanism is simple: concentrated experiences turn passive visits into appointment-driven behavior that is trackable and repeatable.</p>
+                    
+                    <p class="small">Instrument: Run a 30-day branded shop-in-shop with four ticketed events; instrument baseline and target +20% dwell and +50% social video shares versus baseline within 30 days.</p>
+                    
+                </div>
+            
+                <div class="card">
+                    <h3>Agentic merch and scheduling tightens inventory and markdown math</h3>
+                    <p>Centralized, agentic systems align product availability to event-driven demand, reducing surprise stockouts and blunt markdowns [^1][^5]. The signal underneath is coordinated data: a unified product and customer dictionary feeds automated schedules so featured SKUs are on-shelf when events peak. That changes one thing about how operators should think: discounting becomes tactical and time-bound instead of blanket and permanent.</p>
+                    
+                    <p class="small">Instrument: Deploy an agentic merchandising and event-scheduling pilot across five stores for six weeks; instrument on-shelf availability and conversion lift weekly.</p>
+                    
+                </div>
+            
+                <div class="card">
+                    <h3>Landlords convert square footage into episodic demand</h3>
+                    <p>Property managers can reprice and re-leverage underused anchors by switching from long, inflexible leases to short, experience-first pilots [^3]. Weekly ticketed activations in a converted 5,000 sq ft space generate foot-traffic spikes and create a pipeline of short-term lease inquiries that capture value beyond base rent. The leverage point sits here: ownership of the calendar and audience lets landlords share in event revenue and capture upstream brand relationships.</p>
+                    
+                    <p class="small">Instrument: Convert one 5,000 sq ft anchor to an experience-first 45-day pilot with weekly ticketed activations; instrument incremental foot traffic and event-driven lease inquiries over eight weeks.</p>
+                    
+                </div>
+            
+                <div class="card">
+                    <h3>Collectible drops change the discount calculus and lifetime value</h3>
+                    <p>Timed drops and live activations convert scarcity into first-party registration and repeat visitation, which compresses the need for upfront discounts [^8]. The mechanism is simple: scarcity plus community creates prepaid demand and reusable customer signals for future sells. This is where the model breaks if you rely on one-off drops without a follow-up retention path.</p>
+                    
+                    <p class="small">Instrument: Execute a 30-day collectible drop with one live in-store activation; instrument capture rate of registered collectors and repeat visit rate within 30 days.</p>
+                    
+                </div>
+            
+            </div>
+            
+
+            
+            <h3 style="margin-top:24px;">Activation Plays</h3>
+            <div class="grid-two">
+            
+                <div class="card">
+                    <h3>Agentic Merchandising and Event Scheduler Pilot</h3>
+                    <p>Deploy an agentic merch and event scheduling pilot across five stores for six weeks; KPI: on-shelf availability lift and conversion lift, measured weekly (S3).</p>
+                    <p class="small">
+                        Owner Retail Data Manager
+                         · Partner internal tech team / agentic platform vendor
+                         · Timing 6-week
+                    </p>
+                </div>
+            
+                <div class="card">
+                    <h3>Short-Run Physical Activation (shop-in-shop, kiosk, window, civic pop-up)</h3>
+                    <p>Run a 30-day branded shop-in-shop with four ticketed events; target +20% dwell time and +50% social video shares within 30 days (S1).</p>
+                    <p class="small">
+                        Owner Store Marketing Manager
+                         · Partner Consumer brand or experiential partner
+                         · Timing immediate
+                    </p>
+                </div>
+            
+                <div class="card">
+                    <h3>Anchor Experience Lease Pilot</h3>
+                    <p>Convert one 5,000 sq ft anchor to an experience-first lease for a 45-day pilot; KPI: incremental foot traffic and event-driven lease inquiries over 8 weeks (S2).</p>
+                    <p class="small">
+                        Owner Leasing Director / Property Manager
+                         · Partner Experience operator or brand
+                         · Timing pilot
+                    </p>
+                </div>
+            
+            </div>
+            
+
+            
+        </section>
+
+        <section class="grid-two">
+            <div>
+                <h2>Risk Radar</h2>
+                <ul>
+                
+                </ul>
+            </div>
+            <div>
+                <h2>Future Outlook</h2>
+                <ul>
+                
+                    <li>
+                        <strong>6-month</strong>:
+                        Event pilots prove repeatable in urban anchors. Short, ticketed activations and collectible drops become measurable growth levers in city and suburban pilot stores, producing reliable day-of-week lifts in traffic and social amplification [^2][^4]. Coordinated agentic merchandising across a small cluster of stores reduces event stockouts and raises conversion for featured SKUs [^1][^5]. Landlords trial experience-first short leases for underused anchors after observing higher foot traffic and tenant inquiry rates during pilots [^3]..
+                        Watch Dwell time lift; on-shelf availability for event SKUs; short-term lease inquiries per pilot..
+                    </li>
+                
+                    <li>
+                        <strong>12-month</strong>:
+                        Operational convergence: scheduling, merchandising, and leasing standardize. Agentic merchandising and event-scheduling systems consolidate across larger store footprints, turning one-off pilots into repeatable programs that drive margin-friendly conversions [^1][^5]. Landlords adopt standardized experience-first lease templates and revenue-share structures to monetize calendar-driven foot traffic and reduce vacancy costs [^3]. The signal underneath is platform-level data: networks that predict demand for activations unlock improved yield management and long-tail partnerships between brand, retailer, and landlord [^1][^3]..
+                        Watch Percentage of events with guaranteed SKU availability; conversion lift per event; number of anchors converted to short-term experience leases..
+                    </li>
+                
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Sources and Confidence</h2>
+            <p>0.83</p>
+            <ol class="source-list">
+                
+                <li><strong>forbes.com</strong> (2025-11-25): How Agentic Commerce Is Reshaping Retail And CPG Strategy</li>
+                
+                <li><strong>msn.com</strong> (2025-11-25): A24, Barnes &amp; Noble Partner On Branded In-Store Spaces For Indie Studio’s Books, Movies, Merch</li>
+                
+                <li><strong>bisnow.com</strong> (2025-11-25): Retail Property Management Enters Its Next Phase: Integrated, Experiential And Connected</li>
+                
+                <li><strong>msn.com</strong> (2025-11-25): A24, Barnes &amp; Noble Partner On Branded In-Store Spaces For Indie Studio’s Books, Movies, Merch</li>
+                
+                <li><strong>forbes.com</strong> (2025-11-25): Learn How Agentic AI And Business Suites Put The Perfect Store Within Reach</li>
+                
+                <li><strong>gigwise.com</strong> (2025-11-25): Studio to Street – Alo Yoga Shoes That Support Every Step</li>
+                
+                <li><strong>msn.com</strong> (2025-11-25): How one family photo inspired four home stores in Arizona and Kansas</li>
+                
+                <li><strong>marketwatch.com</strong> (2025-11-25): Imagine&#39;s Q4 Trends Highlights: Emotional Connections in Retail, Out-of-Home, and Collectibles</li>
+                
+                <li><strong>businessreport.com</strong> (2025-11-25): How Baton Rouge store owners are adapting to a shifting retail landscape</li>
+                
+            </ol>
+            
+            <div class="related-links">
+                Prefer another format?
+                
+                    <a href="market_path_report.pdf">Download PDF dossier</a> · 
+                
+                    <a href="market_path_report.md">View Markdown brief</a>
+                
+            </div>
+            
+        </section>
+
+        <footer class="small">
+            Generated  · Window 2025-11-18 → 2025-11-25 · Region US
+        </footer>
+    </div>
+</body>
+</html>

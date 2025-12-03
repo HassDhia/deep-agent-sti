@@ -1,0 +1,84 @@
+{
+  "hero": {
+    "slot": "hero",
+    "core_tension": "Choose activating store-as-studio media now to protect margin during Nov 18–Dec 02 versus defaulting to deeper holiday markdowns.",
+    "setting": "Retail floor staged as a small studio: low-footprint pop-up platform, stacked signage panels, open backroom planning table. Composition: low-angle, three-quarter view that shows both storefront glass and the plan table. Materials: matte metal frame, linen-surface planning sheets.",
+    "persona": "Head of Retail (deciding between markdowns and a media-led creator pop-up)",
+    "action": "Approving a short creator slot schedule and pricing a sellable in-store ad unit on printed CPM sheets",
+    "urgency_symbol": "Narrow bands of light across the floor implying a countdown to the high-value window",
+    "props": [
+      "Printed per-visit media revenue sheet labeled 'vs markdown baseline'",
+      "Creator roster on paper, short-duration set cards",
+      "Sample QR redemption cards and shelf tags"
+    ],
+    "lighting": "Polished editorial: confident highlights on the operator and media panels, deep clean negative space around the pop-up",
+    "mood": "Precise, decisive, collaborative",
+    "anchor_section": "header",
+    "metric_focus": [
+      "footfall_lift",
+      "conversion_rate",
+      "early_window_share"
+    ],
+    "alt": "Head of Retail approving a store-as-studio creator pop-up test"
+  },
+  "signal_map": {
+    "slot": "signal_map",
+    "structure": "Concentric rings (street, storefront, in-store attention, checkout) with a vertical measurement spine down the center. Overlaid lattice of creator nodes and brand ad tokens. Embedded percentage anchors on rings.",
+    "elements": [
+      "Creator nodes as small podium tokens",
+      "Brand ad tokens placed on inner ring",
+      "QR redemption tokens clustered near checkout",
+      "Measurement spine with per-visit media revenue and markdown cost-per-buyer markers"
+    ],
+    "motion": "Curved paths show attention funneling from street ring into the in-store attention ring, splitting into purchase and media revenue channels. Geometry highlights tradeoffs between footfall lift and media yield.",
+    "palette": "Matte retail greys, neutral stone, accent safety yellow and copper highlights to mark targets and thresholds. Materials: paper tokens, soft-shadowed wood podiums.",
+    "anchor_section": "signals_and_thesis",
+    "metric_focus": [
+      "footfall_lift",
+      "qr_redemption",
+      "event_cpa"
+    ],
+    "alt": "CMO and analytics lead mapping footfall lift and QR redemption targets"
+  },
+  "case_studies": [
+    {
+      "slot": "case_study_1",
+      "scene": "Back-of-store ops desk where a Store Operations Lead configures sellable in-store ad units and a four-hour creator slot.",
+      "moment": "The lead compares printed CPM for in-store media to local digital CPM and annotates incremental gross margin per visit on a margin calculator card.",
+      "persona": "Store Operations Lead executing the 'In-store media as margin lever' test",
+      "props": [
+        "Fold-out margin calculator with markdown baseline column",
+        "Small mock ad panel (matte material) labeled with price tiers",
+        "SKU priority list (high-frequency SKUs highlighted)"
+      ],
+      "lighting": "Directed editorial light on the calculator and ad panel, cooler fill on surrounding shelves to isolate the test focal point.",
+      "mood": "Practical, data-driven, tactical",
+      "anchor_section": "mini_case_story",
+      "metric_focus": [
+        "conversion_rate",
+        "partner_value"
+      ],
+      "alt": "Store Ops Lead testing sellable in-store ad slots and measuring conversion lift"
+    },
+    {
+      "slot": "case_study_2",
+      "scene": "Micro-event area near store entrance: a creator hosts a 30-minute demo while a Partnerships Lead watches guest sign-ups and QR scans.",
+      "moment": "A realtime tally card shows QR redemptions and early-window buyer IDs moving into a 'full-price purchase' column.",
+      "persona": "Partnerships Lead running a creator-led event to shift early-window buyer share",
+      "props": [
+        "Guest list clipboard with early-window share targets",
+        "Stack of QR redemption cards and loyalty sign-up forms",
+        "Compact tally board showing event CPA target bands"
+      ],
+      "lighting": "Warm, editorial spotlight on the creator and tally board; ambient soft light on the crowd to suggest attention without clutter.",
+      "mood": "Energetic, community-led, test-focused",
+      "anchor_section": "mini_case_story",
+      "metric_focus": [
+        "early_window_share",
+        "qr_redemption",
+        "event_cpa"
+      ],
+      "alt": "Partnerships Lead running creator pop-up, tracking QR redemptions and early-window purchases"
+    }
+  ]
+}

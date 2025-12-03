@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Investor-Season Retail Sentiment",
+    "reason": "non-operational investor framing; strength < 0.78 for tactical planning (source 3)."
+  },
+  {
+    "name": "Month-Long Early Discounting (Oct Start)",
+    "reason": "Relevant context but diffuse and weaker operational leverage for US late-window tests; strength < 0.78 (source 5)."
+  },
+  {
+    "name": "Advice Pieces and Shopper Guides",
+    "reason": "Consumer-facing guidance and opinion pieces that do not provide testable operator signals; low operationality (sources 4,7,9)."
+  },
+  {
+    "category": "Market",
+    "name": "Frontloaded Deep-Discount Window",
+    "description": "Major retailers and marketplaces are compressing heavy discounting into an extended Black Friday window from roughly Nov 20 through Dec 1. This frontloading dilutes promotional novelty early and creates room for differentiated, higher-margin offers later in December if you avoid matching the early promo depths.",
+    "operator_move": "Test a branded late-season bundle Dec 15–21 led by Head of Partnerships, target 20–30% of seasonal sales in that week and event CPA ≤0.8× baseline.",
+    "operator_scan": "Track daily promo depth vs. buyer share and flag days with falling margin and steady traffic.",
+    "spine_hook": "Retailers are frontloading deep discounts into late November.",
+    "time_horizon": "now",
+    "strength": 0.9,
+    "US_fit": 1.0,
+    "operationality": 0.9,
+    "support": [
+      1,
+      4,
+      7
+    ],
+    "on_spine": true,
+    "quant_support": "strong",
+    "source_grade": "B",
+    "citations": [
+      1,
+      4,
+      7
+    ],
+    "id": "S1",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Cultural",
+    "name": "Promotional Calendar Creep Reduces Urgency",
+    "description": "Promotions now run across much of November and into early December, turning Black Friday into a multi-week season. That erosion of a single urgency moment increases the relative payoff of late-season, experience-led activations that feel rare and time-limited.",
+    "operator_move": "Shift 20% of paid and CRM spend to promote a single late-season experience starting Dec 8, owned by CMO, measure early-window buyer share rising to 20–30% by Dec 21.",
+    "operator_scan": "Compare impressions and conversion per dollar for early-November promos vs late-December exclusives.",
+    "spine_hook": "Deals across November have flattened urgency and opened late-opportunity.",
+    "time_horizon": "now",
+    "strength": 0.8,
+    "US_fit": 0.95,
+    "operationality": 0.78,
+    "support": [
+      4,
+      5,
+      7,
+      8
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      4,
+      5,
+      7,
+      8
+    ],
+    "id": "S4",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  }
+]

@@ -1,0 +1,298 @@
+{
+  "generated_at": "2025-12-02T17:15:58.408108",
+  "query": "Why the Third Week of December Is the New Black Friday",
+  "time_window": {
+    "start": "2025-11-19",
+    "end": "2025-12-03",
+    "days": 14,
+    "label": "Nov 19 – Dec 03, 2025"
+  },
+  "confidence": {
+    "score": 0.6,
+    "display": 0.6,
+    "band": "Directional",
+    "dials": {
+      "strength": "high",
+      "coverage": "light",
+      "quant_support": "high",
+      "consistency": "high"
+    },
+    "breakdown": {
+      "average_strength": 0.82,
+      "coverage": 0.5,
+      "quant_support": 1.0,
+      "contradiction_penalty": 0.8
+    },
+    "note": "Directional evidence: 9 sources • 9 domains • 9 in-window / 0 background • support coverage 33%"
+  },
+  "files": [
+    "intelligence_report.md",
+    "market_path_report.md",
+    "market_path_report.pdf",
+    "intelligence_report.jsonld",
+    "metadata.json"
+  ],
+  "sections": [
+    "deep_analysis",
+    "pattern_matches",
+    "brand_outcomes",
+    "operator_notes",
+    "quant",
+    "activation_kit",
+    "risk_radar",
+    "future_outlook",
+    "comparison_map",
+    "signal_map_notes"
+  ],
+  "title": "Why the Third Week of December Is the New Black Friday",
+  "highlights": [
+    "November promotions are frontloaded and dilute bargain density; matching them erodes margin with limited late-season lift.",
+    "Retailer-exclusive SKUs and in-store events convert at higher rates than blanket discounts and protect margin when paired with limited inventory holds.",
+    "Measure QR redemptions and event CPA alongside footfall to attribute buyers, with **QR ≥5%** and **CPA ≤0.80×** as gating metrics."
+  ],
+  "executive_summary": "You need to win share and profitable store visits late in the season without getting drawn into month-long blanket discounts that bleed margin. Targeted third-week exclusives and events can deliver **10-15%** foot-traffic uplift (stretch **≥25%**), move early-window share toward **20-30%**, keep event CPA at or below **≤0.80×** baseline, and secure QR redemptions of **≥5%** of footfall. Favor a collab-led holiday with store-as-studio pop-ups; in the next 30 days Head of Retail, Head of Brand Partnerships, and the CMO must lock two retailer-exclusive drops and book five pop-up media days, measuring QR redemption and event CPA to decide scale-up [^6][^2].",
+  "top_operator_moves": [
+    "Stop blanket November matching: assign a weekly margin-per-trip target and reserve inventory plus 20–30% of marketing budget for late-season exclusives.",
+    "Pilot two retailer-exclusive SKUs in select stores (Dec 15–21 target window) with Brand Partnerships; aim for **QR redemption ≥5%** of footfall and **foot-traffic uplift ≥10-15%** in test stores.",
+    "Book five store pop-up media days (Dec 18–20) owned by Head of Retail and CMO, and run event CPA tests with a ceiling of **≤0.80×** baseline to validate scale."
+  ],
+  "statistics": {
+    "word_count": 4490,
+    "signal_count": 3,
+    "source_count": 9
+  },
+  "read_time_minutes": 23,
+  "length_label": "~23 min read",
+  "qa": {
+    "issues": [
+      "Source coverage under minimum thresholds",
+      "Signal count outside required band",
+      "Read time exceeds target"
+    ],
+    "coverage": 0.5,
+    "quant_support": 1.0,
+    "contradiction_penalty": 0.8,
+    "appendix_count": 5,
+    "scope": {
+      "topic": "Why the Third Week of December Is the New Black Friday",
+      "time_window": {
+        "start": "2025-11-19",
+        "end": "2025-12-03",
+        "days": 14,
+        "label": "Nov 19 – Dec 03, 2025"
+      },
+      "target_region": "US",
+      "use_cases": [
+        "brand↔brand",
+        "brick&mortar↔brand"
+      ],
+      "must_answer": [
+        "When are the high-value windows",
+        "What changes discounting math"
+      ],
+      "approach_hints": [
+        "discount-heavy holiday",
+        "collab-led holiday",
+        "store-as-studio / media-led holiday"
+      ],
+      "unified_target_pack": {
+        "foot_traffic_uplift": {
+          "base": "10-15%",
+          "stretch": "≥25%"
+        },
+        "early_window_share": {
+          "current": "12-15%",
+          "goal": "20-30%"
+        },
+        "event_cpa": {
+          "ceiling": "≤0.80× baseline"
+        },
+        "qr_redemption": {
+          "floor": "≥5% of footfall"
+        },
+        "paired_metric": "Track buyer activity share vs promo intensity side by side"
+      },
+      "window_label": "Nov 19 – Dec 03, 2025",
+      "topic_kind": "general",
+      "thin_evidence": true,
+      "operator_job_story": "You need to win share and profitable store visits late in the season without getting drawn into month-long blanket discounts that bleed margin.",
+      "search_shaped_variants": [
+        "How do we capture high-value footfall after the early Black Friday rush?",
+        "Test ideas to drive store visits Dec 15–21 without matching November promo depth",
+        "Which retailer partnerships create conversions, not just traffic, in the third week of December?",
+        "How to shift media to promote late-season exclusives and keep CPA at or below baseline?"
+      ],
+      "evidence_regime": "directional",
+      "evidence_note": "Directional evidence: 9 sources • 9 domains • 9 in-window / 0 background • support coverage 33%",
+      "pilot_spec": {
+        "scenario": "third_week_dec_new_black_friday",
+        "store_count": 5,
+        "store_type": "flagship",
+        "duration_weeks": 2,
+        "window": "Nov 19 – Dec 03, 2025",
+        "primary_move": "Execute a two-week flagship pilot (Nov 19\u0013Dec 03) that stages an in-store QR giveaway plus pop-up media days to shift high-value footfall into the late-season window while holding event CPA at or below 0.8× baseline.",
+        "owner_roles": [
+          "Head of Retail",
+          "Head of Partnerships",
+          "Head of Performance Marketing",
+          "Finance"
+        ],
+        "location_radius_miles": 25,
+        "key_metrics": [
+          "event_cpa_ratio",
+          "qr_redemption_stop"
+        ],
+        "window_label": "Nov 19 – Dec 03, 2025"
+      },
+      "metric_spec": {
+        "foot_traffic_uplift": {
+          "label": "Incremental footfall uplift (%)",
+          "target_range": [
+            10.0,
+            15.0
+          ],
+          "unit": "%",
+          "stage": "target",
+          "owner": "Head of Retail",
+          "target_text": "Test stores should achieve 10\u001315% incremental footfall vs matched controls; stretch target ≥25%.",
+          "notes": ""
+        },
+        "early_window_share": {
+          "label": "Early-window share (%)",
+          "target_range": [
+            20.0,
+            30.0
+          ],
+          "unit": "%",
+          "stage": "target",
+          "owner": "Head of Analytics",
+          "target_text": "Grow event-period footfall share to 20\u001330% of season footfall (current ~12\u001315%).",
+          "notes": ""
+        },
+        "event_cpa_ratio": {
+          "label": "Event CPA ratio (event CPA ÷ baseline CPA)",
+          "target_range": [
+            0.8,
+            0.8
+          ],
+          "unit": "ratio",
+          "stage": "guardrail",
+          "owner": "Head of Performance Marketing",
+          "target_text": "Keep event CPA at or below 0.8× baseline; pause or reallocate media if observed >0.8.",
+          "notes": ""
+        },
+        "qr_redemption_rate": {
+          "label": "QR redemption rate (% of footfall)",
+          "target_range": [
+            5.0,
+            5.0
+          ],
+          "unit": "%",
+          "stage": "target",
+          "owner": "Head of Retail",
+          "target_text": "Aim for QR redemptions ≥5% of footfall during activation days to validate conversion signal.",
+          "notes": ""
+        },
+        "qr_redemption_stop": {
+          "label": "QR redemption stop threshold (% of footfall)",
+          "target_range": [
+            2.0,
+            2.0
+          ],
+          "unit": "%",
+          "stage": "guardrail",
+          "owner": "Head of Retail",
+          "target_text": "Stop the play in a store if QR redemptions fall below 2% of footfall.",
+          "notes": ""
+        },
+        "paired_buyer_vs_promo": {
+          "label": "Buyer activity share vs promo intensity",
+          "target_range": [
+            0.0,
+            0.0
+          ],
+          "unit": "index",
+          "stage": "observed",
+          "owner": "Head of Analytics",
+          "target_text": "Measure buyer activity share against promo depth by store and day; target and guardrails TBD pending attribution setup.",
+          "notes": ""
+        }
+      },
+      "role_actions": {
+        "Head of Retail": [
+          "Run the Nov 19\u0013Dec 03 flagship pilot in 5 stores, deliver the one-day QR giveaway and pop-up media days, and stop any store play where QR redemptions fall below 2%."
+        ],
+        "Head of Partnerships": [
+          "Lock retailer and brand partners for exclusives and in-store drops for the Nov 19\u0013Dec 03 window and confirm inventory and POS collateral aligned to the QR offer."
+        ],
+        "Head of Performance Marketing": [
+          "Allocate event media and tagging to measure event CPA versus October baseline and reallocate or pause spend if event CPA ratio exceeds 0.8."
+        ],
+        "Finance": [
+          "Confirm margin and CPA guardrails for the pilot, approve spend up to the event CPA limit, and flag any store-level losses for immediate review."
+        ]
+      },
+      "pilot_spec_issues": [],
+      "spec_version": "v1",
+      "spec_ok": true,
+      "spec_notes": []
+    },
+    "read_time": 23,
+    "high_quality_signals": true,
+    "observed_quant": true,
+    "tier1_market_signals": true
+  },
+  "agent": "EnhancedSTIAgent",
+  "model": "gpt-5-mini-2025-08-07",
+  "source_stats": {
+    "total": 9,
+    "core": 2,
+    "support": 7,
+    "unique_domains": 9,
+    "domain_counts": {
+      "morningstar.com": 1,
+      "reuters.com": 1,
+      "investopedia.com": 1,
+      "mashable.com": 1,
+      "theblackfriday.com": 1,
+      "retaildive.com": 1,
+      "windowscentral.com": 1,
+      "cnbc.com": 1,
+      "nypost.com": 1
+    },
+    "data_heavy": 6,
+    "time_span_days": 0,
+    "tier_counts": {
+      "core": 9,
+      "context": 0
+    },
+    "dominant_ratio": 0.111,
+    "thin_evidence": true,
+    "thresholds": {
+      "total": true,
+      "core": false,
+      "domains": true,
+      "data": true,
+      "dominance": true,
+      "in_window": true,
+      "background": false,
+      "support_coverage": false
+    },
+    "support_coverage": 0.333,
+    "regime": "directional"
+  },
+  "renderers": [
+    "market_path_markdown",
+    "market_path_pdf",
+    "legacy_html"
+  ],
+  "artifact_paths": [
+    "sti_reports/sti_operator_output_20251202_170437_why_the_third_week_of_de/market_path_report.md",
+    "sti_reports/sti_operator_output_20251202_170437_why_the_third_week_of_de/market_path_report.pdf"
+  ],
+  "social_media_content": {
+    "confidence": 0.6,
+    "teaser_mode": true,
+    "sources_used": "reuters.com | retaildive.com | morningstar.com"
+  }
+}

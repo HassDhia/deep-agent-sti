@@ -1,0 +1,170 @@
+[
+  {
+    "name": "Local News Discount Pressure",
+    "reason": "source strength < 0.78 and local-story framing reduces US-national applicability (source 1)."
+  },
+  {
+    "name": "Gen-Z Fashion Labor Pieces",
+    "reason": "non-core to pricing/collaboration thesis and low operational leverage for retailers (source 3)."
+  },
+  {
+    "name": "Product Review / Affiliate Content",
+    "reason": "off thesis: product reviews and rankings do not inform discounting or collab mechanics (sources 6, 8)."
+  },
+  {
+    "name": "Macro Thought Leadership",
+    "reason": "not operationally actionable for next-cycle tests; strategic background only (sources 7, 9)."
+  },
+  {
+    "category": "Market",
+    "name": "High-Value Early-Access Window",
+    "description": "Deal-hungry shoppers are moving earlier in the season, creating a premium early-access window for collaborations. Early, invitation-only collabs capture higher buyer-intent without triggering broad price expectations.",
+    "operator_move": "Run a 2-week early-access collab owned by Brand + Retail Ops + Partnerships in the 6-week window, targeting early_window_share 20-30% (owner: Brand + Retail Ops + Partnerships; window: 6-week; KPI: early_window_share 20-30%).",
+    "operator_scan": "Test early-access collab conversion and share of early buyers.",
+    "spine_hook": "Early, invitation-only collabs win intent without sitewide price resets",
+    "time_horizon": "6-week",
+    "strength": 0.9,
+    "US_fit": 0.95,
+    "operationality": 0.9,
+    "support": [
+      1,
+      5
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      1,
+      5
+    ],
+    "id": "S1",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Technology",
+    "name": "Price-Curve Optimization Changes Discount Math",
+    "description": "Optimizing volume price curves shifts where incremental revenue comes from and changes break-even for promotions. Using curated price curves for collab SKUs preserves margin while growing units at targeted elasticities.",
+    "operator_move": "Execute a volume price-curve test owned by Pricing + Finance in the 6-week window, measuring promo ROI and margin elasticity to redefine promo depth (owner: Pricing + Finance; window: 6-week; KPI: promo ROI and margin elasticity).",
+    "operator_scan": "Compare promo ROI across depth tiers for collab SKUs.",
+    "spine_hook": "Price curves redefine how deep a discount must be to hit volume targets",
+    "time_horizon": "6-week",
+    "strength": 0.92,
+    "US_fit": 0.9,
+    "operationality": 0.85,
+    "support": [
+      2
+    ],
+    "on_spine": true,
+    "quant_support": "strong",
+    "source_grade": "A",
+    "citations": [
+      2
+    ],
+    "id": "S2",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Behavioral",
+    "name": "Experience-Tied Offers Beat Blanket Percent-Offs",
+    "description": "Time-limited, experience-linked incentives (event access, exclusive bundles) drive revenue without normalizing deep sitewide discounts. These offers reduce CPA per event and preserve full-price behavior outside the event.",
+    "operator_move": "Replace one planned blanket sitewide promotion with an experience-tied offer in one market, owned by Promotions + Store Ops, window now to 6-week, targeting event_cpa <=0.8x baseline (owner: Promotions + Store Ops; window: now->6-week; KPI: event_cpa <=0.8x).",
+    "operator_scan": "Measure event CPA and full-price carryover after experience offers.",
+    "spine_hook": "Experience incentives reduce CPA and protect full-price sales",
+    "time_horizon": "now",
+    "strength": 0.88,
+    "US_fit": 0.9,
+    "operationality": 0.85,
+    "support": [
+      4,
+      5
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      4,
+      5
+    ],
+    "id": "S3",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Market",
+    "name": "Store-as-Studio Concentrates Foot Traffic and Measurable Redeems",
+    "description": "Converting flagship space into short-run brand studios raises foot traffic per event and yields higher on-site activation rates than blanket promotions. Measured QR redemptions and event CPA provide clean attribution for collab investments.",
+    "operator_move": "Run four store-as-studio collab events in two flagship stores, owned by Store Experience + Brand Partnerships, window quarter, aiming for foot_traffic_uplift >=25% and qr_redemption >=5% of footfall (owner: Store Experience + Brand Partnerships; window: quarter; KPI: foot_traffic_uplift >=25%, qr_redemption >=5%).",
+    "operator_scan": "Track foot traffic uplift and QR redemption rate per event.",
+    "spine_hook": "Short-run brand studios concentrate high-value footfall and measurable redeems",
+    "time_horizon": "quarter",
+    "strength": 0.86,
+    "US_fit": 0.9,
+    "operationality": 0.8,
+    "support": [
+      5,
+      1
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      5,
+      1
+    ],
+    "id": "S4",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Behavioral",
+    "name": "Bundled and Tiered Offers Shift Buyer Activity Share",
+    "description": "Bundling and tiered discounts change purchase composition more efficiently than flat percent-offs, increasing buyer share for target cohorts. When aligned with collab inventory, bundles drive higher per-transaction revenue and targeted activity share gains.",
+    "operator_move": "Test a bundled tiered offer owned by Merch + Pricing for collab SKUs in a 6-week test, measuring buyer_activity_share movement from 12-15% toward 20-30% (owner: Merch + Pricing; window: 6-week; KPI: buyer_activity_share 20-30%).",
+    "operator_scan": "Compare buyer activity share across bundled vs flat offers.",
+    "spine_hook": "Bundles shift buyer composition and lift targeted activity share",
+    "time_horizon": "6-week",
+    "strength": 0.8,
+    "US_fit": 0.85,
+    "operationality": 0.8,
+    "support": [
+      2,
+      4
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      2,
+      4
+    ],
+    "id": "S5",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Technology",
+    "name": "Daily Dashboard: Buyer Activity vs Promo Intensity",
+    "description": "Real-time pairing of buyer activity share and promo intensity is the operational control to stop runaway blanket discounts. A daily dashboard letting teams throttle promo intensity against event CPA prevents margin erosion during high-traffic windows.",
+    "operator_move": "Stand up a daily dashboard owned by Analytics + Partnerships now, tracking buyer_activity_share vs promo_intensity and holding event_cpa <=0.8x baseline (owner: Analytics + Partnerships; window: now; KPI: event_cpa <=0.8x, weekly buyer_activity_share).",
+    "operator_scan": "Plot buyer activity share against promo intensity day-over-day.",
+    "spine_hook": "Daily buyer-activity vs promo-intensity dashboard prevents discount creep",
+    "time_horizon": "now",
+    "strength": 0.9,
+    "US_fit": 0.95,
+    "operationality": 0.95,
+    "support": [
+      5
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      5
+    ],
+    "id": "S6",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  }
+]

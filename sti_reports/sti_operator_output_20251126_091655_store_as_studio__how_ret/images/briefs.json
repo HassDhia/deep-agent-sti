@@ -1,0 +1,69 @@
+{
+  "hero": {
+    "core_tension": "Short, curated activations concentrate attention and revenue in 2 to 8 week windows. This matters because urgency raises full-price sell-through and reduces markdown pressure. Operators should prototype time-boxed activations and measure weekend foot traffic, dwell time, and sell-through.",
+    "setting": "Polished flagship storefront interior with strong negative space, a visible storefront window and an adjacent loading bay hinted in the background.",
+    "persona": "Store operator and creative lead standing in a planning posture, one holding a tactile sample, the other pointing to a scaled layout.",
+    "action": "Two people map a 6-week activation plan on a large paper grid, marking weekend spikes and capture points.",
+    "urgency_symbol": "Shifting patch of light across the grid suggesting a narrowing attention window; the mechanism is simple.",
+    "props": [
+      "Folded schedule grid printed on heavy stock",
+      "Prototype collectible on a plinth",
+      "Visitor flow dots on transparent acetate"
+    ],
+    "lighting": "Polished editorial lighting with confident highlights and controlled shadows to isolate subjects and props",
+    "mood": "Precise, collaborative, confident",
+    "alt": "Operator and creative lead plan a 6-week activation; light slices across a schedule grid"
+  },
+  "signal_map": {
+    "structure": "Concentric rings with radial paths connecting a core store node to pop nodes; geometry suggests funnels and time-boxed bursts.",
+    "elements": [
+      "Core node for flagship store",
+      "Ring nodes for weekend spikes",
+      "Paths representing marketing to footfall conversion"
+    ],
+    "motion": "Arcs converge to the core node in short bursts, then taper; the signal underneath is bursty, not steady.",
+    "palette": "Matte neutrals with a single confident accent color and metallic varnish on active arcs",
+    "alt": "Diagram of store as hub with bursty arcs showing short activation spikes"
+  },
+  "case_studies": [
+    {
+      "scene": "Vacant storefront repurposed as a rotating artist residency within an open mall corridor.",
+      "moment": "A weekend opening where a small crowd forms and staff log social handles at a compact capture table.",
+      "persona": "Mall owner coordinating with an arts nonprofit and a store manager tracking foot traffic metrics.",
+      "props": [
+        "Window display panels",
+        "Clipboard with weekend foot traffic checklist",
+        "Simple placard for social capture"
+      ],
+      "lighting": "Editorial highlights on the window installation with soft fill in the corridor",
+      "mood": "Community-focused, tactical, observational",
+      "alt": "Mall owner and manager monitor weekend foot traffic at an artist residency window"
+    },
+    {
+      "scene": "Brand shop-in-shop inside a flagship bookstore with a branded micro-environment and a staffed discovery island.",
+      "moment": "Mid-week staff coaching a customer through a themed selection while timer-like light shifts narrow focus to the display.",
+      "persona": "Brand activation lead and bookstore floor manager aligning signage and staffing.",
+      "props": [
+        "Branded merch stack",
+        "Themed signage on an easel",
+        "Small capture tablet for email signup"
+      ],
+      "lighting": "Polished directional highlights on product stacks with ample negative space",
+      "mood": "Curated, intentional, conversion-minded",
+      "alt": "Brand and bookstore manager coordinate a shop-in-shop activation by a discovery island"
+    },
+    {
+      "scene": "Concept store piloting an AI-guided discovery kiosk in a corner activation area with staff observing behavior.",
+      "moment": "A staffer reads a short attach-rate report while a shopper follows QR-guided suggestions toward a product stack.",
+      "persona": "Retail operations manager and a technologist reviewing attach and conversion KPIs.",
+      "props": [
+        "Kiosk mockup with minimal screen framing",
+        "Printed KPI card showing attach rate",
+        "Sample product tag with QR"
+      ],
+      "lighting": "Clean editorial light with a single confident rim highlight on the kiosk",
+      "mood": "Analytical, iterative, tech-forward",
+      "alt": "Operations manager and technologist watch a shopper use an AI discovery kiosk"
+    }
+  ]
+}

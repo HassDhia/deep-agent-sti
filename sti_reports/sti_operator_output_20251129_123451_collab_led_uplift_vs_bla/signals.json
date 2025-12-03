@@ -1,0 +1,128 @@
+[
+  {
+    "category": "Cultural",
+    "name": "Early-Window Collab Exclusives",
+    "description": "Shoppers are shifting to hunt curated, partner-led exclusives in early holiday windows rather than waiting for blanket sitewide markdowns. Limited co-branded drops concentrate buyer intent and shift purchases earlier in the funnel, protecting margin compared with open discounts.",
+    "operator_move": "Operator move: Brand Partnerships run a 2-week co-branded early exclusive (owner: Brand Partnerships; window: Nov 29–Dec 12); target early_window_share 20–30% and QR_redemption ≥5%.",
+    "operator_scan": "Measure early-window sales share for co-branded SKUs versus sitewide promos.",
+    "spine_hook": "Exclusive collabs pull purchases earlier, not cheaper.",
+    "time_horizon": "6-week",
+    "strength": 0.9,
+    "US_fit": 0.95,
+    "operationality": 0.9,
+    "support": [
+      8,
+      1,
+      4
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      8,
+      1,
+      4
+    ],
+    "id": "S1"
+  },
+  {
+    "category": "Behavioral",
+    "name": "Collab Events Drive Measurable Footfall",
+    "description": "Short, experiential in-store collaborations produce concentrated foot-traffic spikes that out-perform equivalent blanket discounts on conversion per visit. When paired with a simple QR capture, these events generate traceable buyer journeys and higher-quality sales.",
+    "operator_move": "Operator move: Store Ops and Marketing run three weekend collab activations across representative stores (owner: Store Ops; window: next 6 weeks); target foot_traffic_uplift base 10–15% with stretch ≥25% and QR_redemption ≥5%.",
+    "operator_scan": "Track weekend footfall lift and QR captures versus matched non-event weekends.",
+    "spine_hook": "Experiential collabs lift footfall and capture buyers at higher quality.",
+    "time_horizon": "6-week",
+    "strength": 0.88,
+    "US_fit": 0.96,
+    "operationality": 0.92,
+    "support": [
+      8,
+      1,
+      5
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      8,
+      1,
+      5
+    ],
+    "id": "S2"
+  },
+  {
+    "category": "Market",
+    "name": "Tiered Collab-Linked Discounts Replace Blanket Cuts",
+    "description": "Volume price curve approaches let you give meaningful perceived discount while protecting margin by tying discount depth to bundle size or partner-led SKU sets. Replacing a flat sitewide cut with tiered collab offers concentrates value for engaged buyers and reduces overall promo leakage.",
+    "operator_move": "Operator move: Merch and Pricing A/B test replacing a sitewide 20% off with tiered collab bundles (owner: Merch+Pricing; window: 6 weeks); target event_cpa ≤0.80x baseline while holding blended margin neutral.",
+    "operator_scan": "Compare CPA, margin, and buyer share for tiered collab bundles versus sitewide coupon.",
+    "spine_hook": "Tiered bundles concentrate discount to active buyers, protecting margin.",
+    "time_horizon": "6-week",
+    "strength": 0.9,
+    "US_fit": 0.9,
+    "operationality": 0.85,
+    "support": [
+      2,
+      4
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      2,
+      4
+    ],
+    "id": "S3"
+  },
+  {
+    "category": "Technology",
+    "name": "Store-as-Studio Content Series",
+    "description": "Micro-influencer-led in-store content series convert store visits into media moments that increase early-window share and lower effective CPA when content drives immediate, trackable offers. This approach turns physical space into a repeatable media channel without constant price cuts.",
+    "operator_move": "Operator move: Marketing and Store Ops run a 4-episode store-as-studio content series with micro-influencers (owner: Marketing; window: next 6 weeks); aim to lift early_window_share to 20% and keep event_cpa ≤0.8x baseline.",
+    "operator_scan": "Measure content-driven visit rate, conversion, and CPA versus paid media spend.",
+    "spine_hook": "Turns stores into repeatable media that shift purchase timing.",
+    "time_horizon": "6-week",
+    "strength": 0.82,
+    "US_fit": 0.85,
+    "operationality": 0.8,
+    "support": [
+      8,
+      9,
+      5
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      8,
+      9,
+      5
+    ],
+    "id": "S4"
+  },
+  {
+    "category": "Market",
+    "name": "News-Driven Discount Windows",
+    "description": "Macro shocks and noisy policy developments create discrete windows where price sensitivity spikes and blanket discounts are expected. Timing targeted, partner-led offers into these windows yields stronger conversion at lower promotional depth than maintaining constant sitewide cuts.",
+    "operator_move": "Operator move: Marketing concentrate limited-time partner offers on high-news days after tariff or shutdown headlines (owner: Marketing; window: now through next 6 weeks); measure event_cpa and foot_traffic_uplift against baseline.",
+    "operator_scan": "Correlate daily news spikes with promo conversion and footfall.",
+    "spine_hook": "Macro news creates short high-sensitivity windows for targeted offers.",
+    "time_horizon": "now",
+    "strength": 0.78,
+    "US_fit": 0.9,
+    "operationality": 0.78,
+    "support": [
+      1,
+      5
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      1,
+      5
+    ],
+    "id": "S5"
+  }
+]

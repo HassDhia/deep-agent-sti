@@ -9,20 +9,15 @@ import os
 import json
 import base64
 import logging
+import random
+import re
+import secrets
+import hashlib
 from pathlib import Path
-from typing import Optional, Tuple, Dict, List
+from typing import Optional, Tuple, Dict, List, Any
 from openai import OpenAI
 from config import STIConfig
-
-# LangChain for tailored prompt generation
-try:
-    from langchain_openai import ChatOpenAI
-    from langchain_core.prompts import PromptTemplate
-    LANGCHAIN_AVAILABLE = True
-except ImportError:
-    LANGCHAIN_AVAILABLE = False
-    logger = logging.getLogger(__name__)
-    logger.warning("⚠️ LangChain not available - will use hardcoded prompts")
+from metrics import friendly_metric_name
 
 # For URL fallback if DALL-E returns URLs instead of base64
 try:
@@ -32,6 +27,8 @@ except ImportError:
     HTTPX_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
+
+TEMPLATE_VERSION = "2025-11-29.1"
 
 
 class ImageGenerator:
@@ -56,86 +53,105 @@ class ImageGenerator:
     """Generate images using OpenAI gpt-image-1 API with intent-aware prompts"""
     
     # STI brand constants for prompt building
-    STI_BRAND_BASE = (
-        "clean editorial photography, soft daylight, cool slate/steel palette, "
-        "no text or lettering, single subject, generous negative space, "
-        "magazine cover aesthetic, depth-of-field, subtle contrast, "
-        "not a poster, not a collage, not an infographic, no charts, no UI, no labels"
+    STI_IMAGE_STYLE = (
+        "polished editorial photography, cinematic but minimal, deep contrast, subtle cool-tone grading, "
+        "generous negative space, modern materials, natural poses, realistic lighting, no text, no logos, "
+        "no UI, no charts, no infographics, no collage, no poster layout, single clear focal area"
     )
-    
-    # LangChain prompt templates for tailored descriptions
-    HERO_PROMPT_TEMPLATE = """You are creating an editorial image description for an intelligence report hero image.
 
-Report Query: {query}
-Report Intent: {intent}
-Executive Summary (context): {exec_summary}
+    STYLE_VARIANTS = {
+        "hero": {
+            "framing": [
+                "three-quarter view from eye level",
+                "slightly elevated angle looking down",
+                "tight medium shot on the collaboration moment",
+                "grounded eye-level framing focused on the active bay",
+            ],
+            "lighting": [
+                "polished editorial lighting with soft shadows",
+                "warm directional light with gentle falloff",
+                "cool high-contrast lighting with crisp edges",
+                "diffused skylight with controlled highlights",
+            ],
+            "palette": [
+                "dark neutrals with electric blue accents",
+                "graphite and steel with restrained teal",
+                "ivory and charcoal with cyan pins",
+                "slate base with subtle brass highlights",
+            ],
+            "geometry": [
+                "layered geometric planes",
+                "minimal coaxial arcs",
+                "subtle ribbon-like contours",
+                "clean architectural facets",
+            ],
+            "environment": [
+                "open negative-space retail bay",
+                "structured architectural backdrop",
+                "calm studio void",
+                "measured spatial grid",
+            ],
+        },
+        "section": {
+            "framing": [
+                "planar orthographic layout",
+                "gentle isometric framing",
+                "radial diagram posture",
+                "stacked elevation view",
+            ],
+            "lighting": [
+                "soft studio glow with restrained highlights",
+                "sheeted daylight gradients",
+                "half-toned studio wash",
+                "calm perimeter glow",
+            ],
+            "palette": [
+                "mist gray with electric blue pulses",
+                "cool slate with ivory bands",
+                "graphite base with cyan sparks",
+                "charcoal with muted teal overlays",
+            ],
+            "geometry": [
+                "clean networked arcs",
+                "floating planes and dots",
+                "disciplined concentric ribbons",
+                "stacked line work",
+            ],
+            "environment": [
+                "dark minimal background",
+                "calm studio backdrop",
+                "soft gradient void",
+                "architectural plinth",
+            ],
+        },
+    }
 
-STI Brand Requirements (MUST FOLLOW):
-- Clean editorial photography style
-- Soft daylight, cool slate/steel palette
-- Single subject, generous negative space
-- Magazine cover aesthetic, shallow depth-of-field
-- 20-30% empty space at top for header
-- NOT a poster, NOT a collage, NOT an infographic
-- NO text, NO labels, NO charts, NO UI elements
-
-VARIETY REQUIREMENTS (create unique compositions per report):
-- Vary camera perspective: alternate between eye-level, slight low-angle, overhead, or three-quarter views
-- Vary composition: center-framed, rule-of-thirds, asymmetric balance
-- Vary setting context: different corporate spaces (atrium, lab, office, data center, manufacturing floor, cleanroom)
-- Vary subject positioning: left of frame, right of frame, center, diagonal placement
-- Vary lighting direction: side-lit, back-lit, front-lit, or directional window light
-- Extract 2-3 unique keywords from the executive summary and emphasize different visual interpretations
-- Choose a unique combination of the above elements that differs from typical corporate photography
-
-Task: Generate a concise, tailored image description (2-3 sentences) that:
-1. Reflects the specific topic/content from the executive summary
-2. Suggests a single, elegant subject relevant to the report
-3. Maintains minimal, editorial, Bloomberg/FT aesthetic
-4. Uses specific details from the executive summary (companies, technologies, concepts mentioned)
-5. Creates a visually distinct composition by choosing a unique combination of perspective, setting, and lighting
-
-For market reports: Think corporate editorial photography - single object in spacious corporate setting, but vary the specific environment, angle, and lighting.
-For thesis reports: Think abstract conceptual illustration - minimal geometric patterns suggesting theoretical frameworks, but vary the geometric abstraction style and composition.
-
-Output ONLY the image description (no explanations, no markdown). Keep it under 100 words."""
-
-    SECTION_PROMPT_TEMPLATE = """You are creating an editorial image description for a report section image.
-
-Section Name: {section_name}
-Section Content (first 1500 words): {section_content}
-Report Query: {query}
-Report Intent: {intent}
-
-STI Brand Requirements (MUST FOLLOW):
-- Clean editorial style, minimal composition
-- Soft daylight, cool slate/steel palette
-- Generous negative space, quiet editorial illustration
-- NOT a dashboard, NOT an infographic
-- NO text, NO labels, NO charts, NO widgets, NO icons
-
-Section-Specific Style Guidelines:
-- Market Analysis: Abstract systems motif - minimal network of arcs/nodes, soft gradients
-- Technology Deep-Dive: Isometric technical line-drawing - thin ink lines, minimalist blueprint
-- Competitive Landscape: Balanced radial diagram - neutral nodes, plain geometric shapes
-- Thesis sections: Abstract conceptual motifs - minimal geometric patterns, restrained geometry
-
-VARIETY REQUIREMENTS (create unique abstract interpretations per section):
-- For Market Analysis: Vary network topology (star, mesh, hub-and-spoke, hierarchical, organic clusters)
-- For Technology Deep-Dive: Vary technical drawing style (isometric, exploded view, cutaway, schematic, orthographic)
-- For Competitive Landscape: Vary diagram structure (radial, matrix, concentric circles, cluster, grid)
-- Extract unique technical terms or company names from section content and emphasize them visually in the abstraction
-- Vary the geometric abstraction: sometimes more organic curves, sometimes more rigid geometry, sometimes flowing lines
-- Choose a unique combination of topology/structure and abstraction style that differs from typical diagrams
-
-Task: Generate a concise, tailored image description (2-3 sentences) that:
-1. Reflects specific concepts, technologies, or themes from the section content
-2. Uses abstract/minimal visual language (not literal representations)
-3. Matches the section-specific style guideline above
-4. Maintains editorial restraint and negative space emphasis
-5. Creates a visually distinct interpretation by choosing a unique topology/abstraction combination
-
-Output ONLY the image description (no explanations, no markdown). Keep it under 80 words."""
+    ABSTRACT_STOPWORDS = {
+        "the",
+        "and",
+        "for",
+        "with",
+        "from",
+        "this",
+        "that",
+        "into",
+        "over",
+        "they",
+        "their",
+        "its",
+        "are",
+        "is",
+        "to",
+        "of",
+        "in",
+        "on",
+        "a",
+        "an",
+        "we",
+        "as",
+        "by",
+        "or",
+    }
     
     def __init__(self, openai_api_key: str = None):
         logger.debug(f"🔧 ImageGenerator.__init__ called with api_key={'present' if openai_api_key else 'None'}")
@@ -168,26 +184,7 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
                 logger.error(f"❌ Failed to initialize OpenAI client: {e}")
                 self.client = None
             
-            # Initialize LangChain LLM for tailored prompt generation
-            if LANGCHAIN_AVAILABLE and self.api_key:
-                try:
-                    llm_params = {
-                        "api_key": self.api_key,
-                        "model": getattr(STIConfig, 'DEFAULT_MODEL', 'gpt-4-turbo-preview'),
-                        "temperature": 0.3  # Slightly higher temperature for creative variation while maintaining brand consistency
-                    }
-                    if organization:
-                        llm_params["openai_organization"] = organization
-                    self.llm = ChatOpenAI(**llm_params)
-                    logger.debug("✅ LangChain LLM initialized for tailored prompt generation")
-                except Exception as e:
-                    logger.warning(f"⚠️ Failed to initialize LangChain LLM: {e}")
-                    logger.warning("   Will fallback to hardcoded prompts")
-                    self.llm = None
-            else:
-                self.llm = None
-                if not LANGCHAIN_AVAILABLE:
-                    logger.debug("ℹ️ LangChain not available - using hardcoded prompts")
+            self.llm = None
     
     def generate_hero_image(
         self,
@@ -196,6 +193,7 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
         intent: str = "market",
         exec_summary: str = None,
         anchor_coverage: Optional[float] = None,
+        hero_brief: Optional[Dict[str, Any]] = None,
     ) -> Optional[Tuple[str, str]]:
         """
         Generate hero image for report.
@@ -245,14 +243,12 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
         logger.debug(f"✅ Report directory exists: {report_dir}")
         
         try:
-            # Generate intent-aware prompt (use LLM if exec_summary provided, else fallback)
-            if exec_summary and self.llm and LANGCHAIN_AVAILABLE:
-                logger.info("🤖 Using LLM to generate tailored hero prompt from executive summary")
-                prompt = self._generate_hero_prompt_llm(query, intent, exec_summary)
-            else:
-                if exec_summary and not self.llm:
-                    logger.debug("ℹ️ Exec summary provided but LLM not available - using hardcoded prompt")
-                prompt = self._build_hero_prompt(query, intent)
+            prompt, template_id, context_snapshot = self._build_hero_prompt(
+                query,
+                intent,
+                exec_summary=exec_summary,
+                hero_brief=hero_brief,
+            )
             logger.info(f"📝 Generated prompt (length: {len(prompt)}): {prompt[:100]}...")
             logger.debug(f"📝 Full prompt: {prompt}")
             prompt_used = prompt
@@ -391,9 +387,14 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
                     report_path,
                     {
                         'type': 'hero',
-                        'query': query,
-                        'intent': intent,
-                        'prompt': prompt_used,
+                        'slot': 'hero',
+                        'section': 'Hero',
+                        'anchor_section': (hero_brief or {}).get("anchor_section") or "header",
+                        'template': template_id,
+                        'template_version': TEMPLATE_VERSION,
+                        'context': context_snapshot,
+                        'metric_focus': context_snapshot.get("metric_focus", []),
+                        'alt': (hero_brief or {}).get("alt"),
                         'image': relative_path,
                     },
                 )
@@ -448,187 +449,31 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
     
     def _sti_prompt(self, core: str) -> str:
         """STI brand prompt builder - injects brand constants and anti-pattern guards"""
-        return f"{core}. {self.STI_BRAND_BASE}"
+        return f"{core} {self.STI_IMAGE_STYLE}"
     
-    def _extract_diversity_keywords(self, text: str, query: str) -> str:
-        """Extract unique keywords from text to seed visual diversity"""
-        if not text:
-            return ""
-        
-        combined_text = (text + ' ' + query).lower()
-        
-        # Technology/domain keywords that suggest visual interpretations
-        tech_keywords = [
-            'drone', 'swarm', 'autonomous', 'ai', 'machine learning', 'quantum', 
-            'blockchain', 'crypto', 'neural', 'robotic', 'sensor', 'satellite',
-            'semiconductor', 'chip', 'processor', 'cloud', 'edge', '5g', 'iot'
-        ]
-        
-        # Extract matching keywords
-        found_keywords = []
-        for keyword in tech_keywords:
-            if keyword.lower() in combined_text:
-                found_keywords.append(keyword)
-        
-        # Return up to 3 unique keywords for visual emphasis
-        if found_keywords:
-            unique_keywords = list(dict.fromkeys(found_keywords))[:3]  # Preserve order, remove dupes
-            return f"Emphasize visual interpretation of: {', '.join(unique_keywords)}"
-        
-        return ""
-    
-    def _get_variation_seed(self, query: str) -> Dict[str, str]:
-        """Generate deterministic variation based on query hash for consistent but varied styles"""
-        import hashlib
-        
-        query_hash = int(hashlib.md5(query.encode()).hexdigest(), 16)
-        
-        perspectives = ['eye-level', 'slight low-angle', 'overhead', 'three-quarter view']
-        compositions = ['center-framed', 'rule-of-thirds left', 'rule-of-thirds right', 'asymmetric']
-        settings = ['corporate atrium', 'modern lab space', 'data center corridor', 'office with view', 'cleanroom', 'manufacturing floor']
-        lighting = ['side-lit from left', 'back-lit silhouette', 'front-lit soft', 'directional window light']
-        
-        return {
-            'perspective': perspectives[query_hash % len(perspectives)],
-            'composition': compositions[(query_hash // 10) % len(compositions)],
-            'setting': settings[(query_hash // 100) % len(settings)],
-            'lighting': lighting[(query_hash // 1000) % len(lighting)]
-        }
-    
-    def _generate_hero_prompt_llm(self, query: str, intent: str, exec_summary: str) -> str:
-        """Generate tailored hero prompt using LLM based on executive summary"""
-        if not LANGCHAIN_AVAILABLE or not self.llm:
-            logger.warning("⚠️ LangChain not available - falling back to hardcoded prompt")
-            return self._build_hero_prompt(query, intent)
-        
-        try:
-            from langchain_core.prompts import PromptTemplate
-            
-            template = PromptTemplate(
-                input_variables=["query", "intent", "exec_summary"],
-                template=self.HERO_PROMPT_TEMPLATE
-            )
-            
-            # Truncate exec_summary if too long (keep first 800 chars for context)
-            exec_summary_truncated = exec_summary[:800] if exec_summary else ""
-            
-            # Add diversity seed based on query for consistent but varied styles
-            variation_seed = self._get_variation_seed(query)
-            diversity_keywords = self._extract_diversity_keywords(exec_summary_truncated, query)
-            
-            # Enhance exec_summary with diversity cues
-            enhanced_summary = exec_summary_truncated
-            if diversity_keywords:
-                enhanced_summary = f"{exec_summary_truncated}\n\nVisual emphasis: {diversity_keywords}"
-            if variation_seed:
-                enhanced_summary += f"\n\nSuggested variation: {variation_seed['perspective']} view, {variation_seed['composition']}, {variation_seed['setting']}, {variation_seed['lighting']}"
-            
-            prompt = template.format(
-                query=query,
-                intent="thesis" if intent == "thesis" else "market",
-                exec_summary=enhanced_summary
-            )
-            
-            logger.debug(f"🤖 Invoking LLM for hero prompt generation...")
-            response = self.llm.invoke(prompt)
-            llm_description = response.content.strip()
-            
-            # Clean up any markdown formatting or extra text
-            llm_description = llm_description.replace("**", "").replace("*", "").strip()
-            
-            # Apply STI brand constants to ensure consistency
-            final_prompt = f"{llm_description}. {self.STI_BRAND_BASE}"
-            
-            logger.debug(f"✅ LLM generated hero prompt (length: {len(final_prompt)})")
-            return final_prompt
-            
-        except Exception as e:
-            logger.warning(f"⚠️ LLM prompt generation failed: {e}")
-            logger.warning("   Falling back to hardcoded prompt")
-            return self._build_hero_prompt(query, intent)
-    
-    def _extract_key_subjects_from_query(self, query: str) -> str:
-        """Extract key subjects/technologies from query for visual interpretation"""
-        if not query:
-            return "technology or concept"
-        
-        query_lower = query.lower()
-        
-        # Extract technology/domain keywords that suggest visual subjects
-        tech_subjects = {
-            'ai': 'artificial intelligence system',
-            'machine learning': 'machine learning infrastructure',
-            'drone': 'autonomous aerial vehicle',
-            'swarm': 'coordinated autonomous systems',
-            'quantum': 'quantum computing hardware',
-            'blockchain': 'blockchain infrastructure',
-            'crypto': 'cryptocurrency technology',
-            'neural': 'neural network architecture',
-            'robotic': 'robotic system',
-            'sensor': 'sensor network',
-            'satellite': 'satellite system',
-            'semiconductor': 'semiconductor technology',
-            'chip': 'semiconductor chip',
-            'processor': 'processor technology',
-            'cloud': 'cloud infrastructure',
-            'edge': 'edge computing device',
-            '5g': '5G network infrastructure',
-            'iot': 'IoT device',
-            'autonomous': 'autonomous system',
-            'cognitive': 'cognitive computing system',
-            'industrialization': 'industrial technology system'
-        }
-        
-        # Find matching subjects
-        found_subjects = []
-        for keyword, subject in tech_subjects.items():
-            if keyword in query_lower:
-                found_subjects.append(subject)
-        
-        # Return first match or generic description based on query
-        if found_subjects:
-            return found_subjects[0]
-        
-        # Fallback: extract key nouns from query
-        import re
-        words = re.findall(r'\b[A-Z][a-z]+\b|\b[a-z]+\b', query)
-        if words:
-            # Return first significant word (skip common words)
-            skip_words = {'the', 'of', 'and', 'or', 'for', 'in', 'on', 'at', 'to', 'a', 'an'}
-            for word in words:
-                if word.lower() not in skip_words and len(word) > 3:
-                    return f"{word.lower()} technology or system"
-        
-        return "technology or concept"
-    
-    def _build_hero_prompt(self, query: str, intent: str) -> str:
-        """Build intent-aware prompt for hero image - minimal editorial style, content-driven"""
+    def _build_hero_prompt(
+        self,
+        query: str,
+        intent: str,
+        exec_summary: Optional[str] = None,
+        hero_brief: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[str, str, Dict[str, Any]]:
+        """Build hero prompt emphasizing style + abstract placeholders."""
         logger.debug(f"🎨 Building hero prompt: query='{query}', intent='{intent}'")
-        
-        # Extract key subject from query dynamically
-        key_subject = self._extract_key_subjects_from_query(query)
-        
-        if intent == "thesis":
-            # Thesis hero: abstract conceptual, minimal
-            core = (
-                f"Editorial hero image for '{query}'. "
-                f"Abstract conceptual motif suggesting theoretical frameworks related to {key_subject}, "
-                f"minimal composition, soft geometric shapes, scholarly aesthetic, "
-                f"20-30% empty space at top for header, shallow depth-of-field"
-            )
-        else:
-            # Market hero: single subject, corporate editorial - use dynamic subject from query
-            core = (
-                f"Editorial hero image for '{query}'. "
-                f"Single {key_subject} in a spacious, modern corporate setting, mid-frame, "
-                f"20-30% empty space above for header, soft daylight, "
-                f"cool slate/steel palette with a discreet blue accent, "
-                f"shallow depth-of-field"
-            )
-        
-        prompt = self._sti_prompt(core)
+        tokens = self._hero_tokens(query, exec_summary, hero_brief)
+        style = self._style_profile("hero", query)
+        metric_focus = (hero_brief or {}).get("metric_focus") or []
+        metric_labels = self._metric_focus_labels(metric_focus)
+        context_snapshot: Dict[str, Any] = {
+            "tokens": tokens,
+            "style": style,
+            "metric_focus": metric_focus,
+            "metric_labels": metric_labels,
+        }
+        template_id = "hero_decision_window"
+        prompt = self._render_template(template_id, context_snapshot, seed=query)
         logger.debug(f"✅ Built hero prompt: {prompt[:100]}...")
-        return prompt
+        return prompt, template_id, context_snapshot
     
     def generate_section_image(
         self,
@@ -638,6 +483,7 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
         intent: str,
         report_dir: str,
         anchor_coverage: Optional[float] = None,
+        brief: Optional[Dict[str, Any]] = None,
     ) -> Optional[Tuple[str, str]]:
         """
         Generate section-specific image for report section.
@@ -677,14 +523,13 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
             return None
         
         try:
-            # Generate section-specific prompt (use LLM if content provided, else fallback)
-            if section_content and self.llm and LANGCHAIN_AVAILABLE:
-                logger.info("🤖 Using LLM to generate tailored section prompt from content")
-                prompt = self._generate_section_prompt_llm(section_name, section_content, query, intent)
-            else:
-                if section_content and not self.llm:
-                    logger.debug("ℹ️ Section content provided but LLM not available - using hardcoded prompt")
-                prompt = self._build_section_prompt(section_name, section_content or "", query, intent)
+            prompt, template_id, context_snapshot = self._build_section_prompt(
+                section_name,
+                section_content or "",
+                query,
+                intent,
+                brief=brief,
+            )
             logger.info(f"📝 Generated section prompt (length: {len(prompt)}): {prompt[:100]}...")
             logger.debug(f"📝 Full prompt: {prompt}")
             prompt_used = prompt
@@ -801,14 +646,22 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
             
             logger.info(f"🎉 Generated section image successfully: {relative_path}")
             try:
+                slot_name = self._slot_name(section_name)
+                anchor_section = (brief or {}).get("anchor_section")
+                if not anchor_section:
+                    anchor_section = "signals_and_thesis" if slot_name == "signal_map" else "mini_case_story"
                 self._record_image_manifest(
                     report_path,
                     {
                         'type': 'section',
-                        'query': query,
-                        'intent': intent,
                         'section': section_name,
-                        'prompt': prompt_used,
+                        'slot': slot_name,
+                        'anchor_section': anchor_section,
+                        'template': template_id,
+                        'template_version': TEMPLATE_VERSION,
+                        'context': context_snapshot,
+                        'metric_focus': context_snapshot.get("metric_focus", []),
+                        'alt': (brief or {}).get("alt"),
                         'image': relative_path,
                     },
                 )
@@ -823,56 +676,6 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
             logger.error(f"❌ Section image generation failed: {error_type}: {error_msg}")
             logger.debug(f"❌ Full traceback:\n{traceback.format_exc()}")
             return None
-    
-    def _generate_section_prompt_llm(self, section_name: str, section_content: str, query: str, intent: str) -> str:
-        """Generate tailored section prompt using LLM based on section content"""
-        if not LANGCHAIN_AVAILABLE or not self.llm:
-            logger.warning("⚠️ LangChain not available - falling back to hardcoded prompt")
-            return self._build_section_prompt(section_name, section_content, query, intent)
-        
-        try:
-            from langchain_core.prompts import PromptTemplate
-            
-            template = PromptTemplate(
-                input_variables=["section_name", "section_content", "query", "intent"],
-                template=self.SECTION_PROMPT_TEMPLATE
-            )
-            
-            # Truncate section_content if too long (keep first 1500 chars for context)
-            section_content_truncated = section_content[:1500] if section_content else ""
-            
-            # Add diversity keywords for section-specific variation
-            diversity_keywords = self._extract_diversity_keywords(section_content_truncated, query)
-            
-            # Enhance section content with diversity cues
-            enhanced_content = section_content_truncated
-            if diversity_keywords:
-                enhanced_content = f"{section_content_truncated}\n\nVisual emphasis: {diversity_keywords}"
-            
-            prompt = template.format(
-                section_name=section_name,
-                section_content=enhanced_content,
-                query=query,
-                intent="thesis" if intent == "thesis" else "market"
-            )
-            
-            logger.debug(f"🤖 Invoking LLM for section prompt generation...")
-            response = self.llm.invoke(prompt)
-            llm_description = response.content.strip()
-            
-            # Clean up any markdown formatting or extra text
-            llm_description = llm_description.replace("**", "").replace("*", "").strip()
-            
-            # Apply STI brand constants with additional anti-pattern guards
-            final_prompt = f"{llm_description}. {self.STI_BRAND_BASE}, not a dashboard, not an infographic, no widgets, no icons"
-            
-            logger.debug(f"✅ LLM generated section prompt (length: {len(final_prompt)})")
-            return final_prompt
-            
-        except Exception as e:
-            logger.warning(f"⚠️ LLM section prompt generation failed: {e}")
-            logger.warning("   Falling back to hardcoded prompt")
-            return self._build_section_prompt(section_name, section_content, query, intent)
     
     def _extract_key_terms_from_content(self, content: str, max_terms: int = 3) -> List[str]:
         """Extract key technical terms or concepts from content for visual interpretation"""
@@ -909,104 +712,166 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
         
         return found_terms
     
-    def _build_section_prompt(self, section_name: str, section_content: str, query: str, intent: str) -> str:
-        """Build section-specific prompt - minimal, abstract, editorial style, content-driven"""
+    def _build_section_prompt(
+        self,
+        section_name: str,
+        section_content: str,
+        query: str,
+        intent: str,
+        brief: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[str, str, Dict[str, Any]]:
+        """Build section prompt that leans on abstract styling and contextual placeholders."""
         logger.debug(f"🎨 Building section prompt: section='{section_name}', intent='{intent}'")
-        
-        # Extract key terms from section content
-        key_terms = self._extract_key_terms_from_content(section_content, max_terms=2)
-        key_subject = self._extract_key_subjects_from_query(query)
-        
-        # Build content-aware description
-        content_context = ""
-        if key_terms:
-            content_context = f" related to {', '.join(key_terms)}"
-        elif key_subject:
-            content_context = f" related to {key_subject}"
-        
-        # Normalize section name for matching
-        section_lower = section_name.lower()
-        
-        if intent == "theory" or intent == "thesis":
-            # Thesis-path section prompts: abstract, minimal, content-driven
-            if "foundational" in section_lower or "foundation" in section_lower:
-                core = (
-                    f"Abstract systems motif suggesting theoretical frameworks for '{query}'{content_context}: "
-                    f"minimal geometric patterns, soft gradients, restrained geometry, "
-                    f"quiet editorial illustration, negative space emphasized"
-                )
-            elif "mechanism" in section_lower or "formalization" in section_lower:
-                core = (
-                    f"Minimal process visualization for '{query}'{content_context}: "
-                    f"simple flow lines and nodes, muted tones, "
-                    f"quiet editorial illustration, ample whitespace"
-                )
-            elif "application" in section_lower or "synthesis" in section_lower:
-                core = (
-                    f"Abstract motif suggesting practical implementation for '{query}'{content_context}: "
-                    f"minimal composition, soft gradients, restrained geometry, "
-                    f"editorial illustration style, negative space emphasized"
-                )
-            else:
-                # Generic thesis section - use content context
-                core = (
-                    f"Abstract conceptual motif for '{query}'{content_context} in context of {section_name}: "
-                    f"minimal composition, soft tones, quiet editorial illustration, "
-                    f"generous negative space"
-                )
+        section_label = (section_name or "section")
+        section_lower = section_label.lower()
+        metric_focus = (brief or {}).get("metric_focus") or []
+        metric_labels = self._metric_focus_labels(metric_focus)
+        if section_lower.startswith("signal"):
+            tokens = self._signal_tokens(section_content, query, brief)
+            style = self._style_profile("section", f"{query}-{section_label}-signal")
+            lines = [
+                f"Abstract structure: {tokens['structure']} representing {tokens['context']}.",
+                f"Motion: {tokens['motion']} that suggests {tokens['direction']}.",
+                f"Visual elements: {tokens['elements']}.",
+                "Mood: analytical, calm, precise.",
+                f"Lighting: {style['lighting']} with subtle reflections on a {style['environment']}.",
+                f"Composition: {style['framing']} with a centered form and generous negative space.",
+                f"Color: dark neutrals with {tokens['palette']} and {style['palette']} accents.",
+                "Never literal dashboards, axes, or labels.",
+            ]
+            template_id = "signal_map_concentric"
         else:
-            # Market-path section prompts: abstract, not dashboards/infographics, content-driven
-            if "market analysis" in section_lower or "market" in section_lower:
-                core = (
-                    f"Abstract systems motif suggesting market dynamics for '{query}'{content_context}: "
-                    f"minimal network of arcs and nodes on a light background, "
-                    f"soft gradients, restrained geometry, "
-                    f"quiet editorial illustration, negative space emphasized"
-                )
-            elif "technology" in section_lower or "deep" in section_lower or "tech" in section_lower:
-                core = (
-                    f"Isometric technical line-drawing of {key_subject} "
-                    f"on a clean light backdrop for '{query}': "
-                    f"thin ink lines, a few shaded surfaces, muted slate/ink tones, "
-                    f"minimalist blueprint aesthetic"
-                )
-            elif "competitive" in section_lower or "landscape" in section_lower:
-                core = (
-                    f"Balanced radial diagram suggesting competitive dynamics for '{query}'{content_context}: "
-                    f"neutral nodes connected to a central hub, plain geometric shapes only, soft shadows, "
-                    f"ample whitespace, corporate editorial graphic"
-                )
-            elif "operator" in section_lower:
-                core = (
-                    f"Abstract operational motif for '{query}'{content_context}: "
-                    f"minimal workflow lines, restrained geometry, soft tones, "
-                    f"quiet editorial illustration, negative space"
-                )
-            elif "investor" in section_lower:
-                core = (
-                    f"Abstract investment flow motif for '{query}'{content_context}: "
-                    f"minimal directional lines, simple nodes, soft gradients, "
-                    f"quiet editorial illustration, negative space emphasized"
-                )
-            elif "bd" in section_lower or "business development" in section_lower:
-                core = (
-                    f"Abstract partnership network motif for '{query}'{content_context}: "
-                    f"minimal connected nodes, restrained geometry, soft tones, "
-                    f"quiet editorial illustration, ample whitespace"
-                )
-            else:
-                # Generic market section - use content context
-                core = (
-                    f"Abstract editorial motif for '{query}'{content_context} in context of {section_name}: "
-                    f"minimal composition, soft tones, quiet illustration, "
-                    f"generous negative space"
-                )
-        
-        # Apply STI brand constants with additional anti-pattern guards
-        prompt = f"{core}. {self.STI_BRAND_BASE}, not a dashboard, not an infographic, no widgets, no icons"
+            tokens = self._case_tokens(section_label, section_content, query, brief)
+            style = self._style_profile("hero", f"{query}-{section_label}-case")
+            if intent in {"thesis", "theory"}:
+                tokens.setdefault("scene", "conceptual systems vignette")
+                tokens.setdefault("time", "structured analysis window")
+            lines = [
+                f"Scene: {tokens['scene']} during {tokens['time']}.",
+                f"Moment: {tokens['moment']}.",
+                f"Personas: {tokens['personas']}.",
+                f"Mood: {tokens['mood']}.",
+                f"Lighting: {tokens['lighting']} styled as {style['lighting']}.",
+                f"Props: {tokens['props']}.",
+                f"Composition: {style['framing']} with clear view of {tokens['focal_point']} and minimal background distractions.",
+            ]
+            template_id = "case_play_activation"
+        if section_lower.startswith("signal"):
+            context_seed = f"{query}-{section_label}-signal"
+        else:
+            context_seed = f"{query}-{section_label}-case"
+        if intent in {"thesis", "theory"} and not section_lower.startswith("signal"):
+            tokens.setdefault("scene", "conceptual systems vignette")
+            tokens.setdefault("time", "structured analysis window")
+        context_snapshot: Dict[str, Any] = {
+            "tokens": tokens,
+            "style": style,
+            "metric_focus": metric_focus,
+            "metric_labels": metric_labels,
+        }
+        prompt = self._render_template(template_id, context_snapshot, seed=context_seed)
         logger.debug(f"✅ Built section prompt: {prompt[:100]}...")
-        return prompt
-    
+        return prompt, template_id, context_snapshot
+
+    def _style_profile(self, kind: str, seed: str) -> Dict[str, str]:
+        variants = self.STYLE_VARIANTS.get(kind, self.STYLE_VARIANTS["section"])
+        salt = secrets.randbits(64)
+        rng = random.Random(salt ^ hash(seed))
+        return {key: rng.choice(values) for key, values in variants.items()}
+
+    def _flatten_text(self, value: Any) -> str:
+        if not value:
+            return ""
+        if isinstance(value, list):
+            return " ".join(str(v) for v in value if v)
+        return str(value)
+
+    def _abstract_phrase(self, text: Optional[str], fallback: str, max_words: int = 8) -> str:
+        if not text:
+            return fallback
+        tokens = re.findall(r"[a-z0-9']+", text.lower())
+        filtered = [t for t in tokens if t not in self.ABSTRACT_STOPWORDS]
+        if not filtered:
+            return fallback
+        phrase = " ".join(filtered[:max_words]).strip()
+        return phrase or fallback
+
+    def _hero_tokens(
+        self,
+        query: str,
+        exec_summary: Optional[str],
+        hero_brief: Optional[Dict[str, Any]],
+    ) -> Dict[str, str]:
+        summary = exec_summary or ""
+        brief = hero_brief or {}
+        scene = self._flatten_text(brief.get("setting"))
+        personas = self._flatten_text(brief.get("persona"))
+        action = self._flatten_text(brief.get("action"))
+        urgency = self._flatten_text(brief.get("urgency_symbol"))
+        props = self._flatten_text(brief.get("props"))
+        mood = self._flatten_text(brief.get("mood"))
+        lighting = self._flatten_text(brief.get("lighting")) or "polished editorial lighting"
+        tokens = {
+            "scene": self._abstract_phrase(scene or summary or query, "store-studio collaboration zone"),
+            "personas": self._abstract_phrase(personas or "operator team", "operator team"),
+            "action": self._abstract_phrase(action or summary or query, "aligning activation details"),
+            "symbolism": self._abstract_phrase(urgency or "subtle timing cue", "subtle timing cue"),
+            "props": self._abstract_phrase(props or summary or query, "event toolkit"),
+            "mood": self._abstract_phrase(mood or "confident", "confident"),
+            "lighting": lighting,
+            "focal_point": self._abstract_phrase(action or props or summary or query, "collaboration moment"),
+        }
+        return tokens
+
+    def _signal_tokens(
+        self,
+        section_content: str,
+        query: str,
+        brief: Optional[Dict[str, Any]],
+    ) -> Dict[str, str]:
+        brief = brief or {}
+        base_context = section_content or query
+        structure = self._flatten_text(brief.get("structure"))
+        elements = self._flatten_text(brief.get("elements"))
+        motion = self._flatten_text(brief.get("motion"))
+        palette = self._flatten_text(brief.get("palette"))
+        direction = self._abstract_phrase(section_content, "concentrated demand waves")
+        return {
+            "context": self._abstract_phrase(base_context, "event dynamics"),
+            "structure": self._abstract_phrase(structure or "lattice arcs", "lattice arcs"),
+            "elements": self._abstract_phrase(elements or "nodes and arcs", "nodes and arcs"),
+            "motion": self._abstract_phrase(motion or "radial pulses", "radial pulses"),
+            "direction": direction,
+            "palette": self._abstract_phrase(palette or "electric blue highlights", "electric blue highlights"),
+        }
+
+    def _case_tokens(
+        self,
+        section_name: str,
+        section_content: str,
+        query: str,
+        brief: Optional[Dict[str, Any]],
+    ) -> Dict[str, str]:
+        brief = brief or {}
+        scene = self._flatten_text(brief.get("scene"))
+        moment = self._flatten_text(brief.get("moment"))
+        personas = self._flatten_text(brief.get("persona"))
+        mood = self._flatten_text(brief.get("mood"))
+        props = self._flatten_text(brief.get("props"))
+        lighting = self._flatten_text(brief.get("lighting")) or "polished editorial lighting"
+        time_context = self._abstract_phrase(moment or section_content or query, "activation window")
+        focal_point = self._abstract_phrase(scene or moment or section_name, "collaboration focal point")
+        return {
+            "scene": self._abstract_phrase(scene or section_content or section_name, section_name.lower()),
+            "time": time_context,
+            "moment": self._abstract_phrase(moment or section_content or query, "operators aligning the play"),
+            "personas": self._abstract_phrase(personas or "operator team", "operator team"),
+            "mood": self._abstract_phrase(mood or "precise", "precise"),
+            "lighting": lighting,
+            "props": self._abstract_phrase(props or section_content or query, "event toolkit"),
+            "focal_point": focal_point,
+        }
+
     def _slugify_query(self, query: str) -> str:
         """Convert query to filesystem-safe slug"""
         import re
@@ -1015,3 +880,151 @@ Output ONLY the image description (no explanations, no markdown). Keep it under 
         logger.debug(f"🔤 Slugified '{query}' → '{result}'")
         return result
 
+    @staticmethod
+    def _slot_name(section_name: Optional[str]) -> str:
+        if not section_name:
+            return "section"
+        label = section_name.strip().lower()
+        if "signal" in label:
+            return "signal_map"
+        return re.sub(r'[^a-z0-9]+', '_', label).strip("_") or "section"
+
+    def _metric_focus_labels(self, metric_focus: Optional[List[str]]) -> List[str]:
+        labels: List[str] = []
+        for metric in metric_focus or []:
+            friendly = friendly_metric_name(metric)
+            if friendly:
+                labels.append(friendly)
+        return labels
+
+    def _render_template(
+        self,
+        template_id: str,
+        context: Dict[str, Any],
+        *,
+        seed: str = "",
+    ) -> str:
+        tokens = context.get("tokens", {})
+        style = context.get("style", {})
+        metrics = context.get("metric_labels", [])
+        seed_material = f"{template_id}|{seed}"
+        seed_int = int(hashlib.sha256(seed_material.encode("utf-8")).hexdigest(), 16)
+        rng = random.Random(seed_int)
+
+        def _line(options: List[str], fallback: str) -> str:
+            usable = [opt for opt in options if opt]
+            if not usable:
+                usable = [fallback]
+            return rng.choice(usable)
+
+        if template_id == "hero_decision_window":
+            scene = tokens.get("scene") or "quiet operator decision table"
+            personas = tokens.get("personas") or "operator team"
+            action = tokens.get("action") or "reviewing options together"
+            symbolism = tokens.get("symbolism") or "single highlighted note on the table"
+            props = tokens.get("props") or "laptops, notebooks, printed brief pages"
+            mood = tokens.get("mood") or "calm, thoughtful, precise"
+            lighting = tokens.get("lighting") or "soft natural window light"
+            focal = tokens.get("focal_point") or "moment of shared agreement"
+            style_line = style.get("lighting", "subtle editorial daylight with gentle contrast")
+            framing = style.get(
+                "framing",
+                "simple eye level framing, medium wide, plenty of margin around the team",
+            )
+            palette = style.get("palette", "soft neutrals, ink blacks, warm paper whites")
+            geometry = style.get("geometry", "clean straight lines and understated furnishings")
+            environment = style.get(
+                "environment",
+                "uncluttered strategy workspace with open negative space",
+            )
+            lines = [
+                _line([
+                    f"Scene: {scene}, a calm working session.",
+                    f"Scene: {scene}.",
+                ], f"Scene: {scene}, a calm working session."),
+                _line([
+                    f"Personas: {personas}, relaxed but focused.",
+                    f"Operators: {personas} coordinate quietly at the table.",
+                ], f"Personas: {personas}, relaxed but focused."),
+                _line([
+                    f"Action: {action}, they talk through the tradeoffs at the table.",
+                    f"They commit to the favored play by {action}.",
+                ], f"Action: {action}, they talk through the tradeoffs at the table."),
+                f"Symbolism: {symbolism} suggesting long term thinking, not urgency.",
+                f"Key objects: {props} placed casually, with visible notes and margins.",
+                f"Mood: {mood}, grounded and human, not theatrical.",
+                f"Lighting: {lighting} styled as {style_line}.",
+                f"Composition: {framing} with generous negative space and focus on {focal}.",
+                f"Palette: {palette} with {geometry} in a {environment} that feels real and usable.",
+            ]
+            if metrics:
+                lines.append(f"Metric focus: {', '.join(metrics)}.")
+            core = " ".join(lines)
+            return self._sti_prompt(core)
+
+        if template_id == "signal_map_concentric":
+            context_label = tokens.get("context") or "market signal map for an operator essay"
+            structure = tokens.get("structure") or "concentric rings, like an editorial diagram"
+            motion = tokens.get("motion") or "slow gradients that feel like drifting attention"
+            direction = tokens.get("direction") or "shifts in demand toward the center"
+            elements = tokens.get("elements") or "simple nodes, arcs, and soft fields of tone"
+            palette_hint = tokens.get("palette") or "muted ink blue accent"
+            lighting = style.get("lighting", "soft studio glow, almost paper like")
+            framing = style.get("framing", "flat editorial layout on a light background")
+            palette = style.get(
+                "palette",
+                "soft neutrals with muted ink like accents instead of neon color",
+            )
+            environment = style.get(
+                "environment",
+                "clean architectural plinth or page surface with subtle shadow",
+            )
+            lines = [
+                f"Abstract structure: {structure} representing {context_label}.",
+                f"Motion: {motion} that suggests {direction} rather than aggressive pulses.",
+                f"Visual elements: {elements}, drawn with a diagram like simplicity.",
+                "Mood: analytical, calm, almost like a margin sketch from a strategy essay.",
+                f"Lighting: {lighting} with subtle reflections on a {environment}.",
+                f"Composition: {framing} with a centered form and generous negative space around it.",
+                f"Color: {palette} with a single {palette_hint} accent for emphasis.",
+                "Avoid literal dashboards, axes, UI widgets, or labels.",
+            ]
+            if metrics:
+                lines.append(f"Metric focus: {', '.join(metrics)}.")
+            core = " ".join(lines)
+            return self._sti_prompt(core)
+
+        if template_id == "case_play_activation":
+            scene = tokens.get("scene") or "activation planning vignette"
+            time_window = tokens.get("time") or "pilot planning window"
+            moment = tokens.get("moment") or "operators quietly agree on the next step"
+            personas = tokens.get("personas") or "operator team"
+            mood = tokens.get("mood") or "quietly confident and reflective"
+            lighting = tokens.get("lighting") or "soft editorial daylight"
+            props = tokens.get("props") or "laptops, notebooks, simple event toolkit"
+            focal = tokens.get("focal_point") or "shared focal point on the table"
+            framing = style.get(
+                "framing",
+                "grounded eye level, candid framing as if from a behind the scenes interview",
+            )
+            lines = [
+                _line([
+                    f"Scene: {scene} during the {time_window}.",
+                    f"Scene: {scene}.",], f"Scene: {scene} during the {time_window}."),
+                f"Moment: {moment}, mid conversation rather than posed.",
+                f"Personas: {personas}, engaged but relaxed.",
+                f"Mood: {mood}, focused on clarity over drama.",
+                f"Lighting: {lighting} styled as {style.get('lighting', 'subtle editorial glow, minimal contrast')}.",
+                f"Props: {props} with visible notes, printouts, and open tabs.",
+                "Expressions: natural, as if captured between sentences in a discussion.",
+                f"Composition: {framing} with clear view of {focal} and a simple, unobtrusive background.",
+            ]
+            if metrics:
+                lines.append(f"Metric focus: {', '.join(metrics)}.")
+            core = " ".join(lines)
+            return self._sti_prompt(core)
+
+        # Fallback to legacy behavior if template not recognized
+        tokens_flat = " ".join(str(v) for v in context.get("tokens", {}).values() if v)
+        fallback = tokens_flat or "Editorial style operator visual, calm, human, thoughtful, lit like a magazine essay illustration"
+        return self._sti_prompt(fallback)

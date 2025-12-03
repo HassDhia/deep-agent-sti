@@ -1,0 +1,59 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Report",
+  "name": "Holiday Flagship Early-Access & Pop-up Tests",
+  "about": "Store as Studio:\nHow retail stores are becoming content properties",
+  "abstract": "What is happening: Operators should run a two-week early-access window that pairs branded pop-ups and content-timed events with a controlled A/B: Arm A legacy markdown vs Arm B bundle+GWP+loyalty inside the same window [^2][^4]. Why it matters: The unified holiday target pack is **foot-traffic uplift 10–15%** (stretch **≥25%** in top markets), **early-window transaction share 20–30%** (vs ~12–15% baseline), **event CPA ≤0.80×** baseline, and **QR/scan redemption ≥5%** of footfall [^1][^3]. What operators should do in the next 30 days: merchandising, ops, CRM, real estate and analytics must align on inventory holds, creative for Arm B bundles/GWPs, door-count or proxy instrumentation, QR→POS linkage, and an A/B holdout plan; **run the A/B** and lock measurement before launch [^1][^3]. Measure dwell, conversion, margin and CPA in real time and set a pre-agreed roll/no-roll decision rule at day 10 of the window [^1].",
+  "datePublished": "2025-11-25T23:33:50.204261",
+  "temporalCoverage": "2025-11-18/2025-11-25",
+  "hasPart": [
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.msn.com/en-us/movies/news/a24-barnes-noble-partner-on-branded-in-store-spaces-for-indie-studios-books-movies-merch/ar-AA1R7Fqi?ocid=BingNewsVerp",
+        "https://www.msn.com/en-us/movies/news/a24-barnes-noble-partner-on-branded-in-store-spaces-for-indie-studios-books-movies-merch/ar-AA1R7Fqi"
+      ],
+      "about": "Market"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.bisnow.com/new-york/news/retail/retail-property-management-cushmanwakefield-studiob-131980"
+      ],
+      "about": "Market"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.forbes.com/councils/forbesbusinesscouncil/2025/11/25/how-agentic-commerce-is-reshaping-retail-and-cpg-strategy/",
+        "https://www.forbes.com/sites/sap/2025/11/19/learn-how-agentic-ai-and-business-suites-put-the-perfect-store-within-reach/"
+      ],
+      "about": "Technology"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.forbes.com/councils/forbescommunicationscouncil/2025/11/25/how-to-choose-the-right-creative-formats-to-cut-through-content-overload/",
+        "https://www.marketwatch.com/press-release/imagine-s-q4-trends-highlights-emotional-connections-in-retail-out-of-home-and-collectibles-34421084"
+      ],
+      "about": "Cultural"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.gigwise.com/studio-to-street-alo-yoga-shoes-that-support-every-step/",
+        "https://www.businessreport.com/article/how-baton-rouge-store-owners-are-adapting-to-a-shifting-retail-landscape"
+      ],
+      "about": "Behavioral"
+    }
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": 0.89
+  }
+}

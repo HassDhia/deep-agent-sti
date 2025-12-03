@@ -1,0 +1,109 @@
+{
+  "spine_hook": "Success = sustained +10–15% foot-traffic lift (stretch ≥25%) with early-window transactions 20–30% and Event CPA ≤0.8× baseline.",
+  "anchors": [
+    {
+      "id": "Q1",
+      "headline": "Scale of vacant-to-studio conversions in practice",
+      "topic": "Converted vacant retail spaces operated by Zero Empty Spaces",
+      "value_low": 33,
+      "value_high": 33,
+      "unit": "locations",
+      "status": "observed",
+      "band": "base",
+      "owner": "Property Management",
+      "expression": "33 active converted spaces in operator portfolio",
+      "source_ids": [
+        7
+      ],
+      "applies_to_signals": [
+        "S2",
+        "S4"
+      ]
+    },
+    {
+      "id": "Q2",
+      "headline": "Operational cadence for flagship content sessions",
+      "topic": "Branded content sessions per flagship per 6-week window",
+      "value_low": 4,
+      "value_high": 4,
+      "unit": "sessions",
+      "status": "target",
+      "band": "base",
+      "owner": "Brand Marketing",
+      "expression": "Run 4 branded content sessions per flagship every 6 weeks",
+      "source_ids": [
+        1,
+        8,
+        2,
+        6
+      ],
+      "applies_to_signals": [
+        "S1",
+        "S3",
+        "S4"
+      ]
+    },
+    {
+      "id": "Q3",
+      "headline": "Foot-traffic uplift target from Store-as-Studio events",
+      "topic": "Foot-traffic uplift vs baseline",
+      "value_low": 10,
+      "value_high": 25,
+      "unit": "%",
+      "status": "target",
+      "band": "base/stretch",
+      "owner": "Retail Ops + Analytics",
+      "expression": "10–15% uplift base; stretch to ≥25% in top markets",
+      "source_ids": [
+        2
+      ],
+      "applies_to_signals": [
+        "S1",
+        "S2",
+        "S3"
+      ]
+    }
+  ],
+  "measurement_plan": [
+    {
+      "id": "M1",
+      "metric": "Event CPA",
+      "expression": "CPA ≤ 0.80× baseline",
+      "owner": "Performance marketing",
+      "timeframe": "Thanksgiving weekend (Nov 27–30 window)",
+      "status": "plan",
+      "why_it_matters": "Keeps acquisition efficient while scaling experiential spend; guardrail for ROI."
+    },
+    {
+      "id": "M2",
+      "metric": "Buyer activity share vs promo intensity",
+      "expression": "Transactions in early window 20–30% while promo SKU share ≈ LY",
+      "owner": "Merch + Analytics",
+      "timeframe": "Nov 13–26 (early-window test + holiday lead)",
+      "status": "plan",
+      "notes": "Track buyer share alongside promo SKU percent to avoid growth driven purely by discounting.",
+      "why_it_matters": "Paired metrics protect margin while growing true buyer counts; separates footfall from discount-driven transactions."
+    },
+    {
+      "id": "M3",
+      "metric": "QR / scan redemption",
+      "expression": "Redemptions ≥ 5% of measured footfall per event day",
+      "owner": "Store Operations",
+      "timeframe": "Nov 20–27 (pilot week)",
+      "status": "plan",
+      "notes": "Baseline footfall must be measured via door counters or Wi‑Fi for denominator; tag redemptions to events.",
+      "why_it_matters": "Direct trace of content-to-purchase conversion and a leading indicator of early-window transactions."
+    },
+    {
+      "id": "M4",
+      "metric": "Cross-system attribution & personalization rollout",
+      "expression": "Complete data audit; deploy 1,000 personalized in-store offers and measure redemption lift vs baseline",
+      "owner": "Data & CRM",
+      "timeframe": "6 weeks (audit → offer → measure)",
+      "status": "plan",
+      "notes": "Provides attribution backbone to tie content events to incremental buyers and CPA.",
+      "why_it_matters": "The leverage point sits here. Without single-source attribution, experiential lifts will be noisy and unrepeatable."
+    }
+  ],
+  "coverage": 0.85
+}

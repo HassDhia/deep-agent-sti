@@ -1,0 +1,726 @@
+{
+  "deep_analysis": {
+    "sections": [
+      {
+        "title": "Holiday windows are deal-hungry",
+        "spine_position": "what",
+        "priority": 1,
+        "scan_line": "Early holiday shoppers are actively hunting deals; timing matters more than depth.",
+        "insight": "Shoppers are entering the holiday period primed to hunt deals, creating high-value early windows for promotions [^1]. The mechanism is behavioral: visible scarcity or event framing accelerates purchase timing and share of wallet into earlier windows. This creates an opening to shift spend from late blanket markdowns into targeted early activations that capture share without full margin surrender [^1].",
+        "operator_note": "Treat early holiday weeks as a finite capture window. Prioritize tests that move purchase timing earlier rather than just increasing discount depth. Measure early-window share daily and attribute changes to specific activations.",
+        "instrument_next": "Instrument a 2-week early-window pilot that randomizes stores into control, blanket-percent discount, and collaboration-event groups and log daily early-window share, foot traffic, and buyer activity share.",
+        "citations": [
+          1
+        ]
+      },
+      {
+        "title": "Blanket discounts lift traffic but hollow margin",
+        "spine_position": "so_what",
+        "priority": 1,
+        "scan_line": "Sitewide percent-offs raise visits quickly but compress gross margin and lower promo ROI.",
+        "insight": "Broad percent-off campaigns reliably increase foot traffic and short-term sales but produce large margin erosion and weaken pricing reference for future events [^4]. Mechanism: undifferentiated discounts pull forward demand and reduce customer willingness to buy at full price, increasing event CPA when measured net of margin loss [^4][^2]. Compared with targeted offers, blanket discounts deliver simpler activation but worse long-term media value and lower incremental buyer activity per dollar spent.",
+        "operator_note": "Stop relying on blanket percent-offs as the default. If you must use sitewide discounts, limit duration and couple with incrementality measurement that includes margin impact. Use price-curve logic to set thresholds where promotion is still profitable.",
+        "instrument_next": "Instrument a margin-aware lift test where blanket discounts run in a subset of stores while capturing per-transaction margin, incremental units, and event CPA against baseline.",
+        "citations": [
+          4,
+          2
+        ]
+      },
+      {
+        "title": "Collab-led events preserve margin but need activation rigor",
+        "spine_position": "so_what",
+        "priority": 1,
+        "scan_line": "Partner collaborations trade lower discount depth for higher owned media and targeted reach.",
+        "insight": "Collaboration-led activations can preserve margin while driving foot traffic by trading percent-off depth for partner co-marketing and exclusive SKUs or bundles [^4][^5]. The mechanism is a shift from price-led pull to value-led pull: partner audiences and event storytelling raise conversion without uniform price cuts, but success depends on precise inventory allocation and shared media execution. Compared with blanket discounts, collabs reduce margin leakage but break when partner reach is insufficient or execution underfunded.",
+        "operator_note": "Choose partners with proven local reach or category fit. Lock exclusive SKUs or limited bundles to prevent direct price comparability. Set joint KPI splits: foot traffic, QR redemptions, buyer activity share, and media impressions with partner attribution.",
+        "instrument_next": "Instrument a partner event in 8 stores with exclusive SKUs, shared media buy, and track partner-driven foot traffic, QR redemption rate, buyer activity share, and gross margin per transaction.",
+        "citations": [
+          4,
+          5
+        ]
+      },
+      {
+        "title": "Apply price-curve rules to collaboration inventory",
+        "spine_position": "now_what",
+        "priority": 2,
+        "scan_line": "Use price curves to find profitable promo points for collab SKUs and event CPA limits.",
+        "insight": "Price-curve optimization lets you set promotion depths that hit traffic and CPA targets while holding margin objectives for collaboration inventory [^2]. Mechanism: map elasticity by SKU and audience segment, then build discrete promo rungs that target highest-likelihood buyers without universal markdowns. This also establishes a repeatable rule set for scaling collab offers across stores and partners.",
+        "operator_note": "Use SKU-level elasticity to create 3 promo rungs for collab inventory: teaser, core, and clearance. Cap event CPA at your ceiling and prioritize rungs that keep blended margin above threshold. Bake these rules into POS and media attribution tagging.",
+        "instrument_next": "Instrument a price-curve test across collab SKUs with three discrete promo rungs, tracking SKU elasticity, event CPA, blended margin, and buyer activity share weekly.",
+        "citations": [
+          2
+        ]
+      }
+    ],
+    "summary": "Target early holiday weeks with experiments that trade blanket depth for targeted collaboration offers. Run randomized store tests comparing blanket discounts versus partner events while instrumenting SKU-level price curves, QR redemption, foot traffic, buyer activity share, event CPA, and margin. Use partner media and exclusive SKUs to protect price integrity. The next step is a controlled pilot that measures incrementality per dollar spent, not just sales lift."
+  },
+  "pattern_matches": [
+    {
+      "label": "Blanket percent-off capture",
+      "then": "Department stores historically used sitewide percent-offs during slow growth to move volume and reassure bargain-seeking shoppers.",
+      "now": "In low-growth 2025, sitewide percent-offs still move traffic but compress margin and train buyers to wait for the next blanket sale.",
+      "operator_leap": "A/B test calendar-limited sitewide 20% off versus targeted, non-percent tactics (member-only bundles and gift-with-purchase); track event CPA, buyer activity share, and margin per buyer over two holiday windows.",
+      "supports_approach": "discount-heavy holiday",
+      "citations": [
+        1,
+        4,
+        2
+      ]
+    },
+    {
+      "label": "Scarcity collab drops",
+      "then": "Streetwear and niche brands used limited collabs and drops to create urgency and extract premium price without broad discounting.",
+      "now": "Brands and retailers can replicate that mechanic with limited-run collabs in stores to lift foot traffic and early-window share while protecting margin.",
+      "operator_leap": "Run a 300-unit collab drop across three high-opportunity stores with tiered pricing: full price day one, one timed minimal markdown for slow SKUs; measure foot_traffic_uplift, early_window_share, and event CPA.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        5,
+        2,
+        4
+      ]
+    },
+    {
+      "label": "Store-as-studio activations",
+      "then": "Retail pop-ups and experiential activations have historically converted transient interest into purchase spikes and earned earned-media.",
+      "now": "Using stores as content studios for collab activations lets you amplify local reach and measure in-store conversion without turning to blanket discounts.",
+      "operator_leap": "Book two weekend collab activations per market, produce 15- to 30-second social clips on-site, run local paid with CPA cap, and use QR-triggered offers to track redemption as share of footfall.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        5,
+        1
+      ]
+    },
+    {
+      "label": "Price-curve optimization for collab inventory",
+      "then": "Seasonal clearance historically relied on linear markdown ramps that maximized sell-through at the cost of margin.",
+      "now": "Price-curve optimization sets volume-price breakpoints per SKU and cohort to preserve margin while hitting clearance goals for collaboration inventory.",
+      "operator_leap": "Apply a price-curve to 20% of collab SKUs: define target volumes at three price points, automate one conditional markdown trigger, and report margin per unit and event CPA versus control.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        2
+      ]
+    },
+    {
+      "label": "Value-add discount types over percent-offs",
+      "then": "Retailers defaulted to percent-offs as the simplest lever to increase conversions but often reduced AOV and lifetime value.",
+      "now": "Non-linear discounts such as bundles, BOGO-lite, and gift-with-purchase preserve price integrity and lift conversion without the same margin erosion.",
+      "operator_leap": "Replace a planned 20% sitewide with three-week tests of (A) bundle pricing, (B) gift-with-purchase, and (C) loyalty-first exclusive access; compare buyer activity share, AOV, and margin per buyer.",
+      "supports_approach": "discount-heavy holiday",
+      "citations": [
+        4,
+        5
+      ]
+    },
+    {
+      "label": "Staged access to grow early-window share",
+      "then": "Early-bird promotions historically concentrated holiday spend into high-margin opening windows.",
+      "now": "Staging inventory and perks by access tier for collabs drives disproportionate early-window share without resorting to blanket discounts.",
+      "operator_leap": "Implement tiered access: loyalty early window at premium price, followed by public window with limited perks; measure early_window_share, foot_traffic_uplift, and whether event CPA stays under the 0.80x ceiling.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        1,
+        5,
+        2
+      ]
+    }
+  ],
+  "brand_outcomes": [
+    {
+      "title": "Move 20% of holiday demand into an earlier window with partner-funded limited bundles",
+      "description": "Test a 4-week early-window program that sells co-branded bundles available only in stores and limited in quantity. Price bundles using a price-curve so partner contribution covers most of the visible discount; keep unit margin near regular assortment levels while shifting demand forward. Measure early-window share, foot-traffic lift and event CPA against baseline to validate before scaling [^1][^2].",
+      "impact": "Early-window share to 20-30%, foot-traffic uplift 10-15% (stretch ≥25%), event CPA ≤0.8× baseline; protects incremental margin via partner funding and price-curve optimization",
+      "time_horizon": "next 6 weeks",
+      "owner": "Partnerships + Retail ops + Pricing",
+      "citations": [
+        1,
+        2
+      ]
+    },
+    {
+      "title": "Replace blanket percent-offs with scarcity-priced exclusives for lower promo intensity",
+      "description": "Stop sitewide percent discounts for a 6-week test and run limited-edition SKUs priced at a small premium or neutral margin. Use scarcity messaging and SKU-level markdown windows instead of storewide cuts. Track buyer activity share vs promo intensity to verify lower discount spend yields equal or higher conversion per dollar spent [^2][^5].",
+      "impact": "Incremental margin preserved; lowers promo spend and CPA while maintaining buyer activity; increases buyer activity share per promo dollar",
+      "time_horizon": "next 6 weeks",
+      "owner": "Pricing + Merchandising",
+      "citations": [
+        2,
+        5
+      ]
+    },
+    {
+      "title": "Use stores as studios: local collab events + QR funnel to convert footfall to buyers",
+      "description": "Run weekend in-store collab activations where guests scan a QR to unlock a timed offer or reserve exclusive stock. Set QR offer as best available for that hour to drive immediate purchase. Target QR redemption at least 5% of footfall and measure uplifts in conversion and buyer share during event windows [^1][^5].",
+      "impact": "Foot-traffic uplift concentrated in event windows; QR redemption ≥5% of footfall; raises conversion and buyer share without broad discounting",
+      "time_horizon": "next 6 weeks",
+      "owner": "Retail ops + CRM + Partnerships",
+      "citations": [
+        1,
+        5
+      ]
+    },
+    {
+      "title": "Pair buyer activity share vs promo intensity as the north-star test KPI",
+      "description": "Implement a daily dashboard that plots buyer activity share against promo intensity (discount depth × reach) for each channel and event. Use it to stop high-reach, low-yield discounts and reallocate spend to collaborator events that show higher buyer-share per promo dollar [^5][^2].",
+      "impact": "Reduces wasted discounting; improves event CPA and ROI; enables quick stop/go decisions on promotional tactics",
+      "time_horizon": "next 30 days",
+      "owner": "Analytics + Finance",
+      "citations": [
+        5,
+        2
+      ]
+    }
+  ],
+  "operator_notes": "Focus tests on early-access collabs, price-curve optimization, and experience-tied offers. Prioritize: 1) stand up daily buyer-activity vs promo-intensity dashboard now, 2) run a 6-week price-curve + bundling test to set promo depth, 3) execute store-as-studio events to validate >=25% foot traffic uplift and >=5% QR redemption. Competing approach: blanket holiday discounts scale traffic but erode margin and raise promo expectations; use dashboard and price-curve tests to limit blanket discounts to scoped, measurable segments only.",
+  "quant": {
+    "spine_hook": "Success = collaboration offers lift store traffic ≥10% and early-window buyer share to 20–30% while event CPA stays ≤0.8× baseline.",
+    "anchors": [
+      {
+        "id": "Q1",
+        "headline": "Target: store foot-traffic uplift (base)",
+        "topic": "Foot traffic uplift",
+        "value_low": 10,
+        "value_high": 15,
+        "unit": "% uplift",
+        "status": "target",
+        "band": "base",
+        "owner": "Store Ops",
+        "expression": "Store visits during event week = LY visits × (1 + 0.10–0.15)",
+        "source_ids": [
+          1
+        ],
+        "applies_to_signals": [
+          "high_value_windows",
+          "store_media_events"
+        ]
+      },
+      {
+        "id": "Q2",
+        "headline": "Stretch target: store foot-traffic uplift",
+        "topic": "Foot traffic uplift",
+        "value_low": 25,
+        "value_high": 25,
+        "unit": "% uplift",
+        "status": "target",
+        "band": "stretch",
+        "owner": "Store Ops",
+        "expression": "Store visits during event week ≥ LY visits × 1.25",
+        "source_ids": [
+          1
+        ],
+        "applies_to_signals": [
+          "high_value_windows",
+          "store_media_events"
+        ]
+      },
+      {
+        "id": "Q3",
+        "headline": "Observed: early-window buyer share (current)",
+        "topic": "Early-window share",
+        "value_low": 12,
+        "value_high": 15,
+        "unit": "% of period transactions",
+        "status": "observed",
+        "band": "base",
+        "owner": "Analytics",
+        "expression": "Transactions in Nov 23–30 early window ≈ 12–15% of event-week total",
+        "source_ids": [
+          5
+        ],
+        "applies_to_signals": [
+          "buyer_activity",
+          "promo_timing"
+        ]
+      },
+      {
+        "id": "Q4",
+        "headline": "Guardrail: event CPA ceiling",
+        "topic": "Event CPA vs baseline",
+        "value_low": 0.0,
+        "value_high": 0.8,
+        "unit": "× baseline CPA",
+        "status": "target",
+        "band": "base",
+        "owner": "Performance marketing",
+        "expression": "CPA for collab-led campaigns ≤ 0.80 × campaign baseline CPA",
+        "source_ids": [
+          2,
+          5
+        ],
+        "applies_to_signals": [
+          "promo_type",
+          "media_efficiency"
+        ]
+      }
+    ],
+    "measurement_plan": [
+      {
+        "id": "M1",
+        "metric": "Event CPA",
+        "expression": "CPA ≤ 0.80× baseline",
+        "owner": "Performance marketing",
+        "timeframe": "2025-11-23 to 2025-11-30",
+        "status": "plan",
+        "why_it_matters": "Keeps customer acquisition cost within margin guardrail while testing collab offers."
+      },
+      {
+        "id": "M2",
+        "metric": "Buyer activity share vs promo intensity",
+        "expression": "Early-window transactions = 20–30% while promo SKU share ≈ LY (no blanket % offs increase)",
+        "owner": "Merch + Analytics",
+        "timeframe": "2025-11-23 to 2025-11-30",
+        "status": "plan",
+        "notes": "Track early-window share and % of SKUs on promo side by side; flag if promo SKU share rises >5ppt vs LY",
+        "why_it_matters": "Paired metrics show whether added buyers come from demand or from heavier blanket discounts."
+      },
+      {
+        "id": "M3",
+        "metric": "QR redemption rate (store-as-studio activation)",
+        "expression": "QR redemptions ≥ 5% of footfall and conversion from QR > store baseline conversion",
+        "owner": "Store Ops + Partnerships",
+        "timeframe": "2025-11-23 to 2025-11-30",
+        "status": "plan",
+        "why_it_matters": "Direct measurement of collab-engagement and attributable buyer lift without blanket discounts."
+      },
+      {
+        "id": "M4",
+        "metric": "Price-curve test: collab SKU promo ROI",
+        "expression": "Incremental margin per $ discount ≥ baseline margin per $ discount for blanket offers",
+        "owner": "Pricing / Merch",
+        "timeframe": "Test window: 2 weeks including 2025-11-23 to 2025-11-30",
+        "status": "plan",
+        "notes": "Run A/B: targeted collab price curve vs flat percent-off across comparable stores; measure incremental revenue, margin, and units.",
+        "why_it_matters": "Shows how collaboration pricing changes discounting math and preserves margin vs blanket percent-offs."
+      }
+    ],
+    "coverage": 0.85
+  },
+  "activation_kit": [
+    {
+      "display": {
+        "pillar": "Retail Activation",
+        "play_name": "Early-window Mini-burst Collab",
+        "card_title": "Two-week collab event to shift early holiday demand",
+        "persona": "Head of Retail / Partnerships",
+        "best_fit": "Flagships or high-traffic stores with flexible bay space and local brand partners",
+        "not_for": "Full-chain blanket percent-off campaigns or low-traffic micro-stores",
+        "thresholds_summary": "Success if event CPA ≤ 0.8× baseline and redemptions ≥ 15% within the mini-burst.",
+        "why_now": "Early holiday shoppers are deal-hungry; short, visible events capture purchase intent earlier.",
+        "proof_point": "Behavioral signal: front-loaded holiday demand can be reallocated to early activations to capture share without broad markdowns.",
+        "approach_name": "collab-led holiday / mini-burst",
+        "time_horizon": "pilot",
+        "placement_options": [
+          "Flagship window with staffed activation",
+          "Front-of-store event bay",
+          "Curbside popup canopy"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Retail Ops Lead",
+        "collaborator": "Local Brand Partner",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "cpa": "≤0.8× baseline",
+          "redemption_rate": "≥15%",
+          "min_duration_days": "7",
+          "max_duration_days": "14"
+        },
+        "prerequisites": [
+          "Door counts and baseline CPA",
+          "Single-use redemption code or barcode",
+          "Staff schedule and training brief",
+          "Local permits (if needed)"
+        ],
+        "target_map": [
+          {
+            "org_type": "Retailer",
+            "role": "Retail ops",
+            "why_now": "Vacant bay or flexible event slot during early holiday weeks"
+          },
+          {
+            "org_type": "Brand",
+            "role": "Regional marketing",
+            "why_now": "Wants concentrated early demand and local PR lift"
+          },
+          {
+            "org_type": "Studio",
+            "role": "Event producer",
+            "why_now": "Can package turnkey staffing and display in short lead time"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Pilot kickoff",
+            "narrative": "Align objectives, confirm location, and lock redemption mechanics.",
+            "CTA": "Book the pilot",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "3",
+            "subject": "Mid-burst check",
+            "narrative": "Share first 72-hour redemption and foot-traffic snapshots and adjust staffing or display.",
+            "CTA": "Share instrumentation",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "10",
+            "subject": "Wrap and decide",
+            "narrative": "Review CPA, redemption and margin impact and decide roll/no-roll.",
+            "CTA": "Sign off",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "medium",
+        "strategy_tag": "collab-led holiday / mini-burst"
+      },
+      "play_name": "Early-window Mini-burst Collab",
+      "pillar": "Retail Activation"
+    },
+    {
+      "display": {
+        "pillar": "Pricing & Promotions",
+        "play_name": "Staged Discount + Bundle Upsell",
+        "card_title": "Tiered discounts with targeted bundles to protect margin",
+        "persona": "Head of Pricing / CMO",
+        "best_fit": "Brands with margin visibility, CRM segmentation, and available accessory SKUs",
+        "not_for": "Brands that must run sitewide percent-offs to clear inventory",
+        "thresholds_summary": "Aim for per-order margin ≥ baseline minus 100 bps and 90-day repeat at or above baseline.",
+        "why_now": "Blanket discounts drive traffic but erode margin; staged offers capture demand while preserving price reference.",
+        "proof_point": "Signal: targeted staged discounts shift purchase timing with less margin leakage than sitewide percent-offs.",
+        "approach_name": "discount-heavy holiday / staged discount",
+        "time_horizon": "6-week",
+        "placement_options": [
+          "Endcap promo + bundled SKU shelf",
+          "Email segment + in-store signage"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Promo Strategy Lead",
+        "collaborator": "Brand Pricing",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "margin_per_order": "≥ baseline −100bps",
+          "repeat_90d": "≥ baseline",
+          "min_redemption_share": "≥15% for targeted cohort"
+        },
+        "prerequisites": [
+          "Baseline margin and 90-day repeat benchmarks",
+          "Inventory allocation by store",
+          "CRM segments for early-bird shoppers",
+          "Approved bundle and price signage copy"
+        ],
+        "target_map": [
+          {
+            "org_type": "Retailer",
+            "role": "Merchandising",
+            "why_now": "Can allocate endcap space and control in-store placement"
+          },
+          {
+            "org_type": "Brand",
+            "role": "Pricing / Revenue",
+            "why_now": "Can protect margin with structured tiers versus blanket markdowns"
+          },
+          {
+            "org_type": "CRM",
+            "role": "Lifecycle Marketing",
+            "why_now": "Can target early-window cohorts and measure repeat behavior"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Launch plan",
+            "narrative": "Confirm tiers, bundles, and segmentation for the staged discount window.",
+            "CTA": "Approve price tiers",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "14",
+            "subject": "Performance checkpoint",
+            "narrative": "Share margin per order and redemption by cohort and adjust tiers if margin slips.",
+            "CTA": "Adjust tiers",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "42",
+            "subject": "Outcome review",
+            "narrative": "Compare 90-day repeat and margin against baseline to decide scale.",
+            "CTA": "Decide scale",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": false,
+        "ops_drag": "medium",
+        "strategy_tag": "discount-heavy holiday / staged discount"
+      },
+      "play_name": "Staged Discount + Bundle Upsell",
+      "pillar": "Pricing & Promotions"
+    },
+    {
+      "display": {
+        "pillar": "Store-as-Studio",
+        "play_name": "Store-as-Studio Live Content Drop",
+        "card_title": "Live-streamed drops from store to accelerate discovery and conversion",
+        "persona": "Head of Studio / Head of Marketing",
+        "best_fit": "Flagships with AV capability or fast setup for live streams and owned social channels",
+        "not_for": "Stores without reliable bandwidth or where in-store staffing is constrained",
+        "thresholds_summary": "Target CPA ≤ 0.8× baseline for media-led acquisition and maintain 90-day repeat at baseline.",
+        "why_now": "Media-led store moments turn physical presence into amplified, measurable reach during early holiday demand peaks.",
+        "proof_point": "Signal: treating stores as media studios increases early-window share and drives measurable online conversions tied to live events.",
+        "approach_name": "store-as-studio / media-led holiday",
+        "time_horizon": "immediate",
+        "placement_options": [
+          "In-store demo stage with camera rig",
+          "Window studio with livestream setup"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Studio",
+        "collaborator": "Brand Creative Team",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "cpa": "≤0.8× baseline",
+          "repeat_90d": "≥ baseline",
+          "min_live_viewers": "≥500 (channel-dependent)"
+        },
+        "prerequisites": [
+          "AV and reliable uplink",
+          "Talent and run-of-show",
+          "Content plan with product CTAs and redemption codes",
+          "Measurement plan linking live events to transactions"
+        ],
+        "target_map": [
+          {
+            "org_type": "Studio",
+            "role": "Producer",
+            "why_now": "Can package live production quickly and control creative"
+          },
+          {
+            "org_type": "Brand",
+            "role": "Creative",
+            "why_now": "Wants media-first activations that drive measurable conversion"
+          },
+          {
+            "org_type": "Retailer",
+            "role": "Store Manager",
+            "why_now": "Provides space and staff for live activations during early windows"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Creative and tech kickoff",
+            "narrative": "Confirm run-of-show, streaming channels, and measurement links.",
+            "CTA": "Lock the run-of-show",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "2",
+            "subject": "Dry run",
+            "narrative": "Execute technical rehearsal and confirm CTAs, codes, and on-screen assets.",
+            "CTA": "Execute dry run",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "7",
+            "subject": "Live event & data pull",
+            "narrative": "Run the live drop and extract first-touch conversion and viewership metrics.",
+            "CTA": "Pull results",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "high",
+        "strategy_tag": "store-as-studio / media-led holiday"
+      },
+      "play_name": "Store-as-Studio Live Content Drop",
+      "pillar": "Store-as-Studio"
+    }
+  ],
+  "risk_radar": [
+    {
+      "risk_name": "Blanket discount margin erosion",
+      "scan_line": "Risk: sitewide percent-offs raise visits but hollow margin and lower promo ROI",
+      "trigger": "Long-duration or deep sitewide percent promotions during holiday windows",
+      "detection": "Track gross margin per unit, promo ROI, sell-through vs cost, and holdout vs treated lift daily",
+      "mitigation": "Segment promotions by SKU and cohort; run randomized holdouts to measure true lift",
+      "severity": 3,
+      "likelihood": 3,
+      "approach_exposure": "discount-heavy",
+      "citations": [
+        "[2]"
+      ]
+    },
+    {
+      "risk_name": "Early-window deal training reduces full-price demand",
+      "scan_line": "Risk: visible early deals condition shoppers to wait for markdowns and shift volume from full-price periods",
+      "trigger": "High-frequency early activations or broad early event framing that increases deal salience",
+      "detection": "Measure full-price share, time-to-purchase curve, early-window share, and repeat buyer discount reliance",
+      "mitigation": "Limit eligible SKUs and cap promo frequency; run 2-week randomized pilots to test timing vs depth",
+      "severity": 2,
+      "likelihood": 2,
+      "approach_exposure": "early-activation",
+      "citations": [
+        "[1]"
+      ]
+    },
+    {
+      "risk_name": "Collaboration events underdeliver or fragment demand",
+      "scan_line": "Risk: narrow-appeal collabs lift PR but fail to scale revenue or hurt conversion on core assortments",
+      "trigger": "Partner drops with limited audience fit, supply constraints, or premium pricing vs expectation",
+      "detection": "Instrument conversion vs baseline, sell-through velocity, return rate, and take-rate by cohort",
+      "mitigation": "Pilot collabs as limited drops with clear sell-through gates; reallocate scale only after meeting conversion and AOV thresholds",
+      "severity": 2,
+      "likelihood": 2,
+      "approach_exposure": "collab-led holiday",
+      "citations": [
+        "[3]"
+      ]
+    },
+    {
+      "risk_name": "Media-driven store traffic with low commercial return",
+      "scan_line": "Risk: store-as-studio or media pushes drive costly visits that convert below target",
+      "trigger": "High-reach media or content that targets broad but low-intent audiences without inventory/staff alignment",
+      "detection": "Track visits-to-conversion, revenue per visit, staff overtime, and holdout-area comparisons during media bursts",
+      "mitigation": "Target media to high-intent cohorts; sync inventory and staffing to media schedule; measure with geographic or temporal holdouts",
+      "severity": 2,
+      "likelihood": 2,
+      "approach_exposure": "store-as-studio / media-led holiday",
+      "citations": [
+        "[4]"
+      ]
+    }
+  ],
+  "future_outlook": [
+    {
+      "horizon": "6-month",
+      "headline": "Capture early demand with partner-led limited events",
+      "scan_line": "If true, we will see a 10–18% lift in early-window footfall and buyer activity share within 2 months",
+      "description": "Targeted, time-boxed collaborations with brands or creators redirect shoppers into stores earlier without broad percent-off mechanics, increasing early-window buyer activity [^1]. Pilot tests that replace blanket discounts with partner-limited offers typically show footfall lift with smaller gross-margin erosion versus sitewide percent-offs [^2]. Daily attribution of early-window share to specific activations will reveal whether the lift is genuine capture or simple discount cannibalization [^3].",
+      "operator_watch": "Daily early-window buyer activity share (store-level)",
+      "collaboration_upside": "Sustain a 10–15% weekly lift in early-window buyer activity while holding gross margin within 2 points of baseline and shifting 25–40% of promo spend into partner activations",
+      "dominant_approach": "collab-led holiday",
+      "confidence": 0.8,
+      "citations": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "horizon": "12-month",
+      "headline": "Scale partner activations into store-as-studio plays",
+      "scan_line": "If true, we will see improved promo ROI and a 5–10% comp in store visit frequency within 9–12 months",
+      "description": "Consistently investing in collaboration-led events and converting stores into content hubs produces higher promo ROI and better margin retention than repeated blanket discounts [^2]. Scaling requires playbooks, media-to-store attribution, and SKU-level margin guardrails to prevent hidden discounting and cannibalization [^4]. If those operational levers are not built, spend will revert to blanket percent-offs and margins will compress with limited lasting loyalty gains [^3].",
+      "operator_watch": "Promo ROI per dollar invested (rolling 12-week)",
+      "collaboration_upside": "Increase promo ROI by 20–40%, raise annual store visit frequency by 5–10%, and reduce promo-driven margin loss versus baseline",
+      "dominant_approach": "store-as-studio / media-led holiday",
+      "confidence": 0.65,
+      "citations": [
+        2,
+        4,
+        3
+      ]
+    }
+  ],
+  "comparison_map": {
+    "approach_map": [
+      {
+        "approach_name": "Discount-heavy holiday",
+        "who_it_is_for": "Head of Merch / Promotions who must hit short-term volume targets.",
+        "strengths": "Moves predictable traffic and clears inventory quickly; historical pattern shows sitewide percent-offs reliably raise visits (S1). Works when velocity is the priority over margin.",
+        "failure_modes": "Erodes gross margin per unit and compresses promo ROI if run long or deep (R1). Trains buyers to wait for blanket sales, reducing full-price share (R2).",
+        "when_to_choose": "Choose when surplus inventory must convert within a short window and margin targets can be relaxed.",
+        "when_not_to_choose": "Do not choose when preserving price integrity or margin per buyer is a strategic priority.",
+        "supporting_signals": [
+          "S1"
+        ],
+        "key_risks": [
+          "Blanket discount margin erosion",
+          "Early-window deal training reduces full-price demand"
+        ],
+        "key_metrics": [
+          "foot_traffic_uplift",
+          "event_cpa",
+          "gross_margin_per_unit",
+          "promo_roi",
+          "sell_through_rate"
+        ]
+      },
+      {
+        "approach_name": "Collab-led holiday (partner-funded bundles and scarcity drops)",
+        "who_it_is_for": "Head of Partnerships and Head of Retail operations who can secure local or national brand partners.",
+        "strengths": "Shifts early-window demand while protecting unit margin via partner contributions and scarcity mechanics (S2, S3). Limited quantities create urgency and support premium pricing vs blanket markdowns.",
+        "failure_modes": "Partner funding or inventory commitments can fail, leaving visible discounts or empty-shelf outcomes (R3). If overused, early offers can still train buyers to wait for deals (R2).",
+        "when_to_choose": "Choose when you can land partner-funded SKUs or bundles that cover visible discount and you need to move demand earlier.",
+        "when_not_to_choose": "Do not choose if partner commitments are unproven or you cannot guarantee SKU-level scarcity and measurement.",
+        "supporting_signals": [
+          "S2",
+          "S3"
+        ],
+        "key_risks": [
+          "Collaboration execution failure",
+          "Early-window deal training reduces full-price demand"
+        ],
+        "key_metrics": [
+          "early_window_share",
+          "partner_contribution_pct",
+          "margin_per_buyer",
+          "redemption_rate",
+          "event_cpa"
+        ]
+      },
+      {
+        "approach_name": "Store-as-studio / media-led holiday",
+        "who_it_is_for": "CMO / Head of Retail with a flagship or high-traffic store that can host content and staffed activations.",
+        "strengths": "Drives measurable foot traffic and creates reusable media assets that lower paid acquisition over time (S4). Short staffed activations can convert awareness into immediate purchases and higher AOV.",
+        "failure_modes": "High execution complexity can produce low conversion if location selection or staffing is wrong (R3). If activations emphasize spectacle over buyable inventory, you risk traffic without buyer share (R1).",
+        "when_to_choose": "Choose when you have at least one flagship with flexible space and the ability to produce local content and staffing.",
+        "when_not_to_choose": "Do not choose if store traffic is uniformly low or you lack the operations capacity to staff and measure the activation.",
+        "supporting_signals": [
+          "S4",
+          "S2"
+        ],
+        "key_risks": [
+          "Collaboration execution failure",
+          "Blanket discount margin erosion"
+        ],
+        "key_metrics": [
+          "foot_traffic_uplift",
+          "qr_redemption",
+          "incremental_buyer_rate",
+          "avg_order_value",
+          "event_cpa"
+        ]
+      }
+    ],
+    "buyer_guide": [
+      {
+        "option_name": "Traditional agency retainer",
+        "best_for": "Brands needing turnkey creative and program management across many doors and channels.",
+        "not_for": "Operators with no budget for retained fees or who need rapid local pilots.",
+        "commercial_shape": "Monthly retainer plus production and media costs. Minimum 3 month engagement typical.",
+        "proof_needed_before_scaling": "Two pilot events with >=15% foot traffic lift and event CPA <=0.8x baseline before rolling to more stores.",
+        "where_STI_fits": "STI supplies the experiment design, KPI spec, holdout plan and daily measurement dashboard for agency to execute against."
+      },
+      {
+        "option_name": "In-house studio sprint",
+        "best_for": "Operators with a content team and one or two flagships who want fast control of creative and operations.",
+        "not_for": "Teams lacking production bandwidth or storefronts suitable for staffed activations.",
+        "commercial_shape": "Fixed 4 to 6 week sprint fee plus per-event production budget. One-off build then iterative event running.",
+        "proof_needed_before_scaling": "Single flagship test showing content-driven conversions: >=10% AOV lift and documented media reuse that lowers CPA on paid channels.",
+        "where_STI_fits": "STI designs the sprint, templates the in-store scripts, sets measurement tags and trains ops to run the playbook."
+      },
+      {
+        "option_name": "Pop-up collab revenue-share",
+        "best_for": "Operators with weak capex who can trade space for partner-funded inventory and marketing.",
+        "not_for": "Retailers without an existing partner pipeline or who need guaranteed upfront revenue.",
+        "commercial_shape": "Short window (1 to 4 weeks). Partner funds inventory and/or buys guaranteed revenue share or pays a minimum guarantee plus revenue split.",
+        "proof_needed_before_scaling": "Partner contribution covering >=70% of visible discount and pilot early-window share >=20% while keeping margin_per_buyer near baseline.",
+        "where_STI_fits": "STI matches partner mechanics to target stores, defines the price-curve, instruments randomized holdouts and reports partner ROI."
+      }
+    ]
+  },
+  "signal_map_notes": "Focus tests on early-access collabs, price-curve optimization, and experience-tied offers. Prioritize: 1) stand up daily buyer-activity vs promo-intensity dashboard now, 2) run a 6-week price-curve + bundling test to set promo depth, 3) execute store-as-studio events to validate >=25% foot traffic uplift and >=5% QR redemption. Competing approach: blanket holiday discounts scale traffic but erode margin and raise promo expectations; use dashboard and price-curve tests to limit blanket discounts to scoped, measurable segments only."
+}

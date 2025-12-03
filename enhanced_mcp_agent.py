@@ -1,6047 +1,2655 @@
 """
-Enhanced MCP Agent
+Operator-focused Enhanced Agent
 
-Extends SimpleMCPTimeFilteredAgent to produce comprehensive 3,000-4,000 word
-research reports with specialized analysis sections using MCP tool servers.
+Collects sources, extracts signals, and composes the Brand Collab Lab report
+without thesis routing or academic infrastructure.
 """
 
-import hashlib
+from __future__ import annotations
+
+import dataclasses
 import json
 import logging
+import math
 import os
-import random
-import traceback
-from collections import Counter
+import re
+from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
+from urllib.parse import urlparse
 
-from simple_mcp_agent import SimpleMCPTimeFilteredAgent, Source, SourceType
-from models import (
-    ReportModel, SourceModel, SignalModel, SourceRelevanceScore, TitleRefinement, QueryIntent, QueryDomain,
-    ConceptList, ThesisOutline, ThesisDraft, ThesisCritique,
-    PublicationRubric, CEMGrid, CEMRow, SourceType as ThesisSourceType, AssumptionsLedgerRow, SearchQueries,
-    AbstractionLayers, CanonicalPapers
-)
+import requests
+from bs4 import BeautifulSoup
+
+from analysis_contracts import lint_quant_blocks, lint_operator_specs
+from operator_specs_normalization import normalize_operator_specs
+from quant_normalization import normalize_quant_blocks_payload
 from config import STIConfig
-# from langchain_mcp_adapters.client import MultiServerMCPClient
-import sys
-sys.path.append('servers')
-from analysis_server import (
-    analyze_market, analyze_technology, analyze_competitive,
-    expand_lenses, write_executive_summary
-)
-from budget import BudgetManager
 from confidence import ConfidenceBreakdown, headline as confidence_headline
-from file_utils import compute_content_sha, save_enhanced_report_auto, write_json
-from gates import value_of_information
-from servers.anchors import align_claims_to_evidence
-from servers.critic import adversarial_review, decision_playbooks
-from servers.quant import patch_to_dict, suggest_patch_for_vignette
-from langchain.prompts import PromptTemplate
-from langchain.output_parsers import PydanticOutputParser
-from langchain_openai import OpenAIEmbeddings
-import numpy as np
+from metrics import anchor_stage, friendly_metric_label, known_metric_ids, replace_metric_tokens
+from servers.analysis_server import (
+    generate_activation_kit,
+    generate_brand_outcomes,
+    generate_comparison_map,
+    generate_deep_analysis,
+    generate_future_outlook,
+    generate_quant_blocks,
+    generate_operator_specs,
+    generate_image_briefs,
+    generate_executive_letter,
+    generate_pattern_matches,
+    generate_risk_radar,
+    generate_signal_map,
+    write_executive_summary,
+)
 
-# Configure logging - only if root logger has no handlers (avoid conflicts)
-if not logging.getLogger().handlers:
-    logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+GRADE_ORDER = {"A": 0, "B": 1, "C": 2, "D": 3}
 
 
-class EnhancedSTIAgent(SimpleMCPTimeFilteredAgent):
-    """
-    Enhanced agent that adds deep analysis sections while
-    keeping all existing quality gates and search logic
-    """
-    
-    def __init__(self, openai_api_key: str, tavily_api_key: str = "",
-                 model_name: str = "gpt-5-mini-2025-08-07"):
-        # Initialize base agent (all existing functionality)
-        super().__init__(openai_api_key, tavily_api_key, model_name)
-        
-        # Add MCP client for deep analysis tools
-        self.analysis_client = None
-        self.analysis_tools = None
-        
-        # Curated theory anchors and small in-memory cache
-        self._anchor_cache: Dict[str, List[Source]] = {}
-        self._anchor_queries: List[str] = [
-            'Consensus and Cooperation in Networked Multi-Agent Systems Olfati-Saber Fax Murray',
-            'Distributed consensus in multi-agent systems tutorial survey',
-            'Leader–follower consensus formation control survey',
-            'Formation control multi-agent survey',
-            'Containment control multi-agent survey'
-        ]
-        self._advanced_llm = None
-        self._evidence_cache: Dict[str, Dict[str, Any]] = {}
-        self._quant_cache: Dict[str, Dict[str, Any]] = {}
-        self._adversarial_cache: Dict[str, Dict[str, Any]] = {}
-        self._query_cache: Dict[str, List[str]] = {}  # Cache for LLM-generated search queries
-        self.last_run_status: Dict[str, Any] = {}
-    
-    def initialize_analysis_tools(self):
-        """Initialize analysis tools (simplified version)"""
-        logger.info("Analysis tools initialized successfully (direct import)")
-    
-    def _calculate_source_attribution_stats(self, sources, signals, analyses):
-        """Track which sources are cited where"""
-        import re
-        
-        stats = {
-            'total_sources': len(sources),
-            'cited_in_signals': set(),
-            'cited_in_analysis': set(),
-            'uncited': []
+@dataclass
+class SourceRecord:
+    id: int
+    title: str
+    url: str
+    publisher: str
+    date: str
+    snippet: str
+    content: str
+    credibility: float
+    region: str = "US"
+    domain: str = "general"
+    source_type: str = "analysis"
+    evidence: Dict[str, Any] = dataclasses.field(default_factory=dict)
+    authority: float = 0.0
+    recency: float = 0.0
+    us_fit: float = 0.0
+    quality: float = 0.0
+    role: str = "support"
+    source_grade: str = "C"
+    tier: str = "core"
+
+
+class EnhancedSTIAgent:
+    """Single-path operator agent."""
+
+    def __init__(
+        self,
+        openai_api_key: str,
+        tavily_api_key: str = "",
+        model_name: str = None,
+        trace_mode: bool = False,
+    ):
+        self.openai_api_key = openai_api_key
+        self.tavily_api_key = tavily_api_key
+        self.model_name = model_name or STIConfig.DEFAULT_MODEL
+        self.trace_mode = trace_mode
+
+    # ------------------------------------------------------------------
+    # Public API
+    # ------------------------------------------------------------------
+    def generate_report(self, query: str, days_back: int = STIConfig.DEFAULT_DAYS_BACK) -> Dict[str, Any]:
+        self._trace("generate_report:start", {"query": query, "days_back": days_back})
+        scope = self._build_scope(query, days_back)
+        scope_json = json.dumps(scope, ensure_ascii=False)
+        sources = self._collect_sources(query, days_back, scope)
+        if not sources:
+            raise RuntimeError("No sources found for query. Adjust the query or ensure search backend is running.")
+        source_stats = self._source_statistics(sources)
+        scope["thin_evidence"] = False
+
+        sources_payload = json.dumps([asdict(src) for src in sources], ensure_ascii=False)
+        signal_payload = self._tool_json(generate_signal_map(sources_payload, scope_json))
+        raw_signals = signal_payload.get("signals", [])
+        appendix = signal_payload.get("appendix", [])
+        signals, demoted = self._enforce_signal_gates(raw_signals, sources)
+        if demoted:
+            appendix.extend(demoted)
+        self._trace("signal_map:response", signal_payload)
+        operator_job_story = self._sanitize_text(signal_payload.get("operator_job_story", ""))
+        if operator_job_story:
+            scope["operator_job_story"] = operator_job_story
+        search_variants_raw = signal_payload.get("search_shaped_variants") or []
+        search_variants: List[str] = []
+        for variant in search_variants_raw:
+            cleaned = self._sanitize_text(variant)
+            if cleaned:
+                search_variants.append(cleaned)
+        if search_variants:
+            scope["search_shaped_variants"] = search_variants
+        scope_json = json.dumps(scope, ensure_ascii=False)
+        support_coverage = self._signal_support_coverage(signals, sources)
+        thresholds = source_stats.get("thresholds", {})
+        thresholds["support_coverage"] = support_coverage >= STIConfig.SIGNAL_SUPPORT_COVERAGE_MIN
+        source_stats["support_coverage"] = round(support_coverage, 3)
+        source_stats["thresholds"] = thresholds
+        regime = self._evidence_regime(source_stats)
+        source_stats["regime"] = regime
+        scope["evidence_regime"] = regime
+        scope["thin_evidence"] = regime != "healthy"
+        source_stats["thin_evidence"] = scope["thin_evidence"]
+        if regime == "starved":
+            raise RuntimeError("Evidence starved after harvest. Broaden the query or window.")
+        evidence_note = self._evidence_note(source_stats)
+        scope["evidence_note"] = evidence_note
+
+        quant_payload = self._tool_json(
+            generate_quant_blocks(
+                sources_payload,
+                json.dumps(signals, ensure_ascii=False),
+                scope_json,
+            )
+        )
+        quant_payload = normalize_quant_blocks_payload(quant_payload or {})
+        quant_errors = lint_quant_blocks(quant_payload or {})
+        if quant_errors:
+            error_message = "; ".join(quant_errors)
+            self._trace("quant_blocks:contract_error", error_message)
+            raise ValueError(f"Quant blocks contract failed: {error_message}")
+
+        sections = self._build_sections(
+            sources_payload,
+            signals,
+            signal_payload.get("operator_notes", ""),
+            quant_payload,
+            scope_json,
+        )
+        exec_data = self._tool_json(
+            write_executive_summary(
+                sources_payload,
+                json.dumps(sections, ensure_ascii=False),
+                json.dumps(signals, ensure_ascii=False),
+                json.dumps(quant_payload, ensure_ascii=False),
+                scope_json,
+            )
+        )
+        self._trace("executive_summary:response", exec_data)
+        image_briefs = self._tool_json(
+            generate_image_briefs(
+                sources_payload,
+                json.dumps(signals, ensure_ascii=False),
+                json.dumps(sections, ensure_ascii=False),
+                scope_json,
+            )
+        )
+        image_prompt_bundle = []
+        try:
+            prompt_response = self._tool_json(
+                generate_image_prompt_bundle(json.dumps(report, ensure_ascii=False))
+            )
+            if isinstance(prompt_response, dict):
+                image_prompt_bundle = prompt_response.get("images") or []
+        except Exception as image_prompt_error:
+            logger.debug(f"image_prompt_bundle failed: {image_prompt_error}")
+        self._trace("image_prompt_bundle", image_prompt_bundle)
+        image_briefs = image_briefs.get("image_briefs") if isinstance(image_briefs, dict) else image_briefs
+        self._trace("image_briefs", image_briefs)
+
+        top_moves_raw = exec_data.get("top_operator_moves") or self._derive_top_moves(signals)
+        top_moves = [self._sanitize_text(move) for move in (top_moves_raw or []) if move]
+        top_moves = top_moves[: STIConfig.TOP_OPERATOR_MOVE_COUNT]
+
+        exec_summary = self._sanitize_text(exec_data.get("executive_summary", ""))
+        highlights = [self._sanitize_text(text) for text in exec_data.get("highlights", [])]
+        hook_line = self._sanitize_text(exec_data.get("hook_line"))
+        play_summary = exec_data.get("play_summary") or []
+        fast_path = exec_data.get("fast_path") or {
+            "sections": ["executive_summary", "highlights", "top_operator_moves", "play_summary"],
         }
-        
-        # Track signal citations
-        for signal in signals:
-            stats['cited_in_signals'].update(signal.get('citation_ids', []))
-        
-        # Track analysis citations (regex for [^N])
-        all_analysis = ' '.join(analyses)
-        cited_ids = re.findall(r'\[\^(\d+)\]', all_analysis)
-        stats['cited_in_analysis'].update(int(cid) for cid in cited_ids)
-        
-        # Identify uncited
-        all_cited = stats['cited_in_signals'] | stats['cited_in_analysis']
-        stats['uncited'] = [s.id for s in sources if s.id not in all_cited]
-        
-        logger.info(f"Source attribution: {len(all_cited)}/{len(sources)} sources cited")
-        if stats['uncited']:
-            logger.warning(f"Uncited sources: {stats['uncited']}")
-        
+        fast_stack = exec_data.get("fast_stack") or {}
+        time_window = self._time_window(days_back)
+        generated_at = datetime.now()
+        title = self._query_title(query)
+        deep_sections = (sections.get("deep_analysis", {}) or {}).get("sections", [])
+        spine = self._build_spine(signals, quant_payload, deep_sections or [], top_moves)
+
+        spec_bundle = self._build_operator_specs(signals, quant_payload, sections, scope)
+        spec_bundle = normalize_operator_specs(spec_bundle or {})
+        spec_errors = lint_operator_specs(spec_bundle or {})
+        if spec_errors:
+            spec_error_msg = "; ".join(spec_errors)
+            self._trace("operator_specs:contract_error", spec_error_msg)
+            raise ValueError(f"Operator specs contract failed: {spec_error_msg}")
+        self._apply_window_label(spec_bundle, scope.get("window_label") or time_window.get("label"))
+        spec_bundle["version"] = "v1"
+        pilot_spec = spec_bundle.get("pilot_spec") or {}
+        metric_spec = spec_bundle.get("metric_spec") or {}
+        role_actions = spec_bundle.get("role_actions") or {}
+        coherence_issues = spec_bundle.get("coherence_issues") or []
+        spec_notes = spec_bundle.get("spec_notes") or []
+        spec_ok = spec_bundle.get("spec_ok", True)
+        scope["pilot_spec"] = pilot_spec
+        scope["metric_spec"] = metric_spec
+        scope["role_actions"] = role_actions
+        scope["pilot_spec_issues"] = coherence_issues
+        scope["spec_version"] = spec_bundle.get("version")
+        scope["spec_ok"] = spec_ok
+        scope["spec_notes"] = spec_notes
+
+        letter_data = None
+        letter_bullets = {"investable": [], "targets": []}
+        letter_primary_cta = ""
+        letter_email_subject = ""
+        letter_subtitle = ""
+        letter_tldr = ""
+        letter_context = self._build_letter_context(
+            exec_summary,
+            quant_payload,
+            sections,
+            title,
+            scope,
+            pilot_spec,
+            metric_spec,
+            role_actions,
+        )
+        regime = scope.get("evidence_regime", "healthy")
+        letter_status = "generated"
+        if regime == "starved":
+            self._trace(
+                "executive_letter:skipped",
+                {"reason": "starved", "source_stats": source_stats},
+            )
+            letter_status = "skipped_starved"
+        elif letter_context:
+            try:
+                letter_response = self._tool_json(
+                    generate_executive_letter(json.dumps(letter_context, ensure_ascii=False))
+                )
+                if isinstance(letter_response, dict) and self._validate_executive_letter(letter_response):
+                    letter_data = letter_response
+                    letter_bullets["investable"] = letter_response.get("bullets_investable") or []
+                    letter_bullets["targets"] = letter_response.get("bullets_targets") or []
+                    letter_primary_cta = letter_response.get("primary_cta") or ""
+                    letter_email_subject = letter_response.get("email_subject") or ""
+                    letter_subtitle = letter_response.get("subtitle") or ""
+                    letter_tldr = letter_response.get("tldr") or ""
+                else:
+                    self._trace("executive_letter:error", "validation_failed")
+            except Exception as exec_letter_error:
+                self._trace("executive_letter:error", str(exec_letter_error))
+                letter_status = "error"
+        else:
+            letter_status = "skipped_no_context"
+
+        markdown = self._build_markdown(
+            query,
+            title,
+            exec_summary,
+            highlights,
+            top_moves,
+            play_summary,
+            fast_path,
+            fast_stack,
+            spine,
+            signals,
+            sections,
+            sources,
+            quant_payload,
+            appendix,
+            pilot_spec,
+            metric_spec,
+            role_actions,
+        )
+        word_count = len(markdown.split())
+        read_time_minutes = max(1, math.ceil(word_count / 200))
+        qa_report = self._qa_report(signals, sections, top_moves, scope, quant_payload, appendix, read_time_minutes)
+        confidence = self._compute_confidence(signals, qa_report, quant_payload)
+        raw_confidence_score = confidence_headline(confidence)
+        confidence_score = self._apply_source_caps(raw_confidence_score, source_stats)
+        json_ld = self._build_json_ld(query, title, exec_summary, sources, signals, days_back, confidence_score)
+        confidence_band, display_score, dials = self._confidence_meta(confidence_score, confidence, qa_report)
+        confidence_note_parts: List[str] = []
+        if evidence_note:
+            confidence_note_parts.append(evidence_note)
+        dominant_ratio = source_stats.get("dominant_ratio", 0.0)
+        domain_counts = source_stats.get("domain_counts") or {}
+        if dominant_ratio > (STIConfig.SOURCE_MAX_DOMAIN_RATIO * 0.9) and domain_counts:
+            dominant_domain = max(domain_counts.items(), key=lambda item: item[1])[0]
+            confidence_note_parts.append(
+                f"Evidence dominated by {dominant_domain} ({dominant_ratio:.0%})."
+            )
+        if scope.get("thin_evidence"):
+            confidence_band = "Directional"
+        confidence_note = " ".join(part for part in confidence_note_parts if part).strip()
+        report = {
+            "query": query,
+            "title": title,
+            "hook_line": hook_line,
+            "time_window": time_window,
+            "operator_job_story": scope.get("operator_job_story", ""),
+            "search_shaped_variants": scope.get("search_shaped_variants", []),
+            "approach_hints": scope.get("approach_hints", []),
+            "unified_target_pack": scope.get("unified_target_pack", {}),
+            "executive_summary": exec_summary,
+            "highlights": highlights,
+            "top_operator_moves": top_moves,
+            "play_summary": play_summary,
+            "signals": signals,
+            "appendix_signals": appendix,
+            "sources": [asdict(src) for src in sources],
+            "source_stats": source_stats,
+            "sections": sections,
+            "image_briefs": image_briefs,
+            "image_prompts": image_prompt_bundle,
+            "quant": quant_payload,
+            "comparison_map": sections.get("comparison_map", {}),
+            "executive_letter": letter_data or {},
+            "letter_status": letter_status,
+            "letter_bullets": letter_bullets,
+            "letter_primary_cta": letter_primary_cta,
+            "letter_email_subject": letter_email_subject,
+            "letter_subtitle": letter_subtitle,
+            "letter_tldr": letter_tldr,
+            "fast_path": fast_path,
+            "fast_stack": fast_stack,
+            "spine": spine,
+            "qa": qa_report,
+            "markdown": markdown,
+            "json_ld": json_ld,
+            "pilot_spec": pilot_spec,
+            "metric_spec": metric_spec,
+            "role_actions": role_actions,
+            "pilot_coherence_issues": coherence_issues,
+            "spec_version": spec_bundle.get("version"),
+            "spec_notes": spec_notes,
+            "spec_ok": spec_ok,
+            "confidence": {
+                "score": confidence_score,
+                "display": display_score,
+                "band": confidence_band,
+                "dials": dials,
+                "breakdown": dataclasses.asdict(confidence),
+                "note": confidence_note,
+            },
+            "read_time_minutes": read_time_minutes,
+            "word_count": word_count,
+            "region": scope.get("target_region", "US"),
+            "thin_evidence": scope.get("thin_evidence", False),
+            "evidence_regime": scope.get("evidence_regime", "healthy"),
+            "evidence_note": evidence_note,
+            "metadata": {
+                "agent": "EnhancedSTIAgent",
+                "model": self.model_name,
+                "generated_at": generated_at.isoformat(),
+            },
+        }
+        return report
+
+    # ------------------------------------------------------------------
+    # Source collection helpers
+    # ------------------------------------------------------------------
+    def _build_scope(self, query: str, days_back: int) -> Dict[str, Any]:
+        window = self._time_window(days_back)
+        window_label = window.get("label") or self._window_label(window)
+        if window_label:
+            window["label"] = window_label
+        scope = {
+            "topic": query,
+            "time_window": window,
+            "target_region": "US",
+            "use_cases": ["brand↔brand", "brick&mortar↔brand"],
+            "must_answer": [
+                "When are the high-value windows",
+                "What changes discounting math",
+            ],
+            "approach_hints": [
+                "discount-heavy holiday",
+                "collab-led holiday",
+                "store-as-studio / media-led holiday",
+            ],
+            "unified_target_pack": {
+                "foot_traffic_uplift": {"base": "10-15%", "stretch": "≥25%"},
+                "early_window_share": {"current": "12-15%", "goal": "20-30%"},
+                "event_cpa": {"ceiling": "≤0.80× baseline"},
+                "qr_redemption": {"floor": "≥5% of footfall"},
+                "paired_metric": "Track buyer activity share vs promo intensity side by side",
+            },
+        }
+        if window_label:
+            scope["window_label"] = window_label
+        scope["topic_kind"] = self._classify_topic_kind(query)
+        self._trace("scope", scope)
+        return scope
+
+    def _classify_topic_kind(self, query: str) -> str:
+        text = (query or "").lower()
+        if any(keyword in text for keyword in ["store-as-studio", "store as studio", "flagship", "in-store", "studio", "pop-up", "immersive store"]):
+            return "store_as_studio"
+        if any(keyword in text for keyword in ["price", "pricing", "margin", "elasticity", "discount", "markdown", "promotion", "cpa", "profit"]):
+            return "pricing"
+        if any(keyword in text for keyword in ["collab", "co-brand", "partnership", "partner", "joint drop"]):
+            return "collaboration"
+        return "general"
+
+    def _collect_sources(self, query: str, days_back: int, scope: Dict[str, Any]) -> List[SourceRecord]:
+        seen: set[str] = set()
+        sources: List[SourceRecord] = []
+        category_steps = STIConfig.SEARXNG_CATEGORY_STEPS or [["news"]]
+        initial_time_range = self._time_range(days_back)
+
+        topic_kind = scope.get("topic_kind")
+
+        def harvest(range_label: str) -> None:
+            window_days = self._window_days_for_range(days_back, range_label)
+            for categories in category_steps:
+                new_sources = self._harvest_axes(
+                    query=query,
+                    categories=categories,
+                    time_range=range_label,
+                    window_days=window_days,
+                    scope=scope,
+                    seen=seen,
+                    requested_days=days_back,
+                    topic_kind=topic_kind,
+                )
+                if new_sources:
+                    sources.extend(new_sources)
+                if len(sources) >= STIConfig.MAX_SOURCE_COUNT:
+                    break
+                if len(sources) >= STIConfig.SOURCE_SOFT_FLOOR:
+                    break
+            return
+
+        harvest(initial_time_range)
+        if len(sources) < STIConfig.SOURCE_SOFT_FLOOR:
+            expanded_range = self._next_time_range(initial_time_range)
+            if expanded_range != initial_time_range:
+                harvest(expanded_range)
+        if sources:
+            preview_stats = self._source_statistics(sources)
+            dominant_ratio = preview_stats.get("dominant_ratio", 0.0)
+            domain_counts = preview_stats.get("domain_counts", {}) or {}
+            core_sources = preview_stats.get("core", 0)
+            data_heavy = preview_stats.get("data_heavy", 0)
+            need_dominance_relief = (
+                dominant_ratio > STIConfig.SOURCE_MAX_DOMAIN_RATIO * 0.85
+                and len(sources) < STIConfig.MAX_SOURCE_COUNT
+                and domain_counts
+            )
+            need_anchor_rescue = (
+                (core_sources == 0 or data_heavy < max(1, STIConfig.SOURCE_MIN_DATA_HEAVY))
+                and len(sources) < STIConfig.MAX_SOURCE_COUNT
+            )
+            if need_dominance_relief or need_anchor_rescue:
+                blocked_domain = None
+                if need_dominance_relief:
+                    blocked_domain = max(domain_counts.items(), key=lambda item: item[1])[0]
+                diversity_sources = self._diversity_pass(
+                    query=query,
+                    blocked_domain=blocked_domain,
+                    seen=seen,
+                    scope=scope,
+                    requested_days=days_back,
+                )
+                if diversity_sources:
+                    sources.extend(diversity_sources)
+        sources = sources[: STIConfig.MAX_SOURCE_COUNT]
+        for idx, source in enumerate(sources, start=1):
+            source.id = idx
+        self._trace(
+            "sources:collected",
+            {
+                "count": len(sources),
+                "time_range": initial_time_range,
+                "soft_floor": STIConfig.SOURCE_SOFT_FLOOR,
+                "max": STIConfig.MAX_SOURCE_COUNT,
+                "publishers": list({src.publisher for src in sources}),
+                "sample": [asdict(src) for src in sources[:3]],
+            },
+        )
+        return sources
+
+    def _harvest_axes(
+        self,
+        query: str,
+        categories: List[str],
+        time_range: str,
+        window_days: int,
+        scope: Dict[str, Any],
+        seen: set[str],
+        requested_days: int,
+        topic_kind: Optional[str] = None,
+    ) -> List[SourceRecord]:
+        harvested: List[SourceRecord] = []
+        axis_runs: List[str] = []
+        axis_counts: List[int] = []
+        axis_updates: Dict[str, Dict[str, int]] = {}
+
+        primary_axes, fallback_axes = self._rank_axis_templates(topic_kind)
+
+        def run_axes(axes: List[str]) -> None:
+            for template in axes:
+                axis_query = self._render_axis_query(template, query)
+                axis_runs.append(axis_query)
+                raw_results = self._search_searxng(axis_query, time_range, categories)
+                new_sources = self._ingest_results(
+                    raw_results, window_days, scope, seen, requested_days=requested_days
+                )
+                new_count = len(new_sources)
+                if new_count:
+                    harvested.extend(new_sources)
+                axis_counts.append(new_count)
+                stats = axis_updates.setdefault(template, {"runs": 0, "hits": 0})
+                stats["runs"] += 1
+                if new_count:
+                    stats["hits"] += 1
+                if len(harvested) >= STIConfig.MAX_SOURCE_COUNT:
+                    break
+            return
+
+        run_axes(primary_axes)
+        if len(harvested) < STIConfig.SOURCE_SOFT_FLOOR and fallback_axes and len(harvested) < STIConfig.MAX_SOURCE_COUNT:
+            run_axes(fallback_axes)
+
+        if axis_runs:
+            self._trace(
+                "sources:axis_pass",
+                {
+                    "query": query,
+                    "topic_kind": topic_kind,
+                    "axis_queries": axis_runs,
+                    "axis_counts": axis_counts,
+                    "categories": categories,
+                    "time_range": time_range,
+                    "harvested": len(harvested),
+                },
+            )
+        if axis_updates:
+            self._update_axis_health(axis_updates)
+        return harvested
+
+    def _diversity_pass(
+        self,
+        query: str,
+        blocked_domain: Optional[str],
+        seen: set[str],
+        scope: Dict[str, Any],
+        requested_days: int,
+    ) -> List[SourceRecord]:
+        blocked: Set[str] = set()
+        if blocked_domain:
+            blocked.add(blocked_domain.lower())
+        harvested: List[SourceRecord] = []
+        probes = STIConfig.DIVERSITY_PROBES or []
+        if not probes:
+            return harvested
+        window_days = self._window_days_for_range(requested_days, self._time_range(requested_days))
+        for template in probes:
+            axis_query = template.format(query=query)
+            raw_results = self._search_searxng(axis_query, self._time_range(requested_days), ["news", "general"])
+            new_sources = self._ingest_results(
+                raw_results,
+                window_days,
+                scope,
+                seen,
+                requested_days=requested_days,
+                blocked_domains=blocked,
+            )
+            if new_sources:
+                harvested.extend(new_sources)
+            if len(harvested) + len(seen) >= STIConfig.MAX_SOURCE_COUNT:
+                break
+        if harvested:
+            self._trace(
+                "sources:diversity_pass",
+                {
+                    "blocked_domain": blocked_domain,
+                    "harvested": len(harvested),
+                    "probes": probes[:5],
+                },
+            )
+        return harvested
+
+    def _render_axis_query(self, template: str, query: str) -> str:
+        cleaned = (template or "").strip()
+        if "{query}" in cleaned:
+            try:
+                return cleaned.format(query=query)
+            except Exception:
+                pass
+        return f"{query} {cleaned}".strip()
+
+    def _rank_axis_templates(self, topic_kind: Optional[str] = None) -> Tuple[List[str], List[str]]:
+        base_axes = STIConfig.SEARCH_QUERY_AXES or ["{query}"]
+        kind_axes = STIConfig.SEARCH_QUERY_AXES_BY_KIND.get(topic_kind or "", []) if topic_kind else []
+        templates: List[str] = []
+        seen: set[str] = set()
+        for axis in list(kind_axes) + list(base_axes):
+            if axis and axis not in seen:
+                templates.append(axis)
+                seen.add(axis)
+        if not templates:
+            templates = ["{query}"]
+        health = self._load_axis_health()
+        scored: List[Tuple[float, int, str]] = []
+        default_ratio = 0.5
+        for template in templates:
+            stats = health.get(template, {})
+            runs = int(stats.get("runs") or 0)
+            hits = int(stats.get("hits") or 0)
+            ratio = hits / runs if runs else default_ratio
+            scored.append((ratio, runs, template))
+        scored.sort(key=lambda item: (-item[0], -item[1], item[2]))
+        primary: List[str] = []
+        fallback: List[str] = []
+        for ratio, runs, template in scored:
+            if runs >= 5 and ratio < STIConfig.AXIS_HEALTH_LOW_THRESHOLD:
+                fallback.append(template)
+            else:
+                primary.append(template)
+        if not primary:
+            primary = [tpl for _, _, tpl in scored]
+            fallback = []
+        return primary or templates, fallback
+
+    def _load_axis_health(self) -> Dict[str, Dict[str, int]]:
+        path = Path(STIConfig.AXIS_HEALTH_PATH)
+        try:
+            if path.exists():
+                return json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            logger.debug("Failed to read axis health file at %s", path)
+        return {}
+
+    def _save_axis_health(self, payload: Dict[str, Dict[str, int]]) -> None:
+        path = Path(STIConfig.AXIS_HEALTH_PATH)
+        try:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+        except Exception as exc:
+            logger.debug("Failed to write axis health file: %s", exc)
+
+    def _update_axis_health(self, updates: Dict[str, Dict[str, int]]) -> None:
+        current = self._load_axis_health()
+        current_changed = False
+        for template, stats in updates.items():
+            entry = current.setdefault(template, {"runs": 0, "hits": 0})
+            entry["runs"] = int(entry.get("runs", 0)) + stats.get("runs", 0)
+            entry["hits"] = int(entry.get("hits", 0)) + stats.get("hits", 0)
+            current_changed = True
+        if current_changed:
+            self._save_axis_health(current)
+
+    def _ingest_results(
+        self,
+        raw_results: Optional[List[Dict[str, Any]]],
+        window_days: int,
+        scope: Dict[str, Any],
+        seen: set[str],
+        requested_days: int,
+        blocked_domains: Optional[Set[str]] = None,
+    ) -> List[SourceRecord]:
+        harvested: List[SourceRecord] = []
+        if not raw_results:
+            return harvested
+        for result in raw_results:
+            url = result.get("url")
+            if not url or url in seen:
+                continue
+            seen.add(url)
+            date = self._normalize_date(result.get("published"))
+            if not self._within_window(date, window_days):
+                continue
+            content = result.get("content") or ""
+            if len(content) < 400:
+                fetched = self._fetch_content(url)
+                if fetched:
+                    content = fetched
+            snippet = (result.get("content") or result.get("title") or "")[:280]
+            publisher_raw = result.get("publisher") or self._publisher_from_url(url)
+            publisher_normalized = (publisher_raw or "").lower()
+            if blocked_domains and publisher_normalized in blocked_domains:
+                continue
+            credibility = self._score_publisher(url)
+            tier = "core" if self._within_window(date, requested_days) else "context"
+            source = SourceRecord(
+                id=0,
+                title=result.get("title") or "Untitled",
+                url=url,
+                publisher=publisher_raw,
+                date=date,
+                snippet=snippet,
+                content=content[:4000],
+                credibility=credibility,
+                tier=tier,
+            )
+            self._annotate_source(source, scope)
+            harvested.append(source)
+            if len(harvested) >= STIConfig.MAX_SOURCE_COUNT:
+                break
+        return harvested
+
+    def _window_days_for_range(self, requested_days: int, time_range: str) -> int:
+        mapping = {"day": 2, "week": 7, "month": 31, "year": 365}
+        target = mapping.get(time_range, requested_days)
+        window = max(requested_days, target)
+        return min(window, STIConfig.MAX_DAYS_BACK)
+
+    def _next_time_range(self, current: str) -> str:
+        order = ["day", "week", "month", "year"]
+        if current not in order:
+            return current
+        idx = order.index(current)
+        if idx >= len(order) - 1:
+            return current
+        return order[idx + 1]
+
+    def _source_statistics(self, sources: List[SourceRecord]) -> Dict[str, Any]:
+        domain_counts: Dict[str, int] = {}
+        earliest: Optional[datetime] = None
+        latest: Optional[datetime] = None
+        data_heavy = 0
+        core_sources = 0
+        tier_counts = {"core": 0, "context": 0}
+        for src in sources:
+            domain_counts[src.publisher] = domain_counts.get(src.publisher, 0) + 1
+            if src.role == "core":
+                core_sources += 1
+            evidence = src.evidence or {}
+            if evidence.get("numeric") or evidence.get("sample_size"):
+                data_heavy += 1
+            tier_counts[src.tier] = tier_counts.get(src.tier, 0) + 1
+            try:
+                dt = datetime.strptime(src.date, "%Y-%m-%d")
+            except Exception:
+                continue
+            earliest = dt if earliest is None or dt < earliest else earliest
+            latest = dt if latest is None or dt > latest else latest
+        total = len(sources)
+        support_sources = total - core_sources
+        unique_domains = len(domain_counts)
+        dominant = max(domain_counts.values()) if domain_counts else 0
+        dominant_ratio = (dominant / float(total)) if total else 0.0
+        time_span = (latest - earliest).days if earliest and latest else 0
+        thresholds = {
+            "total": total >= STIConfig.SOURCE_MIN_TOTAL,
+            "core": core_sources >= STIConfig.SOURCE_MIN_CORE,
+            "domains": unique_domains >= STIConfig.SOURCE_MIN_UNIQUE_DOMAINS,
+            "data": data_heavy >= STIConfig.SOURCE_MIN_DATA_HEAVY,
+            "dominance": dominant_ratio <= STIConfig.SOURCE_MAX_DOMAIN_RATIO,
+            "in_window": tier_counts.get("core", 0) >= STIConfig.SOURCE_MIN_IN_WINDOW,
+            "background": tier_counts.get("context", 0) >= STIConfig.SOURCE_MIN_BACKGROUND,
+        }
+        stats = {
+            "total": total,
+            "core": core_sources,
+            "support": support_sources,
+            "unique_domains": unique_domains,
+            "domain_counts": domain_counts,
+            "data_heavy": data_heavy,
+            "time_span_days": time_span,
+            "tier_counts": tier_counts,
+            "dominant_ratio": round(dominant_ratio, 3),
+            "thin_evidence": not all(thresholds.values()),
+            "thresholds": thresholds,
+        }
         return stats
 
-    def _ensure_advanced_llm(self):
-        if self._advanced_llm is not None:
-            return self._advanced_llm
-
-        from langchain_openai import ChatOpenAI
-
-        organization = os.getenv("OPENAI_ORGANIZATION") or getattr(STIConfig, 'OPENAI_ORGANIZATION', None)
-        llm_params = {
-            "api_key": self.openai_api_key,
-            "model": getattr(STIConfig, 'ADVANCED_MODEL_NAME', 'gpt-5-2025-08-07'),
-            "temperature": 0.0,
-            "timeout": 120.0  # 120 second timeout to prevent hanging
-        }
-        if organization:
-            llm_params["openai_organization"] = organization
-        self._advanced_llm = ChatOpenAI(**llm_params)
-        return self._advanced_llm
-
-    def _premium_call(self, prompt: str, max_tokens: int) -> str:
-        llm = self._ensure_advanced_llm()
-        try:
-            response = llm.invoke(prompt, max_tokens=max_tokens)
-        except TypeError:
-            response = llm.invoke(prompt)
-        return getattr(response, "content", str(response))
-
-    def _make_source_getter(self, sources: List[Source]):
-        lookup = {str(source.id): source.content for source in sources}
-        return lambda source_id: lookup.get(str(source_id), "")
-
-    def _assemble_claims(self,
-                         signals: List[Dict[str, Any]],
-                         market_analysis: str,
-                         tech_deepdive: str,
-                         competitive: str,
-                         expanded_lenses: str,
-                         exec_summary: str) -> List[Dict[str, str]]:
-        claims: List[Dict[str, str]] = []
-        for idx, signal in enumerate(signals, 1):
-            text = signal.get('text', '').strip()
-            if text:
-                claims.append({"id": f"S{idx}", "text": text})
-
-        sections = [
-            ("EXEC", exec_summary),
-            ("MARKET", market_analysis),
-            ("TECH", tech_deepdive),
-            ("COMP", competitive),
-            ("LENS", expanded_lenses),
-        ]
-        for name, section in sections:
-            if not section:
-                continue
-            snippet = section.strip().split('\n')[0][:320]
-            if snippet:
-                claims.append({"id": f"{name}1", "text": snippet})
-        return claims
-
-    def _detect_quant_issues(self, *sections: str) -> int:
-        text_blob = " ".join(section for section in sections if section)
-        lowered = text_blob.lower()
-        flags = 0
-        if "illustrative target" in lowered:
-            flags += 1
-        if "ppv" in lowered and "base rate" not in lowered:
-            flags += 1
-        if "lambda" in lowered and "poisson" not in lowered:
-            flags += 1
-        return flags
-
-    def _infer_vignette_params(self, sections: List[str]) -> Dict[str, Any]:
+    def _search_searxng(
+        self, query: str, time_range: str, categories: Optional[List[str]] = None
+    ) -> List[Dict[str, Any]]:
+        base = STIConfig.SEARXNG_BASE_URL.rstrip("/")
+        url = f"{base}/search"
         params = {
-            "mu": 120,
-            "alpha": 0.65,
-            "tau": 0.25,
-            "p_conn": 0.6,
-            "kappa": 1.0,
-            "TPR": 0.9,
-            "FPR": 0.08,
-            "base_rate": 0.05,
-            "p_loss": 0.25,
-            "f": 1 / 30,
-            "w_k": 0.02,
+            "q": query,
+            "format": "json",
+            "safesearch": 1,
+            "time_range": time_range,
         }
-        text_blob = " ".join(sections).lower()
-        if "ppv" in text_blob and "0.6" in text_blob:
-            params["TPR"] = 0.85
-        if "mtta" in text_blob:
-            params["tau"] = 0.3
-        return params
-
-    def _hash_payload(self, payload: Any) -> str:
+        if categories:
+            params["categories"] = ",".join(categories)
+        self._trace("searxng:request", {"url": url, "params": params})
         try:
-            serialized = json.dumps(payload, sort_keys=True, ensure_ascii=False)
-        except TypeError:
-            serialized = str(payload)
-        return hashlib.sha1(serialized.encode('utf-8')).hexdigest()
-
-    def _source_diversity_score(self, sources: List[Source]) -> float:
-        if not sources:
-            return 0.0
-        publishers = [s.publisher or "" for s in sources]
-        counter = Counter(publishers)
-        distinct = len([p for p in counter if p])
-        diversity = distinct / max(1, len(sources))
-        top_fraction = max(counter.values()) / max(1, len(sources)) if counter else 0.0
-        cap = getattr(STIConfig, 'VENDOR_CAP_PCT', 0.4)
-        if top_fraction > cap:
-            diversity *= 0.8
-        return max(0.0, min(1.0, diversity))
-
-    def _confidence_breakdown(self,
-                              sources: List[Source],
-                              anchor_coverage: float,
-                              quant_patch: Optional[Dict[str, Any]],
-                              adversarial_data: Optional[Dict[str, Any]]) -> ConfidenceBreakdown:
-        source_diversity = self._source_diversity_score(sources)
-        method_transparency = 0.45
-        if anchor_coverage >= getattr(STIConfig, 'ANCHOR_COVERAGE_MIN', 0.7):
-            method_transparency += 0.25
-        if quant_patch:
-            method_transparency += 0.15
-        replication_readiness = 0.45
-        if quant_patch:
-            replication_readiness += 0.2
-        if adversarial_data:
-            replication_readiness += 0.2
-        breakdown = ConfidenceBreakdown(
-            source_diversity=source_diversity,
-            anchor_coverage=max(0.0, min(1.0, anchor_coverage)),
-            method_transparency=min(1.0, method_transparency),
-            replication_readiness=min(1.0, replication_readiness),
-        )
-        return breakdown.clamp()
-
-    def _run_auditors(
-        self,
-        *,
-        query: str,
-        intent: str,
-        sources: List[Source],
-        signals: List[Dict[str, Any]],
-        market_analysis: str,
-        tech_deepdive: str,
-        competitive: str,
-        expanded_lenses: str,
-        exec_summary: str,
-        confidence: float,
-        budget: BudgetManager,
-    ) -> Dict[str, Any]:
-        source_records = [
-            {
-                "id": source.id,
-                "title": source.title,
-                "url": source.url,
-                "publisher": source.publisher,
-                "date": source.date,
-            }
-            for source in sources
-        ]
-        claims = self._assemble_claims(
-            signals, market_analysis, tech_deepdive, competitive, expanded_lenses, exec_summary
-        )
-        source_getter = self._make_source_getter(sources)
-        ledger = align_claims_to_evidence(claims, source_records, get_source_text=source_getter)
-        anchor_coverage = ledger.get("anchor_coverage", 0.0)
-        quant_flags = self._detect_quant_issues(
-            market_analysis, tech_deepdive, competitive, expanded_lenses, exec_summary
-        )
-        metrics = {
-            "anchor_coverage": anchor_coverage,
-            "quant_flags": quant_flags,
-            "confidence": float(confidence),
-        }
-        requested_tasks = value_of_information(metrics, intent)
-        task_matrix = {
-            "evidence_alignment": "evidence_alignment" in requested_tasks,
-            "math_guard": "math_guard" in requested_tasks and quant_flags > 0,
-            "adversarial_review": "adversarial_review" in requested_tasks,
-            "decision_playbooks": "decision_playbooks" in requested_tasks,
-        }
-
-        executed_premium_tasks: List[str] = []
-        advanced_tokens = 0
-
-        ledger_key = ledger.get("hash") or self._hash_payload(claims)
-        if task_matrix["evidence_alignment"]:
-            tokens = budget.slice(0.35)
-            if tokens > 0:
-                cache_key = f"{ledger_key}:{intent}"
-                cached = self._evidence_cache.get(cache_key)
-                if cached:
-                    ledger = cached
-                else:
-                    ledger = align_claims_to_evidence(
-                        claims,
-                        source_records,
-                        get_source_text=source_getter,
-                        llm=self._premium_call,
-                        max_tokens=tokens,
-                    )
-                    self._evidence_cache[cache_key] = ledger
-                executed_premium_tasks.append("evidence_alignment")
-                advanced_tokens += tokens
-            else:
-                task_matrix["evidence_alignment"] = False
-        # Use strict coverage for cap decision if available, fallback to any
-        anchor_coverage = ledger.get("anchor_coverage_strict", ledger.get("anchor_coverage_any", ledger.get("anchor_coverage", anchor_coverage)))
-        metrics["anchor_coverage"] = anchor_coverage
-
-        quant_patch_dict: Optional[Dict[str, Any]] = None
-        if task_matrix["math_guard"]:
-            params = self._infer_vignette_params(
-                [market_analysis, tech_deepdive, competitive, expanded_lenses, exec_summary]
+            resp = requests.get(url, params=params, timeout=STIConfig.HTTP_TIMEOUT_SECONDS)
+            resp.raise_for_status()
+            data = resp.json()
+            results = (data.get("results", []) or [])[: STIConfig.MAX_RESULTS_PER_QUERY]
+            self._trace(
+                "searxng:response",
+                {
+                    "status": resp.status_code,
+                    "result_count": len(results),
+                    "sample": results[:3],
+                },
             )
-            params_hash = self._hash_payload(params)
-            quant_patch_dict = self._quant_cache.get(params_hash)
-            if quant_patch_dict is None:
-                patch = suggest_patch_for_vignette(params)
-                quant_patch_dict = patch_to_dict(patch)
-                self._quant_cache[params_hash] = quant_patch_dict
-            metrics["quant_flags"] = len(quant_patch_dict.get("warnings", []))
-
-        report_sections = {
-            "market": market_analysis,
-            "technology": tech_deepdive,
-            "competitive": competitive,
-            "lenses": expanded_lenses,
-            "executive_summary": exec_summary,
-        }
-        adversarial_data: Optional[Dict[str, Any]] = None
-        if task_matrix["adversarial_review"]:
-            adv_hash = self._hash_payload(report_sections)
-            adversarial_data = self._adversarial_cache.get(adv_hash)
-            if adversarial_data is None:
-                tokens = budget.slice(0.15)
-                if tokens > 0:
-                    adversarial_data = adversarial_review(
-                        report_sections, llm=self._premium_call, max_tokens=tokens
-                    )
-                    executed_premium_tasks.append("adversarial_review")
-                    advanced_tokens += tokens
-                else:
-                    adversarial_data = adversarial_review(report_sections, llm=None)
-                self._adversarial_cache[adv_hash] = adversarial_data
-
-        playbooks_data: Optional[Dict[str, Any]] = None
-        if task_matrix["decision_playbooks"]:
-            playbooks_data = {"rows": decision_playbooks()}
-            executed_premium_tasks.append("decision_playbooks")
-
-        anchor_gate = intent == "theory" and anchor_coverage < getattr(
-            STIConfig, 'ANCHOR_COVERAGE_MIN', 0.7
-        )
-        source_sha_map = {source.id: compute_content_sha(source.content) for source in sources}
-
-        breakdown = self._confidence_breakdown(sources, anchor_coverage, quant_patch_dict, adversarial_data)
-        confidence_updated = confidence_headline(breakdown)
-        
-        # Hard caps by path + anchors
-        cap_applied = False
-        cap_reason = None
-        if intent == "theory" and anchor_coverage < getattr(STIConfig, 'ANCHOR_COVERAGE_MIN', 0.70):
-            cap = getattr(STIConfig, 'THEORY_CONFIDENCE_CAP', 0.60)
-            if confidence_updated > cap:
-                confidence_updated = cap
-                cap_applied = True
-                cap_reason = "theory|anchor_coverage<min"
-
-        return {
-            "ledger": ledger,
-            "quant_patch": quant_patch_dict,
-            "adversarial": adversarial_data,
-            "playbooks": playbooks_data,
-            "confidence_breakdown": breakdown,
-            "confidence": confidence_updated,
-            "metrics": {**metrics, "confidence_cap_reason": cap_reason if cap_applied else None, "cap_applied": cap_applied},
-            "tasks_requested": requested_tasks,
-            "task_matrix": task_matrix,
-            "tasks_executed": executed_premium_tasks,
-            "anchor_gate": anchor_gate,
-            "advanced_tokens": advanced_tokens,
-            "source_sha_map": source_sha_map,
-            "report_sections": report_sections,
-            "claims": claims,
-        }
-
-    def _classify_horizon(self, sources: List[Source]) -> str:
-        """Rough horizon classification based on source dates."""
-        from datetime import datetime
-        now = datetime.now()
-        def age_days(dstr: str) -> int:
-            try:
-                return (now - datetime.strptime(dstr, '%Y-%m-%d')).days
-            except Exception:
-                return 0
-        ages = [age_days(s.date) for s in sources if getattr(s, 'date', None)]
-        if not ages:
-            return "Near-term"
-        recent = sum(1 for a in ages if a <= 30)
-        mid = sum(1 for a in ages if 31 <= a <= 180)
-        longh = sum(1 for a in ages if 181 <= a <= 720)
-        found = sum(1 for a in ages if a > 720)
-        if recent >= max(mid, longh, found):
-            return "Near-term"
-        if mid >= max(recent, longh, found):
-            return "Mid-term"
-        if longh >= max(recent, mid, found):
-            return "Long-term"
-        return "Foundational"
-
-    def _is_hybrid_thesis_anchored(self, intent: str, sources: List[Source]) -> bool:
-        """Mark market briefs as thesis-anchored if academic share is notable."""
-        if intent != "market":
-            return False
-        total = max(1, len(sources))
-        academic = sum(1 for s in sources if s.source_type == SourceType.ACADEMIC)
-        return (academic / total) >= 0.25
-    
-    def _call_analysis_tool(self, tool_name: str, *args) -> str:
-        try:
-            if tool_name == "analyze_market":
-                return analyze_market(*args)
-            elif tool_name == "analyze_technology":
-                return analyze_technology(*args)
-            elif tool_name == "analyze_competitive":
-                return analyze_competitive(*args)
-            elif tool_name == "expand_lenses":
-                return expand_lenses(*args)
-            elif tool_name == "write_executive_summary":
-                return write_executive_summary(*args)
-            else:
-                raise ValueError(f"Tool {tool_name} not found")
-                
-        except Exception as e:
-            logger.error(f"Error calling analysis tool {tool_name}: {str(e)}")
-            return f"Error in {tool_name}: {str(e)}"
-    
-    def _refine_query_for_title(self, original_query: str) -> str:
-        """Refine user query using structured prompt template to better capture title intent"""
-        if not STIConfig.ENABLE_QUERY_REFINEMENT:
-            return original_query
-            
-        try:
-            # Create structured prompt template following LangChain best practices
-            prompt_template = PromptTemplate(
-                input_variables=["original_query"],
-                template="""You are a query refinement expert. Your task is to refine search queries to better capture the specific topic intent for accurate source retrieval.
-
-PURPOSE: Refine the user query to ensure it will find sources that match the intended report title.
-
-CONTEXT: The user wants to generate a report with a specific title, but the query might be too broad or vague to find relevant sources.
-
-TASK: Analyze the original query and create a refined version that:
-1. Focuses on the specific topic mentioned in the query
-2. Uses domain-specific terminology
-3. Includes relevant keywords for better source matching (limit to 10-15 key terms maximum)
-4. Maintains the original intent while being more precise
-5. Keep the refined query concise (under 150 words) - prioritize the most important terms
-
-EXAMPLES:
-- Original: "AI technology trends" → Refined: "artificial intelligence technology trends machine learning developments"
-- Original: "Command Theory in Multi-Agent Systems" → Refined: "command theory multi-agent systems coordination control theory distributed agents"
-- Original: "cybersecurity developments" → Refined: "cybersecurity developments security threats vulnerability management enterprise security"
-
-Original Query: {original_query}
-
-IMPORTANT: Keep the refined query concise and focused. Do not create an exhaustive list of all possible related terms. Limit to the 10-15 most relevant keywords and phrases.
-
-Return only the refined query as plain text, no JSON formatting, no additional text:"""
-            )
-            
-            # Use existing LLM with structured output
-            response = self.llm.invoke(prompt_template.format(original_query=original_query))
-            refined_query = response.content.strip()
-            
-            # Clean up any JSON formatting if present
-            if refined_query.startswith('"') and refined_query.endswith('"'):
-                refined_query = refined_query[1:-1]
-            if refined_query.startswith('{') and '"query"' in refined_query:
-                try:
-                    import json
-                    data = json.loads(refined_query)
-                    refined_query = data.get('query', original_query)
-                except (json.JSONDecodeError, KeyError):
-                    pass
-            elif refined_query.startswith('{') and '"refined_query"' in refined_query:
-                try:
-                    import json
-                    data = json.loads(refined_query)
-                    refined_query = data.get('refined_query', original_query)
-                except (json.JSONDecodeError, KeyError):
-                    pass
-            
-            # Limit refined query length to prevent extremely long queries that slow down searches
-            # Most search engines have query length limits, and very long queries are less effective
-            MAX_REFINED_QUERY_LENGTH = 200  # Reasonable limit for search queries
-            if len(refined_query) > MAX_REFINED_QUERY_LENGTH:
-                logger.warning(f"Refined query too long ({len(refined_query)} chars), truncating to {MAX_REFINED_QUERY_LENGTH} chars")
-                # Truncate intelligently - try to cut at word boundary
-                truncated = refined_query[:MAX_REFINED_QUERY_LENGTH]
-                last_space = truncated.rfind(' ')
-                if last_space > MAX_REFINED_QUERY_LENGTH * 0.8:  # Only truncate at word boundary if reasonable
-                    refined_query = truncated[:last_space]
-                else:
-                    refined_query = truncated
-                logger.info(f"Truncated refined query: '{refined_query[:100]}...'")
-            
-            logger.info(f"Query refined: '{original_query}' → '{refined_query[:100]}{'...' if len(refined_query) > 100 else ''}'")
-            return refined_query
-            
-        except Exception as e:
-            logger.error(f"Error refining query: {str(e)}")
-            return original_query
-    
-    def _validate_source_relevance(self, source: Source, title: str) -> bool:
-        """Additional validation to catch obviously irrelevant sources"""
-        title_keywords = title.lower().split()
-        source_title = source.title.lower()
-        
-        # Check for completely unrelated topics
-        unrelated_topics = ['politics', 'trump', 'bessent', 'carney', 'provinces', 'election', 'government']
-        if any(topic in source_title for topic in unrelated_topics):
-            logger.info(f"✗ Filtered out irrelevant source: '{source.title}' (unrelated topic)")
-            return False
-        
-        # Check for basic keyword overlap with title
-        if not any(keyword in source_title for keyword in title_keywords):
-            # Allow some flexibility for multi-word concepts
-            title_phrases = [' '.join(title_keywords[i:i+2]) for i in range(len(title_keywords)-1)]
-            if not any(phrase in source_title for phrase in title_phrases):
-                logger.info(f"✗ Filtered out irrelevant source: '{source.title}' (no keyword overlap)")
-                return False
-        
-        return True
-    
-    def _semantic_similarity_filter(self, sources: List[Source], query: str, threshold: float = 0.5, concepts: List[str] = None) -> List[Source]:
-        """Filter sources using embeddings-based semantic similarity. If concepts provided, accept if any concept matches."""
-        if not sources:
-            return sources
-            
-        try:
-            # Initialize embeddings
-            embeddings = OpenAIEmbeddings()
-            
-            # Get query embedding
-            query_embedding = embeddings.embed_query(query)
-            concept_embeddings = []
-            if concepts:
-                for c in concepts[:8]:
-                    try:
-                        concept_embeddings.append(embeddings.embed_query(c))
-                    except Exception:
-                        continue
-            
-            filtered_sources = []
-            for source in sources:
-                # Create source text for embedding
-                source_text = f"{source.title} {source.content[:500]}"
-                source_embedding = embeddings.embed_query(source_text)
-                
-                # Calculate cosine similarity vs query
-                def cos(a, b):
-                    return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-12))
-                
-                similarities = [cos(query_embedding, source_embedding)]
-                if concept_embeddings:
-                    for ce in concept_embeddings:
-                        similarities.append(cos(ce, source_embedding))
-                
-                max_sim = max(similarities)
-                
-                if max_sim >= threshold:
-                    filtered_sources.append(source)
-                    logger.info(f"✓ Semantic match: '{source.title}' (similarity: {max_sim:.2f})")
-                else:
-                    logger.info(f"✗ Semantic mismatch: '{source.title}' (max similarity: {max_sim:.2f})")
-            
-            logger.info(f"Semantic filtering: {len(sources)} → {len(filtered_sources)} sources (threshold: {threshold})")
-            return filtered_sources
-            
-        except Exception as e:
-            logger.error(f"Error in semantic similarity filter: {str(e)}")
-            # Fail closed: return empty list instead of all sources
-            # Upstream retry logic will handle empty result
-            return []
-    
-    def _classify_query_intent(self, query: str) -> str:
-        """Classify query as 'theory' or 'market' using LLM with examples"""
-        if not STIConfig.ENABLE_INTENT_ROUTING:
-            return "market"  # Default to market if routing disabled
-        
-        try:
-            parser = PydanticOutputParser(pydantic_object=QueryIntent)
-            
-            prompt_template = PromptTemplate(
-                input_variables=["query", "theory_keywords", "market_keywords"],
-                template="""Classify the following query as either 'theory' or 'market' based on its content.
-
-Theory queries focus on:
-- Mathematical or formal frameworks (e.g., "command theory", "control theory", "consensus algorithms")
-- Algorithmic approaches, proofs, theorems, mathematical models
-- Academic or research-oriented topics
-- Keywords: {theory_keywords}
-
-Market queries focus on:
-- Business trends, startup funding, enterprise products
-- Vendor announcements, market dynamics, commercial developments
-- Industry news, investments, acquisitions
-- Keywords: {market_keywords}
-
-Query: {query}
-
-{format_instructions}
-
-Return your classification:"""
-            )
-            
-            formatted_prompt = prompt_template.format(
-                query=query,
-                theory_keywords=", ".join(STIConfig.THEORY_KEYWORDS[:5]),
-                market_keywords=", ".join(STIConfig.MARKET_KEYWORDS[:5]),
-                format_instructions=parser.get_format_instructions()
-            )
-            
-            response = self.llm.invoke(formatted_prompt)
-            result = parser.parse(response.content)
-            
-            intent = result.intent.lower()
-            logger.info(f"Query intent classified as: {intent} (confidence: {result.confidence:.2f})")
-            return intent
-            
-        except Exception as e:
-            logger.warning(f"Error classifying intent, defaulting to market: {str(e)}")
-            # Fallback: simple keyword-based classification
-            query_lower = query.lower()
-            theory_match = sum(1 for kw in STIConfig.THEORY_KEYWORDS if kw in query_lower)
-            market_match = sum(1 for kw in STIConfig.MARKET_KEYWORDS if kw in query_lower)
-            
-            if theory_match > market_match:
-                return "theory"
-            return "market"
-    
-    def _expand_theoretical_query(self, query: str, refined_query: Optional[str] = None, query_domain: Optional[str] = None, domain_keywords: Optional[List[str]] = None) -> str:
-        """Expand theory queries with synonyms, domain terms, and first-principles terms"""
-        try:
-            # Domain-specific expansions (for backward compatibility with control theory queries)
-            expansions = {
-                'command theory': ['command theory', 'control theory', 'coordination mechanisms', 'multi-agent consensus', 'distributed control', 'hierarchical control', 'command and control', 'supervisory control'],
-                'control theory': ['control theory', 'Lyapunov stability', 'feedback control', 'adaptive control', 'optimal control', 'robust control', 'stability analysis'],
-                'multi-agent': ['multi-agent systems', 'distributed agents', 'agent coordination', 'consensus protocols', 'swarm intelligence', 'distributed systems'],
-                'game theory': ['game theory', 'Nash equilibrium', 'cooperative games', 'mechanism design', 'auction theory', 'strategic interaction'],
-                'consensus': ['consensus', 'distributed consensus', 'agreement protocols', 'distributed agreement', 'Byzantine consensus', 'leader election', 'coordination', 'graph Laplacian'],
-                'distributed': ['distributed systems', 'decentralized', 'peer-to-peer', 'federated', 'distributed computing'],
-                'hierarchical': ['hierarchical', 'layered', 'tiered', 'structured', 'organizational', 'leader–follower', 'formation control', 'containment control'],
-                'coordination': ['coordination', 'synchronization', 'orchestration', 'cooperation', 'collaboration']
-            }
-            
-            query_lower = query.lower()
-            expanded_terms = [query]
-            matched_expansion = False
-            
-            # Check for hardcoded expansions first (backward compatibility)
-            matched_key = None
-            for key, synonyms in expansions.items():
-                if key in query_lower:
-                    expanded_terms.extend(synonyms[:6])  # Add top synonyms
-                    matched_expansion = True
-                    matched_key = key
-                    logger.debug(f"Using hardcoded expansion for query (matched key: {key})")
-                    break
-            
-            # If no hardcoded expansion matched, use LLM to generate expansion terms
-            if not matched_expansion and (refined_query or query_domain or domain_keywords):
-                try:
-                    # Use LLM to generate expansion terms for general theory queries
-                    effective_query = refined_query or query
-                    domain_context = f"Domain: {query_domain}" if query_domain else ""
-                    keywords_context = f"Domain keywords: {', '.join(domain_keywords)}" if domain_keywords else ""
-                    
-                    prompt = f"""Generate 8-10 expansion terms for this theoretical query. These terms should be synonyms, related concepts, and domain-specific terminology that will help find relevant academic sources.
-
-Query: {effective_query}
-{domain_context}
-{keywords_context}
-
-Return a JSON array of expansion terms (strings only, no explanations):
-["term1", "term2", "term3", ...]"""
-                    
-                    logger.debug(f"Calling LLM for query expansion (query: {effective_query[:50]}...)")
-                    response = self.llm.invoke(prompt)
-                    content = response.content.strip()
-                    logger.debug(f"LLM query expansion completed successfully")
-                    
-                    # Extract JSON array
-                    if "```json" in content:
-                        content = content.split("```json")[1].split("```")[0].strip()
-                    elif "```" in content:
-                        content = content.split("```")[1].split("```")[0].strip()
-                    
-                    llm_terms = json.loads(content)
-                    if isinstance(llm_terms, list):
-                        expanded_terms.extend(llm_terms[:10])
-                        logger.info(f"LLM expansion strategy used: generated {len(llm_terms)} terms for query")
-                        logger.debug(f"LLM expansion terms (sample): {llm_terms[:5] if len(llm_terms) >= 5 else llm_terms}")
-                except json.JSONDecodeError as e:
-                    logger.warning(f"LLM expansion JSON parse error: {e}, using fallback")
-                    logger.debug(f"Failed to parse LLM expansion response: {content[:200] if 'content' in locals() else 'N/A'}...")
-                    # Fallback: extract key terms from query
-                    words = query_lower.split()
-                    significant_words = [w for w in words if len(w) > 4 and w not in ['the', 'and', 'or', 'for', 'with', 'from']]
-                    expanded_terms.extend(significant_words[:5])
-                except (TimeoutError, Exception) as e:
-                    # Catch timeout errors and other exceptions
-                    error_type = type(e).__name__
-                    if 'timeout' in str(e).lower() or 'Timeout' in error_type:
-                        logger.error(f"LLM expansion timed out after 120 seconds: {e}, using fallback")
-                    else:
-                        logger.warning(f"LLM expansion failed ({error_type}): {e}, using fallback")
-                    logger.debug(f"Exception traceback: {traceback.format_exc()}")
-                    # Fallback: extract key terms from query
-                    words = query_lower.split()
-                    significant_words = [w for w in words if len(w) > 4 and w not in ['the', 'and', 'or', 'for', 'with', 'from']]
-                    expanded_terms.extend(significant_words[:5])
-            
-            # Add first-principles and foundational terms for theoretical queries
-            foundational_terms = [
-                'theoretical foundations', 'mathematical foundations', 'first principles',
-                'survey', 'state of the art', 'comprehensive review', 'systematic review',
-                'highly cited', 'seminal', 'foundational', 'theoretical framework'
-            ]
-            
-            # Add foundational terms if query contains theoretical keywords
-            theory_keywords = ['theory', 'theoretical', 'framework', 'model', 'algorithm', 'consensus', 'control', 'command']
-            if any(keyword in query_lower for keyword in theory_keywords):
-                expanded_terms.extend(foundational_terms[:8])
-            
-            # Combine original query with expanded terms
-            expanded_query = " OR ".join(set(expanded_terms[:15]))  # Limit to 15 terms
-            
-            logger.info(f"Expanded theory query: {expanded_query}")
-            return expanded_query
-            
-        except Exception as e:
-            logger.warning(f"Error expanding query, using original: {str(e)}")
-            return query
-    
-    def _decompose_theory_query(self, query: str) -> List[str]:
-        """Decompose theoretical query into core concepts for first-principles search"""
-        try:
-            query_lower = query.lower()
-            core_concepts = []
-            
-            # Define concept mappings for common theoretical terms
-            concept_mappings = {
-                'command theory': ['command', 'control', 'hierarchical control', 'command and control systems', 'distributed control'],
-                'multi-agent': ['multi-agent', 'distributed systems', 'agent coordination', 'cooperative control', 'swarm intelligence'],
-                'control theory': ['control theory', 'feedback control', 'adaptive control', 'optimal control', 'robust control'],
-                'consensus': ['consensus', 'agreement protocols', 'distributed agreement', 'leader election', 'coordination'],
-                'game theory': ['game theory', 'nash equilibrium', 'cooperative games', 'mechanism design', 'strategic interaction'],
-                'distributed': ['distributed systems', 'decentralized', 'peer-to-peer', 'federated', 'distributed algorithms'],
-                'coordination': ['coordination', 'synchronization', 'orchestration', 'cooperation', 'collaboration'],
-                'hierarchical': ['hierarchical', 'layered', 'tiered', 'structured', 'organizational'],
-                'protocol': ['protocol', 'algorithm', 'procedure', 'mechanism', 'framework']
-            }
-            
-            # Extract core concepts from query
-            for term, concepts in concept_mappings.items():
-                if term in query_lower:
-                    core_concepts.extend(concepts)
-            
-            # Add general theoretical terms if no specific mappings found
-            if not core_concepts:
-                # Extract individual words and map to theoretical concepts
-                words = query_lower.split()
-                for word in words:
-                    if word in ['theory', 'theoretical', 'framework', 'model', 'algorithm']:
-                        core_concepts.append(word)
-                    elif word in ['system', 'systems']:
-                        core_concepts.append('distributed systems')
-                    elif word in ['agent', 'agents']:
-                        core_concepts.append('multi-agent systems')
-                    elif word in ['control']:
-                        core_concepts.append('control theory')
-            
-            # If still no concepts found, extract key nouns/phrases as concepts for broader theory queries
-            # This handles queries like "Cognitive Wars" or "Influence Operations" that don't match specific mappings
-            if not core_concepts:
-                # Extract meaningful phrases (2-3 word combinations) and significant nouns
-                words = query_lower.split()
-                # Skip common stop words
-                stop_words = {'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were'}
-                significant_words = [w for w in words if w not in stop_words and len(w) > 3]
-                
-                # Add key phrases (adjacent significant words)
-                for i in range(len(significant_words) - 1):
-                    phrase = f"{significant_words[i]} {significant_words[i+1]}"
-                    core_concepts.append(phrase)
-                
-                # Also add individual significant words as concepts
-                core_concepts.extend(significant_words[:5])  # Top 5 words
-            
-            # Remove duplicates and limit to most relevant concepts
-            unique_concepts = list(dict.fromkeys(core_concepts))  # Preserve order, remove duplicates
-            limited_concepts = unique_concepts[:8]  # Limit to top 8 concepts
-            
-            # Ensure we always have at least the original query as a fallback
-            if not limited_concepts:
-                limited_concepts = [query]
-            
-            logger.info(f"Decomposed query '{query}' into concepts: {limited_concepts}")
-            return limited_concepts
-            
-        except Exception as e:
-            logger.error(f"Error decomposing theory query: {str(e)}")
-            # Fallback: return the original query as a single concept
-            return [query]
-    
-    def _search_foundational_sources(self, concepts: List[str], days_back: int = 180, query_domain: Optional[str] = None, domain_keywords: Optional[List[str]] = None) -> List[Source]:
-        """Search for foundational/seminal papers and survey papers for theoretical concepts with caps and guards"""
-        try:
-            foundational_sources: List[Source] = []
-            seen_urls = set()
-            total_calls = 0
-            max_calls = 60  # Increased for anchor search
-            target = STIConfig.MIN_ACADEMIC_SOURCES_THEORY
-            
-            # Check if query is explicitly about control theory (narrow filter) vs general theory (broad filter)
-            concepts_lower = ' '.join(concepts).lower()
-            is_control_theory_query = any(term in concepts_lower for term in [
-                'control theory', 'command and control', 'consensus', 'formation control',
-                'containment control', 'leader-follower', 'multi-agent', 'distributed control'
-            ])
-            
-            def add_sources(found: List[Source]):
-                nonlocal foundational_sources, seen_urls
-                for s in found:
-                    if s.url in seen_urls:
-                        continue
-                    # Only apply narrow control theory filter if query is explicitly about control theory
-                    # Otherwise, accept any academic source from anchor domains (broader theory queries)
-                    if is_control_theory_query:
-                        # For control theory queries, use narrow filter
-                        if self._is_control_theory_on_topic(s):
-                            foundational_sources.append(s)
-                            seen_urls.add(s.url)
-                    else:
-                        # For general theory queries, accept any academic source from anchor domains
-                        # (the fact that it came from academic search is sufficient quality signal)
-                        foundational_sources.append(s)
-                        seen_urls.add(s.url)
-            
-            # Use thesis anchor domains from config
-            anchor_domains = getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [
-                'ieeexplore.ieee.org', 'dl.acm.org', 'link.springer.com', 'sciencedirect.com'
-            ])
-            venue_terms = ['"IEEE Transactions on Automatic Control"', 'Automatica', '"American Control Conference"']
-            
-            # Domain-specific queries for control/C2 doctrine, distributed systems, human-factors
-            control_c2_queries = [
-                '"command and control" doctrine military',
-                '"C2 architecture" hierarchical distributed',
-                '"command structure" multi-agent',
-            ]
-            distributed_systems_queries = [
-                '"distributed systems" consensus coordination',
-                '"multi-agent systems" protocols algorithms',
-                '"distributed control" stability',
-            ]
-            human_factors_queries = [
-                '"human-agent interaction" command control',
-                '"human-in-the-loop" multi-agent',
-                '"trust" "autonomy" command delegation',
-            ]
-            
-            for concept in concepts[:5]:
-                if total_calls >= max_calls or len(foundational_sources) >= target:
-                    break
-                foundational_queries = [
-                    f'"{concept}" survey review "state of the art"',
-                    f'"{concept}" "highly cited" seminal',
-                    f'"{concept}" "theoretical framework"',
-                ]
-                # Add domain keyword queries if available
-                if domain_keywords:
-                    domain_keyword_queries_added = 0
-                    for keyword in domain_keywords[:3]:  # Use top 3 domain keywords
-                        if keyword.lower() not in concept.lower():
-                            foundational_queries.append(f'"{concept}" {keyword}')
-                            foundational_queries.append(f'"{concept}" {keyword} survey')
-                            domain_keyword_queries_added += 2
-                    if domain_keyword_queries_added > 0:
-                        logger.debug(f"Added {domain_keyword_queries_added} domain keyword queries for concept '{concept}' (domain: {query_domain})")
-                anchor_titles = [
-                    '"Consensus and Cooperation in Networked Multi-Agent Systems"',
-                    '"Distributed consensus in multi-agent systems"',
-                    '"Leader-follower consensus"',
-                    '"Formation control"',
-                    '"Containment control"'
-                ]
-                per_concept = 0
-                for q in foundational_queries + anchor_titles:
-                    if total_calls >= max_calls or len(foundational_sources) >= target or per_concept >= 4:
-                        break
-                    for site in anchor_domains[:8]:  # Limit to first 8 domains
-                        if total_calls >= max_calls or len(foundational_sources) >= target or per_concept >= 4:
-                            break
-                        try:
-                            total_calls += 1
-                            per_concept += 1
-                            sources = self._search_by_domain_type(f'{q} site:{site}', [], SourceType.ACADEMIC, max_results=2, days_back=days_back)
-                            add_sources(sources)
-                        except Exception as e:
-                            logger.warning(f"Foundational query failed '{q} site:{site}': {str(e)}")
-                            continue
-                # venue-term probes
-                for term in venue_terms:
-                    if total_calls >= max_calls or len(foundational_sources) >= target:
-                        break
-                    try:
-                        total_calls += 1
-                        sources = self._search_by_domain_type(f'"{concept}" {term}', [], SourceType.ACADEMIC, max_results=2, days_back=days_back)
-                        add_sources(sources)
-                    except Exception as e:
-                        logger.warning(f"Venue query failed '{term}': {str(e)}")
-                        continue
-                
-                # Domain-specific anchor searches
-                domain_queries = [
-                    (control_c2_queries, "control/C2"),
-                    (distributed_systems_queries, "distributed systems"),
-                    (human_factors_queries, "human-factors"),
-                ]
-                for domain_query_list, domain_name in domain_queries:
-                    if total_calls >= max_calls or len(foundational_sources) >= target:
-                        break
-                    for q in domain_query_list[:2]:  # Limit to 2 queries per domain
-                        if total_calls >= max_calls or len(foundational_sources) >= target:
-                            break
-                        for site in anchor_domains[:5]:  # Limit to 5 anchor domains
-                            if total_calls >= max_calls or len(foundational_sources) >= target:
-                                break
-                            try:
-                                total_calls += 1
-                                sources = self._search_by_domain_type(f'{q} site:{site}', [], SourceType.ACADEMIC, max_results=1, days_back=days_back)
-                                add_sources(sources)
-                            except Exception as e:
-                                logger.warning(f"Domain anchor query failed '{q} {domain_name} site:{site}': {str(e)}")
-                                continue
-            
-            logger.info(f"Foundational search: {len(foundational_sources)} unique, calls={total_calls}")
-            return foundational_sources
-            
-        except Exception as e:
-            logger.error(f"Error in foundational search: {str(e)}")
-            return []
-    
-    def _search_thesis_anchor_sources(
-        self,
-        query: str,
-        days_back: int = 1825,
-        refined_query: Optional[str] = None,
-        query_domain: Optional[str] = None,
-        domain_keywords: Optional[List[str]] = None,
-        concepts: Optional[List[str]] = None,
-        retry_attempt: int = 0
-    ) -> List[Source]:
-        """Search specifically for anchor (peer-reviewed) sources for thesis reports using LLM-generated queries"""
-        try:
-            anchor_sources: List[Source] = []
-            seen_urls = set()
-            total_calls = 0
-            max_calls = 20
-            min_anchors = getattr(STIConfig, 'THESIS_MIN_ANCHOR_SOURCES', 5)
-            
-            anchor_domains = getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [])
-            
-            # Check if query is explicitly about control theory (use control-specific queries for backward compatibility)
-            query_lower = query.lower()
-            is_control_theory = any(term in query_lower for term in [
-                'control theory', 'command and control', 'consensus', 'formation control',
-                'containment control', 'leader-follower', 'multi-agent', 'distributed control'
-            ])
-            
-            if is_control_theory:
-                # Control/C2 doctrine queries (original behavior for control theory queries)
-                control_c2_queries = [
-                    f'"{query}" "command and control" doctrine',
-                    f'"{query}" "C2 architecture"',
-                    f'"{query}" hierarchical distributed control',
-                ]
-                distributed_queries = [
-                    f'"{query}" distributed systems',
-                    f'"{query}" multi-agent coordination',
-                    f'"{query}" consensus protocols',
-                ]
-                all_queries = control_c2_queries + distributed_queries
-            else:
-                # Use LLM-generated queries for general theory queries
-                try:
-                    all_queries = self._generate_topic_search_queries(
-                        query=query,
-                        refined_query=refined_query,
-                        query_domain=query_domain,
-                        domain_keywords=domain_keywords,
-                        concepts=concepts,
-                        retry_attempt=retry_attempt
-                    )
-                    logger.info(f"Using LLM-generated queries for anchor search: {len(all_queries)} queries")
-                    logger.debug(f"LLM-generated queries for anchor search (sample): {all_queries[:5] if len(all_queries) >= 5 else all_queries}")
-                except Exception as e:
-                    logger.warning(f"LLM query generation failed, using fallback: {e}")
-                    logger.debug(f"Exception traceback: {traceback.format_exc()}")
-                    # Fallback to improved phrase extraction
-                    all_queries = self._fallback_query_generation(
-                        query, refined_query, domain_keywords, concepts, retry_attempt
-                    )
-            
-            for q in all_queries[:10]:  # Use up to 10 queries (LLM generates 8-10)
-                if total_calls >= max_calls or len(anchor_sources) >= min_anchors:
-                    break
-                for site in anchor_domains[:5]:  # Limit to 5 anchor domains
-                    if total_calls >= max_calls or len(anchor_sources) >= min_anchors:
-                        break
-                    try:
-                        total_calls += 1
-                        # Use the query directly (LLM-generated queries are already optimized)
-                        search_query = f'{q} site:{site}' if site else q
-                        sources = self._search_by_domain_type(search_query, [], SourceType.ACADEMIC, max_results=2, days_back=days_back)
-                        for s in sources:
-                            if s.url in seen_urls:
-                                continue
-                            # Only include sources from anchor domains
-                            if any(domain in s.url for domain in anchor_domains):
-                                anchor_sources.append(s)
-                                seen_urls.add(s.url)
-                    except Exception as e:
-                        logger.warning(f"Anchor query failed '{q} site:{site}': {str(e)}")
-                        logger.debug(f"Query failure traceback: {traceback.format_exc()}")
-                        continue
-            
-            logger.info(f"Thesis anchor search: {len(anchor_sources)} anchor sources, calls={total_calls}")
-            return anchor_sources
-            
-        except Exception as e:
-            logger.error(f"Error in thesis anchor search: {str(e)}")
-            return []
-    
-    def _calculate_thesis_source_diversity(self, sources: List[Source]) -> float:
-        """Calculate source diversity score for thesis reports (penalize if >80% single domain)"""
-        if not sources:
-            return 0.0
-        
-        # Count sources by domain
-        domain_counts = {}
-        anchor_domains = getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [])
-        single_domain_threshold = getattr(STIConfig, 'THESIS_SINGLE_DOMAIN_THRESHOLD', 0.80)
-        diversity_target = getattr(STIConfig, 'THESIS_SOURCE_DIVERSITY_TARGET', 0.40)
-        
-        for source in sources:
-            domain = None
-            # Check if source is from anchor domain
-            for anchor_domain in anchor_domains:
-                if anchor_domain in source.url:
-                    domain = anchor_domain
-                    break
-            if not domain:
-                # Check for arXiv
-                if 'arxiv.org' in source.url:
-                    domain = 'arxiv.org'
-                else:
-                    domain = 'other'
-            
-            domain_counts[domain] = domain_counts.get(domain, 0) + 1
-        
-        # Calculate diversity metrics
-        total_sources = len(sources)
-        anchor_count = sum(count for domain, count in domain_counts.items() if domain != 'arxiv.org' and domain != 'other')
-        anchor_fraction = anchor_count / total_sources if total_sources > 0 else 0.0
-        
-        # Calculate domain concentration (max fraction from single domain)
-        max_domain_fraction = max(domain_counts.values()) / total_sources if total_sources > 0 else 0.0
-        
-        # Score: penalize if >80% from single domain, reward if anchor fraction meets target
-        diversity_score = 1.0
-        if max_domain_fraction > single_domain_threshold:
-            # Penalize: reduce score proportionally to how much over threshold
-            penalty = (max_domain_fraction - single_domain_threshold) / (1.0 - single_domain_threshold)
-            diversity_score = 1.0 - (penalty * 0.3)  # Max 30% penalty
-        
-        if anchor_fraction < diversity_target:
-            # Penalize: reduce score if anchor fraction below target
-            shortfall = (diversity_target - anchor_fraction) / diversity_target
-            diversity_score = diversity_score * (1.0 - shortfall * 0.2)  # Max 20% penalty
-        
-        logger.info(f"Source diversity: anchor_fraction={anchor_fraction:.2f} (target={diversity_target}), "
-                   f"max_domain_fraction={max_domain_fraction:.2f} (threshold={single_domain_threshold}), "
-                   f"score={diversity_score:.2f}")
-        
-        return max(0.0, min(1.0, diversity_score))
-    
-    def _classify_thesis_source_type(self, source: Source) -> ThesisSourceType:
-        """Classify source type for thesis reports (P/D/A/O/G)"""
-        url = source.url.lower()
-        title = getattr(source, 'title', '').lower()
-        publisher = getattr(source, 'publisher', '').lower()
-        
-        # Peer-reviewed (P): IEEE, ACM, Springer, ScienceDirect, JSTOR, SIAM, APS
-        anchor_domains = getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [])
-        for domain in anchor_domains:
-            if domain.lower() in url:
-                return ThesisSourceType.PEER_REVIEWED
-        
-        # ArXiv (A): arXiv preprints, conference preprints
-        if 'arxiv.org' in url or 'arxiv' in url or 'arxiv' in publisher:
-            return ThesisSourceType.ARXIV
-        
-        # Official (O): Government, standards bodies, official data
-        official_domains = ['.gov', '.edu', 'nist.gov', 'iso.org', 'itu.int', 'ieee.org/standards']
-        if any(domain in url for domain in official_domains):
-            return ThesisSourceType.OFFICIAL
-        
-        # Doctrine (D): Official doctrine, standards bodies, military/defense
-        doctrine_keywords = ['doctrine', 'standard', 'military', 'defense', 'navy.mil', 'army.mil']
-        if any(keyword in url or keyword in title for keyword in doctrine_keywords):
-            return ThesisSourceType.DOCTRINE
-        
-        # Grey (G): Industry whitepapers, reputable blogs, everything else
-        return ThesisSourceType.GREY
-    
-    def _calculate_anchor_status(self, sources: List[Source]) -> str:
-        """Calculate anchor_status: Anchored|Anchor-Sparse|Anchor-Absent"""
-        anchor_domains = getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [])
-        anchor_count = sum(1 for s in sources if any(domain in s.url.lower() for domain in anchor_domains))
-        
-        if anchor_count >= 2:
-            return "Anchored"
-        elif anchor_count == 1:
-            return "Anchor-Sparse"
-        else:
-            return "Anchor-Absent"
-    
-    def _calculate_thesis_confidence(self, sources: List[Source], draft: ThesisDraft, 
-                                     cem_grid: CEMGrid = None, has_assumptions_ledger: bool = False) -> float:
-        """
-        Calculate thesis confidence using playbook formula: C = 0.3·S + 0.25·A + 0.25·M + 0.2·R
-        
-        Where:
-        - S = Source diversity (0-1): unique publishers & types
-        - A = Anchor coverage (0-1): share of primary claims with Type-1 anchors
-        - M = Method transparency (0-1): CEM completeness + assumptions ledger present
-        - R = Replication readiness (0-1): sim plan + datasets/params specified
-        """
-        if not sources:
-            return 0.0
-        
-        # S: Source diversity (unique publishers & types)
-        unique_publishers = set(getattr(s, 'publisher', '') or '' for s in sources)
-        source_types = set(self._classify_thesis_source_type(s) for s in sources)
-        diversity_score = min(1.0, (len(unique_publishers) / max(1, len(sources))) * 0.6 + 
-                                   (len(source_types) / 5.0) * 0.4)  # Normalize to 0-1
-        
-        # A: Anchor coverage (share of primary claims with Type-1 anchors)
-        anchor_domains = getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [])
-        anchor_sources = [s for s in sources if any(domain in s.url.lower() for domain in anchor_domains)]
-        
-        if cem_grid and cem_grid.rows:
-            # Count primary claims (first 3-5 claims are typically primary)
-            primary_claims = cem_grid.rows[:min(5, len(cem_grid.rows))]
-            claims_with_anchors = 0
-            
-            for row in primary_claims:
-                evidence = row.evidence
-                # Check if evidence cites anchor sources (Type-1 = P)
-                # Look for [^id:P] format in evidence
-                import re
-                anchor_citations = re.findall(r'\[\^(\d+):P\]', evidence)
-                if anchor_citations:
-                    cited_ids = [int(id) for id in anchor_citations]
-                    # Check if any cited source is an anchor
-                    if any(s.id in cited_ids for s in anchor_sources):
-                        claims_with_anchors += 1
-            
-            anchor_coverage = claims_with_anchors / max(1, len(primary_claims))
-        else:
-            # Fallback: use anchor fraction of sources
-            anchor_coverage = len(anchor_sources) / max(1, len(sources))
-        
-        # M: Method transparency (CEM completeness + assumptions ledger)
-        method_transparency = 0.0
-        if cem_grid and cem_grid.rows:
-            # Check CEM completeness: all rows have risk and test_id
-            complete_rows = sum(1 for row in cem_grid.rows 
-                              if getattr(row, 'risk', '') and getattr(row, 'test_id', ''))
-            cem_completeness = complete_rows / max(1, len(cem_grid.rows))
-            method_transparency += cem_completeness * 0.6
-        
-        if has_assumptions_ledger:
-            method_transparency += 0.4
-        else:
-            method_transparency += 0.2  # Partial credit if CEM exists
-        
-        method_transparency = min(1.0, method_transparency)
-        
-        # R: Replication readiness (sim plan + datasets/params specified)
-        markdown_lower = draft.markdown.lower()
-        has_sim_plan = any(kw in markdown_lower for kw in ['simulation', 'sim', 'parameter sweep', 'monte carlo'])
-        has_params = any(kw in markdown_lower for kw in ['parameter', 'dataset', 'config', 'hyperparameter'])
-        has_method = any(kw in markdown_lower for kw in ['method', 'methodology', 'evaluation plan'])
-        
-        replication_readiness = 0.0
-        if has_sim_plan:
-            replication_readiness += 0.4
-        if has_params:
-            replication_readiness += 0.3
-        if has_method:
-            replication_readiness += 0.3
-        
-        # Calculate final confidence: C = 0.3·S + 0.25·A + 0.25·M + 0.2·R
-        confidence = (0.3 * diversity_score + 
-                     0.25 * anchor_coverage + 
-                     0.25 * method_transparency + 
-                     0.2 * replication_readiness)
-        
-        return max(0.0, min(1.0, confidence))
-    
-    def _generate_thesis_style_report(self, signals: List[SignalModel], sources: List[Source], 
-                                    query: str, foundational_sources: List[Source] = None) -> str:
-        """Generate thesis-style report building from first principles and foundational theory"""
-        try:
-            # Classify sources by type
-            direct_sources = [s for s in sources if any(term in s.title.lower() or term in s.content.lower() 
-                                                      for term in query.lower().split())]
-            foundational_sources = foundational_sources or []
-            related_sources = [s for s in sources if s not in direct_sources and s not in foundational_sources]
-            
-            # Create methodology note
-            methodology_note = ""
-            if len(direct_sources) < 2:
-                methodology_note = f"\n\n**Methodology Note**: Limited recent publications found on '{query}'. This analysis builds from foundational control theory and multi-agent systems research to explore the domain, making reasoned connections from established theory to the specific topic.\n"
-            
-            # Generate thesis-style sections
-            sections = []
-            
-            # 1. Foundational Theory Section
-            if foundational_sources:
-                foundational_text = self._generate_foundational_section(foundational_sources, query)
-                sections.append(foundational_text)
-            
-            # 2. Related Concepts Section  
-            if related_sources:
-                related_text = self._generate_related_concepts_section(related_sources, query)
-                sections.append(related_text)
-            
-            # 3. Synthesis and Extrapolation Section
-            synthesis_text = self._generate_synthesis_section(signals, sources, query, direct_sources)
-            sections.append(synthesis_text)
-            
-            # 4. Open Questions and Future Directions
-            future_text = self._generate_future_directions_section(query, sources)
-            sections.append(future_text)
-            
-            # Combine sections
-            thesis_report = methodology_note + "\n\n".join(sections)
-            
-            logger.info(f"Generated thesis-style report with {len(sections)} sections")
-            return thesis_report
-            
-        except Exception as e:
-            logger.error(f"Error generating thesis-style report: {str(e)}")
-            return f"Error generating thesis-style analysis: {str(e)}"
-    
-    def _generate_foundational_section(self, foundational_sources: List[Source], query: str) -> str:
-        """Generate foundational theory section from seminal papers"""
-        section = "## Foundational Theory\n\n"
-        section += "This analysis builds upon established theoretical foundations in control theory and multi-agent systems:\n\n"
-        
-        for i, source in enumerate(foundational_sources[:3], 1):
-            # Dict/object safe extraction
-            title = getattr(source, 'title', None) or (source.get('title') if isinstance(source, dict) else '')
-            publisher = getattr(source, 'publisher', None) or (source.get('publisher') if isinstance(source, dict) else '')
-            date_str = getattr(source, 'date', None) or (source.get('date') if isinstance(source, dict) else '')
-            content = getattr(source, 'content', None) or (source.get('content') if isinstance(source, dict) else '')
-            section += f"**{i}. {title}**\n"
-            section += f"*{publisher}* - {date_str}\n\n"
-            # Extract key theoretical concepts from content
-            content_preview = (content[:300] + "...") if content and len(content) > 300 else (content or "")
-            section += f"{content_preview}\n\n"
-        
-        section += "These foundational works provide the theoretical framework for understanding command theory in multi-agent contexts.\n"
-        return section
-    
-    def _generate_related_concepts_section(self, related_sources: List[Source], query: str) -> str:
-        """Generate related concepts section from adjacent domains"""
-        section = "## Related Concepts and Applications\n\n"
-        section += "Adjacent research areas provide insights into command theory applications:\n\n"
-        
-        for i, source in enumerate(related_sources[:3], 1):
-            title = getattr(source, 'title', None) or (source.get('title') if isinstance(source, dict) else '')
-            publisher = getattr(source, 'publisher', None) or (source.get('publisher') if isinstance(source, dict) else '')
-            date_str = getattr(source, 'date', None) or (source.get('date') if isinstance(source, dict) else '')
-            content = getattr(source, 'content', None) or (source.get('content') if isinstance(source, dict) else '')
-            section += f"**{i}. {title}**\n"
-            section += f"*{publisher}* - {date_str}\n\n"
-            content_preview = (content[:250] + "...") if content and len(content) > 250 else (content or "")
-            section += f"{content_preview}\n\n"
-        
-        section += "These related works demonstrate how command and control principles apply across different domains.\n"
-        return section
-    
-    def _generate_synthesis_section(self, signals: List[SignalModel], sources: List[Source], 
-                                  query: str, direct_sources: List[Source]) -> str:
-        """Generate synthesis section connecting theory to current developments"""
-        section = "## Synthesis and Current Developments\n\n"
-        
-        if direct_sources:
-            section += "Recent developments in command theory and multi-agent systems:\n\n"
-            for signal in signals[:3]:
-                # dict/object safe fields
-                s_date = getattr(signal, 'date', None) or (signal.get('date') if isinstance(signal, dict) else '')
-                s_text = getattr(signal, 'content', None) or (signal.get('text') if isinstance(signal, dict) else '')
-                section += f"- **{s_date}**: {s_text}\n"
-            section += "\n"
-        else:
-            section += "While specific recent publications on this exact topic are limited, current trends in multi-agent systems and control theory suggest:\n\n"
-        
-        # Add reasoned extrapolation
-        section += "**Theoretical Extrapolation**: Based on established control theory principles and multi-agent coordination mechanisms, command theory in multi-agent systems likely involves:\n\n"
-        section += "1. **Hierarchical Control Structures**: Multi-level command hierarchies where higher-level agents issue commands to lower-level agents\n"
-        section += "2. **Consensus Mechanisms**: Protocols for achieving agreement on command execution across distributed agents\n"
-        section += "3. **Fault Tolerance**: Robustness mechanisms for handling agent failures and command conflicts\n"
-        section += "4. **Scalability Considerations**: Efficient algorithms for managing command distribution in large agent populations\n\n"
-        
-        section += "*Note: These extrapolations are based on established theoretical foundations and may require empirical validation.*\n"
-        return section
-
-    # Thesis subgraph nodes (LangGraph-style deterministic micro-nodes)
-    def _thesis_outline(self, concepts: ConceptList, sources: List[Source]) -> ThesisOutline:
-        try:
-            parser = PydanticOutputParser(pydantic_object=ThesisOutline)
-            prompt = PromptTemplate(
-                input_variables=["concepts", "format_instructions"],
-                template=(
-                    "You are drafting an outline for a theory-first thesis brief.\n"
-                    "Use the provided concepts as the backbone.\n\n"
-                    "Concepts: {concepts}\n\n"
-                    "Return a JSON matching the schema.\n"
-                    "{format_instructions}"
-                )
-            )
-            resp = self.llm.invoke(
-                prompt.format(concepts=", ".join(concepts.concepts[:8]),
-                              format_instructions=parser.get_format_instructions())
-            )
-            content = resp.content.strip()
-            if "```json" in content:
-                content = content.split("```json")[1].split("```")[0].strip()
-            return ThesisOutline(**json.loads(content))
-        except Exception as e:
-            logger.warning(f"Outline parser fallback: {str(e)}")
-            return ThesisOutline(
-                sections=['Foundations','Formalization','Mechanisms','Applications','Limits and Open Questions'],
-                claims_by_section={'Foundations': concepts.concepts[:5] or ['control theory','consensus']}
-            )
-
-    def _thesis_compose(
-        self, 
-        outline: ThesisOutline, 
-        sources: List[Source], 
-        query: str,
-        abstraction_layers: Optional[Dict[str, List[str]]] = None,
-        conceptual_map: Optional[str] = None,
-        canonical_papers: Optional[Dict[str, List[str]]] = None
-    ) -> ThesisDraft:
-        try:
-            parser = PydanticOutputParser(pydantic_object=ThesisDraft)
-            # Prepare compact sources payload
-            src_payload = []
-            for i, s in enumerate(sources, 1):
-                src_payload.append({
-                    'id': i,
-                    'title': getattr(s,'title',None) or (s.get('title') if isinstance(s,dict) else ''),
-                    'publisher': getattr(s,'publisher',None) or (s.get('publisher') if isinstance(s,dict) else ''),
-                    'date': getattr(s,'date',None) or (s.get('date') if isinstance(s,dict) else ''),
-                    'url': getattr(s,'url',None) or (s.get('url') if isinstance(s,dict) else '')
-                })
-            # Identify anchor sources (non-preprint, peer-reviewed)
-            anchor_domains = getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [])
-            anchor_sources_list = [s for s in sources if any(domain in s.url for domain in anchor_domains)]
-            preprint_sources = [s for s in sources if 'arxiv.org' in s.url]
-            anchor_count = len(anchor_sources_list)
-            
-            # Prepare abstraction layer context for prompt
-            has_abstraction_layers = abstraction_layers and len(abstraction_layers) > 0
-            abstraction_context = ""
-            if has_abstraction_layers:
-                layers_text = "\n".join([
-                    f"- **{layer_name}**: {', '.join(concepts[:5])}" 
-                    for layer_name, concepts in abstraction_layers.items()
-                ])
-                abstraction_context = f"""
-ABSTRACTION LAYER CONTEXT:
-This analysis uses a multi-layer abstraction approach to ground the thesis in foundational theory:
-
-{layers_text}
-
-When direct research on the specific topic is limited, canonical papers from broader abstraction layers provide foundational concepts that ground first-principles reasoning. These papers, while tangentially related to the specific topic, establish theoretical foundations that connect to the query through conceptual reasoning chains.
-
-"""
-                if canonical_papers and len(canonical_papers) > 0:
-                    canonical_text = "\n".join([
-                        f"- **{layer_name}**: {', '.join(papers[:3])}" 
-                        for layer_name, papers in canonical_papers.items()
-                    ])
-                    abstraction_context += f"""
-CANONICAL PAPERS IDENTIFIED:
-{canonical_text}
-
-"""
-                if conceptual_map:
-                    abstraction_context += f"""
-CONCEPTUAL MAP:
-{conceptual_map}
-
-"""
-            
-            # Build prompt template with conditional abstraction layer context
-            prompt_variables = ["query","outline","sources","format_instructions","anchor_count"]
-            if has_abstraction_layers:
-                prompt_variables.append("abstraction_context")
-            
-            prompt_template_str = (
-                "Compose a thesis-style brief (markdown) with sections from the outline.\n"
-                "Cite sources as [^id] where appropriate. Keep rigorous, concise.\n\n"
-            )
-            
-            if has_abstraction_layers:
-                prompt_template_str += "{abstraction_context}\n"
-            
-            prompt_template_str += (
-                "REQUIREMENTS:\n"
-                "- Foundations section: Include a 'Why these anchors?' paragraph explaining the selection of anchor (peer-reviewed, non-preprint) sources. Currently {anchor_count} anchor sources are included."
-            )
-            
-            if has_abstraction_layers:
-                prompt_template_str += (
-                    " When abstraction layers are provided, explain the multi-layer selection strategy:\n"
-                    "  * Direct Sources (Layer 1): Sources that directly address the specific topic\n"
-                    "  * Domain Sources (Layer 2): Sources from the broader domain providing context\n"
-                    "  * Foundational Sources (Layer 3-4): Canonical papers that ground first-principles reasoning\n"
-                    "  Explain how canonical papers from broader layers, while tangentially related, provide foundational concepts that connect to the query topic through conceptual reasoning chains.\n"
-                )
-            else:
-                prompt_template_str += "\n"
-            
-            prompt_template_str += (
-                "- Applications section: Include 2+ parameterized vignettes (e.g., disaster response under intermittent comms; autonomous ISR swarm with contested spectrum) with metrics (MTTA, failure prob) and failure modes. Minimum 400 words.\n"
-                "- Limits & Open Questions: Include 'Operational Assumptions & Diagnostics' subsection with bounded-rationality assumption and adversarial comms model, each with concrete triggers and delegation policies. Move human-in-loop and adversarial from future work to present assumptions. Minimum 300 words.\n"
-                "- Mechanisms section: Ensure unique content, do not repeat Executive Summary.\n"
-                "- Synthesis section: Ensure unique synthesis, do not repeat Executive Summary.\n"
-            )
-            
-            if has_abstraction_layers:
-                prompt_template_str += (
-                    "\n- Include a 'Theoretical Grounding and Conceptual Framework' section after the Foundations section that:\n"
-                    "  * Presents the abstraction layers and their concepts\n"
-                    "  * Shows how canonical papers from broader layers ground first-principles reasoning\n"
-                    "  * Documents the reasoning chain from foundational principles to the specific topic\n"
-                    "  * Explains how tangentially related canonical papers provide theoretical foundations\n"
-                    "  * References the conceptual map when available\n"
-                )
-            
-            prompt_template_str += (
-                "\nQuery: {query}\n"
-                "Outline: {outline}\n"
-                "Sources: {sources}\n\n"
-                "Return JSON per schema.\n{format_instructions}"
-            )
-            
-            prompt = PromptTemplate(
-                input_variables=prompt_variables,
-                template=prompt_template_str
-            )
-            
-            # Prepare format arguments
-            format_args = {
-                'query': query,
-                'outline': json.dumps(outline.model_dump()),
-                'sources': json.dumps(src_payload[:15]),  # Increased from 12 to 15
-                'format_instructions': parser.get_format_instructions(),
-                'anchor_count': anchor_count
-            }
-            if has_abstraction_layers:
-                format_args['abstraction_context'] = abstraction_context
-            
-            resp = self.llm.invoke(prompt.format(**format_args))
-            content = resp.content.strip()
-            if "```json" in content:
-                content = content.split("```json")[1].split("```")[0].strip()
-            return ThesisDraft(**json.loads(content))
-        except Exception as e:
-            logger.warning(f"Thesis compose fallback: {str(e)}")
-            # Minimal fallback
-            biblio = []
-            for i, s in enumerate(sources, 1):
-                title = getattr(s,'title',None) or (s.get('title') if isinstance(s,dict) else '')
-                publisher = getattr(s,'publisher',None) or (s.get('publisher') if isinstance(s,dict) else '')
-                date_str = getattr(s,'date',None) or (s.get('date') if isinstance(s,dict) else '')
-                url = getattr(s,'url',None) or (s.get('url') if isinstance(s,dict) else '')
-                biblio.append(f"[^{i}]: {title} — {publisher}, {date_str}. {url}")
-            outline_md = "\n\n".join([f"### {sec}\n" for sec in outline.sections])
-            md = f"# Thesis Brief — {query}\n\n{outline_md}\n\n## Sources\n\n" + "\n".join(biblio)
-            return ThesisDraft(markdown=md, cited_source_ids=list(range(1, len(sources)+1)))
-    
-    def _validate_thesis_section_completeness(self, markdown: str) -> Dict[str, Any]:
-        """Validate thesis section completeness (word counts, skeletal checks) - thesis only"""
-        import re
-        
-        validation_results = {
-            'sections': {},
-            'warnings': [],
-            'errors': []
-        }
-        
-        # Extract sections by ## headings
-        section_pattern = r'^##\s+(.+?)\s*\n+(.*?)(?=\n##\s+|$)'
-        sections = {}
-        for match in re.finditer(section_pattern, markdown, re.MULTILINE | re.DOTALL):
-            section_name = match.group(1).strip()
-            section_content = match.group(2).strip()
-            sections[section_name] = section_content
-        
-        # Word count requirements
-        word_count_requirements = {
-            'Applications': 400,
-            'Case Studies and Applications': 400,
-            'Limits & Open Questions': 300,
-            'Limits and Open Questions': 300,
-            'Discussion and Implications': 300,
-        }
-        
-        # Check for operational diagnostics in Limits section
-        limits_sections = [name for name in sections.keys() if 'limit' in name.lower() or 'question' in name.lower()]
-        has_operational_diagnostics = False
-        for section_name in limits_sections:
-            section_content_lower = sections[section_name].lower()
-            if ('operational assumption' in section_content_lower or 
-                'bounded-rationality' in section_content_lower or 
-                'adversarial comms' in section_content_lower):
-                has_operational_diagnostics = True
-                break
-        
-        if limits_sections and not has_operational_diagnostics:
-            validation_results['errors'].append(
-                "Limits section must include 'Operational Assumptions & Diagnostics' subsection with bounded-rationality assumption and adversarial comms model"
-            )
-        
-        for section_name, content in sections.items():
-            word_count = len(content.split())
-            section_result = {
-                'word_count': word_count,
-                'meets_requirement': True,
-                'is_skeletal': word_count < 100  # Flag if <100 words
-            }
-            
-            # Check against requirements
-            for req_name, req_words in word_count_requirements.items():
-                if req_name.lower() in section_name.lower():
-                    section_result['meets_requirement'] = word_count >= req_words
-                    if word_count < req_words:
-                        validation_results['warnings'].append(
-                            f"Section '{section_name}' has {word_count} words, requires {req_words}"
-                        )
-                    break
-            
-            if section_result['is_skeletal']:
-                validation_results['warnings'].append(
-                    f"Section '{section_name}' appears skeletal ({word_count} words)"
-                )
-            
-            validation_results['sections'][section_name] = section_result
-        
-        return validation_results
-    
-    def _detect_thesis_section_repetition(self, markdown: str, exec_summary: str = None) -> Dict[str, Any]:
-        """Detect repetition between sections using embedding similarity - thesis only"""
-        import re
-        
-        if not exec_summary:
-            # Try to extract exec summary from Abstract section
-            abstract_match = re.search(r'^##\s+Abstract\s*\n+(.*?)(?=\n##\s+|$)', markdown, re.MULTILINE | re.DOTALL)
-            if abstract_match:
-                exec_summary = abstract_match.group(1).strip()
-        
-        if not exec_summary:
-            return {'repetition_detected': False, 'overlaps': []}
-        
-        try:
-            embeddings = OpenAIEmbeddings()
-            exec_embedding = embeddings.embed_query(exec_summary[:500])  # Limit to first 500 chars
-            
-            # Extract sections by ## headings
-            section_pattern = r'^##\s+(.+?)\s*\n+(.*?)(?=\n##\s+|$)'
-            sections_to_check = ['Mechanisms', 'Synthesis', 'Synthesis and Current Developments']
-            overlaps = []
-            
-            for match in re.finditer(section_pattern, markdown, re.MULTILINE | re.DOTALL):
-                section_name = match.group(1).strip()
-                section_content = match.group(2).strip()
-                
-                if any(check_name.lower() in section_name.lower() for check_name in sections_to_check):
-                    if len(section_content) > 50:  # Only check if substantial content
-                        section_embedding = embeddings.embed_query(section_content[:500])
-                        
-                        # Calculate cosine similarity
-                        similarity = np.dot(exec_embedding, section_embedding) / (
-                            np.linalg.norm(exec_embedding) * np.linalg.norm(section_embedding)
-                        )
-                        
-                        if similarity > 0.70:  # >70% similarity indicates repetition
-                            overlaps.append({
-                                'section': section_name,
-                                'similarity': float(similarity),
-                                'warning': f"Section '{section_name}' has {similarity:.2%} similarity to Executive Summary"
-                            })
-            
-            return {
-                'repetition_detected': len(overlaps) > 0,
-                'overlaps': overlaps
-            }
-        except Exception as e:
-            logger.warning(f"Error detecting section repetition: {str(e)}")
-            return {'repetition_detected': False, 'overlaps': []}
-
-    def _thesis_critique(self, draft: ThesisDraft, query: str, sources: List[Source] = None) -> ThesisCritique:
-        """Critique thesis draft on alignment, theory depth, clarity - thesis only"""
-        try:
-            parser = PydanticOutputParser(pydantic_object=ThesisCritique)
-            prompt = PromptTemplate(
-                input_variables=["query","markdown","format_instructions"],
-                template=(
-                    "Critique this thesis brief on: alignment to query, theory depth, clarity.\n"
-                    "Return JSON with fields alignment, theory_depth, clarity, repair_action (none|expand_anchors|adjust_outline).\n\n"
-                    "Query: {query}\n\nDraft (markdown):\n{markdown}\n\n{format_instructions}"
-                )
-            )
-            resp = self.llm.invoke(
-                prompt.format(query=query, markdown=draft.markdown[:5000],
-                              format_instructions=parser.get_format_instructions())
-            )
-            content = resp.content.strip()
-            if "```json" in content:
-                content = content.split("```json")[1].split("```")[0].strip()
-            critique = ThesisCritique(**json.loads(content))
-            # Ensure all values are computed (no None) - fallback to programmatic calculation
-            if critique.alignment is None:
-                critique.alignment = self._calculate_badge_alignment(draft, query)
-            if critique.theory_depth is None:
-                critique.theory_depth = self._calculate_badge_theory_depth(draft)
-            if critique.clarity is None:
-                critique.clarity = self._calculate_badge_clarity(draft)
-            return critique
-        except Exception as e:
-            logger.warning(f"Critique fallback: {str(e)}")
-            # Compute badges programmatically
-            alignment = self._calculate_badge_alignment(draft, query)
-            theory_depth = self._calculate_badge_theory_depth(draft)
-            clarity = self._calculate_badge_clarity(draft)
-            repair_action = 'adjust_outline' if min(alignment, theory_depth, clarity) < STIConfig.THESIS_CRITIQUE_MIN_SCORE else 'none'
-            return ThesisCritique(alignment=alignment, theory_depth=theory_depth, clarity=clarity, repair_action=repair_action)
-    
-    def _calculate_badge_alignment(self, draft: ThesisDraft, query: str) -> float:
-        """Calculate alignment badge (0-1): problem framing → claims → methods consistency"""
-        markdown_lower = draft.markdown.lower()
-        query_lower = query.lower()
-        
-        # Check if problem is clearly stated
-        has_problem = any(kw in markdown_lower for kw in ['problem', 'question', 'hypothesis'])
-        
-        # Check if claims align with problem
-        has_claims = any(kw in markdown_lower for kw in ['claim', 'hypothesis', 'proposition'])
-        
-        # Check if methods align with claims
-        has_methods = any(kw in markdown_lower for kw in ['method', 'methodology', 'evaluation'])
-        
-        # Check query relevance
-        query_words = set(query_lower.split())
-        markdown_words = set(markdown_lower.split())
-        query_overlap = len(query_words.intersection(markdown_words)) / max(1, len(query_words))
-        
-        score = 0.0
-        if has_problem:
-            score += 0.3
-        if has_claims:
-            score += 0.3
-        if has_methods:
-            score += 0.2
-        score += query_overlap * 0.2
-        
-        return min(1.0, score)
-    
-    def _calculate_badge_theory_depth(self, draft: ThesisDraft) -> float:
-        """Calculate theory depth badge (0-1): level of formalism & rigor"""
-        markdown_lower = draft.markdown.lower()
-        
-        # Check for formal notation
-        has_notation = any(kw in markdown_lower for kw in ['notation', 'symbol', 'variable'])
-        
-        # Check for mathematical models
-        has_math = any(kw in markdown_lower for kw in ['model', 'equation', 'theorem', 'proof'])
-        
-        # Check for formal framework
-        has_framework = any(kw in markdown_lower for kw in ['framework', 'formal', 'structure'])
-        
-        # Check for foundations section
-        has_foundations = any(kw in markdown_lower for kw in ['foundation', 'theoretical', 'formal model'])
-        
-        score = 0.0
-        if has_notation:
-            score += 0.2
-        if has_math:
-            score += 0.3
-        if has_framework:
-            score += 0.3
-        if has_foundations:
-            score += 0.2
-        
-        return min(1.0, score)
-    
-    def _calculate_badge_clarity(self, draft: ThesisDraft) -> float:
-        """Calculate clarity badge (0-1): readability, lack of redundancy, diagram/table use"""
-        markdown_lower = draft.markdown.lower()
-        
-        # Check for tables
-        has_tables = '|' in draft.markdown and '---' in draft.markdown
-        
-        # Check for structure (sections)
-        has_sections = draft.markdown.count('##') >= 5
-        
-        # Check for lists (improves readability)
-        has_lists = '-' in draft.markdown or any(str(i) + '.' in draft.markdown for i in range(1, 10))
-        
-        # Check length (sufficient content)
-        word_count = len(draft.markdown.split())
-        adequate_length = word_count >= 2000
-        
-        score = 0.0
-        if has_tables:
-            score += 0.3
-        if has_sections:
-            score += 0.3
-        if has_lists:
-            score += 0.2
-        if adequate_length:
-            score += 0.2
-        
-        return min(1.0, score)
-    
-    def _calculate_thesis_publication_rubric(self, draft: ThesisDraft, query: str, 
-                                            sources: List[Source], diversity_score: float = 1.0) -> PublicationRubric:
-        """Calculate comprehensive publication rubric scores - thesis only"""
-        try:
-            parser = PydanticOutputParser(pydantic_object=PublicationRubric)
-            
-            # Count sources and anchors
-            anchor_domains = getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [])
-            anchor_count = sum(1 for s in sources if any(domain in s.url for domain in anchor_domains))
-            total_sources = len(sources)
-            anchor_fraction = anchor_count / total_sources if total_sources > 0 else 0.0
-            
-            # Check for CEM grid
-            has_cem_grid = '## Claim-Evidence-Method' in draft.markdown or '| Claim |' in draft.markdown
-            
-            # Check for notation table
-            has_notation = '## Notation' in draft.markdown or '| Symbol |' in draft.markdown
-            
-            # Check for operational diagnostics
-            has_diagnostics = 'Operational Assumptions' in draft.markdown or 'diagnostic' in draft.markdown.lower()
-            
-            prompt = PromptTemplate(
-                input_variables=["query","markdown","anchor_fraction","has_cem","has_notation","has_diagnostics","format_instructions"],
-                template=(
-                    "Evaluate this thesis brief using a 10-dimension publication rubric. Score each dimension:\n\n"
-                    "1. Scope & Problem Clarity (0-10): How clearly defined is the problem and scope?\n"
-                    "2. Novelty / Original Framing (0-10): How original/novel is the theoretical framing?\n"
-                    "3. Evidence Base Strength (0-20): Diversity and authoritativeness of sources. Anchor fraction: {anchor_fraction:.1%}\n"
-                    "4. Method Rigor & Formalism (0-10): Rigor of methods and formalism\n"
-                    "5. Reproducibility & Transparency (0-10): CEM grid present: {has_cem}, Notation table: {has_notation}\n"
-                    "6. Cross-Domain Mapping (0-5): Cross-domain applicability\n"
-                    "7. Falsifiability & Predictions (0-10): Testable predictions and falsifiability\n"
-                    "8. Risks / Limitations (0-5): Honest treatment of limitations\n"
-                    "9. Writing Clarity & Structure (0-10): Clarity and structure\n"
-                    "10. Publication Hygiene (0-10): Citations, no placeholders. Diagnostics present: {has_diagnostics}\n\n"
-                    "Query: {query}\n\nDraft (markdown):\n{markdown}\n\n{format_instructions}"
-                )
-            )
-            
-            resp = self.llm.invoke(
-                prompt.format(
-                    query=query,
-                    markdown=draft.markdown[:8000],  # Increased context
-                    anchor_fraction=anchor_fraction,
-                    has_cem="yes" if has_cem_grid else "no",
-                    has_notation="yes" if has_notation else "no",
-                    has_diagnostics="yes" if has_diagnostics else "no",
-                    format_instructions=parser.get_format_instructions()
-                )
-            )
-            content = resp.content.strip()
-            if "```json" in content:
-                content = content.split("```json")[1].split("```")[0].strip()
-            return PublicationRubric(**json.loads(content))
-        except Exception as e:
-            logger.warning(f"Publication rubric fallback: {str(e)}")
-            # Fallback: calculate approximate scores
-            markdown_lower = draft.markdown.lower()
-            
-            # Scope clarity: check for clear problem statement
-            scope_clarity = 8.0 if any(kw in markdown_lower for kw in ['research question', 'problem', 'objective']) else 6.0
-            
-            # Novelty: check for original framing
-            novelty = 8.0 if any(kw in markdown_lower for kw in ['framework', 'unified', 'novel']) else 6.0
-            
-            # Evidence strength: based on anchor fraction
-            evidence_strength = min(20.0, 10.0 + (anchor_fraction * 10.0))
-            
-            # Method rigor: check for formalism
-            method_rigor = 8.0 if any(kw in markdown_lower for kw in ['formal', 'theorem', 'proof', 'model']) else 6.0
-            
-            # Reproducibility: based on CEM grid and notation
-            reproducibility = 7.0
-            if has_cem_grid:
-                reproducibility += 2.0
-            if has_notation:
-                reproducibility += 1.0
-            
-            # Cross-domain: check for applications
-            cross_domain = 4.0 if any(kw in markdown_lower for kw in ['application', 'case study', 'domain']) else 2.0
-            
-            # Falsifiability: check for predictions
-            falsifiability = 8.0 if any(kw in markdown_lower for kw in ['prediction', 'hypothesis', 'proposition']) else 6.0
-            
-            # Risks/limitations: check for honest treatment
-            risks_limitations = 4.0 if any(kw in markdown_lower for kw in ['limitation', 'constraint', 'challenge']) else 2.0
-            
-            # Writing clarity
-            writing_clarity = 8.0 if len(draft.markdown) > 2000 else 6.0
-            
-            # Publication hygiene
-            publication_hygiene = 8.0
-            if has_diagnostics:
-                publication_hygiene += 1.0
-            if anchor_fraction >= 0.4:
-                publication_hygiene += 1.0
-            
-            return PublicationRubric(
-                scope_clarity=scope_clarity,
-                novelty=novelty,
-                evidence_strength=min(20.0, evidence_strength),
-                method_rigor=method_rigor,
-                reproducibility=min(10.0, reproducibility),
-                cross_domain=min(5.0, cross_domain),
-                falsifiability=falsifiability,
-                risks_limitations=min(5.0, risks_limitations),
-                writing_clarity=writing_clarity,
-                publication_hygiene=min(10.0, publication_hygiene)
-            )
-    
-    def _generate_cem_grid(self, draft: ThesisDraft, sources: List[Source]) -> CEMGrid:
-        """Generate Claim-Evidence-Method grid from thesis draft - thesis only"""
-        try:
-            parser = PydanticOutputParser(pydantic_object=CEMGrid)
-            
-            
-            # Build source list with type tags
-            source_list = []
-            for i, s in enumerate(sources[:15], 1):
-                title = getattr(s, 'title', None) or (s.get('title') if isinstance(s, dict) else '')
-                url = getattr(s, 'url', None) or (s.get('url') if isinstance(s, dict) else '')
-                source_type = self._classify_thesis_source_type(s)
-                type_tag = source_type.value
-                source_list.append(f"[^{i}:{type_tag}]: {title} — {url}")
-            
-            sources_str = "\n".join(source_list)
-            
-            prompt = PromptTemplate(
-                input_variables=["markdown", "sources", "format_instructions"],
-                template=(
-                    "Extract key theoretical claims from this thesis brief and map each to evidence, method, risk, and test ID.\n\n"
-                    "For each claim, identify:\n"
-                    "- Claim: The theoretical claim (e.g., 'Consensus time ∝ 1/λ₂ (algebraic connectivity)')\n"
-                    "- Evidence: Source citations with type tags (use [^id:type] format where type is P/D/A/O/G)\n"
-                    "- Method: How this could be validated (proof/simulation/empirical)\n"
-                    "- Status: Current status (e.g., 'E cited; M pending sim')\n"
-                    "- Risk: What fails if the claim is wrong\n"
-                    "- TestID: Cross-link identifier to tests in Methods section (e.g., 'T1', 'T2')\n\n"
-                    "Extract at least 5 key claims (≥3 primary, ≥2 secondary) with complete mappings.\n\n"
-                    "Draft (markdown):\n{markdown}\n\n"
-                    "Available Sources (with type tags P=Peer-reviewed, D=Doctrine, A=arXiv, O=Official, G=Grey):\n{sources}\n\n"
-                    "{format_instructions}"
-                )
-            )
-            
-            resp = self.llm.invoke(
-                prompt.format(
-                    markdown=draft.markdown[:10000],  # Large context for claim extraction
-                    sources=sources_str,
-                    format_instructions=parser.get_format_instructions()
-                )
-            )
-            content = resp.content.strip()
-            if "```json" in content:
-                content = content.split("```json")[1].split("```")[0].strip()
-            return CEMGrid(**json.loads(content))
-        except Exception as e:
-            logger.warning(f"CEM grid generation fallback: {str(e)}")
-            # Fallback: create minimal CEM grid with common claims
-            fallback_rows = [
-                CEMRow(
-                    claim="Consensus time scales with algebraic connectivity λ₂",
-                    evidence="[^5:P][^3:P]",
-                    method="Theorem; replicate with sim on Erdos-Renyi vs grid graphs",
-                    status="E cited; M pending sim",
-                    risk="Claims about convergence rates may be invalid if connectivity assumptions fail",
-                    test_id="T1"
-                ),
-                CEMRow(
-                    claim="Critical comms capacity triggers phase-transition in coordination",
-                    evidence="[^1:A]",
-                    method="Stress-test in sim: sweep bitrate; log mission utility & variance",
-                    status="E cited; M pending sim",
-                    risk="System may fail catastrophically if capacity thresholds are misestimated",
-                    test_id="T2"
-                ),
-                CEMRow(
-                    claim="Hybrid delegation reduces mission failure across heterogeneous tempos",
-                    evidence="Internal analysis",
-                    method="Queueing/MDP model + Monte Carlo on tempo bursts",
-                    status="E internal; M pending formalization",
-                    risk="Delegation thresholds may be suboptimal if tempo distributions are mischaracterized",
-                    test_id="T3"
-                ),
-            ]
-            return CEMGrid(rows=fallback_rows)
-    
-    def _format_cem_grid_markdown(self, cem_grid: CEMGrid) -> str:
-        """Format CEM grid as markdown table - thesis only (6 columns with Risk and TestID)"""
-        import re
-        
-        if not cem_grid.rows:
-            return ""
-        
-        markdown = "## Claim-Evidence-Method (CEM) Grid\n\n"
-        markdown += "| Claim (C) | Evidence (E) | Method (M) | Status | Risk | TestID |\n"
-        markdown += "|-----------|--------------|------------|--------|------|--------|\n"
-        
-        for row in cem_grid.rows:
-            # Escape pipe characters in content
-            claim = row.claim.replace('|', '\\|')
-            evidence = row.evidence.replace('|', '\\|')
-            method = row.method.replace('|', '\\|')
-            status = row.status.replace('|', '\\|')
-            risk = getattr(row, 'risk', '').replace('|', '\\|') if getattr(row, 'risk', None) else ""
-            test_id = getattr(row, 'test_id', '').replace('|', '\\|') if getattr(row, 'test_id', None) else ""
-            
-            # Convert footnote-style citations [^id:type] to numeric [id] format for consistency
-            # Example: [^2:A], [^3:A] -> [2], [3]
-            evidence = re.sub(r'\[\^(\d+):[^\]]+\]', r'[\1]', evidence)
-            evidence = re.sub(r'\[\^(\d+)\]', r'[\1]', evidence)  # Also handle [^id] format
-            
-            markdown += f"| {claim} | {evidence} | {method} | {status} | {risk} | {test_id} |\n"
-        
-        return markdown
-    
-    def _validate_notation(self, markdown: str) -> Dict[str, Any]:
-        """Validate notation table - reject playful mnemonics, ensure one-symbol-one-meaning"""
-        import re
-        violations = []
-        
-        # Find Notation section
-        notation_match = re.search(r'##\s+Notation.*?\n(.*?)(?=\n##\s|$)', markdown, re.MULTILINE | re.DOTALL | re.IGNORECASE)
-        if not notation_match:
-            return {'valid': True, 'violations': []}
-        
-        notation_content = notation_match.group(1)
-        
-        # Find table rows (Symbol | Description format)
-        table_rows = re.findall(r'\|[^|]+\|', notation_content)
-        
-        # Check for playful mnemonics (e.g., Q_uestions = Quality)
-        playful_patterns = [
-            r'Q_uestions',
-            r'P_erspective',
-            r'[A-Z]_[a-z]+',  # Pattern like X_yz suggesting word play
-        ]
-        
-        symbol_meanings = {}  # Track symbol -> meanings
-        
-        for row in table_rows:
-            cells = [c.strip() for c in row.split('|')[1:-1]]  # Remove first/last empty
-            if len(cells) >= 2:
-                symbol = cells[0]
-                description = cells[1] if len(cells) > 1 else ''
-                
-                # Check for playful mnemonics
-                for pattern in playful_patterns:
-                    if re.search(pattern, symbol):
-                        violations.append(f"Symbol '{symbol}' uses playful mnemonic pattern")
-                
-                # Check for symbol overloading
-                if symbol in symbol_meanings:
-                    if symbol_meanings[symbol] != description:
-                        violations.append(f"Symbol '{symbol}' has multiple meanings: '{symbol_meanings[symbol]}' vs '{description}'")
-                else:
-                    symbol_meanings[symbol] = description
-        
-        return {'valid': len(violations) == 0, 'violations': violations}
-    
-    def _generate_assumptions_ledger(self, draft: ThesisDraft) -> List[AssumptionsLedgerRow]:
-        """Generate Assumptions Ledger from thesis draft - thesis only"""
-        import re
-        from pydantic import BaseModel, Field
-        
-        # Create a wrapper model for the list since PydanticOutputParser doesn't work with List directly
-        class AssumptionsLedgerList(BaseModel):
-            assumptions: List[AssumptionsLedgerRow] = Field(description="List of assumptions")
-        
-        try:
-            parser = PydanticOutputParser(pydantic_object=AssumptionsLedgerList)
-            
-            prompt = PromptTemplate(
-                input_variables=["markdown", "format_instructions"],
-                template=(
-                    "Extract key assumptions from this thesis brief and map each to rationale, observable, trigger, fallback, and scope.\n\n"
-                    "For each assumption, identify:\n"
-                    "- Assumption: The assumption being made\n"
-                    "- Rationale: Why this assumption is reasonable\n"
-                    "- Observable: How to observe if assumption holds\n"
-                    "- Trigger: What triggers checking this assumption\n"
-                    "- Fallback/Delegation: Fallback if assumption fails\n"
-                    "- Scope: Scope/limits of assumption\n\n"
-                    "Extract at least 3-5 key assumptions with complete mappings.\n\n"
-                    "Draft (markdown):\n{markdown}\n\n"
-                    "{format_instructions}"
-                )
-            )
-            
-            resp = self.llm.invoke(
-                prompt.format(
-                    markdown=draft.markdown[:10000],
-                    format_instructions=parser.get_format_instructions()
-                )
-            )
-            content = resp.content.strip()
-            if "```json" in content:
-                content = content.split("```json")[1].split("```")[0].strip()
-            parsed = parser.parse(content)
-            return parsed.assumptions if hasattr(parsed, 'assumptions') else []
-        except Exception as e:
-            logger.warning(f"Assumptions ledger generation fallback: {str(e)}")
-            # Fallback: try direct JSON parsing
-            try:
-                content = resp.content.strip() if 'resp' in locals() else ""
-                if "```json" in content:
-                    content = content.split("```json")[1].split("```")[0].strip()
-                elif "```" in content:
-                    content = content.split("```")[1].split("```")[0].strip()
-                data = json.loads(content)
-                if isinstance(data, dict) and 'assumptions' in data:
-                    return [AssumptionsLedgerRow(**row) for row in data['assumptions']]
-                elif isinstance(data, list):
-                    return [AssumptionsLedgerRow(**row) for row in data]
-            except Exception:
-                pass
-            # Final fallback: return empty list (can be populated later)
-            return []
-    
-    def _format_assumptions_ledger_markdown(self, ledger: List[AssumptionsLedgerRow]) -> str:
-        """Format Assumptions Ledger as markdown table - thesis only"""
-        if not ledger:
-            return ""
-        
-        markdown = "## Assumptions Ledger\n\n"
-        markdown += "| Assumption | Rationale | Observable | Trigger | Fallback/Delegation | Scope |\n"
-        markdown += "|------------|-----------|------------|---------|---------------------|-------|\n"
-        
-        for row in ledger:
-            assumption = row.assumption.replace('|', '\\|')
-            rationale = row.rationale.replace('|', '\\|')
-            observable = row.observable.replace('|', '\\|')
-            trigger = row.trigger.replace('|', '\\|')
-            fallback = row.fallback_delegation.replace('|', '\\|')
-            scope = row.scope.replace('|', '\\|')
-            markdown += f"| {assumption} | {rationale} | {observable} | {trigger} | {fallback} | {scope} |\n"
-        
-        return markdown
-    
-    def _run_ci_gates(self, draft: ThesisDraft, sources: List[Source], cem_grid: CEMGrid = None,
-                      critique: ThesisCritique = None, publication_rubric: PublicationRubric = None,
-                      notation_validation: Dict[str, Any] = None, repetition_check: Dict[str, Any] = None) -> Dict[str, Any]:
-        """Run CI gates (G1-G7) for automated validation - thesis only"""
-        gates = {
-            'G1': {'name': 'Anchors present?', 'passed': False, 'message': ''},
-            'G2': {'name': 'CEM complete?', 'passed': False, 'message': ''},
-            'G3': {'name': 'Notation lint', 'passed': False, 'message': ''},
-            'G4': {'name': 'Duplication check', 'passed': False, 'message': ''},
-            'G5': {'name': 'Badge thresholds', 'passed': False, 'message': ''},
-            'G6': {'name': 'References typed & diverse', 'passed': False, 'message': ''},
-            'G7': {'name': 'Rubric score', 'passed': False, 'message': ''},
-        }
-        
-        # G1: Anchors present?
-        anchor_domains = getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [])
-        anchor_count = sum(1 for s in sources if any(domain in s.url.lower() for domain in anchor_domains))
-        if anchor_count >= 2:
-            gates['G1']['passed'] = True
-            gates['G1']['message'] = f"Anchored ({anchor_count} anchor sources)"
-        elif anchor_count == 1:
-            gates['G1']['passed'] = True  # Anchor-Sparse passes but flagged
-            gates['G1']['message'] = f"Anchor-Sparse ({anchor_count} anchor source)"
-        else:
-            gates['G1']['message'] = f"Anchor-Absent ({anchor_count} anchor sources)"
-        
-        # G2: CEM complete?
-        if cem_grid and cem_grid.rows:
-            complete_rows = sum(1 for row in cem_grid.rows 
-                              if getattr(row, 'risk', '') and getattr(row, 'test_id', ''))
-            total_rows = len(cem_grid.rows)
-            if total_rows >= 5 and complete_rows >= 5:
-                gates['G2']['passed'] = True
-                gates['G2']['message'] = f"CEM complete ({complete_rows}/{total_rows} rows with Risk & TestID)"
-            else:
-                gates['G2']['message'] = f"CEM incomplete ({complete_rows}/{total_rows} rows complete, need ≥5)"
-        else:
-            gates['G2']['message'] = "CEM grid missing"
-        
-        # G3: Notation lint
-        if notation_validation:
-            if notation_validation.get('valid', False):
-                gates['G3']['passed'] = True
-                gates['G3']['message'] = "Notation valid"
-            else:
-                violations = notation_validation.get('violations', [])
-                gates['G3']['message'] = f"Notation violations: {', '.join(violations[:3])}"
-        else:
-            gates['G3']['message'] = "Notation not validated"
-        
-        # G4: Duplication check
-        if repetition_check:
-            if not repetition_check.get('repetition_detected', False):
-                gates['G4']['passed'] = True
-                gates['G4']['message'] = "No section duplication detected"
-            else:
-                overlaps = repetition_check.get('overlaps', [])
-                gates['G4']['message'] = f"Duplication detected: {', '.join([o['section'] for o in overlaps[:2]])}"
-        else:
-            gates['G4']['message'] = "Duplication not checked"
-        
-        # G5: Badge thresholds (all ≥4/10 = 0.4)
-        if critique:
-            min_badge = min(critique.alignment, critique.theory_depth, critique.clarity)
-            if min_badge >= 0.4:  # 0.4 = 4/10
-                gates['G5']['passed'] = True
-                gates['G5']['message'] = f"Badges OK (min: {min_badge:.2f})"
-            else:
-                gates['G5']['message'] = f"Badge threshold failed (min: {min_badge:.2f}, need ≥0.4)"
-        else:
-            gates['G5']['message'] = "Badges not computed"
-        
-        # G6: References typed & diverse (≥3 distinct publishers)
-        unique_publishers = set(getattr(s, 'publisher', '') or '' for s in sources)
-        source_types = set(self._classify_thesis_source_type(s) for s in sources)
-        if len(unique_publishers) >= 3 and len(source_types) >= 2:
-            gates['G6']['passed'] = True
-            gates['G6']['message'] = f"Diverse sources ({len(unique_publishers)} publishers, {len(source_types)} types)"
-        else:
-            gates['G6']['message'] = f"Source diversity low ({len(unique_publishers)} publishers, {len(source_types)} types, need ≥3 publishers)"
-        
-        # G7: Rubric score (≥75/100 for Yellowlight, ≥85/100 for Greenlight)
-        if publication_rubric:
-            total_score = publication_rubric.total_score
-            if total_score >= 85:
-                gates['G7']['passed'] = True
-                gates['G7']['message'] = f"Greenlight ({total_score:.1f}/100)"
-            elif total_score >= 75:
-                gates['G7']['passed'] = True
-                gates['G7']['message'] = f"Yellowlight ({total_score:.1f}/100)"
-            else:
-                gates['G7']['message'] = f"Below threshold ({total_score:.1f}/100, need ≥75)"
-        else:
-            gates['G7']['message'] = "Rubric not computed"
-        
-        all_passed = all(gate['passed'] for gate in gates.values())
-        fail_stops = [name for name, gate in gates.items() if not gate['passed']]
-        
-        return {
-            'all_passed': all_passed,
-            'gates': gates,
-            'fail_stops': fail_stops
-        }
-    
-    def _insert_cem_grid_into_markdown(self, markdown: str, cem_markdown: str) -> str:
-        """Insert CEM grid after Formal Models section - thesis only"""
-        import re
-        
-        # Try to find "Formal Models" or "Formal Framework" section
-        patterns = [
-            r'(## Formal Models and Analysis.*?\n)',
-            r'(## Formal Framework.*?\n)',
-            r'(## Formal Models.*?\n)',
-            r'(## Theory of.*?\n)',
-        ]
-        
-        for pattern in patterns:
-            match = re.search(pattern, markdown, re.MULTILINE | re.IGNORECASE)
-            if match:
-                # Insert CEM grid after this section
-                insert_pos = markdown.find(match.group(0)) + len(match.group(0))
-                # Find the end of this section (next ## heading)
-                next_section = re.search(r'\n##\s+', markdown[insert_pos:], re.MULTILINE)
-                if next_section:
-                    insert_pos = insert_pos + next_section.start()
-                
-                # Insert CEM grid
-                markdown = markdown[:insert_pos] + "\n\n" + cem_markdown + "\n\n" + markdown[insert_pos:]
-                logger.info("Inserted CEM grid after Formal Models section")
-                return markdown
-        
-        # Fallback: append before References
-        ref_match = re.search(r'\n## References', markdown, re.MULTILINE | re.IGNORECASE)
-        if ref_match:
-            insert_pos = ref_match.start()
-            markdown = markdown[:insert_pos] + "\n\n" + cem_markdown + "\n\n" + markdown[insert_pos:]
-            logger.info("Inserted CEM grid before References section")
-        else:
-            # Last resort: append at end
-            markdown = markdown + "\n\n" + cem_markdown
-            logger.warning("Appended CEM grid at end (could not find insertion point)")
-        
-        return markdown
-    
-    def _ensure_operational_diagnostics(self, markdown: str) -> str:
-        """Ensure Operational Assumptions & Diagnostics subsection exists in Limits - thesis only"""
-        import re
-        
-        # Find Limits section
-        limits_pattern = r'(##\s+(?:Limits|Limits\s*&\s*Open\s*Questions).*?\n)(.*?)(?=\n##\s+|$)'
-        limits_match = re.search(limits_pattern, markdown, re.MULTILINE | re.DOTALL | re.IGNORECASE)
-        
-        if limits_match:
-            limits_header = limits_match.group(1)
-            limits_content = limits_match.group(2)
-            
-            # Check if operational diagnostics already exists
-            if 'Operational Assumptions' in limits_content or 'operational assumption' in limits_content.lower():
-                return markdown  # Already present
-            
-            # Add operational diagnostics subsection
-            diagnostics_subsection = (
-                "\n\n### Operational Assumptions & Diagnostics\n\n"
-                "**Bounded-Rationality Assumption**: Agents operate with cognitive limits and incomplete information. "
-                "Trigger: When decision complexity exceeds agent capacity or information gaps persist. "
-                "Delegation policy: Escalate to higher-level agents or human operators when uncertainty thresholds exceed pre-defined bounds.\n\n"
-                "**Adversarial Comms Model**: Communication channels may be compromised, delayed, or jammed. "
-                "Trigger: When comms latency exceeds deadlines or suspicious patterns detected. "
-                "Delegation policy: Switch to local consensus protocols, degrade gracefully to autonomous operation, alert human supervisors.\n\n"
-                "**Human-in-the-Loop Posture**: Human operators provide oversight and corrective control. "
-                "This is a present operational assumption, not future work.\n\n"
-                "**Adversarial Posture**: Systems must operate under contested conditions with potential adversaries. "
-                "This is a present operational assumption, not future work.\n"
-            )
-            
-            # Insert after Limits header, before existing content
-            limits_with_diagnostics = limits_header + diagnostics_subsection + limits_content
-            
-            # Replace Limits section in markdown
-            markdown = markdown[:limits_match.start()] + limits_with_diagnostics + markdown[limits_match.end():]
-            logger.info("Added Operational Assumptions & Diagnostics subsection to Limits section")
-        
-        return markdown
-    
-    def _extract_notation_table(self, markdown: str) -> tuple:
-        """Extract mathematical symbols and create notation table - thesis only. Returns (modified_markdown, notation_table_str_or_none)"""
-        import re
-        
-        # Check if notation table already exists
-        notation_section_match = re.search(r'##\s+Notation\s*\n(.*?)(?=\n##\s|$)', markdown, re.MULTILINE | re.DOTALL | re.IGNORECASE)
-        if notation_section_match:
-            # Check if it uses playful mnemonics (G_{ent}, Q_{uality}, etc.)
-            notation_content = notation_section_match.group(1)
-            playful_patterns = [r'G_{ent}', r'Q_{uality}', r'P_{rimitives}', r'C_{t}', r'N_{d}', r'R_{act}', r'T_{ract}', r'V_{ances}', r'D_{vances}']
-            has_playful = any(re.search(pattern, notation_content, re.IGNORECASE) for pattern in playful_patterns)
-            
-            if not has_playful:
-                return (markdown, None)  # Already present and uses standard notation
-            
-            # Replace playful notation with standard notation
-            standard_notation = """## Notation
-
-| Symbol | Meaning | Units / Domain |
-|---|---|---|
-| \\(n\\) | number of agents | \\(\\mathbb{N}\\) |
-| \\(G_t=(V,E_t)\\) | time‑varying communication/interaction graph | — |
-| \\(\\lambda_2(G)\\) | algebraic connectivity (Fiedler value) | — |
-| \\(p\\) | mean packet‑delivery / link reliability | [0,1] |
-| \\(\\tau\\) | latency / blackout duration | time |
-| \\(\\lambda\\) | task arrival rate | 1/time |
-| \\(e\\) | enforceability / command compliance | [0,1] |
-| \\(\\tau_{\\text{deleg}}\\) | delegation threshold | [0,1] |
-| **MTTA** | mean time‑to‑assignment/action | time |
-| \\(P_{\\text{fail}}\\) | deadline‑miss probability | [0,1] |
-
-"""
-            # Replace the notation section
-            notation_start = notation_section_match.start()
-            notation_end = notation_section_match.end()
-            modified_markdown = markdown[:notation_start] + standard_notation + markdown[notation_end:]
-            return (modified_markdown, None)  # Indicates we replaced in place, no need to insert
-        
-        # Extract common mathematical symbols from markdown
-        # Look for patterns like: λ₂, λ_{2}, alpha, beta, etc.
-        symbol_patterns = [
-            (r'\\lambda[_\^{]?([a-z0-9]+)[}\^]?', 'λ', 'Algebraic connectivity / Eigenvalue'),
-            (r'\\alpha[_\^{]?([a-z0-9]+)[}\^]?', 'α', 'Learning rate / Parameter'),
-            (r'\\beta[_\^{]?([a-z0-9]+)[}\^]?', 'β', 'Decay factor / Parameter'),
-            (r'\\gamma[_\^{]?([a-z0-9]+)[}\^]?', 'γ', 'Discount factor / Parameter'),
-            (r'\\theta[_\^{]?([a-z0-9]+)[}\^]?', 'θ', 'Policy parameter / Angle'),
-            (r'\\phi[_\^{]?([a-z0-9]+)[}\^]?', 'φ', 'Feature function / Phase'),
-            (r'\\tau[_\^{]?([a-z0-9]+)[}\^]?', 'τ', 'Time constant / Threshold'),
-            (r'\\delta[_\^{]?([a-z0-9]+)[}\^]?', 'δ', 'Update / Delta'),
-            (r'\\epsilon[_\^{]?([a-z0-9]+)[}\^]?', 'ε', 'Small constant / Exploration'),
-            (r'\\mu[_\^{]?([a-z0-9]+)[}\^]?', 'μ', 'Mean / Policy'),
-            (r'\\sigma[_\^{]?([a-z0-9]+)[}\^]?', 'σ', 'Standard deviation / Sigma'),
-            (r'\\pi[_\^{]?([a-z0-9]+)[}\^]?', 'π', 'Policy / Pi'),
-            (r'G[_\^{]?([a-z0-9]+)[}\^]?', 'G', 'Graph / Network'),
-            (r'N[_\^{]?([a-z0-9]+)[}\^]?', 'N', 'Number of agents / Nodes'),
-            (r'T[_\^{]?([a-z0-9]+)[}\^]?', 'T', 'Time / Horizon'),
-            (r'D[_\^{]?([a-z0-9]+)[}\^]?', 'D', 'Diameter / Distance'),
-            (r'C[_\^{]?([a-z0-9]+)[}\^]?', 'C', 'Capacity / Cost'),
-            (r'P[_\^{]?([a-z0-9]+)[}\^]?', 'P', 'Probability / Transition matrix'),
-            (r'Q[_\^{]?([a-z0-9]+)[}\^]?', 'Q', 'Quality / Q-function'),
-            (r'R[_\^{]?([a-z0-9]+)[}\^]?', 'R', 'Reward / Range'),
-            (r'V[_\^{]?([a-z0-9]+)[}\^]?', 'V', 'Value function / Vertices'),
-        ]
-        
-        symbols_found = {}
-        for pattern, symbol, description in symbol_patterns:
-            matches = re.findall(pattern, markdown, re.IGNORECASE)
-            if matches:
-                # Use most specific match or first occurrence
-                subscript = matches[0] if matches[0] else ''
-                full_symbol = f'{symbol}_{{{subscript}}}' if subscript else symbol
-                if full_symbol not in symbols_found:
-                    symbols_found[full_symbol] = description
-        
-        # Also look for explicit symbol definitions in text
-        definition_patterns = [
-            r'([A-Za-z]+(?:_[0-9]+)?)\s*:=\s*([^.,;]+)',
-            r'([A-Za-z]+(?:_[0-9]+)?)\s+denotes\s+([^.,;]+)',
-            r'([A-Za-z]+(?:_[0-9]+)?)\s+represents\s+([^.,;]+)',
-        ]
-        
-        for pattern in definition_patterns:
-            matches = re.findall(pattern, markdown, re.IGNORECASE)
-            for symbol, definition in matches:
-                if symbol not in symbols_found and len(symbol) <= 3:
-                    symbols_found[symbol] = definition.strip()
-        
-        if not symbols_found:
-            return (markdown, None)
-        
-        # Generate standard notation table (no playful mnemonics)
-        notation_md = """## Notation
-
-| Symbol | Meaning | Units / Domain |
-|---|---|---|
-| \\(n\\) | number of agents | \\(\\mathbb{N}\\) |
-| \\(G_t=(V,E_t)\\) | time‑varying communication/interaction graph | — |
-| \\(\\lambda_2(G)\\) | algebraic connectivity (Fiedler value) | — |
-| \\(p\\) | mean packet‑delivery / link reliability | [0,1] |
-| \\(\\tau\\) | latency / blackout duration | time |
-| \\(\\lambda\\) | task arrival rate | 1/time |
-| \\(e\\) | enforceability / command compliance | [0,1] |
-| \\(\\tau_{\\text{deleg}}\\) | delegation threshold | [0,1] |
-| **MTTA** | mean time‑to‑assignment/action | time |
-| \\(P_{\\text{fail}}\\) | deadline‑miss probability | [0,1] |
-
-"""
-        
-        return (markdown, notation_md)
-    
-    def _insert_notation_table_into_markdown(self, markdown: str, notation_table: str) -> str:
-        """Insert notation table after Formal Models section - thesis only"""
-        import re
-        
-        # Try to find "Formal Models" or "Formal Framework" section
-        patterns = [
-            r'(## Formal Models and Analysis.*?\n)',
-            r'(## Formal Framework.*?\n)',
-            r'(## Formal Models.*?\n)',
-            r'(## Theory of.*?\n)',
-        ]
-        
-        for pattern in patterns:
-            match = re.search(pattern, markdown, re.MULTILINE | re.IGNORECASE)
-            if match:
-                # Insert notation table after this section
-                insert_pos = markdown.find(match.group(0)) + len(match.group(0))
-                # Find the end of this section (next ## heading)
-                next_section = re.search(r'\n##\s+', markdown[insert_pos:], re.MULTILINE)
-                if next_section:
-                    insert_pos = insert_pos + next_section.start()
-                
-                # Insert notation table
-                markdown = markdown[:insert_pos] + "\n\n" + notation_table + "\n\n" + markdown[insert_pos:]
-                logger.info("Inserted notation table after Formal Models section")
-                return markdown
-        
-        # Fallback: insert before CEM grid if it exists
-        cem_match = re.search(r'\n## Claim-Evidence-Method', markdown, re.MULTILINE | re.IGNORECASE)
-        if cem_match:
-            insert_pos = cem_match.start()
-            markdown = markdown[:insert_pos] + "\n\n" + notation_table + "\n\n" + markdown[insert_pos:]
-            logger.info("Inserted notation table before CEM grid")
-        else:
-            # Last resort: append before References
-            ref_match = re.search(r'\n## References', markdown, re.MULTILINE | re.IGNORECASE)
-            if ref_match:
-                insert_pos = ref_match.start()
-                markdown = markdown[:insert_pos] + "\n\n" + notation_table + "\n\n" + markdown[insert_pos:]
-                logger.info("Inserted notation table before References section")
-        
-        return markdown
-    
-    def _generate_future_directions_section(self, query: str, sources: List[Source]) -> str:
-        """Generate future directions and open questions section"""
-        section = "## Open Questions and Future Directions\n\n"
-        section += "Several research directions emerge for command theory in multi-agent systems:\n\n"
-        section += "1. **Formal Verification**: Developing mathematical frameworks for proving command execution correctness\n"
-        section += "2. **Dynamic Reconfiguration**: Mechanisms for adapting command structures as agent populations change\n"
-        section += "3. **Human-Agent Command Interfaces**: Designing intuitive interfaces for human operators to issue commands to agent collectives\n"
-        section += "4. **Security and Trust**: Ensuring command authenticity and preventing malicious command injection\n"
-        section += "5. **Performance Optimization**: Minimizing communication overhead and latency in command distribution\n\n"
-        section += "These directions represent opportunities for advancing both theoretical understanding and practical applications.\n"
-        return section
-    
-    def _check_market_source_adequacy(self, market_sources: List[Source], query: str) -> bool:
-        """
-        Check if market sources adequately reflect the query topic.
-        
-        Returns True if market sources are sufficient to answer the query,
-        False if the query is theoretical and not yet reflected in market.
-        
-        Args:
-            market_sources: List of market/news sources found
-            query: The original query
-            
-        Returns:
-            bool: True if market sources adequately reflect query, False otherwise
-        """
-        if not market_sources:
-            logger.info("No market sources found. Defaulting to thesis-path.")
-            return False
-        
-        # Filter by semantic similarity to ensure sources actually relate to query
-        # Use slightly lower threshold for adequacy check (more permissive)
-        threshold = 0.5
-        relevant_market_sources = self._semantic_similarity_filter(market_sources, query, threshold=threshold)
-        
-        # Need minimum number of relevant market sources
-        MIN_RELEVANT_MARKET_SOURCES = 3
-        
-        if len(relevant_market_sources) < MIN_RELEVANT_MARKET_SOURCES:
-            logger.info(f"Insufficient relevant market sources ({len(relevant_market_sources)} < {MIN_RELEVANT_MARKET_SOURCES}). "
-                       f"Defaulting to thesis-path.")
-            return False
-        
-        # Additional check: ensure sources address the core query topic, not just tangentially related
-        # Check if sources have sufficient semantic alignment with the query
-        try:
-            # Use LLM to check if sources adequately address the core query topic
-            from langchain_core.prompts import PromptTemplate
-            from langchain_core.output_parsers import PydanticOutputParser
-            from pydantic import BaseModel, Field
-            
-            class AdequacyCheck(BaseModel):
-                adequate: bool = Field(description="Whether market sources adequately address the query")
-                reasoning: str = Field(description="Brief explanation")
-            
-            parser = PydanticOutputParser(pydantic_object=AdequacyCheck)
-            
-            prompt_template = PromptTemplate(
-                input_variables=["query", "sources"],
-                template="""You are evaluating whether market/news sources adequately address this query.
-
-Query: {query}
-
-Sources found:
-{sources}
-
-Does this collection of market sources adequately address the CORE topic of the query?
-- Market sources are ADEQUATE if they directly discuss the query topic in a commercial/practical context
-- Market sources are NOT adequate if they only tangentially mention the topic or if the query is about theoretical concepts not yet commercialized
-
-{format_instructions}
-
-Return your assessment:"""
-            )
-            
-            sources_text = "\n".join([f"- {s.title} ({s.publisher})" for s in relevant_market_sources[:5]])
-            formatted_prompt = prompt_template.format(
-                query=query,
-                sources=sources_text,
-                format_instructions=parser.get_format_instructions()
-            )
-            
-            response = self.llm.invoke(formatted_prompt)
-            result = parser.parse(response.content)
-            
-            if result.adequate:
-                logger.info(f"Market sources adequately reflect query. Reasoning: {result.reasoning}")
-                return True
-            else:
-                logger.info(f"Market sources do NOT adequately reflect query. Reasoning: {result.reasoning}. Defaulting to thesis-path.")
-                return False
-                
-        except Exception as e:
-            logger.warning(f"Error in LLM adequacy check: {str(e)}, using semantic similarity fallback")
-            # Fallback: if we have enough semantically relevant sources, consider adequate
-            return len(relevant_market_sources) >= MIN_RELEVANT_MARKET_SOURCES
-    
-    def _reclassify_intent_based_on_sources(self, sources: List[Source], original_intent: str, foundational_sources: List[Source] = None) -> str:
-        """Reclassify intent from theory to market if sources are primarily market sources"""
-        if original_intent != "theory":
-            return original_intent  # Only reclassify if originally classified as theory
-        
-        if not sources:
-            return original_intent
-        
-        # If foundational sources exist, check if recent sources support theory intent
-        # Only preserve theory intent if foundational sources exist AND recent sources aren't overwhelmingly market-focused
-        if foundational_sources and len(foundational_sources) > 0:
-            # First, verify foundational sources actually made it into the sources list
-            # (They might have been filtered out during deduplication or other filtering steps)
-            foundational_urls = set(s.url for s in foundational_sources)
-            foundational_in_sources = [s for s in sources if s.url in foundational_urls]
-            foundational_in_sources_count = len(foundational_in_sources)
-            
-            # Calculate market source ratio in recent sources (excluding foundational sources)
-            # Foundational sources are from 5-year window, recent sources are what we're evaluating
-            recent_sources = [s for s in sources if s.url not in foundational_urls]
-            
-            # Only preserve theory intent if foundational sources actually exist in sources list
-            # AND recent sources aren't overwhelmingly market-focused
-            if foundational_in_sources_count > 0:
-                if recent_sources:
-                    recent_total = len(recent_sources)
-                    recent_academic_count = sum(1 for s in recent_sources if s.source_type == SourceType.ACADEMIC)
-                    recent_market_count = sum(1 for s in recent_sources if s.source_type in [
-                        SourceType.INDEPENDENT_NEWS, SourceType.PRIMARY, 
-                        SourceType.VENDOR_ASSERTED, SourceType.VENDOR_CONSULTING
-                    ])
-                    
-                    market_ratio = recent_market_count / recent_total if recent_total > 0 else 0
-                    
-                    # Preserve theory intent only if:
-                    # 1. Foundational sources exist AND are in sources list (theoretical foundation exists)
-                    # 2. Recent sources aren't >90% market-focused (some academic/theoretical content in recent work)
-                    if market_ratio <= 0.90:
-                        logger.info(f"Foundational sources exist ({foundational_in_sources_count}/{len(foundational_sources)} in sources list) and recent sources show theory relevance "
-                                   f"(market ratio: {market_ratio:.1%}, academic: {recent_academic_count}/{recent_total}). "
-                                   f"Preserving theory intent.")
-                        return original_intent
-                    else:
-                        logger.info(f"Foundational sources exist ({foundational_in_sources_count}/{len(foundational_sources)} in sources list) but recent sources are overwhelmingly "
-                                   f"market-focused (market ratio: {market_ratio:.1%}, academic: {recent_academic_count}/{recent_total}). "
-                                   f"Allowing reclassification to market.")
-                        # Continue to reclassification logic below
-                else:
-                    # No recent sources, only foundational - preserve theory intent
-                    logger.info(f"Foundational sources exist ({foundational_in_sources_count}/{len(foundational_sources)} in sources list) with no recent sources. Preserving theory intent.")
-                    return original_intent
-            else:
-                # Foundational sources were searched but filtered out before reaching here
-                # This means they weren't actually relevant, so allow reclassification
-                logger.info(f"Foundational sources were searched ({len(foundational_sources)}) but none made it into sources list after filtering. Allowing reclassification.")
-                # Continue to reclassification logic below
-        
-        # Count source types
-        academic_count = sum(1 for s in sources if s.source_type == SourceType.ACADEMIC)
-        independent_news_count = sum(1 for s in sources if s.source_type == SourceType.INDEPENDENT_NEWS)
-        primary_count = sum(1 for s in sources if s.source_type == SourceType.PRIMARY)
-        vendor_count = sum(1 for s in sources if s.source_type in [SourceType.VENDOR_ASSERTED, SourceType.VENDOR_CONSULTING])
-        
-        market_source_count = independent_news_count + primary_count + vendor_count
-        total_sources = len(sources)
-        
-        # Reclassify to market if:
-        # 1. Few academic sources (< 2) AND
-        # 2. Sufficient market sources (≥5 or ≥60% of total) AND
-        # 3. Meets minimum independent news requirement (≥2)
-        academic_threshold = 2
-        market_threshold = max(5, int(total_sources * 0.6))  # At least 5 or 60% of sources
-        
-        if (academic_count < academic_threshold and 
-            market_source_count >= market_threshold and 
-            independent_news_count >= STIConfig.MIN_INDEPENDENT_SOURCES):
-            
-            logger.info(f"Reclassifying intent from 'theory' to 'market' based on source types:")
-            logger.info(f"  Academic sources: {academic_count} (need ≥{academic_threshold})")
-            logger.info(f"  Market sources: {market_source_count} (have ≥{market_threshold})")
-            logger.info(f"    - Independent news: {independent_news_count}")
-            logger.info(f"    - Primary: {primary_count}")
-            logger.info(f"    - Vendor: {vendor_count}")
-            logger.info(f"  Total sources: {total_sources}")
-            
-            return "market"
-        
-        return original_intent
-    
-    def _check_academic_floor(self, sources: List[Source], intent: str, min_academic: int = None) -> bool:
-        """Check if academic floor met for theory queries"""
-        if intent != "theory":
-            return True  # No floor for market queries
-        
-        if min_academic is None:
-            min_academic = STIConfig.MIN_ACADEMIC_SOURCES_THEORY
-        
-        academic_count = sum(1 for s in sources if s.source_type == SourceType.ACADEMIC)
-        floor_met = academic_count >= min_academic
-        
-        logger.info(f"Academic floor check: {academic_count}/{min_academic} academic sources (floor met: {floor_met})")
-        return floor_met
-    
-    def _calculate_confidence_with_intent(self, signals: List[Dict[str, Any]], sources: List[Source], intent: str) -> float:
-        """Calculate confidence with academic fraction penalties for theory queries"""
-        base_confidence = self._calculate_confidence(signals, sources)
-        
-        if intent == "theory" and sources:
-            academic_count = sum(1 for s in sources if s.source_type == SourceType.ACADEMIC)
-            academic_fraction = academic_count / max(1, len(sources))
-            target_fraction = STIConfig.CONFIDENCE_ACADEMIC_FRACTION_TARGET
-            adjusted_confidence = base_confidence
-            if academic_fraction < target_fraction:
-                # Penalize: reduce confidence based on how far below target
-                base_penalty = (target_fraction - academic_fraction)
-                adjusted_confidence = max(0.0, base_confidence - base_penalty)
-                adjusted_confidence = max(0.0, min(1.0, adjusted_confidence * STIConfig.THEORY_ACADEMIC_PENALTY_WEIGHT))
-                logger.info(f"Applied academic fraction penalty: frac={academic_fraction:.2f}, target={target_fraction:.2f}, "
-                            f"{base_confidence:.2f} → {adjusted_confidence:.2f}")
-            # Cap theory-only confidence when no non-academic (web) sources
-            non_academic = sum(1 for s in sources if s.source_type != SourceType.ACADEMIC)
-            if non_academic == 0:
-                cap = getattr(STIConfig, 'THEORY_CONFIDENCE_CAP', 0.60)
-                before = adjusted_confidence
-                adjusted_confidence = min(adjusted_confidence, cap)
-                if adjusted_confidence < before:
-                    logger.info(f"Theory-only confidence cap applied: {before:.2f} → {adjusted_confidence:.2f}")
-            return adjusted_confidence
-        
-        return base_confidence
-    
-    def _reciprocal_rank_fusion(self, web_sources: List[Source], academic_sources: List[Source], k: int = 60) -> List[Source]:
-        """Fuse results from web and academic retrievers using Reciprocal Rank Fusion (RRF)"""
-        try:
-            # Create score maps for each source list
-            web_scores = {}
-            academic_scores = {}
-            
-            # Assign RRF scores based on rank (1-based indexing)
-            for i, source in enumerate(web_sources):
-                web_scores[source.url] = 1.0 / (k + i + 1)
-            
-            for i, source in enumerate(academic_sources):
-                academic_scores[source.url] = 1.0 / (k + i + 1)
-            
-            # Combine all sources and calculate fused scores
-            all_sources = web_sources + academic_sources
-            fused_scores = {}
-            seen_urls = set()
-            
-            for source in all_sources:
-                if source.url in seen_urls:
-                    continue  # Skip duplicates
-                seen_urls.add(source.url)
-                
-                # Calculate fused score
-                web_score = web_scores.get(source.url, 0.0)
-                academic_score = academic_scores.get(source.url, 0.0)
-                fused_score = web_score + academic_score
-                
-                fused_scores[source.url] = fused_score
-            
-            # Sort by fused score (descending)
-            sorted_sources = sorted(all_sources, 
-                                  key=lambda s: fused_scores.get(s.url, 0.0), 
-                                  reverse=True)
-            
-            # Remove duplicates while preserving order
-            deduplicated = []
-            seen_urls = set()
-            for source in sorted_sources:
-                if source.url not in seen_urls:
-                    deduplicated.append(source)
-                    seen_urls.add(source.url)
-            
-            logger.info(f"RRF fusion: {len(web_sources)} web + {len(academic_sources)} academic → {len(deduplicated)} unique sources")
-            return deduplicated
-            
-        except Exception as e:
-            logger.error(f"Error in RRF fusion: {str(e)}")
-            # Fallback: simple concatenation with deduplication
-            all_sources = web_sources + academic_sources
-            seen_urls = set()
-            deduplicated = []
-            for source in all_sources:
-                if source.url not in seen_urls:
-                    deduplicated.append(source)
-                    seen_urls.add(source.url)
-            return deduplicated
-    
-    def _deduplicate_sources(self, sources: List[Source]) -> List[Source]:
-        """Remove duplicate sources based on URL and title similarity"""
-        try:
-            deduplicated = []
-            seen_urls = set()
-            seen_titles = set()
-            
-            for source in sources:
-                # Check URL duplicates
-                if source.url in seen_urls:
-                    continue
-                
-                # Check title similarity (simple approach)
-                title_lower = source.title.lower().strip()
-                if title_lower in seen_titles:
-                    continue
-                
-                # Check for very similar titles (fuzzy matching)
-                is_duplicate = False
-                for seen_title in seen_titles:
-                    # Simple similarity check: if 80% of words match
-                    words1 = set(title_lower.split())
-                    words2 = set(seen_title.split())
-                    if len(words1) > 0 and len(words2) > 0:
-                        similarity = len(words1.intersection(words2)) / max(len(words1), len(words2))
-                        if similarity > 0.8:
-                            is_duplicate = True
-                            break
-                
-                if not is_duplicate:
-                    deduplicated.append(source)
-                    seen_urls.add(source.url)
-                    seen_titles.add(title_lower)
-            
-            logger.info(f"Deduplication: {len(sources)} → {len(deduplicated)} sources")
-            return deduplicated
-            
-        except Exception as e:
-            logger.error(f"Error in deduplication: {str(e)}")
-            return sources
-    
-    def _reweight_by_source_type(self, sources: List[Source], intent: str) -> List[Source]:
-        """Re-rank sources by type based on intent (boost academic for theory, boost news for market)"""
-        try:
-            if not sources:
-                return sources
-            
-            # Define source type weights based on intent
-            if intent == "theory":
-                type_weights = {
-                    SourceType.ACADEMIC: 1.5,      # Boost academic sources
-                    SourceType.PRIMARY: 1.2,       # Slight boost for primary
-                    SourceType.INDEPENDENT_NEWS: 1.0,  # Neutral
-                    SourceType.TRADE_PRESS: 0.8,   # Slight penalty
-                    SourceType.VENDOR_CONSULTING: 0.6,  # Penalty
-                    SourceType.VENDOR_ASSERTED: 0.4,    # Heavy penalty
-                }
-            else:  # market intent
-                type_weights = {
-                    SourceType.INDEPENDENT_NEWS: 1.3,  # Boost news sources
-                    SourceType.PRIMARY: 1.2,       # Boost primary
-                    SourceType.TRADE_PRESS: 1.1,   # Slight boost
-                    SourceType.ACADEMIC: 0.9,      # Slight penalty
-                    SourceType.VENDOR_CONSULTING: 0.7,  # Penalty
-                    SourceType.VENDOR_ASSERTED: 0.5,    # Heavy penalty
-                }
-            
-            # Apply weights and sort
-            weighted_sources = []
-            for source in sources:
-                weight = type_weights.get(source.source_type, 1.0)
-                # Create a copy with weight for sorting
-                weighted_source = source
-                weighted_source._sort_weight = weight
-                weighted_sources.append(weighted_source)
-            
-            # Sort by weight (descending)
-            sorted_sources = sorted(weighted_sources, 
-                                  key=lambda s: getattr(s, '_sort_weight', 1.0), 
-                                  reverse=True)
-            
-            # Remove the temporary weight attribute
-            for source in sorted_sources:
-                if hasattr(source, '_sort_weight'):
-                    delattr(source, '_sort_weight')
-            
-            logger.info(f"Re-weighted {len(sources)} sources for {intent} intent")
-            return sorted_sources
-            
-        except Exception as e:
-            logger.error(f"Error re-weighting by source type: {str(e)}")
-            return sources
-    
-    def _extract_query_domain(self, query: str, title: str) -> QueryDomain:
-        """
-        Use LLM to dynamically extract the primary domain/field of the query.
-        Returns a QueryDomain object with primary_domain, domain_keywords, and confidence.
-        """
-        try:
-            parser = PydanticOutputParser(pydantic_object=QueryDomain)
-            prompt_template = PromptTemplate(
-                input_variables=["query", "title"],
-                template="""Identify the primary domain or field of study for this query/title.
-
-Query: {query}
-Title: {title}
-
-Determine the main domain/field this query belongs to. Examples:
-- "Cognitive Wars: The AI Industrialization of Influence" → primary_domain: "technology/artificial intelligence/cognitive science", domain_keywords: ["AI", "cognitive", "influence", "warfare"]
-- "Quantum Computing Breakthroughs" → primary_domain: "technology/physics/quantum computing", domain_keywords: ["quantum", "computing", "physics"]
-- "Pediatric Medical Protocols" → primary_domain: "healthcare/medicine/pediatrics", domain_keywords: ["pediatric", "medical", "healthcare", "protocols"]
-- "Financial Market Analysis" → primary_domain: "finance/economics/markets", domain_keywords: ["finance", "market", "economics"]
-- "Distributed Consensus Algorithms" → primary_domain: "technology/computer science/distributed systems", domain_keywords: ["distributed", "consensus", "algorithms", "systems"]
-
-Return the primary domain as a concise description (2-4 words) and list key domain keywords.
-
-{format_instructions}"""
-            )
-            
-            prompt = prompt_template.format(
-                query=query,
-                title=title,
-                format_instructions=parser.get_format_instructions()
-            )
-            
-            response = self.llm.invoke(prompt)
-            content = response.content.strip()
-            
-            # Extract JSON from markdown if needed
-            if "```json" in content:
-                content = content.split("```json")[1].split("```")[0].strip()
-            elif "```" in content:
-                content = content.split("```")[1].split("```")[0].strip()
-            
-            domain_data = json.loads(content)
-            if isinstance(domain_data, dict):
-                query_domain_obj = QueryDomain(**domain_data)
-                logger.info(f"Extracted query domain: {query_domain_obj.primary_domain} (confidence: {query_domain_obj.confidence:.2f}, keywords: {query_domain_obj.domain_keywords})")
-                return query_domain_obj
-            else:
-                raise ValueError(f"Unexpected domain extraction format: {type(domain_data)}")
-                
-        except json.JSONDecodeError as e:
-            logger.warning(f"Domain extraction JSON parse error: {e}, using fallback domain detection")
-            logger.debug(f"Failed to parse domain extraction response: {content[:200]}...")
-        except ValueError as e:
-            logger.warning(f"Domain extraction validation error: {e}, using fallback domain detection")
-            logger.debug(f"Domain extraction response: {content[:200]}...")
-        except Exception as e:
-            logger.warning(f"Domain extraction failed: {e}, using fallback domain detection")
-            logger.debug(f"Exception traceback: {traceback.format_exc()}")
-            # Fallback: simple keyword-based detection
-            query_lower = (query or title).lower()
-            domain_keywords = []
-            
-            if any(kw in query_lower for kw in ['ai', 'artificial intelligence', 'cognitive', 'machine learning', 'technology', 'tech']):
-                primary_domain = "technology/artificial intelligence"
-                domain_keywords = ['AI', 'artificial intelligence', 'technology', 'cognitive', 'machine learning']
-            elif any(kw in query_lower for kw in ['medical', 'healthcare', 'hospital', 'patient', 'clinical', 'pediatric']):
-                primary_domain = "healthcare/medicine"
-                domain_keywords = ['medical', 'healthcare', 'clinical', 'patient']
-            elif any(kw in query_lower for kw in ['finance', 'financial', 'market', 'economic', 'trading']):
-                primary_domain = "finance/economics"
-                domain_keywords = ['finance', 'financial', 'market', 'economics']
-            elif any(kw in query_lower for kw in ['legal', 'law', 'regulation', 'policy', 'government']):
-                primary_domain = "legal/policy"
-                domain_keywords = ['legal', 'law', 'regulation', 'policy']
-            else:
-                primary_domain = "general"
-                # Extract significant words as keywords
-                words = query_lower.split()
-                domain_keywords = [w for w in words if len(w) > 4][:5]
-            
-            fallback_domain = QueryDomain(
-                primary_domain=primary_domain,
-                domain_keywords=domain_keywords,
-                confidence=0.5  # Lower confidence for fallback
-            )
-            logger.info(f"Fallback domain selected: {primary_domain} (keywords: {domain_keywords}, confidence: 0.5)")
-            return fallback_domain
-    
-    def _identify_abstraction_layers(self, query: str, query_domain: QueryDomain) -> Dict[str, List[str]]:
-        """
-        Use LLM to identify 3-5 conceptual abstraction layers from most specific to most general.
-        Returns a dictionary mapping layer names to lists of concepts/keywords.
-        """
-        try:
-            parser = PydanticOutputParser(pydantic_object=AbstractionLayers)
-            prompt_template = PromptTemplate(
-                input_variables=["query", "query_domain", "domain_keywords"],
-                template="""Identify 3-5 conceptual abstraction layers for this query, from most specific to most general.
-
-PURPOSE: Break down the query into abstraction layers that can help find foundational sources even when direct research is limited.
-
-QUERY: {query}
-Domain: {query_domain}
-Domain Keywords: {domain_keywords}
-
-INSTRUCTIONS:
-1. Identify 3-5 layers from most specific (Layer 1) to most general/foundational (Layer 4-5)
-2. Each layer should contain 3-5 related concepts/keywords
-3. Layers should progressively abstract from the specific topic to foundational principles
-4. Layer names should be descriptive (e.g., "Layer 1: Specific", "Layer 2: Domain", "Layer 3: Abstract", "Layer 4: Foundational")
-
-EXAMPLE for "Cognitive Wars: The AI Industrialization of Influence":
-- Layer 1: Specific: ["cognitive warfare", "AI influence operations", "computational propaganda", "automated disinformation"]
-- Layer 2: Domain: ["information warfare", "psychological operations", "influence campaigns", "propaganda"]
-- Layer 3: Abstract: ["social influence", "persuasion", "communication theory", "behavioral manipulation"]
-- Layer 4: Foundational: ["game theory", "social psychology", "information theory", "collective behavior"]
-
-Generate abstraction layers that will help find canonical papers at each level of abstraction.
-
-{format_instructions}"""
-            )
-            
-            prompt = prompt_template.format(
-                query=query,
-                query_domain=query_domain.primary_domain,
-                domain_keywords=", ".join(query_domain.domain_keywords),
-                format_instructions=parser.get_format_instructions()
-            )
-            
-            response = self.llm.invoke(prompt)
-            content = response.content.strip()
-            
-            # Extract JSON from markdown if needed
-            if "```json" in content:
-                content = content.split("```json")[1].split("```")[0].strip()
-            elif "```" in content:
-                content = content.split("```")[1].split("```")[0].strip()
-            
-            layers_data = json.loads(content)
-            if isinstance(layers_data, dict):
-                if "layers" in layers_data:
-                    abstraction_layers_obj = AbstractionLayers(**layers_data)
-                    logger.info(f"Identified {len(abstraction_layers_obj.layers)} abstraction layers")
-                    for layer_name, concepts in abstraction_layers_obj.layers.items():
-                        logger.debug(f"  {layer_name}: {concepts}")
-                    return abstraction_layers_obj.layers
-                else:
-                    # Handle case where layers dict is at top level
-                    abstraction_layers_obj = AbstractionLayers(layers=layers_data)
-                    logger.info(f"Identified {len(abstraction_layers_obj.layers)} abstraction layers")
-                    return abstraction_layers_obj.layers
-            else:
-                raise ValueError(f"Unexpected abstraction layers format: {type(layers_data)}")
-                
-        except json.JSONDecodeError as e:
-            logger.warning(f"Abstraction layers JSON parse error: {e}, using fallback")
-            logger.debug(f"Failed to parse abstraction layers response: {content[:200] if 'content' in locals() else 'N/A'}...")
-        except ValueError as e:
-            logger.warning(f"Abstraction layers validation error: {e}, using fallback")
-            logger.debug(f"Abstraction layers response: {content[:200] if 'content' in locals() else 'N/A'}...")
-        except Exception as e:
-            logger.warning(f"Abstraction layers identification failed: {e}, using fallback")
-            logger.debug(f"Exception traceback: {traceback.format_exc()}")
-        
-        # Fallback: create simple abstraction layers from query and domain
-        query_lower = query.lower()
-        fallback_layers = {
-            "Layer 1: Specific": [query],
-            "Layer 2: Domain": query_domain.domain_keywords[:4] if query_domain.domain_keywords else [query_domain.primary_domain.split('/')[-1]],
-            "Layer 3: Abstract": ["theory", "framework", "principles", "foundations"]
-        }
-        logger.info(f"Fallback abstraction layers: {list(fallback_layers.keys())}")
-        return fallback_layers
-    
-    def _identify_canonical_papers(self, abstraction_layers: Dict[str, List[str]], query_domain: QueryDomain) -> Dict[str, List[str]]:
-        """
-        For each abstraction layer, use LLM to identify 3-5 canonical/seminal papers.
-        Returns a dictionary mapping layer names to lists of canonical paper titles/authors.
-        """
-        try:
-            parser = PydanticOutputParser(pydantic_object=CanonicalPapers)
-            
-            # Build layers description for prompt
-            layers_description = "\n".join([f"- {layer_name}: {', '.join(concepts)}" 
-                                           for layer_name, concepts in abstraction_layers.items()])
-            
-            prompt_template = PromptTemplate(
-                input_variables=["query_domain", "domain_keywords", "layers_description"],
-                template="""Identify 3-5 canonical/seminal papers for each abstraction layer that could ground first-principles reasoning.
-
-PURPOSE: Find foundational papers at each abstraction level that can support thesis development even when direct research is limited.
-
-Domain: {query_domain}
-Domain Keywords: {domain_keywords}
-
-Abstraction Layers:
-{layers_description}
-
-INSTRUCTIONS:
-1. For each layer, identify 3-5 highly cited, seminal papers
-2. Papers should be foundational works that could ground first-principles reasoning
-3. Include paper titles and authors (e.g., "Consensus and Cooperation in Networked Multi-Agent Systems (Olfati-Saber et al.)")
-4. Prioritize papers from canonical academic domains (IEEE, ACM, Springer, etc.)
-5. Papers can be tangentially related if they provide foundational concepts
-
-EXAMPLE for Layer 4: Foundational ["game theory", "social psychology"]:
-- "The Theory of Games and Economic Behavior" (von Neumann & Morgenstern)
-- "Social Influence: Compliance and Conformity" (Cialdini)
-- "Information Theory of Communication" (Shannon)
-
-Generate canonical papers for each layer that will help ground the thesis in first principles.
-
-{format_instructions}"""
-            )
-            
-            prompt = prompt_template.format(
-                query_domain=query_domain.primary_domain,
-                domain_keywords=", ".join(query_domain.domain_keywords),
-                layers_description=layers_description,
-                format_instructions=parser.get_format_instructions()
-            )
-            
-            response = self.llm.invoke(prompt)
-            content = response.content.strip()
-            
-            # Extract JSON from markdown if needed
-            if "```json" in content:
-                content = content.split("```json")[1].split("```")[0].strip()
-            elif "```" in content:
-                content = content.split("```")[1].split("```")[0].strip()
-            
-            papers_data = json.loads(content)
-            if isinstance(papers_data, dict):
-                if "papers" in papers_data:
-                    canonical_papers_obj = CanonicalPapers(**papers_data)
-                    logger.info(f"Identified canonical papers for {len(canonical_papers_obj.papers)} layers")
-                    for layer_name, papers in canonical_papers_obj.papers.items():
-                        logger.debug(f"  {layer_name}: {papers[:2]}...")  # Log first 2 papers
-                    return canonical_papers_obj.papers
-                else:
-                    # Handle case where papers dict is at top level
-                    canonical_papers_obj = CanonicalPapers(papers=papers_data)
-                    logger.info(f"Identified canonical papers for {len(canonical_papers_obj.papers)} layers")
-                    return canonical_papers_obj.papers
-            else:
-                raise ValueError(f"Unexpected canonical papers format: {type(papers_data)}")
-                
-        except json.JSONDecodeError as e:
-            logger.warning(f"Canonical papers JSON parse error: {e}, using fallback")
-            logger.debug(f"Failed to parse canonical papers response: {content[:200] if 'content' in locals() else 'N/A'}...")
-        except ValueError as e:
-            logger.warning(f"Canonical papers validation error: {e}, using fallback")
-            logger.debug(f"Canonical papers response: {content[:200] if 'content' in locals() else 'N/A'}...")
-        except Exception as e:
-            logger.warning(f"Canonical papers identification failed: {e}, using fallback")
-            logger.debug(f"Exception traceback: {traceback.format_exc()}")
-        
-        # Fallback: return empty dict (will rely on search queries instead)
-        logger.info("Fallback: No canonical papers identified, will rely on search queries")
-        return {}
-    
-    def _search_abstraction_layers(
-        self,
-        query: str,
-        abstraction_layers: Dict[str, List[str]],
-        canonical_papers: Dict[str, List[str]],
-        days_back: int,
-        query_domain: Optional[str] = None,
-        domain_keywords: Optional[List[str]] = None
-    ) -> List[Source]:
-        """
-        Search at each abstraction layer with layer-specific queries.
-        Also search for identified canonical papers by title/author.
-        Combine results from all layers and deduplicate.
-        """
-        all_sources: List[Source] = []
-        seen_urls = set()
-        anchor_domains = getattr(STIConfig, 'THESIS_ANCHOR_DOMAINS', [
-            'ieeexplore.ieee.org', 'dl.acm.org', 'link.springer.com', 'sciencedirect.com'
-        ])
-        
-        def add_sources(found: List[Source], layer_name: str = ""):
-            nonlocal all_sources, seen_urls
-            for s in found:
-                if s.url not in seen_urls:
-                    all_sources.append(s)
-                    seen_urls.add(s.url)
-                    if layer_name:
-                        logger.debug(f"Found source from {layer_name}: {s.title[:60]}...")
-        
-        # Search at each abstraction layer
-        for layer_name, concepts in abstraction_layers.items():
-            logger.info(f"Searching abstraction layer: {layer_name} ({len(concepts)} concepts)")
-            
-            # Search for each concept in this layer
-            for concept in concepts[:5]:  # Limit to 5 concepts per layer
-                # Create layer-specific queries
-                layer_queries = [
-                    f'"{concept}" survey review',
-                    f'"{concept}" "state of the art"',
-                    f'"{concept}" foundational seminal',
-                    f'"{concept}" theoretical framework'
-                ]
-                
-                # Add domain keywords if available
-                if domain_keywords:
-                    for keyword in domain_keywords[:2]:  # Top 2 domain keywords
-                        if keyword.lower() not in concept.lower():
-                            layer_queries.append(f'"{concept}" {keyword}')
-                
-                # Search across anchor domains
-                for q in layer_queries[:4]:  # Limit to 4 queries per concept
-                    for site in anchor_domains[:5]:  # Limit to 5 domains
-                        try:
-                            sources = self._search_by_domain_type(
-                                f'{q} site:{site}',
-                                [],
-                                SourceType.ACADEMIC,
-                                max_results=2,
-                                days_back=days_back
-                            )
-                            add_sources(sources, layer_name)
-                        except Exception as e:
-                            logger.debug(f"Layer search query failed '{q} site:{site}': {str(e)}")
-                            continue
-        
-        # Search for canonical papers by title
-        for layer_name, papers in canonical_papers.items():
-            logger.info(f"Searching for canonical papers in {layer_name} ({len(papers)} papers)")
-            
-            for paper_ref in papers[:5]:  # Limit to 5 papers per layer
-                # Extract paper title (before parentheses if author info present)
-                paper_title = paper_ref.split('(')[0].strip().strip('"')
-                
-                # Search for paper by title
-                for site in anchor_domains[:3]:  # Limit to 3 domains for canonical papers
-                    try:
-                        # Search with quoted title
-                        sources = self._search_by_domain_type(
-                            f'"{paper_title}" site:{site}',
-                            [],
-                            SourceType.ACADEMIC,
-                            max_results=1,
-                            days_back=days_back * 2  # Wider time window for canonical papers
-                        )
-                        add_sources(sources, f"{layer_name} (canonical)")
-                    except Exception as e:
-                        logger.debug(f"Canonical paper search failed '{paper_title} site:{site}': {str(e)}")
-                        continue
-                
-                # Also try searching without quotes (partial match)
-                try:
-                    # Extract key words from title
-                    title_words = [w for w in paper_title.split() if len(w) > 4][:4]
-                    if title_words:
-                        partial_query = ' '.join(title_words)
-                        sources = self._search_by_domain_type(
-                            f'{partial_query} site:arxiv.org',  # Try arxiv for broader search
-                            [],
-                            SourceType.ACADEMIC,
-                            max_results=1,
-                            days_back=days_back * 2
-                        )
-                        add_sources(sources, f"{layer_name} (canonical partial)")
-                except Exception as e:
-                    logger.debug(f"Canonical paper partial search failed: {str(e)}")
-                    continue
-        
-        logger.info(f"Abstraction layer search: found {len(all_sources)} unique sources across {len(abstraction_layers)} layers")
-        return all_sources
-    
-    def _generate_conceptual_map(self, query: str, sources: List[Source], abstraction_layers: Dict[str, List[str]]) -> str:
-        """
-        Use LLM to create a conceptual map showing how foundational sources connect to the specific topic.
-        Documents the reasoning chain from first principles to the query topic.
-        """
-        try:
-            # Prepare sources summary
-            sources_summary = "\n".join([
-                f"- {s.title} ({s.publisher})"
-                for s in sources[:10]  # Limit to top 10 sources
-            ])
-            
-            # Prepare layers summary
-            layers_summary = "\n".join([
-                f"- {layer_name}: {', '.join(concepts[:3])}..."
-                for layer_name, concepts in abstraction_layers.items()
-            ])
-            
-            prompt = f"""Create a conceptual map showing how foundational sources connect to the specific query topic.
-
-PURPOSE: Document the reasoning chain from first principles to the specific topic, showing how canonical papers ground the thesis.
-
-QUERY: {query}
-
-ABSTRACTION LAYERS:
-{layers_summary}
-
-SOURCES FOUND:
-{sources_summary}
-
-TASK:
-1. Identify which sources connect to which abstraction layers
-2. Explain how foundational sources (from broader layers) ground first-principles reasoning
-3. Show the conceptual path from foundational principles to the specific query topic
-4. Document how tangentially related canonical papers can still support the thesis
-
-OUTPUT FORMAT:
-- Start with foundational principles (Layer 4-5)
-- Show how these connect to domain concepts (Layer 2-3)
-- Finally connect to the specific topic (Layer 1)
-- For each connection, cite relevant sources
-
-Return a clear, structured conceptual map as plain text (no JSON)."""
-            
-            response = self.llm.invoke(prompt)
-            conceptual_map = response.content.strip()
-            
-            logger.info(f"Generated conceptual map ({len(conceptual_map)} chars)")
-            logger.debug(f"Conceptual map preview: {conceptual_map[:200]}...")
-            
-            return conceptual_map
-            
-        except Exception as e:
-            logger.warning(f"Conceptual map generation failed: {e}, using fallback")
-            logger.debug(f"Exception traceback: {traceback.format_exc()}")
-            
-            # Fallback: simple conceptual map
-            fallback_map = f"""Conceptual Map for: {query}
-
-Foundational Principles:
-- Sources from broader abstraction layers provide theoretical foundations
-
-Domain Concepts:
-- Sources connect foundational principles to domain-specific concepts
-
-Specific Topic:
-- Sources directly address the query topic
-
-This analysis builds from first principles to ground the thesis in established theory."""
-            
-            return fallback_map
-    
-    def _generate_topic_search_queries(
-        self,
-        query: str,
-        refined_query: Optional[str] = None,
-        query_domain: Optional[str] = None,
-        domain_keywords: Optional[List[str]] = None,
-        concepts: Optional[List[str]] = None,
-        retry_attempt: int = 0
-    ) -> List[str]:
-        """
-        Generate diverse, topic-relevant search queries using LLM.
-        
-        Args:
-            query: Original query
-            refined_query: Refined query from _refine_query_for_title()
-            query_domain: Primary domain (e.g., "technology/artificial intelligence")
-            domain_keywords: List of domain-specific keywords
-            concepts: List of extracted concepts
-            retry_attempt: Retry attempt number (0 = first attempt, higher = broader queries)
-            
-        Returns:
-            List of search query strings optimized for academic source discovery
-        """
-        # Create cache key
-        cache_key = f"{query}_{refined_query}_{query_domain}_{retry_attempt}"
-        if cache_key in self._query_cache:
-            logger.debug(f"Using cached search queries for retry attempt {retry_attempt} (cache size: {len(self._query_cache)})")
-            return self._query_cache[cache_key]
-        else:
-            logger.debug(f"Cache miss for query generation (cache size: {len(self._query_cache)}, key: {cache_key[:50]}...)")
-        
-        try:
-            # Use refined query if available, otherwise use original
-            effective_query = refined_query or query
-            
-            # Prepare context for LLM
-            domain_context = f"Domain: {query_domain}" if query_domain else "Domain: general"
-            keywords_context = f"Domain keywords: {', '.join(domain_keywords)}" if domain_keywords else ""
-            concepts_context = f"Related concepts: {', '.join(concepts[:5])}" if concepts else ""
-            
-            # Determine query strategy based on retry attempt
-            if retry_attempt == 0:
-                strategy_note = "Generate focused, specific queries using exact phrases and domain terminology."
-            elif retry_attempt == 1:
-                strategy_note = "Generate broader queries using synonyms and related concepts."
-            else:
-                strategy_note = "Generate very broad queries using general terms and alternative phrasings."
-            
-            parser = PydanticOutputParser(pydantic_object=SearchQueries)
-            prompt_template = PromptTemplate(
-                input_variables=["query", "refined_query", "domain_context", "keywords_context", "concepts_context", "strategy_note"],
-                template="""You are an expert at generating academic search queries. Your task is to create diverse, effective search queries that will find relevant academic sources.
-
-PURPOSE: Generate 8-10 diverse search queries optimized for finding academic papers and sources related to the given topic.
-
-QUERY INFORMATION:
-Original Query: {query}
-Refined Query: {refined_query}
-{domain_context}
-{keywords_context}
-{concepts_context}
-
-STRATEGY: {strategy_note}
-
-QUERY GENERATION GUIDELINES:
-1. Use exact phrases from the query when they are specific and meaningful
-2. Incorporate domain keywords naturally into queries
-3. Use academic search modifiers: "survey", "review", "framework", "analysis", "state of the art", "systematic review"
-4. Create variations: broader terms, synonyms, related concepts
-5. Include both specific queries (exact phrases) and broader queries (general terms)
-6. Avoid overly narrow queries that might miss relevant sources
-7. Each query should be 3-8 words, optimized for academic search engines
-
-EXAMPLES:
-- Query: "Cognitive Wars: The AI Industrialization of Influence"
-  Domain: "technology/artificial intelligence/information warfare"
-  Domain keywords: ["AI", "cognitive", "influence", "warfare"]
-  Good queries:
-    - "cognitive warfare artificial intelligence"
-    - "AI influence operations information warfare"
-    - "cognitive warfare survey review"
-    - "artificial intelligence psychological operations"
-    - "information warfare AI cognitive"
-    - "influence operations AI framework"
-    - "cognitive warfare state of the art"
-    - "AI disinformation cognitive science"
-
-- Query: "Distributed Consensus Algorithms"
-  Domain: "technology/computer science/distributed systems"
-  Domain keywords: ["distributed", "consensus", "algorithms"]
-  Good queries:
-    - "distributed consensus algorithms survey"
-    - "consensus protocols distributed systems"
-    - "distributed agreement algorithms review"
-    - "Byzantine consensus distributed systems"
-    - "consensus algorithms state of the art"
-
-Generate 8-10 diverse search queries that will effectively find relevant academic sources.
-
-{format_instructions}"""
-            )
-            
-            prompt = prompt_template.format(
-                query=query,
-                refined_query=effective_query,
-                domain_context=domain_context,
-                keywords_context=keywords_context,
-                concepts_context=concepts_context,
-                strategy_note=strategy_note,
-                format_instructions=parser.get_format_instructions()
-            )
-            
-            response = self.llm.invoke(prompt)
-            content = response.content.strip()
-            
-            # Extract JSON from markdown if needed
-            if "```json" in content:
-                content = content.split("```json")[1].split("```")[0].strip()
-            elif "```" in content:
-                content = content.split("```")[1].split("```")[0].strip()
-            
-            queries_data = json.loads(content)
-            if isinstance(queries_data, dict):
-                search_queries_obj = SearchQueries(**queries_data)
-                queries = search_queries_obj.queries
-                logger.info(f"Generated {len(queries)} search queries for retry attempt {retry_attempt}")
-                logger.debug(f"Generated queries (sample): {queries[:3] if len(queries) >= 3 else queries}")
-                # Cache the results
-                self._query_cache[cache_key] = queries
-                return queries
-            else:
-                raise ValueError(f"Unexpected query generation format: {type(queries_data)}")
-                
-        except json.JSONDecodeError as e:
-            logger.error(f"LLM query generation JSON parse error: {e}. Response content: {content[:200]}...")
-            logger.debug(f"Full response content: {content}")
-            return self._fallback_query_generation(query, refined_query, domain_keywords, concepts, retry_attempt)
-        except ValueError as e:
-            logger.error(f"LLM query generation validation error: {e}. Response: {content[:200]}...")
-            logger.debug(f"Full response content: {content}")
-            return self._fallback_query_generation(query, refined_query, domain_keywords, concepts, retry_attempt)
-        except Exception as e:
-            logger.warning(f"LLM query generation failed: {e}, using fallback phrase extraction")
-            logger.debug(f"Exception traceback: {traceback.format_exc()}")
-            return self._fallback_query_generation(query, refined_query, domain_keywords, concepts, retry_attempt)
-    
-    def _fallback_query_generation(
-        self,
-        query: str,
-        refined_query: Optional[str] = None,
-        domain_keywords: Optional[List[str]] = None,
-        concepts: Optional[List[str]] = None,
-        retry_attempt: int = 0
-    ) -> List[str]:
-        """Fallback query generation using phrase extraction when LLM fails"""
-        effective_query = refined_query or query
-        queries = []
-        
-        # Extract key phrases
-        key_phrases = []
-        for separator in [':', ',', ' and ', ' of ', ' in ', ' for ']:
-            if separator in effective_query:
-                parts = effective_query.split(separator)
-                key_phrases.extend([p.strip() for p in parts if len(p.strip()) > 5])
-        
-        if not key_phrases:
-            words = effective_query.split()
-            # Take 2-4 word chunks
-            for i in range(len(words) - 1):
-                if i + 3 <= len(words):
-                    phrase = ' '.join(words[i:i+3])
-                    if len(phrase) > 10:
-                        key_phrases.append(phrase)
-        
-        # Remove duplicates and short phrases
-        key_phrases = list(dict.fromkeys([p for p in key_phrases if len(p) > 5]))[:5]
-        
-        # Build queries
-        academic_modifiers = ['survey', 'review', 'framework', 'analysis', 'state of the art']
-        
-        for phrase in key_phrases[:3]:
-            queries.append(phrase)
-            for modifier in academic_modifiers[:2]:
-                queries.append(f"{phrase} {modifier}")
-        
-        # Add domain keyword queries if available
-        if domain_keywords:
-            for keyword in domain_keywords[:3]:
-                if keyword.lower() not in effective_query.lower():
-                    queries.append(f"{effective_query} {keyword}")
-        
-        # Add concept queries if available
-        if concepts:
-            for concept in concepts[:2]:
-                queries.append(f"{effective_query} {concept}")
-        
-        # Limit to 8 queries
-        queries = queries[:8]
-        logger.info(f"Fallback generated {len(queries)} queries")
-        logger.debug(f"Fallback queries: {queries[:5] if len(queries) >= 5 else queries}")
-        if domain_keywords:
-            domain_query_count = len([q for q in queries if any(kw.lower() in q.lower() for kw in domain_keywords)])
-            logger.debug(f"Fallback used {domain_query_count} domain keyword queries")
-        return queries
-    
-    def _process_relevance_batch(self, batch_sources: List[Source], title: str, query: str, query_domain: str, 
-                                  min_threshold: float, foundational_urls: set, prompt_template: PromptTemplate, 
-                                  parser: PydanticOutputParser) -> Optional[Tuple[List[Source], Dict[str, Any]]]:
-        """
-        Process a single batch of sources for relevance evaluation using sequential IDs.
-        
-        Args:
-            batch_sources: List of sources to evaluate in this batch
-            title: Report title
-            query: Query string
-            query_domain: Query domain string
-            min_threshold: Minimum relevance score threshold
-            foundational_urls: Set of foundational URLs
-            prompt_template: Prompt template for LLM evaluation
-            parser: Pydantic parser for structured output
-            
-        Returns:
-            Tuple of (filtered_sources, metadata) or None if processing failed
-        """
-        batch_metadata = {
-            'evaluation_success': False,
-            'scores_received': 0,
-            'sources_rejected_by_llm': 0,
-            'sources_rejected_by_score': 0,
-            'sources_passed': 0
-        }
-        
-        # Create sequential ID mapping: {0: source0, 1: source1, ...}
-        sequential_id_to_source = {seq_id: source for seq_id, source in enumerate(batch_sources)}
-        
-        # Prepare sources text with sequential IDs (0, 1, 2, ...)
-        sources_text = "\n\n".join([
-            f"Source {seq_id}: {source.title}\nPublisher: {source.publisher}\nDate: {source.date}\nContent: {source.content[:500]}..."
-            for seq_id, source in sequential_id_to_source.items()
-        ])
-        
-        # Create prompt with format instructions
-        prompt = prompt_template.format(
-            title=title,
-            query=query,
-            query_domain=query_domain,
-            sources_text=sources_text,
-            min_threshold=f"{min_threshold:.2f}",
-            format_instructions=parser.get_format_instructions()
-        )
-        
-        # Get structured response from LLM
-        try:
-            response = self.llm.invoke(prompt)
-        except Exception as e:
-            logger.error(f"LLM invocation failed for batch: {str(e)}")
-            logger.debug(f"LLM invocation error traceback:\n{traceback.format_exc()}")
-            return None
-        
-        # Parse the response
-        try:
-            content = response.content.strip()
-            
-            # Extract JSON from markdown if needed
-            if "```json" in content:
-                content = content.split("```json")[1].split("```")[0].strip()
-            elif "```" in content:
-                content = content.split("```")[1].split("```")[0].strip()
-            
-            relevance_data = json.loads(content)
-            if isinstance(relevance_data, list):
-                relevance_scores = [SourceRelevanceScore(**item) for item in relevance_data]
-            elif isinstance(relevance_data, dict):
-                # Handle dict with numeric string keys (common LLM format mistake)
-                if all(k.isdigit() for k in relevance_data.keys()):
-                    relevance_scores = [SourceRelevanceScore(**item) for item in relevance_data.values()]
-                elif "results" in relevance_data:
-                    relevance_scores = [SourceRelevanceScore(**item) for item in relevance_data["results"]]
-                elif "items" in relevance_data:
-                    relevance_scores = [SourceRelevanceScore(**item) for item in relevance_data["items"]]
-                else:
-                    relevance_scores = [SourceRelevanceScore(**relevance_data)]
-            else:
-                raise ValueError(f"Unexpected response format: {type(relevance_data)}")
-            
-            batch_metadata['evaluation_success'] = True
-            batch_metadata['scores_received'] = len(relevance_scores)
-            
-            logger.debug(f"Batch LLM evaluation: {len(relevance_scores)} scores received")
-            for rs in relevance_scores:
-                logger.debug(f"  Source {rs.source_id}: score={rs.relevance_score:.2f}, "
-                           f"relevant={rs.is_relevant}, reason='{rs.relevance_reason}'")
-            
-        except (ValueError, KeyError, json.JSONDecodeError) as e:
-            # FAIL CLOSED: If we can't parse LLM response, reject all sources in this batch
-            logger.error(f"Failed to parse relevance scores for batch: {str(e)}. Rejecting all sources in batch (fail-closed).")
-            logger.error(f"Parse error traceback:\n{traceback.format_exc()}")
-            logger.debug(f"Response content: {response.content[:500]}...")
-            return None
-        
-        # Filter sources based on relevance scores using sequential IDs
-        score_map = {rs.source_id: rs for rs in relevance_scores}
-        
-        # Canonical anchor override: if title is thematic, force-include consensus/control anchors from canonical hosts
-        # BUT: Only override if LLM marked it as relevant (respect LLM's judgment)
-        # Use sequential IDs for matching
-        try:
-            canonical_hosts = ('ieeexplore.ieee.org', 'dl.acm.org', 'link.springer.com', 'sciencedirect.com', 'arxiv.org')
-            anchor_keywords = ('consensus', 'multi-agent', 'cooperation', 'leader', 'formation', 'containment')
-            themed = any(t in title.lower() for t in ('command','control','consensus','coordination','hierarchical'))
-            if themed:
-                for seq_id, source in sequential_id_to_source.items():
-                    if any(h in (source.url or '') for h in canonical_hosts):
-                        st = (source.title or '').lower()
-                        if any(k in st for k in anchor_keywords):
-                            existing = score_map.get(seq_id)  # Use sequential ID
-                            # Only override if LLM didn't explicitly reject it
-                            if existing and existing.is_relevant:
-                                score_map[seq_id] = SourceRelevanceScore(
-                                    source_id=seq_id,  # Use sequential ID
-                                    relevance_score=max(0.5, existing.relevance_score),
-                                    relevance_reason='canonical anchor override (consensus/control)',
-                                    is_relevant=True
-                                )
-        except Exception as _:
-            pass
-        
-        relevant_sources = []
-        theme_terms = ('command', 'control', 'consensus', 'coordination', 'hierarchical')
-        title_lower = title.lower()
-        
-        # Filter sources using sequential IDs
-        for seq_id, source in sequential_id_to_source.items():
-            rs = score_map.get(seq_id)  # Use sequential ID for matching
-            if not rs:
-                logger.warning(f"Source {seq_id} '{source.title}' missing from LLM scores - rejecting")
-                continue
-            
-            # CRITICAL: Respect LLM's is_relevant flag - if LLM says not relevant, reject regardless of score
-            if not rs.is_relevant:
-                batch_metadata['sources_rejected_by_llm'] += 1
-                logger.debug(f"✗ Source '{source.title}' rejected by LLM (is_relevant=False, score: {rs.relevance_score:.2f}, reason: '{rs.relevance_reason}')")
-                continue
-            
-            # Apply threshold logic
-            base_thresh = min_threshold
-            if source.url in foundational_urls:
-                eff_thresh = STIConfig.MIN_TITLE_RELEVANCE_SCORE_FOUNDATIONAL
-            else:
-                eff_thresh = base_thresh
-            
-            # Check if source is from canonical academic domain
-            canonical_hosts = ('ieeexplore.ieee.org', 'dl.acm.org', 'link.springer.com', 'sciencedirect.com', 'arxiv.org', 'jstor.org')
-            is_canonical_domain = any(h in (source.url or '') for h in canonical_hosts)
-            
-            # Lower threshold for canonical papers that can ground first-principles reasoning
-            if is_canonical_domain and rs.is_relevant:
-                canonical_thresh = getattr(STIConfig, 'CANONICAL_RELEVANCE_THRESHOLD', 0.50)
-                eff_thresh = min(eff_thresh, canonical_thresh)
-                logger.debug(f"Applying canonical threshold ({canonical_thresh:.2f}) for source from canonical domain: {source.title[:50]}...")
-            
-            # Further relax for canonical academic hosts on themed titles (but still require LLM approval)
-            if (is_canonical_domain and any(t in title_lower for t in theme_terms)):
-                eff_thresh = min(eff_thresh, STIConfig.MIN_TITLE_RELEVANCE_SCORE_FOUNDATIONAL)
-            
-            if rs.relevance_score >= eff_thresh:
-                relevant_sources.append(source)
-                batch_metadata['sources_passed'] += 1
-                logger.debug(f"✓ Source '{source.title}' deemed relevant (score: {rs.relevance_score:.2f}, thresh: {eff_thresh:.2f})")
-            else:
-                batch_metadata['sources_rejected_by_score'] += 1
-                logger.debug(f"✗ Source '{source.title}' filtered out (score: {rs.relevance_score:.2f}, thresh: {eff_thresh:.2f})")
-        
-        return relevant_sources, batch_metadata
-    
-    def _filter_sources_by_title_relevance(self, sources: List[Source], title: str, query: str = None, foundational_urls: set = None, min_score: float = None, query_domain: str = None) -> Tuple[List[Source], Dict[str, Any]]:
-        """
-        Filter sources using LLM-based relevance scoring.
-        
-        This is the PRIMARY gate for ensuring ALL sources are relevant to the query topic.
-        Sources that pass this gate will be cited in the report.
-        
-        Returns:
-            Tuple of (filtered_sources, metadata) where metadata contains:
-            - 'evaluation_success': bool - whether LLM evaluation succeeded
-            - 'failure_reason': str - reason if evaluation failed
-            - 'scores_received': int - number of scores from LLM
-            - 'sources_rejected_by_llm': int - sources LLM marked as not relevant
-            - 'sources_rejected_by_score': int - sources below threshold
-            - 'sources_passed': int - sources that passed all checks
-        """
-        metadata = {
-            'evaluation_success': False,
-            'failure_reason': None,
-            'scores_received': 0,
-            'sources_rejected_by_llm': 0,
-            'sources_rejected_by_score': 0,
-            'sources_passed': 0
-        }
-        
-        if not sources:
-            # Nothing to validate = success (not a failure)
-            metadata['evaluation_success'] = True
-            metadata['scores_received'] = 0
-            return sources, metadata
-        
-        foundational_urls = foundational_urls or set()
-        query = query or title  # Use query if provided, otherwise use title
-        
-        # Extract query domain if not provided (Stage 1: Domain Extraction)
-        query_domain_obj = None
-        if not query_domain:
-            query_domain_obj = self._extract_query_domain(query, title)
-            query_domain = query_domain_obj.primary_domain  # Extract string for backward compatibility
-        else:
-            # If query_domain was provided as string, create minimal QueryDomain object
-            query_domain_obj = QueryDomain(
-                primary_domain=query_domain,
-                domain_keywords=[],
-                confidence=0.7
-            )
-        
-        # First pass: filter out obviously irrelevant sources
-        pre_filtered_sources = []
-        for source in sources:
-            if self._validate_source_relevance(source, title):
-                pre_filtered_sources.append(source)
-        
-        if not pre_filtered_sources:
-            logger.warning("All sources filtered out in pre-filtering stage")
-            metadata['failure_reason'] = 'pre_filter_rejected_all'
-            return [], metadata
-        
-        try:
-            # Create Pydantic output parser for structured relevance scoring
-            parser = PydanticOutputParser(pydantic_object=SourceRelevanceScore)
-            
-            # Create prompt template with comprehensive relevance evaluation and domain comparison (Stage 2: Domain-Aware Evaluation)
-            prompt_template = PromptTemplate(
-                input_variables=["title", "query", "query_domain", "sources_text", "min_threshold"],
-                template="""You are a source relevance expert. Your task is to score how relevant each source is to the specific report title and query topic.
-
-PURPOSE: Determine which sources are actually relevant to the report title's specific topic. A source must be DIRECTLY relevant to the query topic to be included.
-
-QUERY DOMAIN ANALYSIS:
-Query Domain: {query_domain}
-(This query is primarily about: {query_domain})
-
-CRITICAL EVALUATION CRITERIA (IN ORDER OF PRIORITY):
-1. **Domain Alignment (MOST IMPORTANT - CHECK FIRST)**: 
-   - FIRST: Identify what domain/field the SOURCE is about (e.g., medical/healthcare, technology/AI, finance, legal, etc.)
-   - SECOND: Compare the source's domain to the query's domain ({query_domain})
-   - If domains don't match (e.g., medical source for technology query), IMMEDIATELY mark is_relevant=False and score <0.3
-   - Domain mismatches are AUTOMATIC REJECTION - no exceptions, regardless of keyword overlap
-   - Example: "Canadian Pediatric Massive Hemorrhage Protocols" (medical/healthcare) for "Cognitive Wars: AI Industrialization" (technology/AI) → REJECT with score 0.1
-
-2. **Topic Relevance**: Does the source directly address the specific topic in the title/query? Sources that are tangentially related but not directly on-topic should be rejected.
-
-3. **Content Focus**: Does the source's actual content match the query topic, or is it only superficially related? Sources that share keywords but discuss different topics should be rejected.
-
-4. **Citation Appropriateness**: Would this source be cited in a report about this specific title? If you wouldn't cite it, mark it as not relevant.
-
-EXAMPLES OF DOMAIN MISMATCHES TO REJECT:
-- Medical/healthcare source (pediatric protocols, hospital procedures, clinical trials) for technology query (AI, cognitive warfare, algorithms) → REJECT with score 0.1, is_relevant=False
-- Finance/economics source for healthcare query → REJECT with score 0.1, is_relevant=False  
-- Legal/policy source for technical engineering query → REJECT with score 0.1, is_relevant=False
-- Sports/entertainment source for business/technology query → REJECT with score 0.1, is_relevant=False
-
-EVALUATION WORKFLOW:
-For EACH source:
-1. FIRST: Identify the source's domain (what field is it about? medical? technology? finance? etc.)
-2. SECOND: Compare source domain to query domain ({query_domain})
-3. If domains don't match → Score 0.1, is_relevant=False, reason="Domain mismatch: [source domain] source for [query domain] query"
-4. If domains match → Continue with topic relevance evaluation
-
-EVALUATION INSTRUCTIONS:
-- Score 0.0-0.3: Completely irrelevant or wrong domain - mark is_relevant=False
-- Score 0.3-0.5: Tangentially related but not directly relevant - mark is_relevant=False  
-- Score 0.5-0.7: Somewhat relevant but not directly on-topic - mark is_relevant=False if threshold is {min_threshold}
-- Score 0.7-1.0: Directly relevant and appropriate - mark is_relevant=True
-
-CANONICAL PAPER EVALUATION (for sources from canonical academic domains):
-For sources from IEEE, ACM, Springer, ScienceDirect, arXiv, etc.:
-- If the source is a canonical/seminal paper (highly cited, foundational work)
-- AND the source domain aligns with query domain (even if topic is tangential)
-- AND the source can ground first-principles reasoning about the query topic
-- THEN: Score 0.5-0.6 and mark is_relevant=True (lower threshold for canonical papers)
-- Example: A foundational paper on "multi-agent consensus" for a query about "cognitive warfare coordination" 
-  → Score 0.55, is_relevant=True, reason="Canonical paper on multi-agent coordination that can ground first-principles reasoning about coordination mechanisms in cognitive warfare"
-
-Report Title: {title}
-Query Topic: {query}
-Query Domain: {query_domain}
-
-Sources to evaluate:
-{sources_text}
-
-{format_instructions}
-
-IMPORTANT: 
-- Be EXTREMELY strict about domain alignment - this is the primary filter
-- Domain mismatch = automatic rejection regardless of keyword overlap
-- Always state the source's domain in your relevance_reason
-- For canonical papers: Accept tangentially related papers if they can ground first-principles reasoning
-- Be strict about relevance - it's better to reject a source than include an irrelevant one
-- Return a JSON array where each element is a SourceRelevanceScore object for each source
-- For each source, provide a clear reason explaining why it is or isn't relevant
-- Mark is_relevant=False for any source that wouldn't be appropriate to cite in a report about this specific title/query"""
-            )
-            
-            min_threshold = (min_score if min_score is not None else STIConfig.MIN_TITLE_RELEVANCE_SCORE)
-            batch_size = getattr(STIConfig, 'MAX_SOURCES_PER_LLM_BATCH', 20)
-            
-            # Check if batching is needed
-            if len(pre_filtered_sources) <= batch_size:
-                # Process single batch (no batching needed)
-                batch_results = self._process_relevance_batch(
-                    pre_filtered_sources, title, query, query_domain, min_threshold,
-                    foundational_urls, prompt_template, parser
-                )
-                if batch_results is None:
-                    # Batch processing failed
-                    metadata['failure_reason'] = 'batch_processing_failed'
-                    return [], metadata
-                
-                batch_relevant_sources, batch_metadata = batch_results
-                metadata.update(batch_metadata)
-                return batch_relevant_sources, metadata
-            else:
-                # Process in batches
-                total_batches = (len(pre_filtered_sources) + batch_size - 1) // batch_size
-                logger.info(f"Processing {len(pre_filtered_sources)} sources in {total_batches} batches of up to {batch_size} sources")
-                
-                all_relevant_sources = []
-                all_batch_success = True
-                
-                for batch_idx in range(total_batches):
-                    start_idx = batch_idx * batch_size
-                    end_idx = min(start_idx + batch_size, len(pre_filtered_sources))
-                    batch_sources = pre_filtered_sources[start_idx:end_idx]
-                    
-                    logger.info(f"Batch {batch_idx + 1}/{total_batches}: Processing {len(batch_sources)} sources...")
-                    
-                    try:
-                        batch_results = self._process_relevance_batch(
-                            batch_sources, title, query, query_domain, min_threshold,
-                            foundational_urls, prompt_template, parser
-                        )
-                        
-                        if batch_results is None:
-                            logger.warning(f"Batch {batch_idx + 1} processing failed, continuing with other batches")
-                            all_batch_success = False
-                            continue
-                        
-                        batch_relevant_sources, batch_metadata = batch_results
-                        all_relevant_sources.extend(batch_relevant_sources)
-                        
-                        # Aggregate metadata
-                        metadata['scores_received'] += batch_metadata.get('scores_received', 0)
-                        metadata['sources_rejected_by_llm'] += batch_metadata.get('sources_rejected_by_llm', 0)
-                        metadata['sources_rejected_by_score'] += batch_metadata.get('sources_rejected_by_score', 0)
-                        metadata['sources_passed'] += batch_metadata.get('sources_passed', 0)
-                        
-                        logger.info(f"Batch {batch_idx + 1}: {batch_metadata.get('sources_passed', 0)} passed, "
-                                   f"{batch_metadata.get('sources_rejected_by_llm', 0)} rejected by LLM, "
-                                   f"{batch_metadata.get('sources_rejected_by_score', 0)} rejected by score")
-                        
-                    except Exception as e:
-                        logger.error(f"Error processing batch {batch_idx + 1}: {str(e)}")
-                        logger.debug(f"Batch error traceback:\n{traceback.format_exc()}")
-                        all_batch_success = False
-                        continue
-                
-                # Set evaluation_success based on whether all batches succeeded
-                metadata['evaluation_success'] = all_batch_success
-                if not all_batch_success:
-                    metadata['failure_reason'] = 'some_batches_failed'
-                
-                logger.info(f"LLM relevance filtering (batched): {len(pre_filtered_sources)} → {len(all_relevant_sources)} sources "
-                           f"(rejected by LLM: {metadata['sources_rejected_by_llm']}, "
-                           f"rejected by score: {metadata['sources_rejected_by_score']}, "
-                           f"passed: {metadata['sources_passed']})")
-                
-                return all_relevant_sources, metadata
-            
-        except Exception as e:
-            logger.error(f"Error filtering sources by relevance: {str(e)}")
-            logger.error(f"Filter error traceback:\n{traceback.format_exc()}")
-            logger.error(f"Query: {query}, Title: {title}, Query Domain: {query_domain}")
-            logger.error(f"Sources count: {len(sources)}")
-            logger.error(f"Pre-filtered sources count: {len(pre_filtered_sources) if 'pre_filtered_sources' in locals() else 'N/A'}")
-            metadata['failure_reason'] = f'exception: {str(e)}'
-            # FAIL CLOSED: Return empty list, trigger retry logic upstream
-            return [], metadata
-    
-    def _derive_title_from_content(self, signals: List[Dict], sources: List[Source], original_query: str, intent: str = "market", thesis_content: Optional[str] = None) -> str:
-        """Derive title using structured output to ensure consistent format (intent-aware)
-        
-        Args:
-            signals: List of extracted signals
-            sources: List of validated sources
-            original_query: Original query string
-            intent: Query intent ("market" or "theory")
-            thesis_content: Optional thesis report content (for thesis-path, refines title based on actual thesis)
-        """
-        if not STIConfig.ENABLE_TITLE_REFINEMENT:
-            return f"Tech Brief — {original_query}"
-            
-        try:
-            # Create Pydantic output parser for title refinement
-            parser = PydanticOutputParser(pydantic_object=TitleRefinement)
-            
-            # Create prompt template for title derivation
-            if thesis_content:
-                # Enhanced prompt for thesis-path: include generated thesis content
-                prompt_template = PromptTemplate(
-                    input_variables=["signals", "sources", "original_query", "thesis_content", "guardrails"],
-                    template="""You are a title refinement expert. Your task is to derive a more accurate report title based on the actual content found AND the generated thesis.
-
-PURPOSE: Create a title that accurately represents both the original query intent AND the actual thesis content generated from first-principles reasoning.
-
-CONTEXT: We have signals, sources, and a generated thesis report. The title should reflect:
-1. The original query topic
-2. The actual thesis arguments and conclusions generated
-3. The first-principles reasoning path taken
-
-TASK: Analyze the signals, sources, and generated thesis to:
-1. Identify the main topic/theme from the original query
-2. Identify the key arguments and conclusions from the generated thesis
-3. Create a title that bridges the query intent with the thesis conclusions
-4. Ensure the title reflects the first-principles reasoning approach taken
-5. Score how well the new title aligns with the original query
-6. Determine if the title should be updated
-
-{guardrails}
-
-EVALUATION CRITERIA:
-- Does the new title accurately reflect both the query intent AND the thesis content?
-- Does it capture the first-principles reasoning path taken?
-- Is it more specific and descriptive than the original?
-- Would someone reading this title expect to find this thesis content?
-
-Signals found:
-{signals}
-
-Sources found:
-{sources}
-
-Generated Thesis (key sections):
-{thesis_content}
-
-Original Query: {original_query}
-
-{format_instructions}
-
-Return structured JSON with the refined title:"""
-                )
-            else:
-                # Standard prompt for market-path
-                prompt_template = PromptTemplate(
-                    input_variables=["signals", "sources", "original_query", "guardrails"],
-                    template="""You are a title refinement expert. Your task is to derive a more accurate report title based on the actual content found.
-
-PURPOSE: Create a title that accurately represents the content that was actually found, rather than the original query.
-
-CONTEXT: We have signals and sources that were found, but the original query might not match what was actually discovered.
-
-TASK: Analyze the signals and sources to:
-1. Identify the main topic/theme that actually emerged from the content
-2. Create a title that accurately represents this content
-3. Score how well the new title aligns with the original query
-4. Determine if the title should be updated
-
-{guardrails}
-
-EVALUATION CRITERIA:
-- Does the new title accurately reflect the content found?
-- Is it more specific and descriptive than the original?
-- Would someone reading this title expect to find this content?
-
-Signals found:
-{signals}
-
-Sources found:
-{sources}
-
-Original Query: {original_query}
-
-{format_instructions}
-
-Return structured JSON with the refined title:"""
-                )
-            
-            # Prepare signals and sources text
-            signals_text = "\n".join([f"- {s.get('text', '')}" for s in signals[:3]])  # Top 3 signals
-            sources_text = "\n".join([f"- {s.title} ({s.publisher})" for s in sources[:5]])  # Top 5 sources
-            
-            # Prepare thesis content text if provided (extract key sections)
-            thesis_content_text = ""
-            if thesis_content:
-                # Extract key sections: Abstract, Executive Summary, Introduction, and first 2000 chars of main content
-                import re
-                abstract_match = re.search(r'^#+\s+Abstract\s*\n+(.+?)(?=\n#+\s+|$)', thesis_content, re.MULTILINE | re.DOTALL | re.IGNORECASE)
-                exec_summary_match = re.search(r'^#+\s+Executive Summary\s*\n+(.+?)(?=\n#+\s+|$)', thesis_content, re.MULTILINE | re.DOTALL | re.IGNORECASE)
-                intro_match = re.search(r'^#+\s+Introduction\s*\n+(.+?)(?=\n#+\s+|$)', thesis_content, re.MULTILINE | re.DOTALL | re.IGNORECASE)
-                
-                thesis_parts = []
-                if abstract_match:
-                    thesis_parts.append(f"Abstract: {abstract_match.group(1)[:500]}")
-                if exec_summary_match:
-                    thesis_parts.append(f"Executive Summary: {exec_summary_match.group(1)[:500]}")
-                if intro_match:
-                    thesis_parts.append(f"Introduction: {intro_match.group(1)[:500]}")
-                
-                # Add first section of main content if available
-                if not thesis_parts:
-                    thesis_parts.append(f"Main Content (excerpt): {thesis_content[:1000]}")
-                
-                thesis_content_text = "\n\n".join(thesis_parts)
-            
-            # Market-specific guardrails
-            guardrails = ""
-            if intent == "market":
-                must_keep = self._extract_query_key_terms(original_query)
-                min_align = getattr(STIConfig, 'MARKET_TITLE_MIN_ALIGNMENT', 0.45)
-                min_keep = getattr(STIConfig, 'MARKET_TITLE_MIN_MUST_KEEP', 2)
-                banned = getattr(STIConfig, 'MARKET_TITLE_BANNED', [])
-                guardrails = (
-                    "CONSTRAINTS (MARKET):\n"
-                    f"- Do NOT generalize away from the original query.\n"
-                    f"- Title MUST include at least {min_keep} of these terms: {must_keep}\n"
-                    "- Prefer concrete operator/technology phrasing; avoid abstract theory.\n"
-                    f"- Reject generic titles: {banned}\n"
-                    f"- Alignment to original query must be >= {min_align:.2f}.\n"
-                    "- Format example: 'Market Brief — <Specific Topic>: <Concrete Angle>'\n"
-                )
-            elif intent == "theory" and thesis_content:
-                # Theory-specific guardrails when thesis content is available
-                guardrails = (
-                    "CONSTRAINTS (THEORY):\n"
-                    "- Title should reflect both the original query AND the thesis conclusions\n"
-                    "- Ensure title captures the first-principles reasoning approach\n"
-                    "- Maintain connection to original query topic while reflecting thesis depth\n"
-                    "- Prefer titles that indicate theoretical/foundational analysis\n"
-                )
-
-            # Create prompt with format instructions
-            if thesis_content:
-                prompt = prompt_template.format(
-                    signals=signals_text,
-                    sources=sources_text,
-                    original_query=original_query,
-                    thesis_content=thesis_content_text,
-                    guardrails=guardrails,
-                    format_instructions=parser.get_format_instructions()
-                )
-            else:
-                prompt = prompt_template.format(
-                    signals=signals_text,
-                    sources=sources_text,
-                    original_query=original_query,
-                    guardrails=guardrails,
-                    format_instructions=parser.get_format_instructions()
-                )
-            
-            # Get structured response from LLM
-            response = self.llm.invoke(prompt)
-            
-            # Parse the response
-            try:
-                title_refinement = parser.parse(response.content)
-                
-                # Decide whether to use the refined title
-                if title_refinement.should_update and title_refinement.alignment_score >= STIConfig.TITLE_REFINEMENT_THRESHOLD:
-                    logger.info(f"Title refined: '{original_query}' → '{title_refinement.refined_title}' (alignment: {title_refinement.alignment_score:.2f})")
-                    final_title = title_refinement.refined_title
-                    if intent == "market" and not self._validate_title_alignment_market(final_title, original_query):
-                        final_title = f"Market Brief — {original_query}"
-                    return f"Tech Brief — {final_title}"
-                else:
-                    # If alignment is very low, suggest a theme-based title
-                    if title_refinement.alignment_score < 0.3:
-                        suggested_title = self._generate_theme_based_title(signals, sources)
-                        if intent == "market" and not self._validate_title_alignment_market(suggested_title, original_query):
-                            suggested_title = original_query
-                        logger.warning(f"Very low alignment ({title_refinement.alignment_score:.2f}). Suggested title: '{suggested_title}'")
-                        return f"Tech Brief — {suggested_title}"
-                    else:
-                        logger.info(f"Title kept original: '{original_query}' (alignment: {title_refinement.alignment_score:.2f})")
-                        return f"Tech Brief — {original_query}"
-                    
-            except Exception as e:
-                logger.error(f"Error parsing title refinement: {str(e)}")
-                return f"Tech Brief — {original_query}"
-                
-        except Exception as e:
-            logger.error(f"Error deriving title from content: {str(e)}")
-            return f"Tech Brief — {original_query}"
-
-    def _extract_query_key_terms(self, query: str) -> List[str]:
-        """Extract must-keep terms from the original query (simple heuristic)."""
-        import re as _re
-        q = query.strip()
-        phrases = []
-        known = [
-            'autonomous research', 'simulation ai', 'self-driving labs', 'closed-loop experimentation',
-            'digital twins', 'simulation orchestration', 'surrogate modeling', 'physics-informed neural networks'
-        ]
-        low = q.lower()
-        for k in known:
-            if k in low:
-                phrases.append(k)
-        words = [w for w in _re.split(r"[^A-Za-z0-9&+-]", q) if w]
-        tokens = [w for w in words if len(w) > 3]
-        seen = set(); out = []
-        for t in phrases + tokens:
-            tl = t.lower()
-            if tl not in seen:
-                seen.add(tl)
-                out.append(t)
-        return out[:6]
-
-    def _validate_title_alignment_market(self, candidate: str, original_query: str) -> bool:
-        """Validate market title against alignment, must-keep terms, and banned list."""
-        import re as _re
-        banned = set(getattr(STIConfig, 'MARKET_TITLE_BANNED', []))
-        min_align = getattr(STIConfig, 'MARKET_TITLE_MIN_ALIGNMENT', 0.45)
-        min_keep = getattr(STIConfig, 'MARKET_TITLE_MIN_MUST_KEEP', 2)
-        c = candidate.strip().lower()
-        if c in banned:
-            return False
-        def _tok(s: str):
-            return set(w for w in _re.split(r"[^a-z0-9]+", s.lower()) if len(w) > 3)
-        qtok = _tok(original_query); ctok = _tok(candidate)
-        align = (len(qtok & ctok) / max(1, len(qtok | ctok))) if (qtok or ctok) else 0.0
-        if align < min_align:
-            return False
-        must_keep = [t.lower() for t in self._extract_query_key_terms(original_query)]
-        keep_hits = sum(1 for t in must_keep if t and t in c)
-        if keep_hits < min_keep:
-            return False
-        return True
-    
-    def _generate_theme_based_title(self, signals: List[Dict], sources: List[Source]) -> str:
-        """Generate a title based on the actual themes found in signals and sources"""
-        try:
-            # Extract key themes from signals
-            themes = []
-            for signal in signals[:3]:  # Top 3 signals
-                text = signal.get('text', '').lower()
-                if 'agent' in text or 'ai' in text:
-                    themes.append('AI Agents')
-                if 'robot' in text or 'robotics' in text:
-                    themes.append('Robotics')
-                if 'cybersecurity' in text or 'security' in text:
-                    themes.append('Cybersecurity')
-                if 'automation' in text or 'workflow' in text:
-                    themes.append('Automation')
-                if 'multi-agent' in text or 'orchestration' in text:
-                    themes.append('Multi-Agent Systems')
-            
-            # Extract themes from source titles
-            for source in sources[:5]:  # Top 5 sources
-                title = source.title.lower()
-                if 'agent' in title or 'ai' in title:
-                    themes.append('AI Agents')
-                if 'robot' in title or 'robotics' in title:
-                    themes.append('Robotics')
-                if 'cybersecurity' in title or 'security' in title:
-                    themes.append('Cybersecurity')
-                if 'automation' in title or 'workflow' in title:
-                    themes.append('Automation')
-            
-            # Count theme frequency
-            theme_counts = {}
-            for theme in themes:
-                theme_counts[theme] = theme_counts.get(theme, 0) + 1
-            
-            # Generate title from most common themes
-            if theme_counts:
-                top_themes = sorted(theme_counts.items(), key=lambda x: x[1], reverse=True)[:2]
-                if len(top_themes) == 1:
-                    return top_themes[0][0]
-                else:
-                    return f"{top_themes[0][0]} and {top_themes[1][0]}"
-            else:
-                return "AI Technology Trends"
-                
-        except Exception as e:
-            logger.error(f"Error generating theme-based title: {str(e)}")
-            return "AI Technology Trends"
-    
-    def _is_control_theory_on_topic(self, source: Source) -> bool:
-        """Heuristic guard to accept only control-theory/consensus multi-agent sources."""
-        try:
-            title = (source.title or "").lower()
-            text = (source.content or "").lower()
-            keywords = [
-                'consensus', 'leader–follower', 'leader-follower', 'formation control',
-                'containment control', 'distributed control', 'supervisory control',
-                'graph laplacian', 'lyapunov', 'stability', 'multi-agent', 'multi agent'
-            ]
-            return any(k in title or k in text for k in keywords)
-        except Exception:
-            return False
-        
-    def _search_theoretical_concepts(self, query: str, days_back: int) -> List[Source]:
-        """Specialized search for theoretical/academic concepts with strict caps and guards"""
-        try:
-            # For theory queries, we search academic sources even if query doesn't contain explicit theory terms
-            # The intent classification already determined this is a theory query
-            # (Original check removed - too restrictive for queries like "Cognitive Wars" that don't use explicit theory terms)
-            
-            strict_domains = ['ieeexplore.ieee.org', 'dl.acm.org', 'link.springer.com', 'sciencedirect.com', 'arxiv.org']
-            results: List[Source] = []
-            seen_urls = set()
-            total_calls = 0
-            max_calls = 30
-            target = STIConfig.MIN_ACADEMIC_SOURCES_THEORY
-            
-            # Check if query is explicitly about control theory (narrow filter) vs general theory (broad filter)
-            query_lower = query.lower()
-            is_control_theory_query = any(term in query_lower for term in [
-                'control theory', 'command and control', 'consensus', 'formation control',
-                'containment control', 'leader-follower', 'multi-agent', 'distributed control'
-            ])
-            
-            def add_sources(found: List[Source]):
-                nonlocal results, seen_urls
-                for s in found:
-                    if s.url in seen_urls:
-                        continue
-                    # Only apply narrow control theory filter if query is explicitly about control theory
-                    # Otherwise, accept any academic source from anchor domains (broader theory queries)
-                    if is_control_theory_query:
-                        # For control theory queries, use narrow filter
-                        if self._is_control_theory_on_topic(s):
-                            results.append(s)
-                            seen_urls.add(s.url)
-                    else:
-                        # For general theory queries, accept any academic source from anchor domains
-                        results.append(s)
-                        seen_urls.add(s.url)
-            
-            # Anchor queries first (precision)
-            anchor_queries = self._anchor_queries
-            for aq in anchor_queries:
-                if total_calls >= max_calls or len(results) >= target:
-                    break
-                try:
-                    if aq in self._anchor_cache:
-                        anchors = self._anchor_cache[aq]
-                    else:
-                        total_calls += 1
-                        anchors = self._search_by_domain_type(aq, strict_domains, SourceType.ACADEMIC, max_results=4, days_back=days_back)
-                        self._anchor_cache[aq] = anchors
-                    add_sources(anchors)
-                except Exception as e:
-                    logger.warning(f"Anchor query failed '{aq}': {str(e)}")
-            if len(results) >= target:
-                logger.info(f"Anchor queries met academic floor: {len(results)}")
+            if results:
                 return results
-            
-            # Venue keyword augmentation (limited)
-            venue_keywords = [
-                'IEEE Transactions on Automatic Control', 'Automatica', 'ACC'
-            ]
-            per_venue_limit = 2
-            for vk in venue_keywords:
-                if total_calls >= max_calls or len(results) >= target:
-                    break
-                q = f"{query} {vk}"
-                try:
-                    total_calls += 1
-                    found = self._search_by_domain_type(q, strict_domains, SourceType.ACADEMIC, max_results=4, days_back=days_back)
-                    add_sources(found)
-                except Exception as e:
-                    logger.warning(f"Venue query failed '{vk}': {str(e)}")
-            
-            # Fallback: plain strict-domain search
-            if total_calls < max_calls and len(results) < target:
-                try:
-                    total_calls += 1
-                    academic_sources = self._search_by_domain_type(query, strict_domains, SourceType.ACADEMIC, max_results=5, days_back=days_back)
-                    add_sources(academic_sources)
-                except Exception as e:
-                    logger.error(f"Error searching theoretical concepts: {str(e)}")
-            
-            logger.info(f"Found {len(results)} strict-domain academic sources for theoretical query (calls={total_calls})")
-            return results
-            
-        except Exception as e:
-            logger.error(f"Error searching theoretical concepts: {str(e)}")
+            if categories:
+                fallback_params = dict(params)
+                fallback_params.pop("categories", None)
+                self._trace("searxng:fallback_request", {"url": url, "params": fallback_params})
+                fallback_resp = requests.get(url, params=fallback_params, timeout=STIConfig.HTTP_TIMEOUT_SECONDS)
+                fallback_resp.raise_for_status()
+                fallback_data = fallback_resp.json()
+                fallback_results = (fallback_data.get("results", []) or [])[: STIConfig.MAX_RESULTS_PER_QUERY]
+                self._trace(
+                    "searxng:fallback_response",
+                    {
+                        "status": fallback_resp.status_code,
+                        "result_count": len(fallback_results),
+                        "sample": fallback_results[:3],
+                    },
+                )
+                return fallback_results
             return []
-    
-    def _rubric_rerank(self, sources: List[Source], query: str, concepts: List[str]) -> List[Source]:
-        """LLM rubric-based reranker for theory queries"""
-        if not sources:
-            return sources
-        try:
-            rubric = (
-                "You are ranking academic sources for a theoretical control/consensus topic.\n"
-                "Score each source from 0.0 to 1.0. Criteria: (1) Theoretical contribution (definitions/theorems/proofs/math);"
-                " (2) Topic fit (consensus, leader–follower, formation/containment/distributed control);"
-                " (3) Multi-agent setting explicitly discussed."
-            )
-            payload = "\n".join([
-                f"Source {s.id}: {s.title}\nPublisher: {s.publisher}\nContent: {s.content[:600]}..." for s in sources
-            ])
-            prompt = (
-                f"{rubric}\n\nQuery: {query}\nConcepts: {', '.join(concepts[:8]) if concepts else ''}\n\n"
-                f"Return JSON array of objects: {{source_id, score, rationale}} for each source.\n\n{payload}"
-            )
-            response = self.llm.invoke(prompt)
-            content = response.content.strip()
-            if "```json" in content:
-                content = content.split("```json")[1].split("```")[0].strip()
-            elif "```" in content:
-                content = content.split("```")[1].split("```")[0].strip()
-            data = json.loads(content)
-            score_map = {item.get('source_id'): float(item.get('score', 0.0)) for item in data if isinstance(item, dict)}
-            # Stable sort by score desc, fallback 0.0
-            ranked = sorted(sources, key=lambda s: score_map.get(s.id, 0.0), reverse=True)
-            logger.info("Applied rubric reranker to theory sources")
-            return ranked
-        except Exception as e:
-            logger.warning(f"Rubric reranker failed, passing through sources: {str(e)}")
-            return sources
+        except Exception as exc:
+            logger.error("SearXNG search failed: %s", exc)
+            return []
 
-    def search(
+    def _enforce_signal_gates(
+        self, signals: List[Dict[str, Any]], sources: List[SourceRecord]
+    ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+        if not signals:
+            return [], []
+        keep: List[Dict[str, Any]] = []
+        demoted: List[Dict[str, Any]] = []
+        source_map = {src.id: src for src in sources}
+        for idx, signal in enumerate(signals, start=1):
+            normalized = dict(signal)
+            support = normalized.get("support") or normalized.get("citations") or []
+            normalized["support"] = support
+            normalized["citations"] = support
+            strength = float(normalized.get("strength") or 0)
+            if strength == 0:
+                strength = self._infer_strength(support, source_map)
+            us_fit = float(normalized.get("US_fit") or normalized.get("us_fit") or 0)
+            if us_fit == 0:
+                us_fit = self._infer_us_fit(support, source_map)
+            operationality = float(normalized.get("operationality") or 0.7)
+            on_spine = normalized.get("on_spine")
+            if on_spine is None:
+                on_spine = True
+            support_records = [source_map.get(cid) for cid in support if source_map.get(cid)]
+            quant_support = normalized.get("quant_support") or "light"
+            source_grade = normalized.get("source_grade") or self._signal_source_grade(support, source_map)
+            normalized["id"] = normalized.get("id") or f"S{idx}"
+            normalized["strength"] = round(min(1.0, strength), 2)
+            normalized["US_fit"] = round(min(1.0, us_fit), 2)
+            normalized["operationality"] = round(min(1.0, operationality), 2)
+            normalized.setdefault("name", normalized.get("title") or normalized.get("text", "Untitled signal"))
+            normalized.setdefault("description", normalized.get("description") or normalized.get("text", ""))
+            normalized.setdefault("category", normalized.get("category", "Market"))
+            normalized["on_spine"] = bool(on_spine)
+            normalized["quant_support"] = quant_support
+            normalized["source_grade"] = source_grade
+            if len(support_records) < STIConfig.SIGNAL_MIN_SUPPORT or (
+                STIConfig.SIGNAL_REQUIRE_CORE_SUPPORT and not any(src and src.role == "core" for src in support_records)
+            ):
+                normalized.setdefault("bucket", "appendix")
+                normalized.setdefault("demotion_reason", "insufficient_support")
+                demoted.append(normalized)
+                continue
+            if (
+                normalized["strength"] < max(STIConfig.SIGNAL_MIN_STRENGTH, 0.78)
+                or normalized["US_fit"] < STIConfig.SIGNAL_MIN_US_FIT
+                or not normalized["on_spine"]
+                or GRADE_ORDER.get(source_grade, 2) > 1
+            ):
+                normalized.setdefault("bucket", "appendix")
+                demoted.append(normalized)
+                continue
+            keep.append(normalized)
+        max_signals = min(STIConfig.SIGNAL_TARGET_COUNT, STIConfig.SIGNAL_MAX_COUNT)
+        if len(keep) > max_signals:
+            extra = keep[max_signals:]
+            keep = keep[:max_signals]
+            for signal in extra:
+                signal.setdefault("bucket", "appendix")
+                demoted.append(signal)
+        keep, quality_demoted = self._enforce_top_signal_quality(keep, source_map)
+        if quality_demoted:
+            demoted.extend(quality_demoted)
+        return keep, demoted
+
+    def _enforce_top_signal_quality(
+        self, signals: List[Dict[str, Any]], source_map: Dict[int, SourceRecord]
+    ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+        if not signals:
+            return signals, []
+        unique_domains = {
+            (src.publisher or "").lower()
+            for src in source_map.values()
+            if getattr(src, "publisher", None)
+        }
+        demoted: List[Dict[str, Any]] = []
+        if not unique_domains:
+            return signals, demoted
+        to_remove: set[Any] = set()
+        ordered = sorted(signals, key=lambda sig: sig.get("strength", 0), reverse=True)
+        check_count = min(len(ordered), STIConfig.TOP_SIGNAL_DOMAIN_CHECK_COUNT)
+        for signal in ordered[:check_count]:
+            support_ids = signal.get("support") or []
+            support_sources = [source_map.get(cid) for cid in support_ids if source_map.get(cid)]
+            support_domains = {
+                (src.publisher or "").lower() for src in support_sources if getattr(src, "publisher", None)
+            }
+            has_quant = any((src.evidence or {}).get("numeric") or (src.evidence or {}).get("sample_size") for src in support_sources if src)
+            demotion_reason = ""
+            if len(unique_domains) > 1 and len(support_domains) <= 1:
+                demotion_reason = "single_domain_support"
+            elif STIConfig.SIGNAL_REQUIRE_DATA_HEAVY_TOP and not has_quant:
+                demotion_reason = "no_quantitative_support"
+            if demotion_reason:
+                copy = dict(signal)
+                copy.setdefault("bucket", "appendix")
+                copy["demotion_reason"] = demotion_reason
+                demoted.append(copy)
+                to_remove.add(signal.get("id"))
+        if not to_remove:
+            return signals, demoted
+        filtered = [sig for sig in signals if sig.get("id") not in to_remove]
+        return filtered, demoted
+
+    def _infer_strength(self, support: List[int], source_map: Dict[int, SourceRecord]) -> float:
+        if not support:
+            return 0.6
+        scores = [source_map.get(cid).quality for cid in support if cid in source_map]
+        if not scores:
+            return 0.62
+        return sum(scores) / len(scores)
+
+    def _infer_us_fit(self, support: List[int], source_map: Dict[int, SourceRecord]) -> float:
+        if not support:
+            return 0.6
+        scores = [source_map.get(cid).us_fit for cid in support if cid in source_map]
+        if not scores:
+            return 0.7
+        return sum(scores) / len(scores)
+
+    def _signal_source_grade(self, support: List[int], source_map: Dict[int, SourceRecord]) -> str:
+        if not support:
+            return STIConfig.SOURCE_GRADE_FALLBACK
+        best_grade = "D"
+        for cid in support:
+            src = source_map.get(cid)
+            if not src:
+                continue
+            grade = src.source_grade
+            if GRADE_ORDER.get(grade, 3) < GRADE_ORDER.get(best_grade, 3):
+                best_grade = grade
+                if best_grade == "A":
+                    break
+        return best_grade
+
+    def _time_range(self, days: int) -> str:
+        if days <= 2:
+            return "day"
+        if days <= 7:
+            return "week"
+        if days <= 31:
+            return "month"
+        return "year"
+
+    def _derive_top_moves(self, signals: List[Dict[str, Any]]) -> List[str]:
+        ordered = sorted(signals, key=lambda sig: sig.get("strength", 0), reverse=True)
+        moves = [sig.get("operator_move", "").strip() for sig in ordered if sig.get("operator_move")]
+        filtered = [move for move in moves if move]
+        if len(filtered) >= STIConfig.TOP_OPERATOR_MOVE_COUNT:
+            return filtered[: STIConfig.TOP_OPERATOR_MOVE_COUNT]
+        return filtered
+
+    def _normalize_activation_play(self, play: Dict[str, Any]) -> Dict[str, Any]:
+        payload = dict(play or {})
+        display = payload.get("display") or {}
+        ops = payload.get("ops") or {}
+        if not display:
+            display = {
+                "pillar": payload.get("pillar"),
+                "play_name": payload.get("play_name"),
+                "card_title": payload.get("play_name"),
+                "persona": payload.get("persona"),
+                "best_fit": payload.get("best_fit"),
+                "not_for": payload.get("not_for"),
+                "thresholds_summary": payload.get("thresholds"),
+                "why_now": payload.get("why_now") or payload.get("proof_point"),
+                "proof_point": payload.get("proof_point"),
+                "time_horizon": payload.get("timing"),
+                "placement_options": payload.get("placement_options") or [],
+            }
+        if not ops:
+            thresholds = payload.get("thresholds")
+            ops = {
+                "operator_owner": payload.get("operator_owner"),
+                "collaborator": payload.get("collaborator"),
+                "collab_type": payload.get("collab_type"),
+                "thresholds": {"summary": thresholds} if isinstance(thresholds, str) else thresholds,
+                "prerequisites": payload.get("prerequisites") or [],
+                "target_map": payload.get("target_map") or [],
+                "cadence": payload.get("cadence") or [],
+                "zero_new_sku": payload.get("zero_new_sku"),
+                "ops_drag": payload.get("ops_drag"),
+            }
+        display.setdefault("play_name", display.get("card_title"))
+        display.setdefault("card_title", display.get("play_name"))
+        display.setdefault("thresholds_summary", ops.get("thresholds", {}).get("summary") if isinstance(ops.get("thresholds"), dict) else ops.get("thresholds"))
+        display.setdefault("placement_options", ops.get("placement_options") or [])
+        ops.setdefault("cadence", [])
+        ops.setdefault("target_map", [])
+        ops.setdefault("prerequisites", [])
+        normalized = {
+            **payload,
+            "display": display,
+            "ops": ops,
+            "play_name": display.get("play_name") or payload.get("play_name") or "Activation play",
+            "pillar": display.get("pillar") or payload.get("pillar"),
+        }
+        legacy_fields = {
+            "operator_owner",
+            "collaborator",
+            "collab_type",
+            "proof_point",
+            "timing",
+            "thresholds",
+            "persona",
+            "target_map",
+            "cadence",
+            "prerequisites",
+            "placement_options",
+            "why_now",
+            "best_fit",
+            "not_for",
+            "zero_new_sku",
+            "ops_drag",
+        }
+        for field in legacy_fields:
+            normalized.pop(field, None)
+        return normalized
+
+    def _activation_label(self, play: Dict[str, Any]) -> str:
+        display = play.get("display") or {}
+        return (
+            (display.get("card_title") or display.get("play_name") or play.get("play_name") or "activation")
+            .strip()
+        )
+
+    def _merge_display_blocks(self, base: Dict[str, Any], incoming: Dict[str, Any]) -> None:
+        if not incoming:
+            return
+        for key in ["thresholds_summary", "proof_point", "why_now"]:
+            if incoming.get(key) and incoming.get(key) not in (base.get(key) or ""):
+                if base.get(key):
+                    base[key] = " | ".join(filter(None, [base.get(key), incoming.get(key)]))
+                else:
+                    base[key] = incoming.get(key)
+        if incoming.get("placement_options"):
+            seen = set(opt.lower() for opt in base.get("placement_options", []))
+            options = base.get("placement_options", [])
+            for opt in incoming.get("placement_options", []):
+                normalized = (opt or "").strip()
+                if normalized and normalized.lower() not in seen:
+                    options.append(normalized)
+                    seen.add(normalized.lower())
+            base["placement_options"] = options
+
+    def _merge_ops_blocks(self, base: Dict[str, Any], incoming: Dict[str, Any]) -> None:
+        if not incoming:
+            return
+        for key in ["target_map", "prerequisites"]:
+            existing = base.get(key) or []
+            incoming_items = incoming.get(key) or []
+            base[key] = existing + incoming_items
+        if incoming.get("cadence"):
+            base.setdefault("cadence", [])
+            base["cadence"].extend(incoming.get("cadence", []))
+        if incoming.get("thresholds"):
+            base_thresholds = base.get("thresholds") or {}
+            incoming_thresholds = incoming.get("thresholds")
+            if isinstance(base_thresholds, dict) and isinstance(incoming_thresholds, dict):
+                base_thresholds.update({k: v for k, v in incoming_thresholds.items() if v})
+                base["thresholds"] = base_thresholds
+
+    def _sort_spine_sections(self, sections: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        def sort_key(section: Dict[str, Any]) -> Tuple[int, int, str]:
+            order = {"what": 0, "so_what": 1, "now_what": 2}
+            position = order.get(section.get("spine_position"), 3)
+            priority = int(section.get("priority") or 3)
+            return (position, priority, section.get("title", ""))
+
+        return sorted(sections or [], key=sort_key)
+
+    def _build_spine(
+        self,
+        signals: List[Dict[str, Any]],
+        quant_payload: Dict[str, Any],
+        deep_sections: List[Dict[str, Any]],
+        top_moves: List[str],
+    ) -> Dict[str, str]:
+        what = next(
+            (sec.get("scan_line") for sec in deep_sections if sec.get("spine_position") == "what"),
+            None,
+        )
+        if not what and signals:
+            what = signals[0].get("spine_hook") or signals[0].get("name")
+        so_what = quant_payload.get("spine_hook") or next(
+            (sec.get("scan_line") for sec in deep_sections if sec.get("spine_position") == "so_what"),
+            None,
+        )
+        now_what = next(
+            (sec.get("scan_line") for sec in deep_sections if sec.get("spine_position") == "now_what"),
+            None,
+        )
+        if not now_what and top_moves:
+            now_what = top_moves[0]
+        return {
+            "what": (what or "Signals compress the holiday window").strip(),
+            "so_what": (so_what or "Success = guardrailed measurement").strip(),
+            "now_what": (now_what or "Run the two-arm pilot now").strip(),
+        }
+
+    def _merge_activation_plays(self, plays: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        normalized = [self._normalize_activation_play(play) for play in plays or []]
+        merged: Dict[str, Dict[str, Any]] = {}
+        for play in normalized:
+            name = self._activation_label(play)
+            key = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-") or "activation"
+            if key not in merged:
+                merged[key] = play
+                continue
+            existing = merged[key]
+            self._merge_display_blocks(existing.get("display", {}), play.get("display", {}))
+            self._merge_ops_blocks(existing.get("ops", {}), play.get("ops", {}))
+        limited = self._constrain_activation_plays(list(merged.values()))
+        return self._ensure_activation_ctas(limited)
+
+    def _constrain_activation_plays(self, plays: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Limit activation cards to MAX_ACTIVATION_PLAYS and roll extras into overflow notes."""
+        if not plays:
+            return []
+        max_count = max(1, STIConfig.MAX_ACTIVATION_PLAYS)
+        if len(plays) <= max_count:
+            return plays
+        keep = plays[:max_count]
+        overflow = plays[max_count:]
+        overflow_notes: List[str] = []
+        for extra in overflow:
+            display = extra.get("display", {})
+            name = self._activation_label(extra)
+            proof = display.get("proof_point") or ""
+            timing = display.get("time_horizon") or ""
+            synopsis = " | ".join(filter(None, [name, proof, timing]))
+            overflow_notes.append(synopsis)
+        keep[-1]["overflow_notes"] = overflow_notes
+        return keep
+
+    def _ensure_activation_ctas(self, plays: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        defaults = [
+            "Send 1-page runbook to merchandising, store ops, and finance",
+            "Book 30-minute readout with finance and ops to review guardrails",
+            "Deliver scale/kill decision memo to executive sponsor",
+        ]
+        fallback_index = 0
+        for play in plays or []:
+            ops = play.get("ops") or {}
+            cadence = ops.get("cadence") or []
+            if not cadence:
+                cadence = [{
+                    "day": 0,
+                    "subject": "Kickoff",
+                    "narrative": "Share instrumentation plan",
+                    "cta": defaults[fallback_index % len(defaults)],
+                }]
+                fallback_index += 1
+            else:
+                for step in cadence:
+                    cta = (step.get("cta") or "").strip()
+                    if not cta or "specify cta" in cta.lower():
+                        step["cta"] = defaults[fallback_index % len(defaults)]
+                        fallback_index += 1
+            ops["cadence"] = cadence
+            play["ops"] = ops
+        return plays
+
+    def _confidence_meta(
+        self, score: float, breakdown: ConfidenceBreakdown, qa_report: Dict[str, Any]
+    ) -> Tuple[str, float, Dict[str, str]]:
+        band = "low"
+        if score >= 0.75:
+            band = "high"
+        elif score >= 0.6:
+            band = "medium"
+        display = min(0.9, round(score, 2))
+
+        def dial(value: float) -> str:
+            if value >= 0.75:
+                return "high"
+            if value >= 0.55:
+                return "medium"
+            return "light"
+
+        dials = {
+            "strength": dial(breakdown.average_strength),
+            "coverage": dial(breakdown.coverage),
+            "quant_support": dial(breakdown.quant_support),
+            "consistency": dial(breakdown.contradiction_penalty),
+        }
+        if band == "high":
+            if (
+                not qa_report.get("high_quality_signals")
+                or qa_report.get("issues")
+                or not qa_report.get("observed_quant")
+                or not qa_report.get("tier1_market_signals")
+            ):
+                band = "medium"
+        if band == "medium" and qa_report.get("issues") and breakdown.quant_support < 0.5:
+            band = "low"
+        band_label = band.title()
+        return band_label, display, dials
+
+    def _sanitize_text(self, text: Any) -> str:
+        if text is None:
+            return ""
+        if isinstance(text, list):
+            text = " ".join(
+                str(part).strip()
+                for part in text
+                if part is not None and str(part).strip()
+            )
+        elif not isinstance(text, str):
+            text = str(text)
+        if not text:
+            return ""
+        cleaned = re.sub(r"\s+", " ", text).strip()
+        if not cleaned:
+            return ""
+        tokens = cleaned.split(" ")
+        months = {"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "sept", "oct", "nov", "dec"}
+        deduped: List[str] = []
+        for token in tokens:
+            token_clean = token.strip()
+            if not token_clean:
+                continue
+            if deduped:
+                prev = deduped[-1]
+                if (
+                    token_clean == prev
+                    and (token_clean.isdigit() or token_clean.lower() in months)
+                ):
+                    continue
+            deduped.append(token_clean)
+        return " ".join(deduped)
+
+    def _strip_headings(self, text: str) -> str:
+        if not text:
+            return ""
+        lines: List[str] = []
+        for raw_line in text.splitlines():
+            stripped = raw_line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+            lines.append(stripped)
+        flattened = "\n".join(lines).strip()
+        return self._strip_internal_scaffolding(flattened)
+
+    def _strip_internal_scaffolding(self, text: str) -> str:
+        if not text:
+            return ""
+        cleaned = text
+        cleaned = re.sub(r"\s*->\s*(tracks?|mandate)[^\n]*", " ", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\s{2,}", " ", cleaned)
+        return cleaned.strip()
+
+    def _build_operator_specs(
+        self,
+        signals: List[Dict[str, Any]],
+        quant_payload: Dict[str, Any],
+        sections: Dict[str, Any],
+        scope: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        spec_payload: Dict[str, Any] = {}
+        try:
+            spec_payload = self._tool_json(
+                generate_operator_specs(
+                    json.dumps(signals, ensure_ascii=False),
+                    json.dumps(quant_payload, ensure_ascii=False),
+                    json.dumps(scope or {}, ensure_ascii=False),
+                    json.dumps(sections or {}, ensure_ascii=False),
+                )
+            )
+        except Exception as spec_error:
+            self._trace("operator_specs:error", str(spec_error))
+            spec_payload = {}
+        metric_spec = self._normalize_metric_spec(
+            spec_payload.get("metric_spec") or self._fallback_metric_spec(quant_payload, scope)
+        )
+        pilot_spec = self._normalize_pilot_spec(
+            spec_payload.get("pilot_spec") or self._fallback_pilot_spec(scope, metric_spec),
+            scope,
+            metric_spec,
+        )
+        key_metrics = [metric for metric in pilot_spec.get("key_metrics", []) if metric in metric_spec]
+        if not key_metrics:
+            key_metrics = list(metric_spec.keys())[:3]
+        pilot_spec["key_metrics"] = key_metrics
+        role_actions = self._normalize_role_actions(
+            spec_payload.get("role_actions") or self._fallback_role_actions(pilot_spec, metric_spec),
+            pilot_spec,
+            metric_spec,
+        )
+        coherence = self._pilot_spec_coherence(pilot_spec, metric_spec, role_actions)
+        coherence.extend(self._instrument_metric_issues(sections, metric_spec))
+        if not pilot_spec and not metric_spec:
+            coherence.append("no_valid_spec")
+        filtered = [issue for issue in coherence if issue and issue != "no_valid_spec"]
+        serious_tokens = ("store_count", "duration_weeks", "key_metric", "role_action")
+        spec_notes = [issue for issue in filtered if issue.startswith(serious_tokens)]
+        return {
+            "pilot_spec": pilot_spec,
+            "metric_spec": metric_spec,
+            "role_actions": role_actions,
+            "coherence_issues": coherence,
+            "spec_notes": spec_notes,
+            "spec_ok": not spec_notes,
+        }
+
+    def _normalize_metric_spec(self, metric_spec_raw: Any) -> Dict[str, Dict[str, Any]]:
+        normalized: Dict[str, Dict[str, Any]] = {}
+        if isinstance(metric_spec_raw, dict):
+            items = metric_spec_raw.items()
+        elif isinstance(metric_spec_raw, list):
+            items = enumerate(metric_spec_raw)
+        else:
+            items = []
+        for key, entry in items:
+            if not isinstance(entry, dict):
+                continue
+            metric_id = self._metric_slug(str(key)) if key is not None else ""
+            label = self._sanitize_text(entry.get("label") or entry.get("name") or str(key) or "Metric")
+            unit = self._sanitize_text(entry.get("unit") or entry.get("units") or "")
+            target_range = self._parse_target_range(entry.get("target_range"), entry)
+            target_text = self._sanitize_text(
+                entry.get("target_text")
+                or entry.get("expression")
+                or entry.get("value")
+                or entry.get("notes")
+                or ""
+            )
+            stage = self._sanitize_text(entry.get("stage") or entry.get("status") or "target").lower() or "target"
+            owner = self._sanitize_text(entry.get("owner") or entry.get("team") or "")
+            notes = self._sanitize_text(entry.get("notes") or entry.get("why") or "")
+            normalized_id = metric_id or self._metric_slug(label)
+            if target_text:
+                formatted_text = target_text
+            else:
+                formatted_text = self._format_metric_target(target_range, unit)
+            normalized[normalized_id] = {
+                "label": label or friendly_metric_label(normalized_id),
+                "target_range": target_range,
+                "unit": unit,
+                "stage": stage or "target",
+                "owner": owner,
+                "target_text": formatted_text,
+                "notes": notes,
+            }
+        return normalized
+
+    def _parse_target_range(self, range_value: Any, entry: Dict[str, Any]) -> List[float]:
+        numeric = self._coerce_numeric_range(range_value)
+        if numeric:
+            return numeric
+        fallback_fields = [
+            entry.get("target_text"),
+            entry.get("expression"),
+            entry.get("value"),
+            entry.get("notes"),
+        ]
+        for field in fallback_fields:
+            numeric = self._coerce_numeric_range(field)
+            if numeric:
+                return numeric
+            numeric = self._numeric_range_from_text(field)
+            if numeric:
+                return numeric
+        return []
+
+    def _coerce_numeric_range(self, value: Any) -> List[float]:
+        if isinstance(value, (list, tuple)) and len(value) == 2:
+            low = self._coerce_numeric_value(value[0])
+            high = self._coerce_numeric_value(value[1])
+            if low is not None and high is not None:
+                return [low, high]
+            if low is not None:
+                return [low, low]
+            if high is not None:
+                return [high, high]
+            return []
+        if isinstance(value, dict):
+            low = self._coerce_numeric_value(value.get("low"))
+            high = self._coerce_numeric_value(value.get("high"))
+            if low is not None and high is not None:
+                return [low, high]
+            if low is not None:
+                return [low, low]
+            if high is not None:
+                return [high, high]
+            return []
+        if isinstance(value, (int, float)):
+            num = float(value)
+            return [num, num]
+        if isinstance(value, str):
+            return self._numeric_range_from_text(value)
+        return []
+
+    def _numeric_range_from_text(self, text: Any) -> List[float]:
+        if not isinstance(text, str):
+            return []
+        cleaned = text.replace(",", "").replace("–", "-")
+        matches = re.findall(r"-?\d+(?:\.\d+)?", cleaned)
+        nums: List[float] = []
+        for token in matches[:2]:
+            try:
+                nums.append(float(token))
+            except ValueError:
+                continue
+        if len(nums) == 2:
+            return nums
+        if len(nums) == 1:
+            return [nums[0], nums[0]]
+        return []
+
+    def _coerce_numeric_value(self, value: Any) -> Optional[float]:
+        if isinstance(value, (int, float)):
+            return float(value)
+        if isinstance(value, str):
+            cleaned = value.replace(",", "")
+            cleaned = cleaned.replace("–", "-")
+            match = re.search(r"-?\d+(?:\.\d+)?", cleaned)
+            if match:
+                try:
+                    return float(match.group())
+                except ValueError:
+                    return None
+        return None
+
+    def _format_metric_target(self, target_range: List[Any], unit: str) -> str:
+        if not target_range:
+            return ""
+        low = self._format_range_number(target_range[0])
+        high = self._format_range_number(target_range[1])
+        if low and high:
+            if low == high:
+                value_text = low
+            else:
+                value_text = f"{low}–{high}"
+        else:
+            value_text = ""
+        unit_text = f" {unit.strip()}" if unit else ""
+        return f"{value_text}{unit_text}".strip()
+
+    def _format_range_number(self, value: Any) -> str:
+        if value is None:
+            return ""
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            return ""
+        if number.is_integer():
+            return str(int(number))
+        return f"{number:.2f}".rstrip("0").rstrip(".")
+
+    def _fallback_metric_spec(self, quant_payload: Dict[str, Any], scope: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+        spec: Dict[str, Dict[str, Any]] = {}
+        anchors = quant_payload.get("anchors") or []
+        for idx, anchor in enumerate(anchors):
+            label = anchor.get("headline") or anchor.get("label") or anchor.get("metric") or f"Metric {idx + 1}"
+            metric_id = self._metric_slug(anchor.get("metric") or label or f"metric_{idx + 1}")
+            unit = self._sanitize_text(anchor.get("unit") or "")
+            low = anchor.get("value_low")
+            high = anchor.get("value_high")
+            target_range: List[Any] = []
+            if isinstance(low, (int, float)) and isinstance(high, (int, float)):
+                target_range = [float(low), float(high)]
+            elif isinstance(low, (int, float)):
+                target_range = [float(low), float(low)]
+            elif isinstance(high, (int, float)):
+                target_range = [float(high), float(high)]
+            target_text = self._sanitize_text(anchor.get("expression") or anchor.get("value") or "")
+            stage = anchor_stage(label).lower()
+            owner = self._sanitize_text(anchor.get("owner") or "")
+            spec[metric_id] = {
+                "label": friendly_metric_label(label),
+                "target_range": target_range,
+                "unit": unit,
+                "stage": stage or "target",
+                "owner": owner,
+                "target_text": target_text or self._format_metric_target(target_range, unit),
+                "notes": self._sanitize_text(anchor.get("band") or "anchor"),
+            }
+        if spec:
+            return spec
+        pack = scope.get("unified_target_pack") or {}
+        for metric_id, target in pack.items():
+            label = friendly_metric_label(metric_id)
+            text = ""
+            if isinstance(target, dict):
+                text = target.get("goal") or target.get("base") or target.get("stretch") or ""
+            else:
+                text = str(target)
+            slug = self._metric_slug(metric_id)
+            spec[slug] = {
+                "label": label,
+                "target_range": [],
+                "unit": "",
+                "stage": "target",
+                "owner": "Owner TBD",
+                "target_text": self._sanitize_text(text) or "Target TBD",
+                "notes": "unified_target_pack",
+            }
+        return spec
+
+    def _metric_slug(self, text: str, fallback: str = "metric") -> str:
+        cleaned = self._sanitize_text(text)
+        if not cleaned:
+            return fallback
+        slug = re.sub(r"[^a-z0-9]+", "_", cleaned.lower()).strip("_")
+        return slug or fallback
+
+    def _normalize_pilot_spec(
+        self,
+        pilot_spec_raw: Any,
+        scope: Dict[str, Any],
+        metric_spec: Dict[str, Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        if not isinstance(pilot_spec_raw, dict):
+            pilot_spec_raw = {}
+        scenario = self._metric_slug(pilot_spec_raw.get("scenario") or scope.get("topic_kind") or "pilot", "pilot")
+        store_count = pilot_spec_raw.get("store_count") or 1
+        try:
+            store_count = max(1, int(store_count))
+        except (TypeError, ValueError):
+            store_count = 1
+        store_type = self._sanitize_text(pilot_spec_raw.get("store_type") or "flagship")
+        duration_weeks = pilot_spec_raw.get("duration_weeks") or 4
+        try:
+            duration_weeks = max(1, int(duration_weeks))
+        except (TypeError, ValueError):
+            duration_weeks = 4
+        window = self._sanitize_text(pilot_spec_raw.get("window")) or self._scope_window_label(scope)
+        primary_move = self._sanitize_text(pilot_spec_raw.get("primary_move") or scope.get("operator_job_story") or "Run the pilot")
+        owner_roles = [self._sanitize_text(role) for role in pilot_spec_raw.get("owner_roles", []) if self._sanitize_text(role)]
+        if not owner_roles:
+            owner_roles = ["Head of Retail", "Head of Partnerships", "Head of Marketing", "Finance"]
+        if "Finance" not in owner_roles:
+            owner_roles.append("Finance")
+        location_radius = pilot_spec_raw.get("location_radius_miles") or 5
+        try:
+            location_radius = max(0, int(location_radius))
+        except (TypeError, ValueError):
+            location_radius = 5
+        key_metrics = [metric for metric in (pilot_spec_raw.get("key_metrics") or []) if metric in metric_spec]
+        if not key_metrics:
+            key_metrics = list(metric_spec.keys())[:3]
+        return {
+            "scenario": scenario,
+            "store_count": store_count,
+            "store_type": store_type or "flagship",
+            "duration_weeks": duration_weeks,
+            "window": window,
+            "primary_move": primary_move,
+            "owner_roles": owner_roles,
+            "location_radius_miles": location_radius,
+            "key_metrics": key_metrics,
+        }
+
+    def _scope_window_label(self, scope: Dict[str, Any]) -> str:
+        window = scope.get("time_window") or {}
+        start = window.get("start")
+        end = window.get("end")
+        if start and end:
+            return f"{start} → {end}"
+        if start or end:
+            return start or end
+        return "Pilot window"
+
+    def _fallback_pilot_spec(
+        self,
+        scope: Dict[str, Any],
+        metric_spec: Dict[str, Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        topic_kind = scope.get("topic_kind", "pilot")
+        store_type = "flagship" if "store" in topic_kind else "multi-market"
+        store_count = 1 if store_type == "flagship" else 3
+        duration = 4
+        primary_move = scope.get("operator_job_story") or "Run a measured pilot"
+        return {
+            "scenario": f"{topic_kind}_pilot",
+            "store_count": store_count,
+            "store_type": store_type,
+            "duration_weeks": duration,
+            "window": self._scope_window_label(scope),
+            "primary_move": self._sanitize_text(primary_move),
+            "owner_roles": ["Head of Retail", "Head of Partnerships", "Head of Marketing", "Finance"],
+            "location_radius_miles": 5,
+            "key_metrics": list(metric_spec.keys())[:3],
+        }
+
+    def _normalize_role_actions(
+        self,
+        role_actions_raw: Any,
+        pilot_spec: Dict[str, Any],
+        metric_spec: Dict[str, Dict[str, Any]],
+    ) -> Dict[str, str]:
+        normalized: Dict[str, str] = {}
+        if isinstance(role_actions_raw, dict):
+            for role, action in role_actions_raw.items():
+                clean_role = self._sanitize_text(role)
+                clean_action = self._sanitize_text(action)
+                if clean_role and clean_action:
+                    normalized[clean_role] = clean_action
+        fallback_actions = self._fallback_role_actions(pilot_spec, metric_spec)
+        for role, action in fallback_actions.items():
+            if role not in normalized and action:
+                normalized[role] = action
+        return normalized
+
+    def _fallback_role_actions(
+        self,
+        pilot_spec: Dict[str, Any],
+        metric_spec: Dict[str, Dict[str, Any]],
+    ) -> Dict[str, str]:
+        duration = pilot_spec.get("duration_weeks", 4)
+        store_type = pilot_spec.get("store_type", "flagship")
+        store_count = pilot_spec.get("store_count", 1)
+        move = pilot_spec.get("primary_move", "run the pilot")
+        radius = pilot_spec.get("location_radius_miles") or 0
+        key_metrics = pilot_spec.get("key_metrics") or list(metric_spec.keys())
+        metric_lines = [self._metric_guardrail_line(metric_id, metric_spec) for metric_id in key_metrics]
+        metric_lines = [line for line in metric_lines if line][:2]
+        finance_line = "; ".join(metric_lines)
+        if radius:
+            radius_text = f"within {radius} miles"
+        else:
+            radius_text = "inside the flagship trade area"
+        actions = {
+            "Head of Retail": f"Stand up the {duration}-week {store_type} pilot across {store_count} site(s) and keep daily reads on the guardrails.",
+            "Head of Partnerships": f"Lock the partner/creator roster {radius_text} and script {move} so every visit flows through one owned channel.",
+            "Finance": f"Guardrail {finance_line or 'margin per buyer vs baseline'} before scaling.".strip(),
+        }
+        if not finance_line:
+            actions["Finance"] = "Guardrail margin per buyer and event CPA before scaling."
+        return actions
+
+    def _metric_guardrail_line(self, metric_id: str, metric_spec: Dict[str, Dict[str, Any]]) -> str:
+        entry = metric_spec.get(metric_id)
+        if not entry:
+            return ""
+        label = entry.get("label") or friendly_metric_label(metric_id)
+        target = entry.get("target_text") or self._format_metric_target(entry.get("target_range") or [], entry.get("unit") or "")
+        owner = entry.get("owner")
+        if owner:
+            return f"{label} at {target} ({owner})".strip()
+        return f"{label} at {target}".strip()
+
+    def _pilot_spec_coherence(
+        self,
+        pilot_spec: Dict[str, Any],
+        metric_spec: Dict[str, Dict[str, Any]],
+        role_actions: Dict[str, str],
+    ) -> List[str]:
+        issues: List[str] = []
+        if pilot_spec.get("store_count", 0) < 1:
+            issues.append("store_count must be >= 1")
+        if pilot_spec.get("duration_weeks", 0) < 1:
+            issues.append("duration_weeks must be >= 1")
+        metric_keys = set(metric_spec.keys())
+        for metric in pilot_spec.get("key_metrics", []):
+            if metric not in metric_keys:
+                issues.append(f"key_metric {metric} missing from metric_spec")
+        owner_roles = set(pilot_spec.get("owner_roles", []))
+        owner_roles.add("Finance")
+        for role in role_actions.keys():
+            if role not in owner_roles:
+                issues.append(f"role_action {role} missing from owner_roles")
+        return issues
+
+    def _instrument_metric_issues(
+        self,
+        sections: Dict[str, Any],
+        metric_spec: Dict[str, Dict[str, Any]],
+    ) -> List[str]:
+        if not sections:
+            return []
+        issues: List[str] = []
+        valid_metrics = set(metric_spec.keys())
+        known = known_metric_ids()
+        pattern = re.compile(r"\b([a-z][a-z0-9_]+)\b")
+        deep_sections = (sections.get("deep_analysis") or {}).get("sections") or []
+        for block in deep_sections:
+            raw = block.get("instrument_next") or ""
+            if not raw:
+                continue
+            for match in pattern.findall(str(raw)):
+                token = match.lower()
+                if "_" not in token:
+                    continue
+                if token in valid_metrics:
+                    continue
+                if token in known:
+                    issues.append(f"instrument_metric {token} missing from metric_spec")
+                    break
+        return issues
+
+    def _metric_targets_from_spec(self, metric_spec: Dict[str, Dict[str, Any]]) -> List[str]:
+        targets: List[str] = []
+        for entry in metric_spec.values():
+            label = entry.get("label") or "Metric"
+            target_text = entry.get("target_text") or self._format_metric_target(entry.get("target_range") or [], entry.get("unit") or "")
+            details: List[str] = []
+            stage = self._sanitize_text(entry.get("stage") or "")
+            owner = self._sanitize_text(entry.get("owner") or "")
+            if stage:
+                details.append(stage)
+            if owner:
+                details.append(owner)
+            detail_text = f" ({', '.join(details)})" if details else ""
+            line = f"{label}: {target_text or 'Target TBD'}{detail_text}"
+            targets.append(line.strip())
+            if len(targets) >= 6:
+                break
+        return targets
+
+    def _build_letter_context(
+        self,
+        exec_summary: str,
+        quant_payload: Dict[str, Any],
+        sections: Dict[str, Any],
+        title: str,
+        scope: Optional[Dict[str, Any]] = None,
+        pilot_spec: Optional[Dict[str, Any]] = None,
+        metric_spec: Optional[Dict[str, Any]] = None,
+        role_actions: Optional[Dict[str, str]] = None,
+    ) -> Optional[Dict[str, Any]]:
+        cleaned_summary = self._strip_headings(exec_summary)
+        if not cleaned_summary:
+            return None
+        measurement_plan = quant_payload.get("measurement_plan") or []
+        targets: List[str] = []
+        if metric_spec:
+            targets = self._metric_targets_from_spec(metric_spec) or []
+        if not targets:
+            for row in measurement_plan:
+                metric = self._sanitize_text(row.get("metric", ""))
+                expression = self._sanitize_text(row.get("expression", ""))
+                timeframe = self._sanitize_text(row.get("timeframe", ""))
+                if not metric:
+                    continue
+                pieces = [metric]
+                if expression:
+                    pieces.append(expression)
+                if timeframe:
+                    pieces.append(f"Window {timeframe}")
+                targets.append(" — ".join(piece for piece in pieces if piece))
+        if not targets:
+            anchors = quant_payload.get("anchors") or []
+            for anchor in anchors:
+                topic = self._sanitize_text(anchor.get("topic") or anchor.get("label") or "")
+                value = self._sanitize_text(
+                    anchor.get("expression") or anchor.get("value") or anchor.get("unit") or ""
+                )
+                if topic:
+                    targets.append(f"{topic}: {value}".strip(": "))
+        activation = sections.get("activation_kit") or []
+        activation_snippets = []
+        for play in activation:
+            display = play.get("display", {})
+            title_snippet = self._sanitize_text(
+                display.get("card_title")
+                or display.get("play_name")
+                or play.get("play_name")
+                or play.get("pillar")
+                or ""
+            )
+            summary = self._sanitize_text(display.get("proof_point") or "")
+            if title_snippet:
+                activation_snippets.append({"title": title_snippet, "summary": summary})
+        risk_headlines = [
+            self._sanitize_text(risk.get("risk_name", ""))
+            for risk in sections.get("risk_radar") or []
+            if risk.get("risk_name")
+        ]
+        operator_job_story = ""
+        approach_names: List[str] = []
+        search_variants: List[str] = []
+        unified_pack: Dict[str, Any] = {}
+        evidence_note = ""
+        evidence_regime = "healthy"
+        if scope:
+            operator_job_story = self._sanitize_text(scope.get("operator_job_story", ""))
+            approach_names = [
+                self._sanitize_text(name)
+                for name in scope.get("approach_hints", [])
+                if self._sanitize_text(name)
+            ]
+            search_variants = [
+                self._sanitize_text(variant)
+                for variant in scope.get("search_shaped_variants", [])
+                if self._sanitize_text(variant)
+            ]
+            unified_pack = scope.get("unified_target_pack", {}) or {}
+            evidence_note = self._sanitize_text(scope.get("evidence_note", ""))
+            evidence_regime = scope.get("evidence_regime", "healthy")
+        return {
+            "report_title": title,
+            "exec_summary": cleaned_summary,
+            "quant_targets": targets[:6],
+            "activation_snippets": activation_snippets[:5],
+            "risk_headlines": risk_headlines[:6],
+            "tone_hint": "slightly impatient but constructive",
+            "operator_job_story": operator_job_story,
+            "approach_names": approach_names,
+            "search_shaped_variants": search_variants,
+            "unified_target_pack": unified_pack,
+            "evidence_note": evidence_note,
+            "evidence_regime": evidence_regime,
+            "pilot_spec": pilot_spec or {},
+            "metric_spec": metric_spec or {},
+            "role_actions": role_actions or {},
+        }
+
+    def _validate_executive_letter(self, letter: Dict[str, Any]) -> bool:
+        sections = letter.get("sections")
+        if not isinstance(sections, list) or len(sections) != 5:
+            return False
+        total_words = 0
+        for block in sections:
+            body = (block.get("body") or "").strip()
+            if not body:
+                return False
+            sentence_count = len(re.findall(r"[.!?]", body))
+            if sentence_count < 2 or sentence_count > 4:
+                return False
+            total_words += len(body.split())
+        if total_words > 600 or total_words < 300:
+            return False
+        investable = letter.get("bullets_investable") or []
+        targets = letter.get("bullets_targets") or []
+        if len(investable) != 3 or len(targets) != 3:
+            return False
+        for bullet in targets:
+            if not re.search(r"\d", bullet or ""):
+                return False
+        return True
+
+    def _qa_report(
+        self,
+        signals: List[Dict[str, Any]],
+        sections: Dict[str, Any],
+        top_moves: List[str],
+        scope: Dict[str, Any],
+        quant_payload: Dict[str, Any],
+        appendix: List[Dict[str, Any]],
+        read_time_minutes: int,
+    ) -> Dict[str, Any]:
+        issues: List[str] = []
+        if scope.get("thin_evidence"):
+            issues.append("Source coverage under minimum thresholds")
+
+        def _sentence_count(text: str) -> int:
+            if not text:
+                return 0
+            return len(re.findall(r"[.!?](?:\s|$)", text))
+        if len(signals) < 5 or len(signals) > STIConfig.SIGNAL_MAX_COUNT:
+            issues.append("Signal count outside required band")
+        if len(top_moves) != STIConfig.TOP_OPERATOR_MOVE_COUNT:
+            issues.append("Top operator moves not equal to 3")
+        high_quality_signals = True
+        market_signals = 0
+        market_tier1 = True
+        for signal in signals:
+            if signal.get("US_fit", 0) < STIConfig.SIGNAL_MIN_US_FIT:
+                issues.append(f"Signal {signal.get('id')} under US-fit threshold")
+            grade = signal.get("source_grade", "C")
+            if GRADE_ORDER.get(grade, 2) > 1:
+                high_quality_signals = False
+            category = (signal.get("category") or "").lower()
+            if category.startswith("market"):
+                market_signals += 1
+                if grade != "A":
+                    market_tier1 = False
+            if not (signal.get("operator_move") or "").strip():
+                issues.append(f"Signal {signal.get('id')} missing operator move")
+        quant_anchors = quant_payload.get("anchors", [])
+        measurement_plan = quant_payload.get("measurement_plan", [])
+        if len(quant_anchors) < 2:
+            issues.append("Quantifier returned fewer than two anchors")
+        if len(quant_anchors) > 4:
+            issues.append("Too many quant anchors")
+        if len(measurement_plan) > 4:
+            issues.append("Measurement plan exceeds 4 items")
+        coverage = min(1.0, len(signals) / float(STIConfig.SIGNAL_TARGET_COUNT))
+        quant_support = min(
+            1.0,
+            len(
+                [
+                    a
+                    for a in quant_anchors
+                    if a.get("value")
+                    or a.get("value_high")
+                    or a.get("value_low")
+                    or a.get("expression")
+                ]
+            )
+            / 3.0,
+        )
+        contradiction_penalty = max(0.0, 1.0 - 0.1 * len(issues))
+        deep_section_entries = sections.get("deep_analysis", {}).get("sections", [])
+        deep_sections = len(deep_section_entries)
+        if deep_sections > 4:
+            issues.append("Deep analysis exceeds 4 sections")
+        for block in deep_section_entries:
+            insight = block.get("insight", "")
+            if insight and _sentence_count(insight) > 4:
+                issues.append(f"Deep analysis paragraph exceeds sentence cap ({block.get('title')})")
+        summary_text = sections.get("deep_analysis", {}).get("summary", "")
+        if summary_text and _sentence_count(summary_text) > 4:
+            issues.append("Deep analysis summary exceeds sentence cap")
+        brand_outcomes = len(sections.get("brand_outcomes", []))
+        if brand_outcomes > 4:
+            issues.append("Brand outcomes exceed 4")
+        activation = sections.get("activation_kit", [])
+        activation_len = len(activation)
+        if activation_len > STIConfig.MAX_ACTIVATION_PLAYS:
+            issues.append("Activation kit exceeds allowed play count")
+        for play in activation:
+            ops = play.get("ops") or {}
+            cadence = ops.get("cadence") or []
+            for touch in cadence:
+                cta = (touch.get("cta") or "").strip()
+                if not cta:
+                    issues.append(f"Cadence missing CTA for {self._activation_label(play)}")
+                elif "specify cta" in cta.lower():
+                    issues.append(f"Cadence placeholder CTA for {self._activation_label(play)}")
+            if ops.get("zero_new_sku") is None or ops.get("ops_drag") is None:
+                issues.append(f"Play {self._activation_label(play)} missing zero_new_sku or ops_drag tags")
+        risk_len = len(sections.get("risk_radar", []))
+        if risk_len > 4:
+            issues.append("Risk radar exceeds 4")
+        outlook_len = len(sections.get("future_outlook", []))
+        if outlook_len > 2:
+            issues.append("Future outlook should only include 6- and 12-month horizons unless special case")
+        if read_time_minutes > STIConfig.TARGET_READ_TIME_MINUTES:
+            issues.append("Read time exceeds target")
+        observed_anchor = any(
+            str(anchor.get("status", "")).lower() == "observed" for anchor in quant_anchors
+        )
+        if market_signals == 0:
+            market_tier1 = True
+        qa = {
+            "issues": issues,
+            "coverage": round(coverage, 3),
+            "quant_support": round(quant_support, 3),
+            "contradiction_penalty": round(contradiction_penalty, 3),
+            "appendix_count": len(appendix),
+            "scope": scope,
+            "read_time": read_time_minutes,
+            "high_quality_signals": high_quality_signals,
+            "observed_quant": observed_anchor,
+            "tier1_market_signals": market_tier1,
+        }
+        return qa
+
+    def _compute_confidence(
+        self,
+        signals: List[Dict[str, Any]],
+        qa_report: Dict[str, Any],
+        quant_payload: Dict[str, Any],
+    ) -> ConfidenceBreakdown:
+        avg_strength = 0.0
+        if signals:
+            avg_strength = sum(sig.get("strength", 0.0) for sig in signals) / len(signals)
+        coverage = qa_report.get("coverage", 0.5)
+        quant_support = qa_report.get("quant_support", quant_payload.get("coverage", 0.5))
+        contradiction_penalty = qa_report.get("contradiction_penalty", 0.8)
+        return ConfidenceBreakdown(
+            average_strength=avg_strength,
+            coverage=coverage,
+            quant_support=quant_support,
+            contradiction_penalty=contradiction_penalty,
+        )
+
+    def _apply_source_caps(self, score: float, source_stats: Dict[str, Any]) -> float:
+        if not source_stats:
+            return score
+        capped = float(score)
+        if (
+            source_stats.get("total", 0) < STIConfig.SOURCE_MIN_TOTAL
+            or source_stats.get("unique_domains", 0) < STIConfig.SOURCE_MIN_UNIQUE_DOMAINS
+        ):
+            capped = min(capped, 0.65)
+        if source_stats.get("core", 0) < STIConfig.SOURCE_MIN_CORE:
+            capped = min(capped, 0.6)
+        tier_counts = source_stats.get("tier_counts") or {}
+        if tier_counts.get("context", 0) < STIConfig.SOURCE_MIN_BACKGROUND:
+            capped = min(capped, 0.62)
+        if source_stats.get("thin_evidence"):
+            capped = min(capped, 0.6)
+        return round(max(0.0, capped), 3)
+
+    def _signal_support_coverage(self, signals: List[Dict[str, Any]], sources: List[SourceRecord]) -> float:
+        if not signals or not sources:
+            return 0.0
+        used: set[int] = set()
+        for signal in signals:
+            if not signal.get("on_spine", True):
+                continue
+            for sid in signal.get("support") or []:
+                if isinstance(sid, int):
+                    used.add(sid)
+        if not used:
+            return 0.0
+        return min(1.0, len(used) / float(len(sources)))
+
+    def _metric_text(self, text: Any) -> str:
+        if not text:
+            return ""
+        return replace_metric_tokens(str(text))
+
+    def _evidence_regime(self, stats: Dict[str, Any]) -> str:
+        total = stats.get("total", 0)
+        if total <= 0:
+            return "starved"
+        core_sources = stats.get("core", 0)
+        tier_counts = stats.get("tier_counts", {}) or {}
+        in_window = tier_counts.get("core", 0)
+        background = tier_counts.get("context", 0)
+        thresholds = stats.get("thresholds", {}) or {}
+        hard_fail = (
+            total < STIConfig.SOURCE_HARD_FLOOR
+            or in_window == 0
+            or (background == 0 and total < STIConfig.SOURCE_MIN_TOTAL)
+        )
+        if hard_fail:
+            return "starved"
+        if core_sources == 0 or not all(thresholds.values()):
+            return "directional"
+        return "healthy"
+
+    def _evidence_note(self, stats: Dict[str, Any]) -> str:
+        total = stats.get("total", 0)
+        unique = stats.get("unique_domains", 0)
+        tier_counts = stats.get("tier_counts") or {}
+        in_window = tier_counts.get("core", 0)
+        background = tier_counts.get("context", 0)
+        regime = stats.get("regime") or ("directional" if stats.get("thin_evidence") else "healthy")
+        prefix = "Evidence base"
+        if regime == "directional":
+            prefix = "Directional evidence"
+        if regime == "starved" or total <= 0:
+            return f"{prefix}: too thin"
+        summary = (
+            f"{prefix}: {total} sources • {unique} domains • "
+            f"{in_window} in-window / {background} background"
+        )
+        support_cov = stats.get("support_coverage")
+        if support_cov is not None:
+            summary += f" • support coverage {support_cov:.0%}"
+        return summary
+
+    def _normalize_date(self, value: Optional[str]) -> str:
+        if not value:
+            return datetime.utcnow().strftime("%Y-%m-%d")
+        try:
+            dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            return dt.strftime("%Y-%m-%d")
+        except Exception:
+            return datetime.utcnow().strftime("%Y-%m-%d")
+
+    def _within_window(self, date_str: str, days_back: int) -> bool:
+        try:
+            date_val = datetime.strptime(date_str, "%Y-%m-%d")
+        except Exception:
+            return True
+        min_date = datetime.utcnow() - timedelta(days=days_back)
+        return date_val >= min_date
+
+    def _publisher_from_url(self, url: str) -> str:
+        try:
+            return urlparse(url).netloc.replace("www.", "")
+        except Exception:
+            return "unknown"
+
+    def _annotate_source(self, source: SourceRecord, scope: Dict[str, Any]) -> None:
+        host = self._publisher_from_url(source.url)
+        snippet = f"{source.title} {source.snippet} {source.content[:400]}"
+        grade = self._domain_grade(host)
+        us_fit = self._score_us_fit(snippet)
+        recency = self._recency_score(source.date, scope)
+        evidence_depth = 0.85 if self._has_quantitative_data(snippet) else 0.45
+        if "survey" in snippet.lower():
+            evidence_depth = max(evidence_depth, 0.65)
+
+        authority = source.credibility
+        source_type = self._infer_source_type(host, snippet)
+        if host in STIConfig.SOURCE_BLOCKLIST or source_type == "aggregator":
+            authority = min(authority, 0.45)
+            source_type = "aggregator"
+            grade = "D"
+
+        source.domain = self._classify_domain(host, snippet)
+        source.region = "US" if us_fit >= 0.75 else "context"
+        source.source_type = source_type
+        source.authority = authority
+        source.recency = recency
+        source.us_fit = us_fit
+        source.evidence = {
+            "numeric": evidence_depth >= 0.75,
+            "depth": round(evidence_depth, 2),
+            "sample_size": self._extract_sample_size(snippet),
+        }
+        quality = 0.45 * authority + 0.25 * recency + 0.20 * us_fit + 0.10 * evidence_depth
+        source.quality = round(min(1.0, quality), 3)
+        source.source_grade = grade
+        core_grade = GRADE_ORDER.get(grade, 2) <= 1
+        source.role = "core" if source.quality >= STIConfig.QUALITY_THRESHOLD and us_fit >= STIConfig.SIGNAL_MIN_US_FIT and core_grade else "support"
+
+    def _classify_domain(self, host: str, text: str) -> str:
+        text_lower = text.lower()
+        if any(keyword in text_lower for keyword in ["foot traffic", "placer.ai", "visa", "safegraph"]):
+            return "foot_traffic"
+        if any(keyword in text_lower for keyword in ["pricing", "discount", "promotion", "coupon"]):
+            return "pricing_promo"
+        if any(keyword in text_lower for keyword in ["ai", "automation", "agentic"]):
+            return "ops_ai"
+        if any(keyword in text_lower for keyword in ["family", "cultural", "holiday", "festival"]):
+            return "cultural_events"
+        if any(keyword in host for keyword in ["retail", "commerce"]):
+            return "retail_ecom"
+        return "general"
+
+    def _infer_source_type(self, host: str, text: str) -> str:
+        host = host.lower()
+        if any(tag in host for tag in ["prnewswire", "businesswire", "globenewswire"]):
+            return "pr"
+        if "blog" in host or "substack" in host:
+            return "analysis"
+        if "gov" in host or "census" in host:
+            return "primary"
+        if "placer.ai" in text.lower() or "nrf" in text.lower():
+            return "primary"
+        return "analysis"
+
+    def _domain_grade(self, host: str) -> str:
+        host = (host or "").lower()
+        if not host:
+            return STIConfig.SOURCE_GRADE_FALLBACK
+        for grade, domains in STIConfig.SOURCE_DOMAIN_GRADES.items():
+            if host in domains:
+                return grade
+        if host in STIConfig.SOURCE_BLOCKLIST or "msn.com" in host:
+            return "D"
+        if host.endswith(".yahoo.com") or host.endswith(".news"):
+            return "D"
+        return STIConfig.SOURCE_GRADE_FALLBACK
+
+    def _score_us_fit(self, text: str) -> float:
+        text_lower = (text or "").lower()
+        matches = sum(1 for keyword in STIConfig.US_REGION_HINTS if keyword in text_lower)
+        foreign_hints = sum(1 for keyword in ["uk", "london", "manila", "philippines", "singapore"] if keyword in text_lower)
+        base = min(1.0, matches / 3.0)
+        if foreign_hints:
+            base -= 0.2 * foreign_hints
+        return max(0.0, min(1.0, base + 0.3 if "us" in text_lower else base))
+
+    def _has_quantitative_data(self, text: str) -> bool:
+        return bool(re.search(r"\d{2,}%|\d{4}", text))
+
+    def _extract_sample_size(self, text: str) -> str:
+        match = re.search(r"(\d{2,},?\d{0,3})\s+(stores|shoppers|respondents)", text.lower())
+        return match.group(0) if match else ""
+
+    def _recency_score(self, date_str: str, scope: Dict[str, Any]) -> float:
+        try:
+            date_val = datetime.strptime(date_str, "%Y-%m-%d")
+            window_days = max(1, scope.get("time_window", {}).get("days", STIConfig.DEFAULT_DAYS_BACK))
+            delta = (datetime.utcnow() - date_val).days
+            return max(0.0, min(1.0, 1 - (delta / float(window_days))))
+        except Exception:
+            return 0.5
+
+    def _fetch_content(self, url: str) -> str:
+        try:
+            resp = requests.get(url, timeout=STIConfig.HTTP_TIMEOUT_SECONDS)
+            resp.raise_for_status()
+            soup = BeautifulSoup(resp.text, "html.parser")
+            text = soup.get_text(separator=" ", strip=True)
+            text = re.sub(r"\s+", " ", text)
+            return text[:6000]
+        except Exception:
+            return ""
+
+    def _score_publisher(self, url: str) -> float:
+        host = self._publisher_from_url(url)
+        return STIConfig.SOURCE_DOMAIN_WEIGHTS.get(host, STIConfig.DEFAULT_SOURCE_WEIGHT)
+
+    # ------------------------------------------------------------------
+    # Section + confidence helpers
+    # ------------------------------------------------------------------
+    def _tool_json(self, payload: str) -> Dict[str, Any]:
+        try:
+            return json.loads(payload) if payload else {}
+        except Exception:
+            return {}
+
+    def _build_sections(
+        self,
+        sources_payload: str,
+        signals: List[Dict[str, Any]],
+        operator_notes: str,
+        quant_payload: Dict[str, Any],
+        scope_json: str,
+    ) -> Dict[str, Any]:
+        signals_json = json.dumps(signals, ensure_ascii=False)
+        quant_json = json.dumps(quant_payload, ensure_ascii=False)
+
+        deep = self._tool_json(
+            generate_deep_analysis(sources_payload, signals_json, quant_json, scope_json)
+        ).get("deep_analysis", {})
+        if isinstance(deep, dict):
+            deep_sections = deep.get("sections", []) or []
+            deep["sections"] = self._sort_spine_sections(deep_sections)
+        patterns = self._tool_json(
+            generate_pattern_matches(sources_payload, signals_json, quant_json, scope_json)
+        ).get("pattern_matches", [])
+        outcomes = self._tool_json(
+            generate_brand_outcomes(sources_payload, signals_json, quant_json, scope_json)
+        ).get("brand_outcomes", [])
+
+        sections_seed = {
+            "deep_analysis": deep,
+            "pattern_matches": patterns,
+            "brand_outcomes": outcomes,
+            "operator_notes": operator_notes,
+            "quant": quant_payload,
+        }
+        sections_json = json.dumps(sections_seed, ensure_ascii=False)
+
+        activation = self._tool_json(
+            generate_activation_kit(signals_json, sections_json, quant_json)
+        ).get("activation_kit", [])
+        activation = self._merge_activation_plays(activation)
+        if len(activation) > STIConfig.MAX_ACTIVATION_PLAYS:
+            activation = activation[: STIConfig.MAX_ACTIVATION_PLAYS]
+        risks = self._tool_json(generate_risk_radar(signals_json, sections_json)).get("risk_radar", [])
+        outlook = self._tool_json(generate_future_outlook(signals_json, sections_json, scope_json)).get(
+            "future_outlook", []
+        )
+        comparison_sections = {
+            **sections_seed,
+            "activation_kit": activation,
+            "risk_radar": risks,
+            "future_outlook": outlook,
+        }
+        comparison_map = self._tool_json(
+            generate_comparison_map(
+                signals_json,
+                json.dumps(comparison_sections, ensure_ascii=False),
+                scope_json,
+            )
+        ) or {}
+
+        sections = {
+            **sections_seed,
+            "activation_kit": activation,
+            "risk_radar": risks,
+            "future_outlook": outlook,
+            "comparison_map": comparison_map,
+            "signal_map_notes": operator_notes,
+        }
+        self._trace(
+            "sections:summary",
+            {
+                "deep_analysis_sections": len(deep.get("sections", [])),
+                "pattern_matches": len(patterns),
+                "brand_outcomes": len(outcomes),
+                "activation_kit": len(activation),
+                "risk_radar": len(risks),
+                "future_outlook": len(outlook),
+                "approach_map_entries": len((comparison_map or {}).get("approach_map", [])),
+                "buyer_guide_entries": len((comparison_map or {}).get("buyer_guide", [])),
+            },
+        )
+        return sections
+
+    def _build_markdown(
         self,
         query: str,
-        days_back: int = 7,
-        seed: Optional[int] = None,
-        budget_advanced: int = 0,
-    ) -> Tuple[str, Dict[str, Any], Dict[str, Any]]:
-        """
-        Enhanced search that produces 3,000-4,000 word reports
-        Uses existing search logic + new analysis tools
-        
-        Returns:
-            Tuple of (markdown_report, json_ld_artifact, run_summary)
-        """
-        self.last_run_status = {}
-        if seed is not None:
-            random.seed(seed)
-            try:
-                np.random.seed(seed)
-            except Exception:
-                pass
-
-        # BudgetManager will be created after intent is determined
-        # to allow auto-allocation for thesis runs
-        quality_gates_passed = True
-        audit_outputs: Dict[str, Any] = {}
-
-        try:
-            # Step 0: Market-first routing approach
-            # Always search for market sources first, then check if they adequately reflect the query
-            # If not adequate, default to thesis-path (assume theoretical, not yet commercialized)
-            
-            # Initialize variables that may be used later
-            concepts = []
-            foundational_sources = []
-            
-            # Step 1: Refine query for searching
-            refined_query = self._refine_query_for_title(query)
-            logger.info(f"Query refined: '{query}' → '{refined_query}'")
-            
-            # Step 2: ALWAYS search for market sources first (regardless of what query might be)
-            logger.info("Step 2: Searching for market sources first...")
-            market_sources = self._search_with_time_filtering(refined_query, days_back)
-            logger.info(f"Found {len(market_sources)} market sources")
-            
-            # Step 3: Check if market sources adequately reflect the query
-            market_adequate = self._check_market_source_adequacy(market_sources, query)
-            
-            if market_adequate:
-                # Market-path: Use market sources
-                logger.info("Market sources adequately reflect query. Using market-path.")
-                intent = "market"
-                all_sources = market_sources
-                
-            else:
-                # Thesis-path: Query is likely theoretical, not yet commercialized
-                logger.info("Market sources do not adequately reflect query. Using thesis-path.")
-                intent = "theory"
-            
-            # Auto-allocate premium budget for thesis runs if budget_advanced is 0
-            effective_budget = budget_advanced
-            if intent == "theory" and budget_advanced == 0:
-                effective_budget = 10000  # Safe floor: 10k tokens for thesis runs
-                logger.info(f"Auto-allocating {effective_budget} tokens for thesis run (budget_advanced was 0)")
-            
-            # Create BudgetManager with effective budget
-            budget = BudgetManager(
-                total_tokens=effective_budget,
-                pct=getattr(STIConfig, 'ADVANCED_BUDGET_PCT', 0.25),
-            )
-            
-            if intent == "theory":
-                # Extract query domain for use in searches
-                original_title = f"Tech Brief — {query}"
-                query_domain_obj = self._extract_query_domain(query, original_title)
-                query_domain = query_domain_obj.primary_domain
-                domain_keywords = query_domain_obj.domain_keywords
-                logger.info(f"Extracted domain: {query_domain}, keywords: {domain_keywords}")
-                
-                # Expand query for theoretical search (now with domain info)
-                expanded_query = self._expand_theoretical_query(query, refined_query, query_domain, domain_keywords)
-                logger.info(f"Theory query expanded: '{query}' → '{expanded_query}'")
-                
-                # Decompose query into core concepts
-                concepts = self._decompose_theory_query(query)
-                logger.info(f"Decomposed query into concepts: {concepts}")
-                
-                # Search for foundational sources with extended time window (now with domain info)
-                foundational_sources = self._search_foundational_sources(concepts, STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK, query_domain, domain_keywords)
-                logger.info(f"Found {len(foundational_sources)} foundational sources")
-                
-                # Search recent academic sources
-                academic_sources = self._search_theoretical_concepts(expanded_query, days_back)
-                logger.info(f"Found {len(academic_sources)} recent academic sources")
-                
-                # Progressive widening for recent academic theory: 7→30→90
-                if len(academic_sources) < STIConfig.MIN_ACADEMIC_SOURCES_THEORY and days_back < 30:
-                    widened = 30
-                    logger.info(f"Widening recent academic window to {widened} days for theory query")
-                    more_academic = self._search_theoretical_concepts(expanded_query, widened)
-                    # merge
-                    seen = set(s.url for s in academic_sources)
-                    for s in more_academic:
-                        if s.url not in seen:
-                            academic_sources.append(s)
-                            seen.add(s.url)
-                if len(academic_sources) < STIConfig.MIN_ACADEMIC_SOURCES_THEORY and days_back < 90:
-                    widened = 90
-                    logger.info(f"Widening recent academic window to {widened} days for theory query")
-                    more_academic = self._search_theoretical_concepts(expanded_query, widened)
-                    seen = set(s.url for s in academic_sources)
-                    for s in more_academic:
-                        if s.url not in seen:
-                            academic_sources.append(s)
-                            seen.add(s.url)
-                
-                # Also include any market sources that might be relevant (for hybrid reports)
-                # But filter out market sources that don't match theory context
-                all_sources = foundational_sources + academic_sources + market_sources
-                logger.info(f"Total sources found: {len(all_sources)} (foundational: {len(foundational_sources)}, academic: {len(academic_sources)}, market: {len(market_sources)})")
-            
-            # Step 4: Assign sources based on intent
-            if intent == "market":
-                sources = all_sources
-                logger.info(f"Market intent: using {len(sources)} market sources")
-            else:
-                # For theory queries, use all sources directly
-                sources = all_sources
-            
-            # Step 5: Deduplicate sources
-            sources = self._deduplicate_sources(sources)
-            
-            # Step 6: Re-weight by source type based on intent
-            sources = self._reweight_by_source_type(sources, intent)
-            
-            # Step 7: Apply semantic similarity filter with dynamic threshold
-            threshold = STIConfig.SEMANTIC_THRESHOLD_THEORY if intent == "theory" else STIConfig.SEMANTIC_THRESHOLD_MARKET
-            logger.info(f"Applying semantic similarity filter with threshold: {threshold} (intent: {intent})")
-            concepts_for_filter = concepts if intent == "theory" else None
-            semantically_relevant_sources = self._semantic_similarity_filter(sources, query, threshold=threshold, concepts=concepts_for_filter)
-            
-            # NEW: Retry logic if semantic filter returns empty for thesis-path
-            if not semantically_relevant_sources and intent == "theory":
-                logger.info("Semantic filter returned empty for theory query, retrying with expanded search...")
-                # Retry 1: Expand query with more foundational terms
-                expanded_query_retry = self._expand_theoretical_query(query)
-                retry_sources = self._search_theoretical_concepts(expanded_query_retry, days_back)
-                retry_sources.extend(self._search_foundational_sources(concepts or [query], STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK))
-                # Re-apply semantic filter with slightly lower threshold for retry
-                semantically_relevant_sources = self._semantic_similarity_filter(
-                    retry_sources, query, threshold=threshold * 0.9, concepts=concepts_for_filter
-                )
-                if semantically_relevant_sources:
-                    logger.info(f"Retry successful: found {len(semantically_relevant_sources)} semantically relevant sources")
-                else:
-                    logger.warning("Retry still returned empty, will proceed with thesis-path using first-principles")
-            
-            # Apply rubric reranker for theory intent
-            if intent == "theory":
-                semantically_relevant_sources = self._rubric_rerank(semantically_relevant_sources, query, concepts or [])
-            
-            # Step 8: Filter sources by title relevance (apply foundational relax if applicable)
-            original_title = f"Tech Brief — {query}"
-            foundational_urls = set(s.url for s in foundational_sources) if intent == "theory" else set()
-            market_thresh = getattr(STIConfig, 'MARKET_TITLE_RELEVANCE_THRESHOLD', 0.5)
-            if intent == "theory":
-                relevant_sources, filter_metadata = self._filter_sources_by_title_relevance(
-                    semantically_relevant_sources,
-                    original_title,
-                    query=query,
-                    foundational_urls=foundational_urls,
-                )
-            else:
-                logger.debug(f"Skipping retry loop for intent={intent} (market-path)")
-                relevant_sources, filter_metadata = self._filter_sources_by_title_relevance(
-                    semantically_relevant_sources,
-                    original_title,
-                    query=query,
-                    foundational_urls=set(),
-                    min_score=market_thresh,
-                )
-            
-            # Log metadata for debugging
-            if filter_metadata['evaluation_success']:
-                logger.info(f"LLM evaluation: {filter_metadata['scores_received']} scores, "
-                           f"{filter_metadata['sources_rejected_by_llm']} rejected by LLM, "
-                           f"{filter_metadata['sources_rejected_by_score']} rejected by score, "
-                           f"{filter_metadata['sources_passed']} passed")
-            else:
-                logger.warning(f"LLM evaluation failed: {filter_metadata['failure_reason']}")
-            
-            # NEW: Retry loop for theory queries to gather 10 LLM-validated sources
-            if intent == "theory":
-                logger.debug("Entering theory-path retry loop")
-                min_required_thesis = getattr(STIConfig, 'MIN_SOURCES_THESIS_PATH', 10)
-                total_validated = len(relevant_sources) + len(foundational_sources)
-                
-                # Ensure domain info is available (should have been extracted earlier, but ensure it exists)
-                if 'query_domain_obj' not in locals() or query_domain_obj is None:
-                    if 'query_domain' not in locals() or query_domain is None:
-                        original_title = f"Tech Brief — {query}"
-                        query_domain_obj = self._extract_query_domain(query, original_title)
-                        query_domain = query_domain_obj.primary_domain
-                        domain_keywords = query_domain_obj.domain_keywords
-                        logger.info(f"Extracted domain in retry loop: {query_domain}, keywords: {domain_keywords}")
-                    else:
-                        # query_domain exists as string, create QueryDomain object
-                        query_domain_obj = QueryDomain(
-                            primary_domain=query_domain,
-                            domain_keywords=domain_keywords or [],
-                            confidence=0.7
-                        )
-                else:
-                    # query_domain_obj exists, ensure query_domain string is set
-                    if 'query_domain' not in locals() or query_domain is None:
-                        query_domain = query_domain_obj.primary_domain
-                        domain_keywords = query_domain_obj.domain_keywords
-                
-                # Identify abstraction layers and canonical papers before retry loop
-                abstraction_layers = {}
-                canonical_papers = {}
-                try:
-                    logger.info("Identifying abstraction layers for multi-layer search...")
-                    abstraction_layers = self._identify_abstraction_layers(query, query_domain_obj)
-                    logger.info(f"Identified {len(abstraction_layers)} abstraction layers")
-                    
-                    logger.info("Identifying canonical papers for each abstraction layer...")
-                    canonical_papers = self._identify_canonical_papers(abstraction_layers, query_domain_obj)
-                    logger.info(f"Identified canonical papers for {len(canonical_papers)} layers")
-                except Exception as e:
-                    logger.warning(f"Abstraction layer/canonical paper identification failed: {e}, continuing without them")
-                    logger.debug(f"Exception traceback: {traceback.format_exc()}")
-                
-                # ADD: Diagnostic logging
-                logger.info(f"Retry loop check: intent={intent}, total_validated={total_validated}, "
-                           f"min_required={min_required_thesis}, relevant={len(relevant_sources)}, "
-                           f"foundational={len(foundational_sources)}")
-                
-                # Retry loop: keep searching until we have 10 LLM-validated sources
-                max_retry_attempts = 5  # Allow more retries for theory queries
-                retry_attempt = 0
-                
-                should_retry = total_validated < min_required_thesis
-                logger.info(f"Retry loop condition: {should_retry} (total_validated={total_validated} < min_required={min_required_thesis})")
-                
-                while should_retry and retry_attempt < max_retry_attempts:
-                    retry_attempt += 1
-                    logger.warning(
-                        f"Thesis-path: Only {total_validated} LLM-validated sources "
-                        f"(required: {min_required_thesis}). Retry attempt {retry_attempt}/{max_retry_attempts} "
-                        f"to gather more sources..."
-                    )
-                    
-                    # Use LLM-generated queries for retry searches
-                    search_concepts = concepts or [query]
-                    
-                    # Strategy 1: Search for more anchor sources using LLM-generated queries
-                    additional_anchors_raw = []
-                    try:
-                        logger.info(f"Retry {retry_attempt}: Strategy 1 - Anchor search with {len(search_concepts)} concepts, domain: {query_domain}")
-                        additional_anchors_raw = self._search_thesis_anchor_sources(
-                            query,
-                            STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK,
-                            refined_query=refined_query,
-                            query_domain=query_domain,
-                            domain_keywords=domain_keywords,
-                            concepts=search_concepts,
-                            retry_attempt=retry_attempt
-                        )
-                        logger.info(f"Found {len(additional_anchors_raw)} anchor sources")
-                    except Exception as e:
-                        logger.warning(f"Anchor source search failed: {str(e)}")
-                        logger.debug(f"Exception traceback: {traceback.format_exc()}")
-                    
-                    # Strategy 2: Search for more foundational sources (with domain keywords)
-                    additional_foundational_raw = []
-                    try:
-                        logger.info(f"Retry {retry_attempt}: Strategy 2 - Foundational search with domain keywords: {domain_keywords[:3] if domain_keywords else 'none'}")
-                        additional_foundational_raw = self._search_foundational_sources(
-                            search_concepts,
-                            STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK,
-                            query_domain=query_domain,
-                            domain_keywords=domain_keywords
-                        )
-                        logger.info(f"Found {len(additional_foundational_raw)} foundational sources")
-                    except Exception as e:
-                        logger.warning(f"Foundational source search failed: {str(e)}")
-                        logger.debug(f"Exception traceback: {traceback.format_exc()}")
-                    
-                    # Strategy 3: Search with theoretical concepts using refined/expanded query
-                    additional_theoretical_raw = []
-                    if concepts or retry_attempt > 1:  # Also try on later retries even without concepts
-                        try:
-                            widened_days = min(days_back * (retry_attempt + 1), STIConfig.MAX_DAYS_BACK)
-                            logger.info(f"Retry {retry_attempt}: Strategy 3 - Theoretical concepts search with widened window: {widened_days} days")
-                            # Use expanded query with domain info for retries
-                            retry_expanded_query = self._expand_theoretical_query(query, refined_query, query_domain, domain_keywords)
-                            additional_theoretical_raw = self._search_theoretical_concepts(retry_expanded_query, widened_days)
-                            logger.info(f"Found {len(additional_theoretical_raw)} theoretical sources")
-                        except Exception as e:
-                            logger.warning(f"Theoretical concepts search failed: {str(e)}")
-                            logger.debug(f"Exception traceback: {traceback.format_exc()}")
-                    
-                    # Strategy 4: Search across abstraction layers (progressive broadening)
-                    additional_abstraction_raw = []
-                    if abstraction_layers and retry_attempt >= 2:  # Use abstraction layers on retry 2+
-                        try:
-                            # Search progressively broader layers as retry attempts increase
-                            layers_to_search = list(abstraction_layers.items())
-                            # On retry 2: search Layer 2-3, on retry 3+: search all layers
-                            if retry_attempt == 2:
-                                layers_to_search = layers_to_search[1:3] if len(layers_to_search) >= 3 else layers_to_search[1:]
-                            widened_days_abstraction = min(STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK * (retry_attempt - 1), STIConfig.MAX_DAYS_BACK)
-                            
-                            logger.info(f"Retry {retry_attempt}: Strategy 4 - Abstraction layer search across {len(layers_to_search)} layers with {widened_days_abstraction} days window")
-                            additional_abstraction_raw = self._search_abstraction_layers(
-                                query,
-                                dict(layers_to_search),  # Convert back to dict
-                                canonical_papers,
-                                widened_days_abstraction,
-                                query_domain=query_domain,
-                                domain_keywords=domain_keywords
-                            )
-                            logger.info(f"Found {len(additional_abstraction_raw)} sources from abstraction layers")
-                        except Exception as e:
-                            logger.warning(f"Abstraction layer search failed: {str(e)}")
-                            logger.debug(f"Exception traceback: {traceback.format_exc()}")
-                    
-                    # Combine all new sources
-                    all_new_sources = additional_anchors_raw + additional_foundational_raw + additional_theoretical_raw + additional_abstraction_raw
-                    logger.info(f"Retry {retry_attempt} summary: anchors={len(additional_anchors_raw)}, "
-                               f"foundational={len(additional_foundational_raw)}, "
-                               f"theoretical={len(additional_theoretical_raw)}, "
-                               f"abstraction={len(additional_abstraction_raw)}, "
-                               f"total_new={len(all_new_sources)}")
-                    
-                    if not all_new_sources:
-                        # Don't break immediately - try different strategies or widen parameters
-                        logger.warning(f"No new sources found in retry {retry_attempt} - trying different search strategies")
-                        
-                        # On later retries, try searching with extracted key terms instead of full query
-                        if retry_attempt < max_retry_attempts:
-                            # Extract main topic (before colon if present) for next attempt
-                            main_topic = query.split(':')[0].strip() if ':' in query else query
-                            if main_topic != query:
-                                logger.info(f"Will try searching with main topic '{main_topic}' on next retry")
-                            # Continue to next retry attempt instead of breaking
-                            continue
-                        else:
-                            logger.warning("Max retries reached - stopping retry loop")
-                            break
-                    
-                    # CRITICAL: Apply LLM validation to new sources (not just semantic similarity)
-                    logger.info(f"Applying LLM relevance validation to {len(all_new_sources)} new sources...")
-                    foundational_urls_retry = set(s.url for s in foundational_sources)
-                    validated_new_sources, retry_filter_metadata = self._filter_sources_by_title_relevance(
-                        all_new_sources, original_title, query=query, foundational_urls=foundational_urls_retry
-                    )
-                    
-                    if not retry_filter_metadata['evaluation_success']:
-                        logger.warning(f"LLM validation failed in retry: {retry_filter_metadata['failure_reason']}")
-                        # Continue to next retry attempt
-                        continue
-                    
-                    logger.info(f"Retry {retry_attempt}: LLM validated {len(validated_new_sources)} new sources "
-                               f"({retry_filter_metadata['sources_passed']} passed, "
-                               f"{retry_filter_metadata['sources_rejected_by_llm']} rejected by LLM, "
-                               f"{retry_filter_metadata['sources_rejected_by_score']} rejected by score)")
-                    
-                    # Merge validated sources, avoiding duplicates
-                    seen_urls = set(s.url for s in relevant_sources + foundational_sources)
-                    new_count = 0
-                    
-                    for source in validated_new_sources:
-                        if source.url not in seen_urls:
-                            # Determine if foundational or regular based on URL/domain
-                            # Check if source came from foundational search or is from canonical academic domain
-                            is_foundational = (
-                                source.url in foundational_urls_retry or 
-                                any(h in source.url for h in (
-                                    'ieeexplore.ieee.org', 'dl.acm.org', 
-                                    'link.springer.com', 'sciencedirect.com', 'arxiv.org'
-                                ))
-                            )
-                            
-                            if is_foundational:
-                                foundational_sources.append(source)
-                            else:
-                                relevant_sources.append(source)
-                            seen_urls.add(source.url)
-                            new_count += 1
-                    
-                    total_validated = len(relevant_sources) + len(foundational_sources)
-                    logger.info(f"After retry {retry_attempt}: {total_validated} total validated sources "
-                               f"({len(relevant_sources)} relevant + {len(foundational_sources)} foundational), "
-                               f"{new_count} new sources added")
-                    
-                    # Update condition for while loop
-                    should_retry = total_validated < min_required_thesis
-                    
-                    # CRITICAL FIX: Break immediately if we have enough sources
-                    if not should_retry:
-                        logger.info(f"Sufficient sources found ({total_validated} >= {min_required_thesis}) - exiting retry loop")
-                        break
-                    
-                    # If we found new sources, continue retrying; otherwise break
-                    if new_count == 0:
-                        logger.warning(f"No new validated sources found in retry {retry_attempt}")
-                        # Only break if we've exhausted retries OR tried multiple times with no results
-                        if retry_attempt >= max_retry_attempts:
-                            logger.warning("Max retries reached with no new sources - stopping retry loop")
-                            break
-                        # Otherwise continue to next retry attempt
-                        continue
-                
-                # After retry loop, generate conceptual map if we have abstraction layers
-                conceptual_map = None
-                if abstraction_layers and (relevant_sources or foundational_sources):
-                    try:
-                        logger.info("Generating conceptual map from abstraction layers and sources...")
-                        all_sources_for_map = relevant_sources + foundational_sources
-                        conceptual_map = self._generate_conceptual_map(query, all_sources_for_map, abstraction_layers)
-                        logger.info(f"Conceptual map generated ({len(conceptual_map)} chars)")
-                    except Exception as e:
-                        logger.warning(f"Conceptual map generation failed: {e}")
-                        logger.debug(f"Exception traceback: {traceback.format_exc()}")
-                
-                # After retry loop, check if we have enough sources
-                if total_validated < min_required_thesis:
-                    logger.error(
-                        f"Thesis-path source gate FAILED after {retry_attempt} retries: "
-                        f"{total_validated} sources (required: {min_required_thesis})"
-                    )
-                    # Don't return here - let it continue to the general insufficient evidence check below
-                    # This allows the system to still try to generate a report if possible
-            
-            # Step 9: Early insufficient-evidence write and adaptive fallback
-            MIN_REQUIRED_SOURCES = 3
-            
-            # Check academic floor for theory queries
-            academic_floor_met = self._check_academic_floor(relevant_sources, intent)
-
-            def _write_insufficient_and_return(reason: str = None):
-                nonlocal quality_gates_passed
-                quality_gates_passed = False
-                logger.warning(f"Only {len(relevant_sources)} relevant sources. Writing insufficient evidence report.")
-                if reason:
-                    logger.warning(reason)
-                
-                # Create minimal report for insufficient evidence
-                end_dt = datetime.now()
-                start_dt = end_dt - timedelta(days=days_back)
-                exec_summary = reason or "Insufficient evidence to substantiate the requested title within the time window."
-                insufficient_report = f"""# Tech Brief — {query}
-Date range: {start_dt.strftime('%b %d')}–{end_dt.strftime('%b %d')}, 2025 | Sources: {len(relevant_sources)} | Confidence: 0.00
-
-## Executive Summary
-{exec_summary}
-
-## Topline
-Insufficient evidence available to generate a meaningful topline summary.
-
-## Signals
-No signals extracted due to insufficient evidence.
-
-## Sources
-"""
-                for i, source in enumerate(relevant_sources, 1):
-                    insufficient_report += f"[^{i}]: {source.title} — {source.publisher}, {source.date}. (cred: {source.credibility:.2f}) — {source.url}\n"
-                
-                json_ld = self._generate_json_ld_artifact(
-                    query, relevant_sources, [], 0.0, days_back, exec_summary,
-                    word_count=len(insufficient_report.split()), final_title=f"Tech Brief — {query}"
-                )
-                fallback_manifest = {
-                    "query": query,
-                    "days": days_back,
-                    "seed": seed,
-                    "budget_advanced": budget_advanced,
-                    "timestamp": datetime.now().isoformat(),
-                    "models": {
-                        "primary": self.model_name,
-                        "advanced": getattr(STIConfig, 'ADVANCED_MODEL_NAME', None),
-                    },
-                    "metrics": {
-                        "confidence": 0.0,
-                        "anchor_coverage": 0.0,
-                        "quant_flags": 0,
-                    },
-                    "advanced_tasks": [],
-                    "advanced_tokens_spent": 0,
-                    "report_title": f"Tech Brief — {query}",
-                    "intent": intent,
-                }
-                self.last_run_status = {
-                    "quality_gates_passed": False,
-                    "report_dir": None,
-                    "run_manifest": fallback_manifest,
-                    "metrics": fallback_manifest["metrics"],
-                    "advanced_tasks": [],
-                    "asset_gated": True,
-                }
-                return insufficient_report, json_ld, {
-                    'intent': intent,
-                    'artifacts': {},
-                    'metrics': {'confidence': 0.0, 'anchor_coverage': 0.0, 'quant_flags': 0},
-                    'confidence_breakdown': {},
-                    'premium': {'requested': [], 'executed': {}},
-                }
-
-            # Check for academic floor failure for theory queries (takes precedence over general source count)
-            # BUT: if foundational_sources exist, continue to full thesis-path instead of simplified report
-            if intent == "theory" and not academic_floor_met and len(foundational_sources) == 0:
-                # Apply 10-source gate even for simplified thesis path
-                total_sources_count = len(relevant_sources) + len(foundational_sources)
-                min_required = getattr(STIConfig, 'MIN_SOURCES_THESIS_PATH', 10)
-                
-                if total_sources_count < min_required:
-                    logger.warning(
-                        f"Thesis-path source gate: {total_sources_count} sources "
-                        f"(required: {min_required}). Attempting to gather more sources..."
-                    )
-                    
-                    # Try to gather more foundational sources
-                    additional_foundational_raw = self._search_foundational_sources(
-                        concepts or [query], STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK
-                    )
-                    # Filter for relevance using proper theory threshold
-                    additional_foundational = self._semantic_similarity_filter(
-                        additional_foundational_raw, query, 
-                        threshold=STIConfig.SEMANTIC_THRESHOLD_THEORY, concepts=concepts
-                    )
-                    logger.info(f"Found {len(additional_foundational)} relevant foundational sources (from {len(additional_foundational_raw)} total)")
-                    
-                    # Merge
-                    seen_urls = set(s.url for s in relevant_sources + foundational_sources)
-                    for source in additional_foundational:
-                        if source.url not in seen_urls:
-                            foundational_sources.append(source)
-                            seen_urls.add(source.url)
-                    
-                    total_sources_count = len(relevant_sources) + len(foundational_sources)
-                    
-                    if total_sources_count < min_required:
-                        logger.error(
-                            f"Thesis-path source gate FAILED: {total_sources_count} sources "
-                            f"(required: {min_required}). Cannot proceed with thesis-path generation."
-                        )
-                        return _write_insufficient_and_return(
-                            f"Insufficient sources for thesis-path: {total_sources_count}/{min_required}. "
-                            f"Thesis-path requires at least {min_required} sources to ensure adequate "
-                            f"evidence depth and anchor coverage."
-                        )
-                
-                academic_count = len([s for s in relevant_sources if s.source_type == SourceType.ACADEMIC])
-                logger.warning(f"Academic floor unmet ({academic_count}/{STIConfig.MIN_ACADEMIC_SOURCES_THEORY}); generating simplified thesis-style report (no foundational sources available).")
-                # Generate simplified thesis-style report when no foundational sources
-                thesis_report = self._generate_thesis_style_report([], relevant_sources, query, foundational_sources)
-                exec_summary = "Insufficient recent academic evidence; providing a first-principles synthesis based on foundational control theory and related multi-agent concepts."
-                json_ld = self._generate_json_ld_artifact(
-                    query, relevant_sources, [], 0.0, days_back, exec_summary,
-                    word_count=len(thesis_report.split()), final_title=f"Tech Brief — {query}"
-                )
-                return thesis_report, json_ld, {
-                    'intent': intent,
-                    'artifacts': {},
-                    'metrics': {'confidence': 0.0, 'anchor_coverage': 0.0, 'quant_flags': 0},
-                    'confidence_breakdown': {},
-                    'premium': {'requested': [], 'executed': {}},
-                }
-            elif intent == "theory" and not academic_floor_met and len(foundational_sources) > 0:
-                academic_count = len([s for s in relevant_sources if s.source_type == SourceType.ACADEMIC])
-                logger.info(f"Academic floor unmet ({academic_count}/{STIConfig.MIN_ACADEMIC_SOURCES_THEORY}) but {len(foundational_sources)} foundational sources available. Proceeding to full thesis-path generation.")
-                # Continue processing to allow full thesis-path generation (don't return early)
-
-            if len(relevant_sources) < MIN_REQUIRED_SOURCES:
-                # Only proceed if LLM evaluation succeeded but we need more sources
-                if not filter_metadata['evaluation_success']:
-                    # LLM evaluation failed technically - this is an error, don't bypass
-                    logger.error("LLM evaluation failed - cannot proceed without relevance validation")
-                    return _write_insufficient_and_return(
-                        f"Source relevance evaluation failed: {filter_metadata['failure_reason']}. "
-                        "Cannot generate report without validated sources."
-                    )
-                elif filter_metadata['evaluation_success']:
-                    # LLM correctly evaluated - sources were legitimately rejected
-                    logger.info(f"LLM correctly evaluated sources but only {len(relevant_sources)} passed. "
-                               "Proceeding to retry logic to find more relevant sources.")
-                    # Continue to retry logic below - don't bypass LLM
-
-            if len(relevant_sources) < MIN_REQUIRED_SOURCES and days_back < STIConfig.MAX_DAYS_BACK:
-                widened_days = min(days_back * 2, STIConfig.MAX_DAYS_BACK)
-                logger.info(f"Retrying with widened time window: {widened_days} days")
-                wider_sources = self._search_with_time_filtering(refined_query, widened_days)
-                # Only search academic sources for theory queries
-                if intent == "theory":
-                    wider_sources.extend(self._search_theoretical_concepts(refined_query, widened_days))
-                relevant_sources, retry_filter_metadata = self._filter_sources_by_title_relevance(
-                    wider_sources, original_title, query=query
-                )
-                # Update metadata
-                filter_metadata = retry_filter_metadata
-
-            if len(relevant_sources) < MIN_REQUIRED_SOURCES:
-                # Market fallback: if we have enough in-window independent news, proceed anyway
-                if intent == "market":
-                    try:
-                        from datetime import datetime as _dt, timedelta as _td
-                        end_dt = _dt.now()
-                        start_dt = end_dt - _td(days=days_back)
-                        def _is_in_window(src):
-                            try:
-                                d = _dt.strptime(src.date, '%Y-%m-%d')
-                                return start_dt <= d <= end_dt
-                            except Exception:
-                                return True
-                        in_window_indep = [s for s in sources if s.source_type == SourceType.INDEPENDENT_NEWS and _is_in_window(s)]
-                        if len(in_window_indep) >= 3:
-                            logger.info("Market fallback: proceeding with in-window independent news despite low title relevance.")
-                            relevant_sources = in_window_indep[:6]
-                        else:
-                            return _write_insufficient_and_return()
-                    except Exception:
-                        return _write_insufficient_and_return()
-                elif intent == "theory":
-                    # NEW: Thesis-path always generates a report using first-principles
-                    logger.info(f"Thesis-path: Only {len(relevant_sources)} relevant sources, but proceeding with first-principles thesis generation")
-                    # Ensure we have at least foundational sources or use first-principles
-                    if not foundational_sources:
-                        # Search for foundational sources if we don't have any
-                        logger.info("No foundational sources found, searching for foundational theory...")
-                        foundational_sources = self._search_foundational_sources(concepts or [query], STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK)
-                    # Continue to thesis-path generation (don't return insufficient evidence)
-                    # The thesis structure can work with minimal sources using first-principles
-                else:
-                    return _write_insufficient_and_return()
-            
-            # Step 4: Quality gate checks (bypass news gates for theory when academic floor met OR foundational sources available)
-            if intent == "theory" and (academic_floor_met or len(foundational_sources) > 0):
-                if academic_floor_met:
-                    logger.info("Theory intent with academic floor met — bypassing news quality gates.")
-                else:
-                    logger.info(f"Theory intent with {len(foundational_sources)} foundational sources — bypassing news quality gates.")
-            else:
-                if not self._check_quality_gates(relevant_sources):
-                    if intent == "market":
-                        # Last-mile fallback: try proceeding with in-window independent news
-                        try:
-                            from datetime import datetime as _dt, timedelta as _td
-                            end_dt = _dt.now()
-                            start_dt = end_dt - _td(days=days_back)
-                            def _in_window(src):
-                                try:
-                                    d = _dt.strptime(src.date, '%Y-%m-%d')
-                                    return start_dt <= d <= end_dt
-                                except Exception:
-                                    return True
-                            in_window_indep = [s for s in sources if s.source_type == SourceType.INDEPENDENT_NEWS and _in_window(s)]
-                            if len(in_window_indep) >= 3:
-                                logger.info("Market last-mile: continuing with in-window independent news to satisfy gates.")
-                                relevant_sources = in_window_indep[:6]
-                            else:
-                                return _write_insufficient_and_return("Quality gates not met for sources.")
-                        except Exception:
-                            return _write_insufficient_and_return("Quality gates not met for sources.")
-                    else:
-                        return _write_insufficient_and_return("Quality gates not met for sources.")
-            
-            # Step 5: Use existing signal extraction (ensure at least as many signals as sources)
-            # Use max of source count and configured minimum to ensure good coverage
-            signal_count = max(len(relevant_sources), STIConfig.SIGNALS_COUNT)
-            signals = self._extract_signals_enhanced(relevant_sources, count=signal_count)
-            
-            # Step 6: Final relevance validation gate - ensure ALL sources are relevant before citation
-            # NOTE: Title refinement happens AFTER report generation to reflect actual content
-            # Use original query for validation to avoid false rejections from poor title refinement
-            original_title_for_validation = f"Tech Brief — {query}"
-            
-            if not relevant_sources:
-                # No sources to validate - this should have been caught earlier, but handle gracefully
-                logger.warning("No sources available for final validation - returning insufficient evidence")
-                return _write_insufficient_and_return(
-                    "No relevant sources found after LLM evaluation. Cannot generate report without validated sources."
-                )
-            
-            logger.info("Applying final relevance validation gate before report generation...")
-            final_relevant_sources, final_metadata = self._filter_sources_by_title_relevance(
-                relevant_sources, original_title_for_validation, query=query
-            )
-            
-            if not final_metadata['evaluation_success']:
-                logger.error("Final relevance validation failed - cannot generate report")
-                return _write_insufficient_and_return(
-                    f"Final source relevance validation failed: {final_metadata['failure_reason']}"
-                )
-            
-            if len(final_relevant_sources) < len(relevant_sources):
-                logger.warning(f"Final validation filtered out {len(relevant_sources) - len(final_relevant_sources)} sources")
-                relevant_sources = final_relevant_sources
-            
-            logger.info(f"Final validation complete: {len(relevant_sources)} sources validated for citation")
-            
-            # Step 7: NEW - Call analysis MCP tools for deep sections using relevant sources
-            sources_json = self._serialize_sources_to_json(relevant_sources)
-            signals_json = self._serialize_signals_to_json(signals)
-            
-            # Run analysis tools directly
-            market_analysis = self._call_analysis_tool("analyze_market", sources_json, signals_json)
-            tech_deepdive = self._call_analysis_tool("analyze_technology", sources_json, signals_json)
-            competitive = self._call_analysis_tool("analyze_competitive", sources_json, signals_json)
-            
-            # Prepare analyses for lens expansion
-            analyses_json = json.dumps([market_analysis, tech_deepdive, competitive])
-            expanded_lenses = self._call_analysis_tool("expand_lenses", signals_json, analyses_json)
-            
-            # Prepare content for actions and summary
-            all_content_json = json.dumps({
-                "signals": signals,
-                "analyses": [market_analysis, tech_deepdive, competitive],
-                "lenses": expanded_lenses
-            })
-            
-            exec_summary = self._call_analysis_tool("write_executive_summary", all_content_json)
-            
-            # Initialize confidence before passing to _run_auditors
-            confidence = self._calculate_confidence_with_intent(signals, relevant_sources, intent)
-            
-            audit_outputs = self._run_auditors(
-                query=query,
-                intent=intent,
-                sources=relevant_sources,
-                signals=signals,
-                market_analysis=market_analysis,
-                tech_deepdive=tech_deepdive,
-                competitive=competitive,
-                expanded_lenses=expanded_lenses,
-                exec_summary=exec_summary,
-                confidence=confidence,
-                budget=budget,
-            )
-            ledger_data = audit_outputs.get("ledger")
-            quant_patch = audit_outputs.get("quant_patch")
-            adversarial_data = audit_outputs.get("adversarial")
-            playbooks_data = audit_outputs.get("playbooks")
-            confidence_breakdown = audit_outputs.get("confidence_breakdown")
-            confidence = audit_outputs.get("confidence", confidence)
-            metrics = audit_outputs.get("metrics", {})
-            anchor_gate = audit_outputs.get("anchor_gate", False)
-            advanced_tokens = audit_outputs.get("advanced_tokens", 0)
-            premium_tasks_run = audit_outputs.get("tasks_executed", [])
-            tasks_requested = audit_outputs.get("tasks_requested", [])
-            task_matrix = audit_outputs.get("task_matrix", {})
-            source_sha_map = audit_outputs.get("source_sha_map", {})
-            report_sections = audit_outputs.get("report_sections", {})
-            claims_snapshot = audit_outputs.get("claims", [])
-
-            # Step 8: Track source attribution using relevant sources
-            self._calculate_source_attribution_stats(
-                relevant_sources, signals, [market_analysis, tech_deepdive, competitive]
-            )
-            
-            # Step 9: Use confidence calculation with intent-aware penalties
-            # Note: confidence is already initialized above, but update from audit_outputs if available
-            if confidence_breakdown:
-                logger.info(
-                    "Confidence breakdown: diversity=%.2f anchor=%.2f method=%.2f replication=%.2f",
-                    confidence_breakdown.source_diversity,
-                    confidence_breakdown.anchor_coverage,
-                    confidence_breakdown.method_transparency,
-                    confidence_breakdown.replication_readiness,
-                )
-                # confidence already updated from audit_outputs at line 3443
-            # else: confidence already initialized above, no need to recalculate
-
-            # Build single source-of-truth report model (for reconciliation)
-            end_dt = datetime.now()
-            start_dt = end_dt - timedelta(days=days_back)
-            start_date_str = start_dt.strftime('%Y-%m-%d')
-            end_date_str = end_dt.strftime('%Y-%m-%d')
-
-            source_models = [
-                SourceModel(
-                    id=i + 1,
-                    title=s.title,
-                    url=s.url,
-                    publisher=s.publisher,
-                    date=s.date,
-                    credibility=s.credibility,
-                )
-                for i, s in enumerate(relevant_sources)
-            ]
-
-            signal_models: List[SignalModel] = []
-            for sig in signals:
-                signal_models.append(
-                    SignalModel(
-                        claim=sig.get('text', ''),
-                        strength=float(sig.get('confidence', 0.3)),
-                        impact=sig.get('impact', 'market'),
-                        direction=sig.get('direction', 'flat'),
-                        citations=sig.get('citation_ids', []),
-                    )
-                )
-
-            canonical_hosts = ['ieeexplore.ieee.org','dl.acm.org','link.springer.com','sciencedirect.com','arxiv.org']
-            foundational_url_set = set(s.url for s in foundational_sources)
-            
-            # Telemetry: persist thesis node I/O if available
-            thesis_io = {}
-            try:
-                if intent == "theory" and len(foundational_sources) > 0:
-                    if 'outline' in locals():
-                        thesis_io['outline_in'] = {'concepts': concepts}
-                        thesis_io['outline_out'] = outline.model_dump()
-                    if 'draft' in locals():
-                        thesis_io['compose_in'] = {'sections': getattr(outline,'sections',[])}
-                        thesis_io['compose_out'] = {'cited_source_ids': getattr(draft,'cited_source_ids',[])}
-                    if 'critique' in locals():
-                        thesis_io['critique_out'] = critique.model_dump()
-                    if 'publication_rubric' in locals():
-                        thesis_io['publication_rubric'] = publication_rubric.model_dump()
-                    if 'diversity_score' in locals():
-                        thesis_io['diversity_score'] = diversity_score
-                    # Add playbook values
-                    if 'anchor_status' in locals():
-                        thesis_io['anchor_status'] = anchor_status
-                    if 'thesis_confidence' in locals():
-                        thesis_io['confidence'] = thesis_confidence
-                    if 'ci_gates_result' in locals():
-                        thesis_io['ci_gates'] = ci_gates_result
-            except Exception:
-                pass
-            # Use thesis confidence if available (playbook formula), otherwise use regular confidence
-            # Note: thesis_confidence is calculated later in thesis path, so we'll update this below
-            final_confidence = float(confidence)
-            
-            # Initialize final_title with original query (will be refined after report generation)
-            final_title = f"Tech Brief — {query}"
-            
-            report_model = ReportModel(
-                title=final_title,
-                query=query,
-                start_date=start_date_str,
-                end_date=end_date_str,
-                confidence=final_confidence,
-                sources=source_models,
-                signals=signal_models,
-                metadata={
-                    'intent': intent,
-                    'allow_foundational_out_of_window': True,
-                    'canonical_hosts': canonical_hosts,
-                    'foundational_urls': list(foundational_url_set),
-                    'thesis_io': thesis_io,
-                    'confidence_breakdown': confidence_breakdown.__dict__ if confidence_breakdown else None,
-                    'metrics': metrics,
-                    'tasks_requested': tasks_requested,
-                    'claims_snapshot': claims_snapshot,
-                }
-            )
-            
-            # Step 10: Generate enhanced report (3,000-4,000 words) using final title and relevant sources
-            if intent == "theory" and len(foundational_sources) > 0:
-                # Step 10.1: Search for anchor sources (peer-reviewed, non-preprint) for thesis reports
-                anchor_sources = self._search_thesis_anchor_sources(query, STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK)
-                logger.info(f"Found {len(anchor_sources)} anchor sources for thesis report")
-                
-                # Merge anchor sources with relevant sources, prioritizing anchors
-                seen_urls = set(s.url for s in relevant_sources)
-                for anchor in anchor_sources:
-                    if anchor.url not in seen_urls:
-                        relevant_sources.insert(0, anchor)  # Insert at beginning to prioritize
-                        seen_urls.add(anchor.url)
-                
-                # Thesis-path source gate: require minimum 10 sources before proceeding
-                total_sources_count = len(relevant_sources) + len(foundational_sources)
-                min_required = getattr(STIConfig, 'MIN_SOURCES_THESIS_PATH', 10)
-                
-                # Retry loop to gather more sources if below minimum
-                max_retry_attempts = 3
-                retry_attempt = 0
-                
-                while total_sources_count < min_required and retry_attempt < max_retry_attempts:
-                    retry_attempt += 1
-                    logger.warning(
-                        f"Thesis-path source gate: {total_sources_count} sources "
-                        f"(required: {min_required}). Retry attempt {retry_attempt}/{max_retry_attempts} "
-                        f"to gather more sources..."
-                    )
-                    
-                    # Use proper theory threshold for all retry strategies
-                    retry_threshold = STIConfig.SEMANTIC_THRESHOLD_THEORY
-                    logger.info(f"Retry loop using semantic threshold: {retry_threshold}")
-                    
-                    # Strategy 1: Search for more anchor sources
-                    additional_anchors_raw = self._search_thesis_anchor_sources(
-                        query, STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK
-                    )
-                    # Filter for relevance to query using proper threshold
-                    additional_anchors = self._semantic_similarity_filter(
-                        additional_anchors_raw, query, 
-                        threshold=retry_threshold, concepts=concepts
-                    )
-                    logger.info(f"Found {len(additional_anchors)} relevant anchor sources (from {len(additional_anchors_raw)} total, threshold: {retry_threshold})")
-                    
-                    # Strategy 2: Search for more foundational sources
-                    additional_foundational_raw = self._search_foundational_sources(
-                        concepts or [query], STIConfig.THEORY_FOUNDATIONAL_DAYS_BACK
-                    )
-                    # Filter for relevance to query using proper threshold
-                    additional_foundational = self._semantic_similarity_filter(
-                        additional_foundational_raw, query,
-                        threshold=retry_threshold, concepts=concepts
-                    )
-                    logger.info(f"Found {len(additional_foundational)} relevant foundational sources (from {len(additional_foundational_raw)} total, threshold: {retry_threshold})")
-                    
-                    # Strategy 3: Search with theoretical concepts (if we have concepts)
-                    additional_theoretical = []
-                    if concepts:
-                        try:
-                            # Try with widened time window for theoretical concepts
-                            widened_days = min(days_back * 2, STIConfig.MAX_DAYS_BACK)
-                            additional_theoretical_raw = self._search_theoretical_concepts(
-                                query, widened_days
-                            )
-                            # Filter for relevance to query using proper threshold
-                            additional_theoretical = self._semantic_similarity_filter(
-                                additional_theoretical_raw, query,
-                                threshold=retry_threshold, concepts=concepts
-                            )
-                            logger.info(f"Found {len(additional_theoretical)} relevant theoretical sources (from {len(additional_theoretical_raw)} total, threshold: {retry_threshold})")
-                        except Exception as e:
-                            logger.warning(f"Theoretical concepts search failed: {str(e)}")
-                    
-                    # Merge all new sources, avoiding duplicates
-                    seen_urls = set(s.url for s in relevant_sources + foundational_sources)
-                    new_sources_count = 0
-                    
-                    # Merge anchor sources (prioritize in relevant_sources)
-                    for source in additional_anchors:
-                        if source.url not in seen_urls:
-                            relevant_sources.insert(0, source)
-                            seen_urls.add(source.url)
-                            new_sources_count += 1
-                    
-                    # Merge foundational sources (add to foundational_sources list)
-                    for source in additional_foundational:
-                        if source.url not in seen_urls:
-                            foundational_sources.append(source)
-                            seen_urls.add(source.url)
-                            new_sources_count += 1
-                    
-                    # Merge theoretical sources (add to relevant_sources)
-                    for source in additional_theoretical:
-                        if source.url not in seen_urls:
-                            relevant_sources.append(source)
-                            seen_urls.add(source.url)
-                            new_sources_count += 1
-                    
-                    logger.info(f"Merged {new_sources_count} new relevant sources")
-                    
-                    # Final semantic validation gate: re-filter all merged sources to ensure quality
-                    logger.info("Applying final semantic validation gate after merge...")
-                    final_threshold = STIConfig.SEMANTIC_THRESHOLD_THEORY
-                    relevant_sources_filtered = self._semantic_similarity_filter(
-                        relevant_sources, query, threshold=final_threshold, concepts=concepts
-                    )
-                    foundational_sources_filtered = self._semantic_similarity_filter(
-                        foundational_sources, query, threshold=final_threshold, concepts=concepts
-                    )
-                    
-                    # Log any sources that were filtered out
-                    filtered_out_relevant = len(relevant_sources) - len(relevant_sources_filtered)
-                    filtered_out_foundational = len(foundational_sources) - len(foundational_sources_filtered)
-                    if filtered_out_relevant > 0 or filtered_out_foundational > 0:
-                        logger.warning(
-                            f"Final validation filtered out {filtered_out_relevant} relevant + "
-                            f"{filtered_out_foundational} foundational sources (threshold: {final_threshold})"
-                        )
-                    
-                    # Update lists with filtered sources
-                    relevant_sources = relevant_sources_filtered
-                    foundational_sources = foundational_sources_filtered
-                    
-                    # Recalculate total
-                    total_sources_count = len(relevant_sources) + len(foundational_sources)
-                    
-                    if total_sources_count >= min_required:
-                        logger.info(
-                            f"Thesis-path source gate PASSED after retry {retry_attempt}: "
-                            f"{total_sources_count} sources (required: {min_required})"
-                        )
-                        break
-                
-                # Final check: fail if still below minimum after retries
-                if total_sources_count < min_required:
-                    logger.error(
-                        f"Thesis-path source gate FAILED after {max_retry_attempts} retries: "
-                        f"{total_sources_count} sources (required: {min_required}). "
-                        f"Cannot proceed with thesis-path generation."
-                    )
-                    return _write_insufficient_and_return(
-                        f"Insufficient sources for thesis-path: {total_sources_count}/{min_required} "
-                        f"after {max_retry_attempts} retry attempts. Thesis-path requires at least "
-                        f"{min_required} sources to ensure adequate evidence depth and anchor coverage."
-                    )
-                
-                logger.info(
-                    f"Thesis-path source gate PASSED: {total_sources_count} sources "
-                    f"(required: {min_required}). Proceeding with thesis generation."
-                )
-                
-                # Final LLM-based relevance validation gate before report generation (catch any sources that slipped through)
-                final_title = f"Tech Brief — {query}"
-                final_foundational_urls = set(s.url for s in foundational_sources)
-                
-                # Validate relevant sources
-                if not relevant_sources:
-                    logger.warning("No relevant sources available for final validation - returning insufficient evidence")
-                    return _write_insufficient_and_return(
-                        "No relevant sources found after LLM evaluation. Cannot generate report without validated sources."
-                    )
-                
-                logger.info("Applying final LLM relevance validation gate before report generation...")
-                relevant_sources, final_metadata = self._filter_sources_by_title_relevance(
-                    relevant_sources, final_title, query=query, foundational_urls=final_foundational_urls
-                )
-                
-                if not final_metadata['evaluation_success']:
-                    logger.error("Final relevance validation failed for thesis-path - cannot generate report")
-                    return _write_insufficient_and_return(
-                        f"Final source relevance validation failed: {final_metadata['failure_reason']}"
-                    )
-                
-                # Also validate foundational sources
-                if foundational_sources:
-                    foundational_sources, foundational_metadata = self._filter_sources_by_title_relevance(
-                        foundational_sources, final_title, query=query, foundational_urls=final_foundational_urls
-                    )
-                    if not foundational_metadata['evaluation_success']:
-                        logger.warning(f"Foundational sources validation failed: {foundational_metadata['failure_reason']}")
-                        foundational_sources = []  # Remove invalid foundational sources
-                
-                logger.info(
-                    f"Final LLM validation complete: {len(relevant_sources)} relevant + "
-                    f"{len(foundational_sources)} foundational sources validated for citation"
-                )
-                
-                # Fix 1: Combine all validated sources and re-index sequentially
-                all_validated_sources = relevant_sources + foundational_sources
-                logger.info(f"Combined {len(relevant_sources)} relevant + {len(foundational_sources)} foundational = {len(all_validated_sources)} total sources")
-                
-                # Fix 2: Update ReportModel sources with combined, filtered, re-indexed sources
-                # Create new source_models from all_validated_sources with sequential IDs (1, 2, 3...)
-                updated_source_models = [
-                    SourceModel(
-                        id=i + 1,
-                        title=s.title,
-                        url=s.url,
-                        publisher=s.publisher,
-                        date=s.date,
-                        credibility=s.credibility,
-                    )
-                    for i, s in enumerate(all_validated_sources)
-                ]
-                report_model.sources = updated_source_models
-                logger.info(f"Updated report_model.sources with {len(updated_source_models)} combined sources")
-                
-                # Update foundational_url_set to reflect filtered foundational sources
-                foundational_url_set = set(s.url for s in foundational_sources)
-                report_model.metadata['foundational_urls'] = list(foundational_url_set)
-                
-                # Thesis subgraph: outline -> compose -> critique (bounded repair)
-                logger.info("Generating thesis-style report for theory query (LangGraph-style path)")
-                
-                logger.info(f"Total sources after combination: {len(all_validated_sources)}")
-                
-                # Fix 3: Pass combined sources to thesis generation functions
-                # Step 10.2: Calculate source diversity score using combined sources
-                diversity_score = self._calculate_thesis_source_diversity(all_validated_sources)
-                logger.info(f"Thesis source diversity score: {diversity_score:.2f}")
-                
-                # Ensure abstraction layers variables are accessible (may be empty dict/None if not generated)
-                # These are initialized before the retry loop, so they should always exist in this scope
-                # Convert empty dicts to None for cleaner handling
-                abstraction_layers_for_compose = abstraction_layers if (abstraction_layers and len(abstraction_layers) > 0) else None
-                conceptual_map_for_compose = conceptual_map if conceptual_map else None
-                canonical_papers_for_compose = canonical_papers if (canonical_papers and len(canonical_papers) > 0) else None
-                
-                # Use combined sources for thesis generation
-                outline = self._thesis_outline(ConceptList(concepts=concepts or []), all_validated_sources)
-                draft = self._thesis_compose(
-                    outline, 
-                    all_validated_sources, 
-                    query,
-                    abstraction_layers=abstraction_layers_for_compose,
-                    conceptual_map=conceptual_map_for_compose,
-                    canonical_papers=canonical_papers_for_compose
-                )
-                thesis_report = draft.markdown
-                
-                # Step 10.3: Validate section completeness and detect repetition (thesis only)
-                completeness = self._validate_thesis_section_completeness(thesis_report)
-                repetition = self._detect_thesis_section_repetition(thesis_report)
-                
-                if completeness['warnings']:
-                    logger.warning(f"Thesis section completeness warnings: {completeness['warnings']}")
-                if completeness['errors']:
-                    logger.error(f"Thesis section completeness errors: {completeness['errors']}")
-                    # If critical errors exist, add operational diagnostics to Limits section
-                    if any('Operational Assumptions' in err for err in completeness['errors']):
-                        thesis_report = self._ensure_operational_diagnostics(thesis_report)
-                if repetition['repetition_detected']:
-                    logger.warning(f"Thesis section repetition detected: {[o['warning'] for o in repetition['overlaps']]}")
-                
-                # Use combined sources for critique
-                critique = self._thesis_critique(draft, query, all_validated_sources)
-                
-                # Step 10.4: Calculate full publication rubric (thesis only) using combined sources
-                publication_rubric = self._calculate_thesis_publication_rubric(draft, query, all_validated_sources, diversity_score)
-                logger.info(f"Thesis publication rubric: {publication_rubric.total_score:.1f}/100")
-                
-                # Step 10.5: Generate CEM grid (thesis only) using combined sources
-                cem_grid = self._generate_cem_grid(draft, all_validated_sources)
-                logger.info(f"Generated CEM grid with {len(cem_grid.rows)} rows")
-                
-                # Insert CEM grid into markdown after Formal Models section
-                cem_markdown = self._format_cem_grid_markdown(cem_grid)
-                thesis_report = self._insert_cem_grid_into_markdown(thesis_report, cem_markdown)
-                
-                # Step 10.5a: Generate Assumptions Ledger (thesis only)
-                assumptions_ledger = self._generate_assumptions_ledger(draft)
-                logger.info(f"Generated Assumptions Ledger with {len(assumptions_ledger)} rows")
-                has_assumptions_ledger = len(assumptions_ledger) > 0
-                
-                # Insert Assumptions Ledger into markdown after Formal Models section
-                if assumptions_ledger:
-                    ledger_markdown = self._format_assumptions_ledger_markdown(assumptions_ledger)
-                    # Insert after Formal Models or before CEM Grid
-                    import re
-                    formal_models_pattern = r'(##\s+(?:Formal\s+Models?|Formal\s+Framework).*?\n)'
-                    match = re.search(formal_models_pattern, thesis_report, re.MULTILINE | re.IGNORECASE)
-                    if match:
-                        thesis_report = thesis_report[:match.end()] + '\n' + ledger_markdown + '\n' + thesis_report[match.end():]
-                    else:
-                        # Insert before CEM Grid
-                        cem_pattern = r'(##\s+Claim-Evidence-Method)'
-                        match = re.search(cem_pattern, thesis_report, re.MULTILINE | re.IGNORECASE)
-                        if match:
-                            thesis_report = thesis_report[:match.start()] + ledger_markdown + '\n\n' + thesis_report[match.start():]
-                
-                # Step 10.5b: Validate notation (thesis only)
-                notation_validation = self._validate_notation(thesis_report)
-                if not notation_validation.get('valid', True):
-                    logger.warning(f"Notation validation violations: {notation_validation.get('violations', [])}")
-                
-                # Step 10.5c: Calculate anchor_status and thesis confidence (playbook formula)
-                anchor_status = self._calculate_anchor_status(relevant_sources)
-                thesis_confidence = self._calculate_thesis_confidence(
-                    relevant_sources, draft, cem_grid, has_assumptions_ledger
-                )
-                logger.info(f"Anchor status: {anchor_status}, Thesis confidence: {thesis_confidence:.3f}")
-                
-                # Step 10.5d: Run CI gates (thesis only)
-                ci_gates_result = self._run_ci_gates(
-                    draft, relevant_sources, cem_grid, critique, 
-                    publication_rubric, notation_validation, repetition
-                )
-                logger.info(f"CI gates: {len([g for g in ci_gates_result['gates'].values() if g['passed']])}/7 passed")
-                if ci_gates_result['fail_stops']:
-                    logger.warning(f"CI gate fail-stops: {ci_gates_result['fail_stops']}")
-                
-                # Step 10.6: Fix notation table - replace playful mnemonics with standard notation (thesis only)
-                modified_markdown, notation_table = self._extract_notation_table(thesis_report)
-                thesis_report = modified_markdown  # Update with any in-place replacements
-                # If notation_table is a string, it needs to be inserted
-                if notation_table:
-                    thesis_report = self._insert_notation_table_into_markdown(thesis_report, notation_table)
-                
-                # Step 10.7: Add Executive Summary if missing (thesis only)
-                import re
-                exec_summary_exists = re.search(r'^#+\s+Executive Summary\s*', thesis_report, re.MULTILINE | re.IGNORECASE)
-                if not exec_summary_exists:
-                    # Generate Executive Summary from Abstract or first section
-                    abstract_match = re.search(r'^#+\s+Abstract\s*\n+(.+?)(?=\n#+\s+|$)', thesis_report, re.MULTILINE | re.DOTALL | re.IGNORECASE)
-                    abstract_content = abstract_match.group(1).strip() if abstract_match else ""
-                    
-                    if abstract_content:
-                        # Use Abstract content for Executive Summary
-                        exec_summary_text = abstract_content
-                    else:
-                        # Generate from first paragraph of first section
-                        first_section_match = re.search(r'^#+\s+[^\n]+\s*\n+(.+?)(?=\n#+\s+|$)', thesis_report, re.MULTILINE | re.DOTALL)
-                        if first_section_match:
-                            first_content = first_section_match.group(1).strip()
-                            first_para = first_content.split('\n\n')[0] if '\n\n' in first_content else first_content.split('\n')[0]
-                            exec_summary_text = first_para.strip()
-                        else:
-                            # Fallback: use provided template
-                            exec_summary_text = "This thesis-path brief takes a **theory-first** approach to compare hierarchical command-and-control with distributed multi-agent coordination. It separates **command (authority)**, **control (policy)**, and **coordination (interaction rules)**; formalizes the design space via an **authority graph**, a **time-varying communication graph**, and **agent decision rules**; and states **testable hypotheses** about when each architecture dominates. We outline **mechanisms** (delegation envelopes, intent beacons, auctions, trust-weighted consensus) and **metrics** (MTTA, success probability, resource overhead) with parameterized vignettes to show how switching rules and thresholds can be instrumented. This is a **theory-first, Anchor-Absent** map with an explicit validation plan; numerical effects marked **Illustrative Target** are to be confirmed via the simulation sweeps described herein."
-                    
-                    # Insert Executive Summary after title/abstract, before Introduction
-                    intro_pattern = r'(^#+\s+(?:Introduction|Introduction and Research Questions))'
-                    intro_match = re.search(intro_pattern, thesis_report, re.MULTILINE | re.IGNORECASE)
-                    if intro_match:
-                        insert_pos = intro_match.start()
-                        thesis_report = thesis_report[:insert_pos] + f"# Executive Summary\n\n{exec_summary_text}\n\n" + thesis_report[insert_pos:]
-                    else:
-                        # Insert at beginning after title
-                        first_heading_match = re.search(r'^#+\s+[^\n]+', thesis_report, re.MULTILINE)
-                        if first_heading_match:
-                            insert_pos = thesis_report.find('\n', first_heading_match.end()) + 1
-                            thesis_report = thesis_report[:insert_pos] + f"\n# Executive Summary\n\n{exec_summary_text}\n\n" + thesis_report[insert_pos:]
-                        else:
-                            thesis_report = f"# Executive Summary\n\n{exec_summary_text}\n\n" + thesis_report
-                    
-                    logger.info("Added Executive Summary section to thesis report")
-                
-                # Step 10.8: Add Disclosure block if missing (thesis only) - confidence is in header, not content
-                disclosure_exists = re.search(r'Disclosure.*Method Note', thesis_report, re.MULTILINE | re.IGNORECASE)
-                if not disclosure_exists:
-                    # Don't include confidence formula - it's already in the header
-                    disclosure_text = f"> **Disclosure & Method Note.** This is a *theory-first* brief. Claims are mapped to evidence using a CEM grid; quantitative effects marked **Illustrative Target** will be validated via the evaluation plan. **Anchor Status:** {anchor_status}.\n\n"
-                    
-                    # Insert after Executive Summary or Abstract
-                    exec_summary_match = re.search(r'^#+\s+Executive Summary\s*\n+(.+?)(?=\n#+\s+|$)', thesis_report, re.MULTILINE | re.DOTALL | re.IGNORECASE)
-                    if exec_summary_match:
-                        insert_pos = exec_summary_match.end()
-                        thesis_report = thesis_report[:insert_pos] + '\n' + disclosure_text + thesis_report[insert_pos:]
-                    else:
-                        abstract_match = re.search(r'^#+\s+Abstract\s*\n+(.+?)(?=\n#+\s+|$)', thesis_report, re.MULTILINE | re.DOTALL | re.IGNORECASE)
-                        if abstract_match:
-                            insert_pos = abstract_match.end()
-                            thesis_report = thesis_report[:insert_pos] + '\n' + disclosure_text + thesis_report[insert_pos:]
-                    
-                    logger.info("Added Disclosure and Confidence block to thesis report")
-                
-                # Update report confidence with thesis confidence (playbook formula)
-                if 'thesis_confidence' in locals():
-                    report_model.confidence = float(thesis_confidence)
-                    logger.info(f"Updated report confidence to thesis confidence: {thesis_confidence:.3f}")
-                
-                repairs = 0
-                # Use original query for repair loop (title refinement happens after repairs)
-                original_title_for_repair = f"Tech Brief — {query}"
-                while max(critique.alignment, critique.theory_depth, critique.clarity) < STIConfig.THESIS_CRITIQUE_MIN_SCORE and repairs < STIConfig.THESIS_MAX_REPAIRS:
-                    logger.info(f"Thesis critique below threshold; repair_action={critique.repair_action}")
-                    if critique.repair_action == 'expand_anchors':
-                        # attempt small anchor expansion using existing anchors
-                        more_academic = self._search_theoretical_concepts(query, STIConfig.THEORY_EXTENDED_DAYS_BACK)
-                        # Filter new sources and add to all_validated_sources
-                        new_relevant_sources, _ = self._filter_sources_by_title_relevance(
-                            relevant_sources + more_academic, original_title_for_repair, query=query
-                        )
-                        # Update relevant_sources and rebuild all_validated_sources
-                        relevant_sources = new_relevant_sources
-                        all_validated_sources = relevant_sources + foundational_sources
-                        # Re-index and update report_model.sources
-                        updated_source_models = [
-                            SourceModel(
-                                id=i + 1,
-                                title=s.title,
-                                url=s.url,
-                                publisher=s.publisher,
-                                date=s.date,
-                                credibility=s.credibility,
-                            )
-                            for i, s in enumerate(all_validated_sources)
-                        ]
-                        report_model.sources = updated_source_models
-                        logger.info(f"Repair loop: Updated sources to {len(all_validated_sources)} total after anchor expansion")
-                    elif critique.repair_action == 'adjust_outline':
-                        # adjust outline by adding 'Formalization' and 'Limits'
-                        if 'Formalization' not in outline.sections:
-                            outline.sections.append('Formalization')
-                        if 'Limits and Open Questions' not in outline.sections:
-                            outline.sections.append('Limits and Open Questions')
-                    # Pass abstraction layers to repair loop compose call (may be empty dict/None if not generated)
-                    # These are initialized at line 4320-4321, so they should always exist in this scope
-                    # Convert empty dicts to None for cleaner handling
-                    abstraction_layers_for_repair = abstraction_layers if (abstraction_layers and len(abstraction_layers) > 0) else None
-                    conceptual_map_for_repair = conceptual_map if conceptual_map else None
-                    canonical_papers_for_repair = canonical_papers if (canonical_papers and len(canonical_papers) > 0) else None
-                    # Use combined sources for repair loop
-                    draft = self._thesis_compose(
-                        outline, 
-                        all_validated_sources, 
-                        query,
-                        abstraction_layers=abstraction_layers_for_repair,
-                        conceptual_map=conceptual_map_for_repair,
-                        canonical_papers=canonical_papers_for_repair
-                    )
-                    thesis_report = draft.markdown
-                    critique = self._thesis_critique(draft, query, all_validated_sources)
-                    repairs += 1
-                
-                # Step 10.8: Refine title based on actual thesis content generated
-                # This happens AFTER thesis generation and repair loop so title reflects both query intent and actual thesis
-                logger.info("Refining title based on generated thesis content...")
-                try:
-                    final_title = self._derive_title_from_content(
-                        signals, relevant_sources, query, intent="theory", thesis_content=thesis_report
-                    )
-                    logger.info(f"Title refined for thesis-path: '{final_title}'")
-                    # Update report_model title with refined title
-                    report_model.title = final_title
-                except Exception as e:
-                    logger.warning(f"Title refinement failed: {e}, using original query")
-                    logger.debug(f"Title refinement error traceback:\n{traceback.format_exc()}")
-                    final_title = f"Tech Brief — {query}"
-                
-                report = thesis_report
-            else:
-                # Use standard enhanced report for market queries or theory without foundational sources
-                # Generate report first, then refine title based on actual content
-                temp_title = f"Tech Brief — {query}"
-                report = self._generate_enhanced_report(
-                    query, relevant_sources, signals, market_analysis, tech_deepdive,
-                    competitive, expanded_lenses, exec_summary,
-                    confidence, days_back, temp_title
-                )
-                
-                # Refine title based on actual report content (after generation)
-                logger.info("Refining title based on generated report content...")
-                try:
-                    final_title = self._derive_title_from_content(
-                        signals, relevant_sources, query, intent=intent, thesis_content=None
-                    )
-                    logger.info(f"Title refined for market-path: '{final_title}'")
-                    # Update report_model title with refined title
-                    report_model.title = final_title
-                except Exception as e:
-                    logger.warning(f"Title refinement failed: {e}, using original query")
-                    logger.debug(f"Title refinement error traceback:\n{traceback.format_exc()}")
-                    final_title = temp_title
-            
-            # Step 11: NEW - Generate JSON-LD artifact using final title and relevant sources
-            json_ld = self._generate_json_ld_artifact(
-                query, relevant_sources, signals, confidence, days_back, exec_summary,
-                word_count=len(report.split()), final_title=final_title
-            )
-            
-            # Automatically save the report with nested file structure
-            # Compute horizon and hybrid flags for downstream presentation
-            horizon = self._classify_horizon(relevant_sources)
-            is_hybrid = self._is_hybrid_thesis_anchored(intent, relevant_sources)
-
-            # Fix 5: Update source serialization - sources_data_stats uses updated report_model.sources
-            sources_data_stats: List[Dict[str, Any]] = []
-            for src_model in report_model.sources:
-                record = src_model.model_dump()
-                record["content_sha"] = source_sha_map.get(src_model.id)
-                sources_data_stats.append(record)
-
-            # Use correct source count: for thesis-path use all_validated_sources, otherwise use report_model.sources
-            if intent == "theory" and 'all_validated_sources' in locals():
-                validated_count = len(all_validated_sources)
-            else:
-                validated_count = len(report_model.sources)
-
-            agent_stats = {
-                'date_filter_stats': self.get_date_filter_stats() if hasattr(self, 'get_date_filter_stats') else None,
-                'sources_data': sources_data_stats,
-                'validated_sources_count': validated_count,
-                'intent': intent,
-                'horizon': horizon,
-                'hybrid_thesis_anchored': is_hybrid,
-                'thesis_io': report_model.metadata.get('thesis_io', {}),
-                'confidence_breakdown': confidence_breakdown.__dict__ if confidence_breakdown else None,
-                'advanced_tasks_requested': tasks_requested,
-                'advanced_tasks_executed': premium_tasks_run,
-                'advanced_tokens_spent': advanced_tokens,
-                'metrics': metrics,
-                'asset_gating': {
-                    'images_enabled': True,  # Always enable images for thesis-path reports
-                    'social_enabled': not anchor_gate,  # Still gate social assets based on anchors
-                    'reason': 'insufficient anchors' if anchor_gate else ''
-                },
-                'source_sha_map': source_sha_map,
-                'claims_snapshot': claims_snapshot,
-                'report_sections': report_sections,
-            }
-            
-            report_dir = save_enhanced_report_auto(
-                query, report, json_ld, days_back, agent_stats, generate_html=True
-            )
-
-            output_path = Path(report_dir)
-            try:
-                if ledger_data:
-                    write_json(output_path / "evidence_ledger.json", ledger_data)
-                if quant_patch:
-                    write_json(output_path / "vignette_quant_patch.json", quant_patch)
-                if adversarial_data:
-                    write_json(output_path / "adversarial.json", adversarial_data)
-                if playbooks_data:
-                    write_json(output_path / "playbooks.json", playbooks_data)
-            except Exception as artifact_err:
-                logger.error(f"Failed to persist auditor artifacts: {artifact_err}")
-
-            run_manifest = {
-                "query": query,
-                "days": days_back,
-                "seed": seed,
-                "budget_advanced": budget_advanced,
-                "timestamp": datetime.now().isoformat(),
-                "models": {
-                    "primary": self.model_name,
-                    "advanced": getattr(STIConfig, 'ADVANCED_MODEL_NAME', None) if premium_tasks_run else None,
-                },
-                "metrics": metrics,
-                "advanced_tasks_requested": tasks_requested,
-                "advanced_tasks_executed": premium_tasks_run,
-                "advanced_tokens_spent": advanced_tokens,
-                "advanced_budget_remaining": budget.left(),
-                "report_title": final_title,
-                "intent": intent,
-                "anchor_gate": anchor_gate,
-            }
-
-            agent_stats['run_manifest'] = run_manifest
-            self.last_run_status = {
-                "quality_gates_passed": quality_gates_passed,
-                "report_dir": report_dir,
-                "run_manifest": run_manifest,
-                "metrics": metrics,
-                "advanced_tasks": premium_tasks_run,
-                "asset_gated": anchor_gate,
-            }
-
-            # Social gating: respect social_enabled flag from asset_gating
-            social_enabled = agent_stats.get('asset_gating', {}).get('social_enabled', True)
-            social_skipped = not social_enabled or (anchor_gate and intent == "theory")
-            if social_skipped:
-                logger.info("Skipping social copy: insufficient anchors for thesis path or social_enabled=False.")
-            else:
-                try:
-                    from social_media_agent import SocialMediaAgent
-                    logger.info("Generating social media content...")
-                    social_agent = SocialMediaAgent(self.openai_api_key, self.model_name)
-                    social_context = {
-                        "confidence": confidence,
-                        "title": final_title,
-                        "query": query,
-                        "ledger": ledger_data,
-                        "sources": sources_data_stats,
-                    }
-                    social_content = social_agent.generate_all_formats(report, context=social_context)
-
-                    # Save social media content to report directory
-                    from file_utils import file_manager
-                    file_manager.save_social_media_content(report_dir, social_content)
-                    logger.info("📱 Social media content generated and saved")
-
-                except Exception as e:
-                    logger.error(f"Error generating social media content: {str(e)}")
-                    logger.info("Continuing without social media content...")
-            
-            # Build run_summary for return
-            run_summary = {
-                'intent': intent,
-                'artifacts': {
-                    'report_dir': report_dir,
-                },
-                'metrics': metrics,
-                'confidence_breakdown': confidence_breakdown.__dict__ if confidence_breakdown else {},
-                'premium': {
-                    'requested': tasks_requested,
-                    'executed': {task: task in premium_tasks_run for task in tasks_requested},
-                },
-            }
-            
-            return report, json_ld, run_summary
-            
-        except Exception as e:
-            # Log full exception details with traceback
-            logger.error(f"Error in enhanced search: {str(e)}")
-            logger.error(f"Traceback:\n{traceback.format_exc()}")
-            
-            # Log context information
-            logger.error(f"Query: {query}")
-            logger.error(f"Days back: {days_back}")
-            logger.error(f"Seed: {seed}")
-            logger.error(f"Budget advanced: {budget_advanced}")
-            if 'intent' in locals():
-                logger.error(f"Intent: {intent}")
-            
-            # Save error details to last_run_status for upstream access
-            self.last_run_status = {
-                "quality_gates_passed": False,
-                "error": {
-                    "type": type(e).__name__,
-                    "message": str(e),
-                    "traceback": traceback.format_exc(),
-                    "query": query,
-                    "days_back": days_back,
-                    "context": {
-                        "function": "search",
-                        "stage": "report_generation"
-                    }
-                }
-            }
-            
-            return f"Error performing enhanced search: {str(e)}", {}, {
-                'intent': 'unknown',
-                'artifacts': {},
-                'metrics': {},
-                'confidence_breakdown': {},
-                'premium': {'requested': [], 'executed': {}},
-            }
-    
-    def _generate_enhanced_report(self, query: str, sources: List[Source], 
-                                 signals: List[Dict[str, Any]], market_analysis: str,
-                                 tech_deepdive: str, competitive: str, expanded_lenses: str,
-                                 exec_summary: str, confidence: float, days_back: int, 
-                                 final_title: str = None) -> str:
-        """
-        Generate 3,000-4,000 word report with all sections
-        Structure:
-        - Title and metadata (50 words)
-        - Executive Summary (200 words)
-        - Topline (100 words)
-        - Signals (600 words - 6 signals)
-        - Market Analysis (500 words)
-        - Technology Deep-Dive (600 words)
-        - Competitive Landscape (500 words)
-        - Operator Lens (400 words)
-        - Investor Lens (400 words)
-        - BD Lens (400 words)
-        - Sources (200 words)
-        Total: ~3,350 words
-        """
-        # Calculate date range
-        end_date = datetime.now()
-        start_date = end_date - timedelta(days=days_back)
-        
-        # Generate topline
-        topline = self._generate_topline(signals, confidence)
-        
-        # Ensure sections are not None/empty strings that break formatting
-        exec_summary = exec_summary or "Summary unavailable due to insufficient evidence."
-        market_analysis = market_analysis or "Insufficient evidence for market analysis."
-        tech_deepdive = tech_deepdive or "Insufficient evidence for technology deep-dive."
-        competitive = competitive or "Insufficient evidence for competitive landscape."
-        expanded_lenses = expanded_lenses or "## Operator Lens\nInsufficient evidence.\n\n## Investor Lens\nInsufficient evidence.\n\n## BD Lens\nInsufficient evidence."
-        
-        # Build enhanced report using final title if provided
-        title_to_use = final_title if final_title else f"Tech Brief — {query.replace('Ai', 'AI').title()}"
-        report = f"""# {title_to_use}
-Date range: {start_date.strftime('%b %d')}–{end_date.strftime('%b %d')}, 2025 | Sources: {len(sources)} | Confidence: {confidence:.2f}
-
-## Executive Summary
-{exec_summary}
-
-## Topline
-{topline}
-
-## Signals (strength × impact × direction)"""
-        
-        # Add signals (6 signals, ~100 words each = 600 words)
-        # Valid source IDs are 1..len(sources) since sources are enumerated starting from 1
-        valid_source_ids = set(range(1, len(sources) + 1))
-        
-        for i, signal in enumerate(signals, 1):
-            # Filter citation_ids to only those that exist in the sources list
-            # This prevents citations to sources that were filtered out upstream
-            valid_citation_ids = [cid for cid in signal.get('citation_ids', []) if cid in valid_source_ids]
-            
-            if not valid_citation_ids and signal.get('citation_ids'):
-                # Log warning if citations were filtered out
-                logger.warning(f"Signal {i} had invalid citation_ids {signal.get('citation_ids')} - filtered to valid IDs")
-            
-            citation_refs = "".join([f"[^{cid}]" for cid in valid_citation_ids])
-            report += f"""
-- {signal.get('text', '')} — strength: {signal.get('strength', 'Medium')} | impact: {signal.get('impact', 'Medium')} | trend: {signal.get('direction', '?')}  {citation_refs}"""
-        
-        # Add analysis sections
-        report += f"""
-
-## Market Analysis
-{market_analysis}
-
-## Technology Deep-Dive
-{tech_deepdive}
-
-## Competitive Landscape
-{competitive}
-
-{expanded_lenses}
-
-## Sources"""
-        
-        # Add sources
-        for i, source in enumerate(sources, 1):
-            report += f"""
-[^{i}]: {source.title} — {source.publisher}, {source.date}. (cred: {source.credibility:.2f}) — {source.url}"""
-        
-        return report
-    
-    def _generate_json_ld_artifact(self, query: str, sources: List[Source], 
-                                  signals: List[Dict[str, Any]], confidence: float,
-                                  days_back: int, exec_summary: str, word_count: int, 
-                                  final_title: str = None) -> Dict[str, Any]:
-        """
-        Generate schema.org compliant JSON-LD
-        """
-        end_date = datetime.now()
-        start_date = end_date - timedelta(days=days_back)
-        
-        # Extract entities and topics
-        entities = self._extract_entities_from_sources(sources)
-        topics = self._extract_topics_from_signals(signals)
-        
-        # Create signal parts
-        signal_parts = []
+        title: str,
+        exec_summary: str,
+        highlights: List[str],
+        top_moves: List[str],
+        play_summary: List[Dict[str, Any]],
+        fast_path: Dict[str, Any],
+        fast_stack: Dict[str, Any],
+        spine: Dict[str, str],
+        signals: List[Dict[str, Any]],
+        sections: Dict[str, Any],
+        sources: List[SourceRecord],
+        quant_payload: Dict[str, Any],
+        appendix: List[Dict[str, Any]],
+        pilot_spec: Optional[Dict[str, Any]] = None,
+        metric_spec: Optional[Dict[str, Any]] = None,
+        role_actions: Optional[Dict[str, str]] = None,
+    ) -> str:
+        fast_sections = (fast_path or {}).get("sections") or [
+            "executive_summary",
+            "highlights",
+            "top_operator_moves",
+            "play_summary",
+        ]
+        lines = [f"# {title}", f"_Query_: {query}", ""]
+        if fast_stack:
+            lines.append("### Fast Stack")
+            if fast_stack.get("headline"):
+                lines.append(f"- **Headline:** {fast_stack['headline']}")
+            if fast_stack.get("why_now"):
+                lines.append(f"- **Why now:** {fast_stack['why_now']}")
+            if fast_stack.get("next_30_days"):
+                lines.append(f"- **Next 30 days:** {fast_stack['next_30_days']}")
+            lines.append("")
+        lines.append("## Fast Path")
+        for section_name in fast_sections:
+            if section_name == "executive_summary":
+                lines.append("### Executive Take")
+                lines.append(exec_summary)
+            elif section_name == "highlights" and highlights:
+                lines.append("### Highlights")
+                for bullet in highlights:
+                    lines.append(f"- {bullet}")
+            elif section_name == "top_operator_moves" and top_moves:
+                lines.append("### Top Operator Moves")
+                for move in top_moves:
+                    lines.append(f"- {move}")
+            elif section_name == "play_summary" and play_summary:
+                lines.append("### Plays")
+                for play in play_summary:
+                    lines.append(f"- **{play.get('label')}** — {play.get('success')}")
+            lines.append("")
+        lines.extend(["---", "", "## For operators and collab leads", ""])
+        if spine:
+            spine_bits: List[str] = []
+            if spine.get("what"):
+                spine_bits.append(f"What: {spine['what']}")
+            if spine.get("so_what"):
+                spine_bits.append(f"Proof: {spine['so_what']}")
+            if spine.get("now_what"):
+                spine_bits.append(f"Move: {spine['now_what']}")
+            lines.append(f"_Spine:_ {' | '.join(spine_bits)}")
+            lines.append("")
+        lines.append("## Signal Map")
         for signal in signals:
-            signal_parts.append({
-                "@type": "AnalysisNewsArticle",
-                "headline": signal.get('text', ''),
-                "confidence": signal.get('confidence', 0.5),
-                "citation": [sources[cid-1].url for cid in signal.get('citation_ids', []) if cid <= len(sources)]
-            })
-        
-        # Use final title if provided, otherwise use query-based title
-        title_to_use = final_title if final_title else f"Tech Brief — {query.title().replace('Ai', 'AI')}"
-        
+            cites = "".join(f"[^{cid}]" for cid in signal.get("citations", []))
+            horizon = signal.get("time_horizon") or "now"
+            lines.append(f"- **{signal.get('category')} — {signal.get('name')}** ({horizon})")
+            if signal.get("spine_hook"):
+                lines.append(f"  _Spine hook_: {signal['spine_hook']}")
+            lines.append(f"  {signal.get('description', '')}")
+            if signal.get("operator_scan"):
+                lines.append(f"  _Operator scan_: {signal['operator_scan']}")
+            lines.append(f"  _Operator move_: {signal.get('operator_move', '')} {cites}")
+        use_spec_anchors = isinstance(metric_spec, dict) and bool(metric_spec)
+        anchors = metric_spec if use_spec_anchors else quant_payload.get("anchors", [])
+        measurements = quant_payload.get("measurement_plan", [])
+        if anchors or measurements:
+            lines.extend(["", "## Measurement Spine"])
+        if anchors:
+            lines.append("### Anchors")
+            if use_spec_anchors:
+                for metric_id, entry in anchors.items():
+                    label = entry.get("label") or friendly_metric_label(metric_id)
+                    stage = (entry.get("stage") or "target").lower()
+                    if stage == "stretch":
+                        display_label = f"Stretch {label}"
+                    elif stage == "guardrail":
+                        display_label = f"{label} guardrail"
+                    elif stage == "observed":
+                        display_label = f"Observed {label}"
+                    else:
+                        display_label = label
+                    value_text = entry.get("target_text") or self._format_metric_target(
+                        entry.get("target_range") or [],
+                        entry.get("unit") or "",
+                    )
+                    owner = entry.get("owner") or "Owner"
+                    notes = entry.get("notes") or ""
+                    note_text = f" ({notes})" if notes else ""
+                    lines.append(f"- **{display_label}:** {value_text or 'Target TBD'} ({owner}){note_text}")
+            else:
+                for anchor in anchors:
+                    raw_label = anchor.get("headline") or anchor.get("label") or anchor.get("metric") or "Anchor"
+                    topic = anchor.get("topic") or anchor.get("metric") or raw_label
+                    display_label = friendly_metric_label(topic)
+                    stage = anchor_stage(raw_label)
+                    if stage == "stretch":
+                        display_label = f"Stretch {display_label}"
+                    elif stage == "guardrail":
+                        display_label = f"{display_label} guardrail"
+                    elif stage == "observed":
+                        display_label = f"Observed {display_label}"
+                    status = (anchor.get("status") or "target").title()
+                    band = (anchor.get("band") or "base").title()
+                    value_text = anchor.get("expression") or anchor.get("value") or "n/a"
+                    if anchor.get("value_low") is not None and anchor.get("value_high") is not None:
+                        unit = anchor.get("unit") or ""
+                        value_text = f"{anchor['value_low']}–{anchor['value_high']} {unit}".strip()
+                    value_text = self._metric_text(value_text)
+                    cites = "".join(f"[^{cid}]" for cid in anchor.get("source_ids", []))
+                    owner = anchor.get("owner") or "Owner"
+                    applies = ", ".join(anchor.get("applies_to_signals", []) or ["Signals"])
+                    lines.append(f"- **{display_label}** ({status}/{band}): {value_text} {cites}")
+                    lines.append(f"  Owner: {owner}; Applies to: {applies}")
+        if measurements:
+            lines.append("### Measurement Plan")
+            for item in measurements:
+                owner = item.get("owner") or "Owner"
+                timeframe = item.get("timeframe") or "Window"
+                metric = friendly_metric_label(item.get("metric") or "Metric")
+                expression = self._metric_text(item.get("expression") or "Target TBD")
+                lines.append(f"- **{metric}** ({owner}, {timeframe}) — {expression}")
+                if item.get("why_it_matters"):
+                    lines.append(f"  Why it matters: {self._metric_text(item['why_it_matters'])}")
+            lines.append(
+                "  Note: Buyer activity share in the early window is tracked separately from SKU promo share to protect margin while growing participation."
+            )
+        deep = sections.get("deep_analysis", {})
+        if deep:
+            lines.extend(["", "## Deep Analysis"])
+            for section in deep.get("sections", []):
+                scan_line = section.get("scan_line")
+                heading = section.get("title") or "Insight"
+                heading_line = f"### {heading}"
+                if scan_line:
+                    heading_line = f"{heading_line}: {self._metric_text(scan_line)}"
+                lines.append(heading_line)
+                lines.append(self._metric_text(section.get("insight", "")))
+                if section.get("operator_note"):
+                    lines.append(f"*Operator note:* {self._metric_text(section['operator_note'])}")
+                if section.get("instrument_next"):
+                    lines.append(f"*Instrument next:* {self._metric_text(section['instrument_next'])}")
+        patterns = sections.get("pattern_matches", [])
+        if patterns:
+            lines.extend(["", "## Pattern Matches"])
+            for match in patterns:
+                lines.append(f"- **{match.get('label')}**")
+                lines.append(f"  Then: {match.get('then')}")
+                lines.append(f"  Now: {match.get('now')}")
+                lines.append(f"  Operator leap: {match.get('operator_leap')}")
+        outcomes = sections.get("brand_outcomes", [])
+        if outcomes:
+            lines.extend(["", "## Brand & Operator Outcomes"])
+            for outcome in outcomes:
+                lines.append(
+                    f"- **{outcome.get('title')}** ({outcome.get('owner')} · {outcome.get('time_horizon')}): {outcome.get('description')} (Impact: {outcome.get('impact')})"
+                )
+        kit = sections.get("activation_kit", [])
+        if kit:
+            lines.extend(["", "## Activation Kit"])
+            for play in kit:
+                display = play.get("display", {})
+                ops = play.get("ops", {})
+                title_line = display.get("card_title") or display.get("play_name") or "Activation play"
+                lines.append(f"### {title_line}")
+                pillar = display.get("pillar") or "Pillar"
+                persona = display.get("persona") or "Operator lead"
+                horizon = display.get("time_horizon") or "immediate"
+                lines.append(f"*Pillar:* {pillar} · *Persona:* {persona} · *Time horizon:* {horizon}")
+                if display.get("why_now"):
+                    lines.append(f"**Why now:** {display['why_now']}")
+                if display.get("thresholds_summary"):
+                    lines.append(f"**Thresholds:** {display['thresholds_summary']}")
+                lines.append(
+                    f"**Fit:** Best for {display.get('best_fit') or 'operators ready to instrument'}; Not for {display.get('not_for') or 'teams without guardrails'}."
+                )
+                if display.get("proof_point"):
+                    lines.append(f"Proof: {display['proof_point']}")
+                placements = display.get("placement_options") or []
+                if placements:
+                    lines.append(f"Placement options: {', '.join(placements)}")
+                targets = ops.get("target_map") or []
+                if targets:
+                    lines.append("Target map:")
+                    for entry in targets:
+                        lines.append(
+                            f"  - {entry.get('role')} ({entry.get('org_type')}): {entry.get('why_now')}"
+                        )
+                cadence = ops.get("cadence") or []
+                if cadence:
+                    lines.append("Cadence:")
+                    for touch in cadence:
+                        lines.append(
+                            f"  - Day {touch.get('day')}: {touch.get('subject')} — {touch.get('narrative')} (CTA: {touch.get('cta')})"
+                        )
+                lines.append(
+                    f"Ops tags: owner {ops.get('operator_owner') or 'TBD'} x {ops.get('collaborator') or 'collaborator'} | Collab type {ops.get('collab_type') or 'brand↔operator'} | Zero new SKUs: {'Yes' if ops.get('zero_new_sku') else 'No'} | Ops drag: {ops.get('ops_drag') or 'medium'}"
+                )
+            lines.append(
+                "\n_The Brand Collab Lab turns these plays into named concepts, deck spines, and outreach ready for partner teams._"
+            )
+        risks = sections.get("risk_radar", [])
+        if risks:
+            lines.extend(["", "## Risk Radar"])
+            for risk in risks:
+                severity = risk.get("severity", 2)
+                likelihood = risk.get("likelihood", 2)
+                label = risk.get("scan_line") or risk.get("risk_name") or "Risk"
+                lines.append(f"- **{label}** (Severity {severity}, Likelihood {likelihood})")
+                lines.append(f"  Trigger: {risk.get('trigger', 'Unclear trigger')}")
+                lines.append(f"  Detection: {risk.get('detection', 'Instrument leading indicators')}")
+                lines.append(f"  Mitigation: {risk.get('mitigation', 'Throttle exposure')}")
+        outlook = sections.get("future_outlook", [])
+        if outlook:
+            lines.extend(["", "## Future Outlook"])
+            for horizon in outlook:
+                lines.append(
+                    f"- **{horizon.get('horizon')}** {horizon.get('headline')}: {horizon.get('scan_line')} (confidence {horizon.get('confidence', 0.7):.2f})"
+                )
+                lines.append(f"  {horizon.get('description')}")
+                lines.append(f"  Watch {horizon.get('operator_watch')} for {horizon.get('collaboration_upside')}")
+        lines.extend(["", "## Sources"])
+        for source in sources:
+            lines.append(
+                f"[^{source.id}]: {source.title} — {source.publisher}, {source.date}. (cred: {source.credibility:.2f}) — {source.url}"
+            )
+        if appendix:
+            lines.extend(["", "## Appendix Signals"])
+            for signal in appendix:
+                cites = "".join(f"[^{cid}]" for cid in signal.get("citations", []))
+                lines.append(
+                    f"- {signal.get('name', signal.get('id'))}: held for later window (strength {signal.get('strength', 0):.2f}) {cites}"
+                )
+        return "\n".join(line for line in lines if line is not None)
+
+    def _build_json_ld(
+        self,
+        query: str,
+        title: str,
+        executive_summary: str,
+        sources: List[SourceRecord],
+        signals: List[Dict[str, Any]],
+        days_back: int,
+        confidence: float,
+    ) -> Dict[str, Any]:
+        end = datetime.utcnow()
+        start = end - timedelta(days=days_back)
+        has_part = []
+        for signal in signals:
+            citations = [sources[cid - 1].url for cid in signal.get("citations", []) if 0 < cid <= len(sources)]
+            has_part.append(
+                {
+                    "@type": "AnalysisNewsArticle",
+                    "headline": signal.get("text"),
+                    "citation": citations,
+                    "about": signal.get("category"),
+                }
+            )
         return {
             "@context": "https://schema.org",
             "@type": "Report",
-            "name": title_to_use,
-            "author": {
-                "@type": "Organization",
-                "name": "Smart Technology Investments LLC",
-                "url": "https://sti.ai"
-            },
-            "datePublished": datetime.now().isoformat(),
+            "name": title,
             "about": query,
-            "abstract": exec_summary,
-            "hasPart": signal_parts,
-            "temporalCoverage": f"{start_date.strftime('%Y-%m-%d')}/{end_date.strftime('%Y-%m-%d')}",
-            "keywords": topics,
-            "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": confidence,
-                "worstRating": 0.30,
-                "bestRating": 0.85
-            },
-            "entities": entities,
-            "wordCount": word_count,
-            "reportType": "Technology Intelligence Brief"
+            "abstract": executive_summary,
+            "datePublished": datetime.utcnow().isoformat(),
+            "temporalCoverage": f"{start.strftime('%Y-%m-%d')}/{end.strftime('%Y-%m-%d')}",
+            "hasPart": has_part,
+            "aggregateRating": {"@type": "AggregateRating", "ratingValue": confidence},
         }
-    
-    def _extract_entities_from_sources(self, sources: List[Source]) -> Dict[str, List[str]]:
-        """Extract entities from sources for JSON-LD"""
-        entities = {
-            "ORG": [],
-            "PERSON": [],
-            "PRODUCT": [],
-            "TICKER": [],
-            "GEO": []
+
+    def _time_window(self, days_back: int) -> Dict[str, Any]:
+        end = datetime.utcnow()
+        start = end - timedelta(days=days_back)
+        label = self._format_window_label(start, end)
+        return {
+            "start": start.strftime("%Y-%m-%d"),
+            "end": end.strftime("%Y-%m-%d"),
+            "days": days_back,
+            "label": label,
         }
-        
-        # Simple entity extraction from source content
-        for source in sources:
-            content = source.content.lower()
-            
-            # Extract organizations from publisher and content
-            if source.publisher not in entities["ORG"]:
-                entities["ORG"].append(source.publisher)
-            
-            # Extract common tech companies
-            tech_companies = ['openai', 'anthropic', 'google', 'microsoft', 'meta', 'apple', 'amazon', 'nvidia']
-            for company in tech_companies:
-                if company in content and company.title() not in entities["ORG"]:
-                    entities["ORG"].append(company.title())
-        
-        return entities
-    
-    def _extract_topics_from_signals(self, signals: List[Dict[str, Any]]) -> List[str]:
-        """Extract topics from signals for JSON-LD"""
-        topics = []
-        
-        # Common tech topics
-        topic_keywords = {
-            'AI': ['ai', 'artificial intelligence', 'machine learning', 'llm', 'gpt'],
-            'Cybersecurity': ['security', 'cyber', 'breach', 'vulnerability'],
-            'Cloud': ['cloud', 'aws', 'azure', 'gcp', 'infrastructure'],
-            'Robotics': ['robot', 'automation', 'autonomous'],
-            'AR/VR': ['ar', 'vr', 'augmented', 'virtual', 'metaverse'],
-            'Semiconductors': ['chip', 'semiconductor', 'nvidia', 'amd', 'intel']
-        }
-        
-        for signal in signals:
-            signal_text = signal.get('text', '').lower()
-            for topic, keywords in topic_keywords.items():
-                if any(keyword in signal_text for keyword in keywords):
-                    if topic not in topics:
-                        topics.append(topic)
-        
-        return topics if topics else ['Technology']
 
+    def _window_label(self, window: Dict[str, Any]) -> str:
+        if not window:
+            return ""
+        start_raw = window.get("start")
+        end_raw = window.get("end")
+        if not start_raw or not end_raw:
+            return ""
+        try:
+            start_dt = datetime.strptime(start_raw, "%Y-%m-%d")
+            end_dt = datetime.strptime(end_raw, "%Y-%m-%d")
+        except ValueError:
+            return f"{start_raw} – {end_raw}"
+        return self._format_window_label(start_dt, end_dt)
 
-def main():
-    """Example usage of the Enhanced MCP Agent"""
-    
-    # Load environment variables
-    openai_api_key = os.getenv("OPENAI_API_KEY")
-    tavily_api_key = os.getenv("TAVILY_API_KEY") or ""
-    
-    if not openai_api_key:
-        print("Please set OPENAI_API_KEY environment variable")
-        return
-    
-    # Initialize the enhanced agent
-    agent = EnhancedSTIAgent(
-        openai_api_key=openai_api_key,
-        tavily_api_key=tavily_api_key
-    )
-    
-    # Initialize analysis tools
-    print("Initializing analysis tools...")
-    agent.initialize_analysis_tools()
-    
-    # Example search
-    print("=== Enhanced MCP Agent Demo ===\n")
-    print("Generating enhanced research brief...")
-    
-    markdown_report, json_ld_artifact, run_summary = agent.search(
-        "AI technology trends",
-        days_back=7
-    )
-    
-    print("📊 ENHANCED REPORT:")
-    print("=" * 80)
-    print(markdown_report)
-    print("=" * 80)
-    
-    # Reports are automatically saved with nested file structure
-    print(f"\n📊 Report generated successfully!")
-    print(f"📈 Report confidence: {json_ld_artifact.get('aggregateRating', {}).get('ratingValue', 'N/A')}")
-    print(f"📝 Word count: {json_ld_artifact.get('wordCount', 'N/A')}")
-    print(f"💾 All files saved automatically in organized directory structure")
+    def _format_window_label(self, start_dt: datetime, end_dt: datetime) -> str:
+        if start_dt.year == end_dt.year:
+            if start_dt.month == end_dt.month:
+                return f"{start_dt.strftime('%b %d')} – {end_dt.strftime('%d, %Y')}"
+            return f"{start_dt.strftime('%b %d')} – {end_dt.strftime('%b %d, %Y')}"
+        return f"{start_dt.strftime('%b %d, %Y')} – {end_dt.strftime('%b %d, %Y')}"
 
+    def _apply_window_label(self, spec_bundle: Dict[str, Any], window_label: str) -> None:
+        if not spec_bundle or not window_label:
+            return
+        pilot_spec = spec_bundle.get("pilot_spec")
+        if isinstance(pilot_spec, dict):
+            pilot_spec["window"] = window_label
+            pilot_spec.setdefault("window_label", window_label)
 
-if __name__ == "__main__":
-    main()
+    def _query_title(self, query: str) -> str:
+        cleaned = re.sub(r"\s+", " ", (query or "STI Brief").strip())
+        return cleaned or "STI Brief"
+
+    def _trace(self, label: str, payload: Any = None) -> None:
+        emit = self.trace_mode or logger.isEnabledFor(logging.DEBUG)
+        if not emit:
+            return
+        target = logger.info if self.trace_mode else logger.debug
+        if payload is None:
+            target("[TRACE] %s", label)
+            return
+        try:
+            serialized = json.dumps(payload, ensure_ascii=False, indent=2)
+        except Exception:
+            serialized = str(payload)
+        max_len = 4000
+        if len(serialized) > max_len:
+            serialized = serialized[: max_len - 3] + "..."
+        target("[TRACE] %s: %s", label, serialized)

@@ -1,0 +1,122 @@
+[
+  {
+    "category": "Cultural",
+    "name": "Brands-As-Content Studios",
+    "description": "Local and national brands are converting storefronts into production spaces for events, shoots, and live programming. The space functions simultaneously as content studio and customer acquisition channel for both foot traffic and social reach.",
+    "operator_move": "Brand marketing and store operations should run four branded content sessions at one flagship in a 6-week window and measure footfall lift and social reach, targeting a +10% walk-in lift and +20% social reach.",
+    "operator_scan": "Host branded sessions and track footfall plus social reach.",
+    "spine_hook": "Stores double as brand content studios",
+    "time_horizon": "6-week",
+    "strength": 0.9,
+    "US_fit": 1.0,
+    "operationality": 0.9,
+    "support": [
+      1,
+      8,
+      2,
+      6
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      1,
+      8,
+      2,
+      6
+    ],
+    "id": "S1"
+  },
+  {
+    "category": "Market",
+    "name": "Landlord-Curated Experience Leasing",
+    "description": "Retail property managers are repackaging vacant units as curated experience leases and rotating artist residencies to drive center traffic. Owners treat space as programming inventory rather than passively listed retail square footage.",
+    "operator_move": "Property manager should pilot converting one vacant storefront into a rotating artist residency for an 8-week test and measure mall dwell time and incremental tenant inquiries, targeting a +15% dwell time lift.",
+    "operator_scan": "Activate vacancy as artist residency and measure mall dwell time.",
+    "spine_hook": "Landlords monetize vacancies through curated experiences",
+    "time_horizon": "6-week",
+    "strength": 0.82,
+    "US_fit": 0.95,
+    "operationality": 0.8,
+    "support": [
+      2,
+      7
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      2,
+      7
+    ],
+    "id": "S2"
+  },
+  {
+    "category": "Market",
+    "name": "Retail Chain Branded Shop-In-Shop",
+    "description": "National chains are licensing in-store branded shop experiences from studios and cultural partners to drive discovery and merchandise tie-ins. These mini-shops convert cultural cachet into measurable category sales lift for both partners.",
+    "operator_move": "Retail partnership lead should secure a branded shop-in-shop pilot with a cultural partner for a 6-week window and measure category sales lift, targeting a +10% category sales increase.",
+    "operator_scan": "Negotiate a shop-in-shop pilot and measure category sales.",
+    "spine_hook": "Chains host branded mini-shops inside stores",
+    "time_horizon": "6-week",
+    "strength": 0.88,
+    "US_fit": 0.95,
+    "operationality": 0.85,
+    "support": [
+      6
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      6
+    ],
+    "id": "S3"
+  },
+  {
+    "category": "Behavioral",
+    "name": "Vacancy-As-Studio Inventory",
+    "description": "Vacant storefronts are being rented short term as low-cost studios for content shoots and brand activations. Brands use these spaces to produce multiple social assets at a fraction of traditional production rates.",
+    "operator_move": "Brand experiential teams should book two vacant retail spaces for content shoots over a 4-week window and produce six social assets, measuring cost-per-asset versus studio rentals and targeting a 30% lower CPM-equivalent.",
+    "operator_scan": "Book vacant spaces for shoots and compare cost-per-asset.",
+    "spine_hook": "Vacant stores become low-cost content studios",
+    "time_horizon": "6-week",
+    "strength": 0.8,
+    "US_fit": 0.9,
+    "operationality": 0.8,
+    "support": [
+      7,
+      2
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      7,
+      2
+    ],
+    "id": "S4"
+  },
+  {
+    "category": "Technology",
+    "name": "Unified In-Store Data For Personalization",
+    "description": "Unified customer and product data is becoming the backbone for in-store personalization and targeted activations. Brands that complete cross-system audits can deliver timely offers tied to in-store programming and measure conversion lift quickly.",
+    "operator_move": "Data and CRM teams should complete a cross-system data audit in a 6-week window and deploy one personalized in-store offer to 1,000 customers, measuring redemption lift versus baseline and targeting a +15% lift.",
+    "operator_scan": "Audit data systems and test a personalized in-store offer.",
+    "spine_hook": "Unified data powers in-store personalization",
+    "time_horizon": "6-week",
+    "strength": 0.78,
+    "US_fit": 0.9,
+    "operationality": 0.77,
+    "support": [
+      9
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      9
+    ],
+    "id": "S5"
+  }
+]

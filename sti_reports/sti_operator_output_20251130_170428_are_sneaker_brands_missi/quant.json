@@ -1,0 +1,114 @@
+{
+  "spine_hook": "Success = flagship footfall +10–15% with early-window buyer share rising to 20–30% while event CPA stays ≤0.80× baseline and QR redemptions ≥5% of footfall.",
+  "anchors": [
+    {
+      "id": "Q1",
+      "headline": "Foot traffic uplift (base target)",
+      "topic": "Local flagship footfall",
+      "value_low": 10.0,
+      "value_high": 15.0,
+      "unit": "% vs baseline week",
+      "status": "target",
+      "band": "base",
+      "owner": "Store Operations",
+      "expression": "In-store footfall +10–15% vs a pre-campaign baseline week",
+      "source_ids": [],
+      "applies_to_signals": [
+        "store_as_studio",
+        "local_creators"
+      ]
+    },
+    {
+      "id": "Q2",
+      "headline": "Early-window buyer share (current baseline)",
+      "topic": "Share of transactions within first 48 hours of event/drop",
+      "value_low": 12.0,
+      "value_high": 15.0,
+      "unit": "% of weekly transactions",
+      "status": "observed",
+      "band": "base",
+      "owner": "Merchandising + Analytics",
+      "expression": "Currently 12–15% of weekly transactions occur in early-window",
+      "source_ids": [],
+      "applies_to_signals": [
+        "store_as_studio",
+        "release_events"
+      ]
+    },
+    {
+      "id": "Q3",
+      "headline": "Event CPA ceiling",
+      "topic": "Acquisition efficiency for store-driven events",
+      "value_low": 0.0,
+      "value_high": 0.8,
+      "unit": "× baseline CPA",
+      "status": "target",
+      "band": "base",
+      "owner": "Performance Marketing",
+      "expression": "Event-level CPA ≤0.80× baseline paid-acq CPA",
+      "source_ids": [],
+      "applies_to_signals": [
+        "local_paid_media",
+        "creator_amplification"
+      ]
+    },
+    {
+      "id": "Q4",
+      "headline": "QR redemption minimum",
+      "topic": "On-site physical-to-digital conversion",
+      "value_low": 5.0,
+      "value_high": 100.0,
+      "unit": "% of footfall",
+      "status": "target",
+      "band": "base",
+      "owner": "Store Ops + CRM",
+      "expression": "At least 5% of footfall redeems QR-linked offer or registers",
+      "source_ids": [],
+      "applies_to_signals": [
+        "in-store_qr",
+        "pop-up_interaction"
+      ]
+    }
+  ],
+  "measurement_plan": [
+    {
+      "id": "M1",
+      "metric": "Event CPA",
+      "expression": "CPA ≤ 0.80× baseline",
+      "owner": "Performance Marketing",
+      "timeframe": "2025-11-24 to 2025-12-01",
+      "status": "plan",
+      "why_it_matters": "Keeps acquisition efficient so in-store tests do not trade margin for footfall."
+    },
+    {
+      "id": "M2",
+      "metric": "Buyer activity share vs promo intensity",
+      "expression": "Early-window transactions rise to 20–30% while promo SKU share does not exceed LY by >5p.p.",
+      "owner": "Merchandising + Analytics",
+      "timeframe": "2025-11-24 to 2025-12-01",
+      "status": "plan",
+      "notes": "Track early-window buyer share and percent of assortment on promotion side by side daily.",
+      "why_it_matters": "Paired metrics show whether buyer mix improves or growth is just deeper discounting."
+    },
+    {
+      "id": "M3",
+      "metric": "Flagship footfall delta",
+      "expression": "Footfall +10–15% vs prior 4-week average (measured daily)",
+      "owner": "Store Operations",
+      "timeframe": "2025-11-24 to 2025-12-01",
+      "status": "plan",
+      "why_it_matters": "Direct test of whether local activations pull community traffic without sitewide promos."
+    },
+    {
+      "id": "M4",
+      "metric": "QR redemption to footfall ratio (incremental activation)",
+      "expression": "QR redemptions ≥5% of counted footfall with tracked conversion lift",
+      "owner": "Store Ops + CRM",
+      "timeframe": "2025-11-24 to 2025-12-01",
+      "status": "plan",
+      "notes": "Use QR scans with promo codes and POS link to attribute purchases; include control days with no QR.",
+      "why_it_matters": "Shows measurable physical-to-digital capture and direct buyer conversion from micro-community engagement."
+    }
+  ],
+  "coverage": 0.95
+}

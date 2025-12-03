@@ -1,26 +1,31 @@
 """
-File Utilities for STI Intelligence System
+File utilities for the operator-focused STI workflow.
 
-Provides automatic nested file saving functionality for all intelligence reports
-with organized directory structure and comprehensive metadata tracking.
+Handles report directory creation, markdown/HTML/json saves, and optional
+social content persistence.
 """
 
-import hashlib
+from __future__ import annotations
+
 import json
 import logging
 import os
 from datetime import datetime
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
-# Configure logging - only if root logger has no handlers (avoid conflicts)
-if not logging.getLogger().handlers:
-    logging.basicConfig(level=logging.INFO)
+from config import STIConfig
+from image_generator import ImageGenerator
+from markdown_utils import insert_image_anchors
+from renderers import get_renderer
+
 logger = logging.getLogger(__name__)
 
 
 def compute_content_sha(content: str) -> str:
+    import hashlib
+
     return hashlib.sha256((content or "").encode("utf-8")).hexdigest()
 
 
@@ -42,458 +47,229 @@ def write_json(path: Path, payload: Any) -> None:
 
 
 class STIFileManager:
-    """
-    Manages automatic file saving for STI Intelligence System reports
-    with nested directory structure and comprehensive metadata.
-    """
-    
     def __init__(self, base_output_dir: str = "sti_reports"):
         self.base_output_dir = base_output_dir
-        self.ensure_output_directory()
-    
-    def ensure_output_directory(self):
-        """Ensure the base output directory exists"""
         Path(self.base_output_dir).mkdir(exist_ok=True)
-        logger.info(f"Output directory ensured: {self.base_output_dir}")
-    
-    def create_report_directory(self, agent_type: str, query: str, days_back: int = 7) -> str:
-        """
-        Create a timestamped directory for a specific report
-        
-        Args:
-            agent_type: Type of agent (simple, enhanced, multi-agent)
-            query: Search query
-            days_back: Number of days back for search
-            
-        Returns:
-            Path to the created directory
-        """
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        query_slug = self._slugify_query(query)
-        
-        dir_name = f"sti_{agent_type}_output_{timestamp}_{query_slug}"
-        report_dir = os.path.join(self.base_output_dir, dir_name)
-        
-        os.makedirs(report_dir, exist_ok=True)
-        logger.info(f"Created report directory: {report_dir}")
-        
-        return report_dir
-    
-    def _slugify_query(self, query: str) -> str:
-        """Convert query to filesystem-safe slug"""
-        return "".join(c.lower() if c.isalnum() else "_" for c in query)[:20]
-    
-    def save_enhanced_report(self, query: str, markdown_report: str, 
-                           json_ld_artifact: Dict[str, Any], 
-                           days_back: int = 7, 
-                           agent_stats: Optional[Dict[str, Any]] = None,
-                           generate_html: bool = True) -> str:
-        """
-        Save enhanced agent report with full nested structure
-        
-        Args:
-            query: Search query
-            markdown_report: Generated markdown report
-            json_ld_artifact: JSON-LD structured data
-            days_back: Number of days back for search
-            agent_stats: Optional agent statistics
-            generate_html: Whether to generate HTML version
-            
-        Returns:
-            Path to the created report directory
-        """
-        report_dir = self.create_report_directory("enhanced", query, days_back)
-        
-        # Save markdown report
-        markdown_file = os.path.join(report_dir, 'intelligence_report.md')
-        write_text(Path(markdown_file), markdown_report)
-        logger.info(f"💾 Saved markdown report: {markdown_file}")
-        
-        # Save JSON-LD artifact
-        jsonld_file = os.path.join(report_dir, 'intelligence_report.jsonld')
-        write_json(Path(jsonld_file), json_ld_artifact)
-        logger.info(f"💾 Saved JSON-LD artifact: {jsonld_file}")
-        
-        # Extract and save executive summary
-        exec_summary = json_ld_artifact.get('abstract', 'Executive summary not available')
-        summary_file = os.path.join(report_dir, 'executive_summary.txt')
-        write_text(Path(summary_file), exec_summary)
-        logger.info(f"💾 Saved executive summary: {summary_file}")
-        
-        # Extract and save sources/parts data (fallback to agent_stats if provided)
-        sources_data: List[Dict[str, Any]] = []
-        if 'hasPart' in json_ld_artifact:
-            for i, part in enumerate(json_ld_artifact['hasPart'], 1):
-                sources_data.append({
-                    'id': i,
-                    'headline': part.get('headline', ''),
-                    'confidence': part.get('confidence', 0),
-                    'citations': part.get('citation', []),
-                    'content_sha': part.get('content_sha')
-                })
-        elif agent_stats and isinstance(agent_stats.get('sources_data'), list):
-            sources_data = agent_stats['sources_data']
 
-        if agent_stats and isinstance(agent_stats.get('sources_data'), list):
-            sources_data = agent_stats['sources_data']
-        
-        sources_file = os.path.join(report_dir, 'sources.json')
-        write_json(Path(sources_file), sources_data)
-        logger.info(f"💾 Saved sources data: {sources_file}")
-        
-        # Create comprehensive metadata
+    def create_report_directory(self, agent_type: str, query: str, days_back: int) -> str:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        query_slug = "".join(c.lower() if c.isalnum() else "_" for c in query)[:24]
+        dirname = f"sti_{agent_type}_output_{timestamp}_{query_slug}"
+        path = Path(self.base_output_dir) / dirname
+        path.mkdir(parents=True, exist_ok=True)
+        return str(path)
+
+    def save_enhanced_report(
+        self, report_bundle: Dict[str, Any], generate_html: bool = True, report_dir: Optional[str] = None
+    ) -> str:
+        query = report_bundle.get("query", "STI Brief")
+        window = report_bundle.get("time_window", {})
+        days_back = int(window.get("days", STIConfig.DEFAULT_DAYS_BACK))
+        report_dir = report_dir or self.create_report_directory("operator", query, days_back)
+
+        markdown = report_bundle.get("markdown", "")
+        sections = report_bundle.get("sections")
+        markdown = insert_image_anchors(markdown, sections)
+        write_text(Path(report_dir) / "intelligence_report.md", markdown)
+        write_json(Path(report_dir) / "intelligence_report.jsonld", report_bundle.get("json_ld", {}))
+
+        source_stats = report_bundle.get("source_stats", {})
         metadata = {
-            'generation_timestamp': datetime.now().isoformat(),
-            'query': query,
-            'days_back': days_back,
-            'report_stats': {
-                'character_count': len(markdown_report),
-                'word_count': len(markdown_report.split()),
-                'jsonld_size': len(json.dumps(json_ld_artifact))
+            "generated_at": datetime.now().isoformat(),
+            "query": query,
+            "time_window": window,
+            "confidence": report_bundle.get("confidence"),
+            "files": STIConfig.OUTPUT_FILES,
+            "sections": list(report_bundle.get("sections", {}).keys()),
+            "title": report_bundle.get("title"),
+            "highlights": report_bundle.get("highlights", []),
+            "executive_summary": report_bundle.get("executive_summary", ""),
+            "top_operator_moves": report_bundle.get("top_operator_moves", []),
+            "statistics": {
+                "word_count": len(markdown.split()),
+                "signal_count": len(report_bundle.get("signals", [])),
+                "source_count": len(report_bundle.get("sources", [])),
             },
-            'confidence_score': json_ld_artifact.get('aggregateRating', {}).get('ratingValue', 'N/A'),
-            'sources_count': agent_stats.get('validated_sources_count', len(sources_data)),  # NEW
-            'system_info': {
-                'agent_type': 'Enhanced STI Agent',
-                'version': '1.0.0',
-                'model': 'gpt-5-mini-2025-08-07',
-                'date_filtering': 'Strict 7-day window enforced'
-            }
+            "read_time_minutes": report_bundle.get("read_time_minutes"),
+            "length_label": f"~{report_bundle.get('read_time_minutes', STIConfig.TARGET_READ_TIME_MINUTES)} min read",
+            "qa": report_bundle.get("qa", {}),
         }
-        
-        # Add agent statistics if provided
-        if agent_stats:
-            metadata['agent_stats'] = agent_stats
-        
-        metadata_file = os.path.join(report_dir, 'metadata.json')
-        write_json(Path(metadata_file), metadata)
-        logger.info(f"💾 Saved metadata: {metadata_file}")
-        
-        # Generate HTML version if requested
-        if generate_html:
+        metadata.update(report_bundle.get("metadata", {}))
+        if source_stats:
+            metadata["source_stats"] = source_stats
+        write_json(Path(report_dir) / "metadata.json", metadata)
+        write_json(Path(report_dir) / "sources.json", report_bundle.get("sources", []))
+        write_json(Path(report_dir) / "signals.json", report_bundle.get("signals", []))
+        write_json(Path(report_dir) / "sections.json", report_bundle.get("sections", {}))
+        write_json(Path(report_dir) / "quant.json", report_bundle.get("quant", {}))
+        write_json(Path(report_dir) / "appendix_signals.json", report_bundle.get("appendix_signals", []))
+        if source_stats:
+            write_json(Path(report_dir) / "source_stats.json", source_stats)
+
+        briefs = report_bundle.get("image_briefs")
+        if briefs:
+            images_dir = Path(report_dir) / "images"
+            images_dir.mkdir(exist_ok=True, parents=True)
+            write_json(images_dir / "briefs.json", briefs)
+            self._maybe_generate_images(report_bundle, report_dir, briefs)
+
+        rendered_files: List[str] = []
+        renderer_queue = list(STIConfig.REPORT_RENDERERS)
+        if generate_html and "legacy_html" not in renderer_queue:
+            renderer_queue.append("legacy_html")
+        for renderer_name in renderer_queue:
             try:
-                from html_converter_agent import HTMLConverterAgent
-                converter = HTMLConverterAgent()
-                html_report = converter.convert(markdown_report, json_ld_artifact, metadata, report_dir=report_dir)
-                
-                html_file = os.path.join(report_dir, 'intelligence_report.html')
-                write_text(Path(html_file), html_report)
-                logger.info(f"💾 Saved HTML report: {html_file}")
-                
-            except Exception as e:
-                logger.error(f"Error generating HTML report: {str(e)}")
-                logger.info("Continuing without HTML generation...")
-        
-        # Generate Google Slides presentation if enabled
+                renderer = get_renderer(renderer_name)
+            except ValueError:
+                logger.warning("Unknown renderer '%s' requested. Skipping.", renderer_name)
+                continue
+            try:
+                rendered_files.extend(renderer.render(report_bundle, report_dir))
+            except Exception as exc:
+                logger.error("Renderer %s failed: %s", renderer_name, exc)
+
+        if rendered_files:
+            metadata_path = Path(report_dir) / "metadata.json"
+            metadata_payload = json.loads(metadata_path.read_text(encoding="utf-8"))
+            metadata_payload["renderers"] = renderer_queue
+            metadata_payload["artifact_paths"] = rendered_files
+            write_json(metadata_path, metadata_payload)
+
+        self._log_summary(report_dir, metadata)
+        return report_dir
+
+    def _maybe_generate_images(self, bundle: Dict[str, Any], report_dir: str, briefs: Dict[str, Any]) -> None:
+        if not STIConfig.ENABLE_IMAGE_GENERATION:
+            logger.debug("Image generation disabled via config")
+            return
         try:
-            from config import STIConfig
-            if STIConfig.ENABLE_SLIDES_GENERATION:
-                from slides_generator import SlidesGenerator
-                
-                # Get credentials path from config or env (only needed for service account)
-                creds_path = STIConfig.GOOGLE_CREDENTIALS_PATH
-                if not creds_path:
-                    creds_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-                
-                # Use OAuth by default (can be overridden in config)
-                use_oauth = getattr(STIConfig, 'GOOGLE_USE_OAUTH', True)
-                generator = SlidesGenerator(credentials_path=creds_path, use_oauth=use_oauth)
-                slides_result = generator.generate_slides(
-                    report_dir=report_dir,
-                    query=query,
-                    metadata=metadata,
-                    json_ld_artifact=json_ld_artifact,
-                    markdown_report=markdown_report
+            generator = ImageGenerator()
+        except Exception as exc:
+            logger.warning("ImageGenerator initialization failed: %s", exc)
+            return
+        if not getattr(generator, "client", None):
+            logger.warning("Image generation skipped: OpenAI client not initialized (set OPENAI_API_KEY)")
+            return
+        query = bundle.get("query", "Operator Brief")
+        exec_summary = bundle.get("executive_summary")
+        confidence = (bundle.get("confidence") or {}).get("score")
+        hero_brief = briefs.get("hero") if isinstance(briefs, dict) else None
+        if isinstance(hero_brief, dict):
+            try:
+                generator.generate_hero_image(
+                    query,
+                    report_dir,
+                    intent="market",
+                    exec_summary=exec_summary,
+                    anchor_coverage=confidence,
+                    hero_brief=hero_brief,
                 )
-                if slides_result:
-                    logger.info(f"✅ Slide deck generated: {slides_result.get('slides_url', 'N/A')}")
-            else:
-                logger.debug("Slide generation disabled in config")
-        except ImportError as e:
-            logger.debug(f"Slide generation not available: {e}")
-        except Exception as e:
-            logger.error(f"Error generating slides: {str(e)}")
-            logger.info("Continuing without slide generation...")
-        
-        # Print summary
-        self._print_save_summary(report_dir, metadata)
-        
-        return report_dir
-    
+            except Exception as exc:
+                logger.warning("Hero image generation failed: %s", exc)
+        sections_payload = self._image_section_payload(bundle, briefs)
+        if not sections_payload:
+            return
+        max_sections = getattr(STIConfig, "MAX_SECTION_IMAGES", 0)
+        generated = 0
+        for section_name, section_content, section_brief in sections_payload:
+            if max_sections and generated >= max_sections:
+                break
+            try:
+                result = generator.generate_section_image(
+                    section_name,
+                    section_content,
+                    query,
+                    "market",
+                    report_dir,
+                    anchor_coverage=confidence,
+                    brief=section_brief,
+                )
+                if result:
+                    generated += 1
+            except Exception as exc:
+                logger.warning("Section image '%s' failed: %s", section_name, exc)
+
+    def _image_section_payload(self, bundle: Dict[str, Any], briefs: Dict[str, Any]) -> List[Tuple[str, str, Dict[str, Any]]]:
+        payload: List[Tuple[str, str, Dict[str, Any]]] = []
+        sections = bundle.get("sections", {}) or {}
+        if isinstance(briefs, dict):
+            signal_brief = briefs.get("signal_map")
+            if isinstance(signal_brief, dict):
+                content = sections.get("signal_map_notes") or self._flatten_brief(signal_brief)
+                payload.append(("Signal Map", content, signal_brief))
+            for idx, case_brief in enumerate(briefs.get("case_studies") or []):
+                if not isinstance(case_brief, dict):
+                    continue
+                label = f"Case Study {idx + 1}"
+                content = self._flatten_brief(case_brief)
+                payload.append((label, content, case_brief))
+        return payload
+
+    def _flatten_brief(self, brief: Dict[str, Any]) -> str:
+        if not isinstance(brief, dict):
+            return str(brief)
+        fragments: List[str] = []
+        for key, value in brief.items():
+            if not value:
+                continue
+            if isinstance(value, list):
+                value = ", ".join(str(v) for v in value if v)
+            elif isinstance(value, dict):
+                value = ", ".join(f"{k}:{v}" for k, v in value.items())
+            fragments.append(f"{key}: {value}")
+        return " | ".join(fragments)
+
     def save_social_media_content(self, report_dir: str, social_content: Dict[str, Any]) -> None:
-        """
-        Save social media content to report directory
-        
-        Args:
-            report_dir: Path to the report directory
-            social_content: Dictionary containing long_form, twitter_thread, linkedin_post
-        """
         try:
-            # Save long-form post
-            long_form_file = os.path.join(report_dir, 'social_media_post.md')
-            write_text(Path(long_form_file), social_content.get('long_form', ''))
-            logger.info(f"💾 Saved social media post: {long_form_file}")
-            
-            # Save Twitter thread
-            twitter_thread = social_content.get('twitter_thread', [])
-            twitter_file = os.path.join(report_dir, 'social_media_thread.txt')
+            write_text(Path(report_dir) / "social_media_post.md", social_content.get("long_form", ""))
             write_text(
-                Path(twitter_file),
-                "\n".join(
-                    [f"{i}/{len(twitter_thread)} {tweet}" for i, tweet in enumerate(twitter_thread, 1)]
-                ) + ("\n" if twitter_thread else ""),
+                Path(report_dir) / "social_media_thread.txt",
+                "\n".join(social_content.get("twitter_thread", [])),
             )
-            logger.info(f"💾 Saved Twitter thread: {twitter_file}")
-            
-            # Save LinkedIn post
-            linkedin_file = os.path.join(report_dir, 'social_media_linkedin.txt')
-            write_text(Path(linkedin_file), social_content.get('linkedin_post', ''))
-            logger.info(f"💾 Saved LinkedIn post: {linkedin_file}")
-            
-            # Update metadata to include social media content info
-            metadata_file = os.path.join(report_dir, 'metadata.json')
-            if os.path.exists(metadata_file):
-                try:
-                    with open(metadata_file, 'r', encoding='utf-8') as f:
-                        metadata = json.load(f)
-                    
-                    # Add social media content metadata
-                    metadata['social_media_content'] = {
-                        'generated': True,
-                        'formats': ['long_form', 'twitter_thread', 'linkedin_post'],
-                        'metadata': social_content.get('metadata', {}),
-                        'generation_timestamp': social_content.get('metadata', {}).get('generation_timestamp', '')
-                    }
-                    
-                    write_json(Path(metadata_file), metadata)
-                    logger.info(f"💾 Updated metadata with social media content info")
-                    
-                except Exception as e:
-                    logger.error(f"Error updating metadata: {str(e)}")
-            
-        except Exception as e:
-            logger.error(f"Error saving social media content: {str(e)}")
-    
-    def save_simple_report(self, query: str, markdown_report: str, 
-                          days_back: int = 7,
-                          agent_stats: Optional[Dict[str, Any]] = None) -> str:
-        """
-        Save simple agent report with nested structure
-        
-        Args:
-            query: Search query
-            markdown_report: Generated markdown report
-            days_back: Number of days back for search
-            agent_stats: Optional agent statistics (including date filter stats)
-            
-        Returns:
-            Path to the created report directory
-        """
-        report_dir = self.create_report_directory("simple", query, days_back)
-        
-        # Save markdown report
-        markdown_file = os.path.join(report_dir, 'simple_report.md')
-        with open(markdown_file, 'w', encoding='utf-8') as f:
-            f.write(markdown_report)
-        logger.info(f"💾 Saved markdown report: {markdown_file}")
-        
-        # Create metadata
-        metadata = {
-            'generation_timestamp': datetime.now().isoformat(),
-            'query': query,
-            'days_back': days_back,
-            'report_stats': {
-                'character_count': len(markdown_report),
-                'word_count': len(markdown_report.split())
-            },
-            'system_info': {
-                'agent_type': 'Simple STI Agent',
-                'version': '1.0.0',
-                'model': 'gpt-5-mini-2025-08-07',
-                'date_filtering': 'Strict 7-day window enforced'
-            }
-        }
-        
-        # Add agent statistics if provided
-        if agent_stats:
-            metadata['agent_stats'] = agent_stats
-        
-        metadata_file = os.path.join(report_dir, 'metadata.json')
-        with open(metadata_file, 'w', encoding='utf-8') as f:
-            json.dump(metadata, f, indent=2, ensure_ascii=False)
-        logger.info(f"💾 Saved metadata: {metadata_file}")
-        
-        # Print summary
-        self._print_save_summary(report_dir, metadata)
-        
-        return report_dir
-    
-    def _print_save_summary(self, report_dir: str, metadata: Dict[str, Any]):
-        """Print a summary of saved files"""
-        print(f"\n{'='*70}")
-        print(f"🎉 REPORT SAVED SUCCESSFULLY!")
-        print(f"{'='*70}")
-        print(f"📁 Output Directory: {report_dir}")
-        print(f"📄 Files Generated:")
-        
-        # List files in directory
-        files = os.listdir(report_dir)
-        for file in sorted(files):
-            file_path = os.path.join(report_dir, file)
-            if os.path.isfile(file_path):
-                size = os.path.getsize(file_path)
-                print(f"  • {file} ({size:,} bytes)")
-        
-        # Show key statistics
-        stats = metadata.get('report_stats', {})
-        print(f"\n📊 Report Statistics:")
-        print(f"  • Word Count: {stats.get('word_count', 'N/A')}")
-        print(f"  • Character Count: {stats.get('character_count', 'N/A')}")
-        print(f"  • Confidence: {metadata.get('confidence_score', 'N/A')}")
-        print(f"  • Sources: {metadata.get('sources_count', 'N/A')}")
-        
-        # Show date filtering stats if available
-        agent_stats = metadata.get('agent_stats', {})
-        if 'date_filter_stats' in agent_stats:
-            filter_stats = agent_stats['date_filter_stats']
-            print(f"  • Date Filter Success Rate: {filter_stats.get('success_rate', 0):.1%}")
-        
-        print(f"\n🚀 Ready for analysis and distribution!")
-    
-    def get_latest_report(self, agent_type: str = None) -> Optional[str]:
-        """
-        Get the path to the most recently created report
-        
-        Args:
-            agent_type: Filter by agent type (simple, enhanced) or None for any
-            
-        Returns:
-            Path to latest report directory or None if none found
-        """
-        if not os.path.exists(self.base_output_dir):
-            return None
-        
-        # Get all report directories
-        all_dirs = []
-        for item in os.listdir(self.base_output_dir):
-            item_path = os.path.join(self.base_output_dir, item)
-            if os.path.isdir(item_path) and item.startswith('sti_'):
-                if agent_type is None or f"_{agent_type}_" in item:
-                    all_dirs.append(item_path)
-        
-        if not all_dirs:
-            return None
-        
-        # Sort by modification time and return most recent
-        latest_dir = max(all_dirs, key=os.path.getmtime)
-        return latest_dir
-    
-    def list_reports(self, agent_type: str = None) -> List[str]:
-        """
-        List all available reports
-        
-        Args:
-            agent_type: Filter by agent type (simple, enhanced) or None for any
-            
-        Returns:
-            List of report directory paths
-        """
-        if not os.path.exists(self.base_output_dir):
+            write_text(
+                Path(report_dir) / "social_media_linkedin.txt",
+                social_content.get("linkedin_post", ""),
+            )
+            metadata_path = Path(report_dir) / "metadata.json"
+            if metadata_path.exists():
+                metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+                metadata["social_media_content"] = social_content.get("metadata", {})
+                write_json(metadata_path, metadata)
+        except Exception as exc:
+            logger.error(f"Error saving social media content: {exc}")
+
+    def get_latest_report(self, agent_type: Optional[str] = None) -> Optional[str]:
+        reports = self.list_all_reports(agent_type)
+        return reports[0] if reports else None
+
+    def list_all_reports(self, agent_type: Optional[str] = None) -> List[str]:
+        base = Path(self.base_output_dir)
+        if not base.exists():
             return []
-        
         reports = []
-        for item in os.listdir(self.base_output_dir):
-            item_path = os.path.join(self.base_output_dir, item)
-            if os.path.isdir(item_path) and item.startswith('sti_'):
-                if agent_type is None or f"_{agent_type}_" in item:
-                    reports.append(item_path)
-        
-        # Sort by modification time (newest first)
+        for entry in base.iterdir():
+            if not entry.is_dir():
+                continue
+            if agent_type and f"_{agent_type}_" not in entry.name:
+                continue
+            reports.append(str(entry))
         reports.sort(key=os.path.getmtime, reverse=True)
         return reports
 
+    def _log_summary(self, report_dir: str, metadata: Dict[str, Any]) -> None:
+        logger.info("💾 Report saved to %s", report_dir)
+        logger.info(
+            "   -> %s sources | %s signals | confidence %.2f",
+            metadata["statistics"]["source_count"],
+            metadata["statistics"]["signal_count"],
+            metadata.get("confidence", {}).get("score", 0.0),
+        )
 
-# Global file manager instance
+
 file_manager = STIFileManager()
 
 
-def save_enhanced_report_auto(query: str, markdown_report: str, 
-                             json_ld_artifact: Dict[str, Any], 
-                             days_back: int = 7, 
-                             agent_stats: Optional[Dict[str, Any]] = None,
-                             generate_html: bool = True) -> str:
-    """
-    Convenience function to automatically save enhanced agent report
-    
-    Returns:
-        Path to the created report directory
-    """
-    return file_manager.save_enhanced_report(
-        query, markdown_report, json_ld_artifact, days_back, agent_stats, generate_html
-    )
-
-
-def save_simple_report_auto(query: str, markdown_report: str, 
-                           days_back: int = 7,
-                           agent_stats: Optional[Dict[str, Any]] = None) -> str:
-    """
-    Convenience function to automatically save simple agent report
-    
-    Returns:
-        Path to the created report directory
-    """
-    return file_manager.save_simple_report(
-        query, markdown_report, days_back, agent_stats
-    )
-
-
-def get_latest_report(agent_type: str = None) -> Optional[str]:
-    """
-    Convenience function to get the latest report
-    
-    Returns:
-        Path to latest report directory or None
-    """
-    return file_manager.get_latest_report(agent_type)
-
-
-def list_all_reports(agent_type: str = None) -> List[str]:
-    """
-    Convenience function to list all reports
-    
-    Returns:
-        List of report directory paths
-    """
-    return file_manager.list_reports(agent_type)
-
-
-def save_run_manifest(report_dir: str, manifest: Dict[str, Any]) -> None:
-    """Persist run manifest alongside report outputs."""
-    write_json(Path(report_dir) / "manifest.json", manifest)
-
-
-def save_error_log(report_dir: str, error_info: Dict[str, Any]) -> None:
-    """
-    Save structured error information to error_log.json.
-    
-    Args:
-        report_dir: Directory where the error log should be saved
-        error_info: Dictionary containing error information with keys:
-            - error_type: Type of exception
-            - error_message: Exception message
-            - traceback: Full traceback string
-            - query: Query that was being processed
-            - timestamp: ISO timestamp
-            - context: Additional context dictionary
-    """
-    try:
-        # Ensure report directory exists
-        Path(report_dir).mkdir(parents=True, exist_ok=True)
-        
-        # Save error log
-        error_log_path = Path(report_dir) / "error_log.json"
-        write_json(error_log_path, error_info)
-        logger.info(f"Error log saved to: {error_log_path}")
-    except Exception as e:
-        logger.error(f"Failed to save error log: {e}")
-        # Don't raise - error logging failures shouldn't break the system
+def save_enhanced_report_auto(
+    report_bundle: Dict[str, Any], generate_html: bool = True, report_dir: Optional[str] = None
+) -> str:
+    return file_manager.save_enhanced_report(report_bundle, generate_html=generate_html, report_dir=report_dir)

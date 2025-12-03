@@ -1,0 +1,70 @@
+{
+  "hero": {
+    "core_tension": "Decide whether to convert a store into a content-first branded zone for a 6 week window that trades concentrated attention for measurable sales. The mechanism is simple. Operators must pick the drop window that captures cultural momentum while keeping inventory tight.",
+    "setting": "Ground floor retail cluster or flagship bookstore. Clean negative space. Visible shelving and a single cleared bay framed by circulation paths.",
+    "persona": "Brand partnerships lead collaborating with store operations and creative director.",
+    "action": "Team mapping a staged branded zone, moving a single product cluster into precise alignment.",
+    "urgency_symbol": "Overlapping pulse bands that tighten from broad to focused, suggesting a 6 week squeeze then release.",
+    "props": [
+      "sample product mock-ups on pedestal",
+      "rolled site plan on table",
+      "fabric swatches and printed art proofs"
+    ],
+    "lighting": "Polished editorial lighting with confident highlights, soft shadow pools, and warm rim light on key objects.",
+    "mood": "Precise, collaborative, confident.",
+    "alt": "Creative lead and store manager aligning products in a branded pop-up under polished highlights"
+  },
+  "signal_map": {
+    "structure": "Concentric rings with a central branded zone, inner ring of pop-up activations, outer ring of community events and SKU orchestration nodes.",
+    "elements": [
+      "central token for branded shop experience",
+      "arc tokens for weekend pop-ups",
+      "dotted paths for artist residency flow",
+      "event-SKU nodes"
+    ],
+    "motion": "Clockwise flow from awareness to purchase with pulsing nodes at 4, 6, and 8 week intervals. Momentum locks at pilot checkpoints.",
+    "palette": "Matte charcoal background, warm amber highlights, tactile paper and fabric textures in foreground.",
+    "alt": "Diagram of concentric retail activations with pulsing nodes at 4 to 8 week intervals"
+  },
+  "case_studies": [
+    {
+      "scene": "Branded zone pilot inside a bookstore cluster.",
+      "moment": "Six week activation week two: merch cluster tested for dwell and SKU conversion.",
+      "persona": "Brand partnerships owner with store cluster manager.",
+      "props": [
+        "miniature display tower",
+        "dwell monitoring tag",
+        "sample A24 SKU stack"
+      ],
+      "lighting": "Confident highlights on product faces, soft fill on surrounding shelves.",
+      "mood": "Measured, results-oriented.",
+      "alt": "Partnership lead checking SKU display and dwell monitor during a branded pilot"
+    },
+    {
+      "scene": "Curated pop-up in a mall pod during a weekend event.",
+      "moment": "Weekend peak: footfall concentrates on curated experiences driving incremental revenue per square foot.",
+      "persona": "Real estate manager and retail ops lead reviewing flow.",
+      "props": [
+        "folded weekend program",
+        "temporary partition material",
+        "customer flow tokens"
+      ],
+      "lighting": "High key editorial with focused spot on activation entrance.",
+      "mood": "Energetic, tactical.",
+      "alt": "Real estate lead surveying a curated pop-up as visitors enter the mall pod"
+    },
+    {
+      "scene": "Artist residency conversion of a vacant bay.",
+      "moment": "Weekend residency draw: earned media and social RSVPs convert to visits.",
+      "persona": "Community engagement owner with local artist and events coordinator.",
+      "props": [
+        "sketchbook on easel",
+        "RSVP clipboard",
+        "portable display plinth"
+      ],
+      "lighting": "Soft directional light with warm highlights on artist work.",
+      "mood": "Local, authentic, conversational.",
+      "alt": "Artist and community lead preparing a weekend residency in a converted bay"
+    }
+  ]
+}

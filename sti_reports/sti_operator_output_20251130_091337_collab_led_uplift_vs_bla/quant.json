@@ -1,0 +1,123 @@
+{
+  "spine_hook": "Success = collaboration offers lift store traffic ≥10% and early-window buyer share to 20–30% while event CPA stays ≤0.8× baseline.",
+  "anchors": [
+    {
+      "id": "Q1",
+      "headline": "Target: store foot-traffic uplift (base)",
+      "topic": "Foot traffic uplift",
+      "value_low": 10,
+      "value_high": 15,
+      "unit": "% uplift",
+      "status": "target",
+      "band": "base",
+      "owner": "Store Ops",
+      "expression": "Store visits during event week = LY visits × (1 + 0.10–0.15)",
+      "source_ids": [
+        1
+      ],
+      "applies_to_signals": [
+        "high_value_windows",
+        "store_media_events"
+      ]
+    },
+    {
+      "id": "Q2",
+      "headline": "Stretch target: store foot-traffic uplift",
+      "topic": "Foot traffic uplift",
+      "value_low": 25,
+      "value_high": 25,
+      "unit": "% uplift",
+      "status": "target",
+      "band": "stretch",
+      "owner": "Store Ops",
+      "expression": "Store visits during event week ≥ LY visits × 1.25",
+      "source_ids": [
+        1
+      ],
+      "applies_to_signals": [
+        "high_value_windows",
+        "store_media_events"
+      ]
+    },
+    {
+      "id": "Q3",
+      "headline": "Observed: early-window buyer share (current)",
+      "topic": "Early-window share",
+      "value_low": 12,
+      "value_high": 15,
+      "unit": "% of period transactions",
+      "status": "observed",
+      "band": "base",
+      "owner": "Analytics",
+      "expression": "Transactions in Nov 23–30 early window ≈ 12–15% of event-week total",
+      "source_ids": [
+        5
+      ],
+      "applies_to_signals": [
+        "buyer_activity",
+        "promo_timing"
+      ]
+    },
+    {
+      "id": "Q4",
+      "headline": "Guardrail: event CPA ceiling",
+      "topic": "Event CPA vs baseline",
+      "value_low": 0.0,
+      "value_high": 0.8,
+      "unit": "× baseline CPA",
+      "status": "target",
+      "band": "base",
+      "owner": "Performance marketing",
+      "expression": "CPA for collab-led campaigns ≤ 0.80 × campaign baseline CPA",
+      "source_ids": [
+        2,
+        5
+      ],
+      "applies_to_signals": [
+        "promo_type",
+        "media_efficiency"
+      ]
+    }
+  ],
+  "measurement_plan": [
+    {
+      "id": "M1",
+      "metric": "Event CPA",
+      "expression": "CPA ≤ 0.80× baseline",
+      "owner": "Performance marketing",
+      "timeframe": "2025-11-23 to 2025-11-30",
+      "status": "plan",
+      "why_it_matters": "Keeps customer acquisition cost within margin guardrail while testing collab offers."
+    },
+    {
+      "id": "M2",
+      "metric": "Buyer activity share vs promo intensity",
+      "expression": "Early-window transactions = 20–30% while promo SKU share ≈ LY (no blanket % offs increase)",
+      "owner": "Merch + Analytics",
+      "timeframe": "2025-11-23 to 2025-11-30",
+      "status": "plan",
+      "notes": "Track early-window share and % of SKUs on promo side by side; flag if promo SKU share rises >5ppt vs LY",
+      "why_it_matters": "Paired metrics show whether added buyers come from demand or from heavier blanket discounts."
+    },
+    {
+      "id": "M3",
+      "metric": "QR redemption rate (store-as-studio activation)",
+      "expression": "QR redemptions ≥ 5% of footfall and conversion from QR > store baseline conversion",
+      "owner": "Store Ops + Partnerships",
+      "timeframe": "2025-11-23 to 2025-11-30",
+      "status": "plan",
+      "why_it_matters": "Direct measurement of collab-engagement and attributable buyer lift without blanket discounts."
+    },
+    {
+      "id": "M4",
+      "metric": "Price-curve test: collab SKU promo ROI",
+      "expression": "Incremental margin per $ discount ≥ baseline margin per $ discount for blanket offers",
+      "owner": "Pricing / Merch",
+      "timeframe": "Test window: 2 weeks including 2025-11-23 to 2025-11-30",
+      "status": "plan",
+      "notes": "Run A/B: targeted collab price curve vs flat percent-off across comparable stores; measure incremental revenue, margin, and units.",
+      "why_it_matters": "Shows how collaboration pricing changes discounting math and preserves margin vs blanket percent-offs."
+    }
+  ],
+  "coverage": 0.85
+}

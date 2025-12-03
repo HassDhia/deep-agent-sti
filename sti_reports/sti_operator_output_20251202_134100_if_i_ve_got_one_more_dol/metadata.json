@@ -1,0 +1,288 @@
+{
+  "generated_at": "2025-12-02T13:49:00.337229",
+  "query": "If I’ve got one more dollar to spend, do I put it into loyalty, retail media, or collab‑driven reach?",
+  "time_window": {
+    "start": "2025-11-18",
+    "end": "2025-12-02",
+    "days": 14,
+    "label": "Nov 18 – Dec 02, 2025"
+  },
+  "confidence": {
+    "score": 0.28,
+    "display": 0.28,
+    "band": "Directional",
+    "dials": {
+      "strength": "light",
+      "coverage": "light",
+      "quant_support": "high",
+      "consistency": "high"
+    },
+    "breakdown": {
+      "average_strength": 0.0,
+      "coverage": 0.0,
+      "quant_support": 1.0,
+      "contradiction_penalty": 0.8
+    },
+    "note": "Directional evidence: 9 sources • 9 domains • 9 in-window / 0 background • support coverage 0%"
+  },
+  "files": [
+    "intelligence_report.md",
+    "market_path_report.md",
+    "market_path_report.pdf",
+    "intelligence_report.jsonld",
+    "metadata.json"
+  ],
+  "sections": [
+    "deep_analysis",
+    "pattern_matches",
+    "brand_outcomes",
+    "operator_notes",
+    "quant",
+    "activation_kit",
+    "risk_radar",
+    "future_outlook",
+    "comparison_map",
+    "signal_map_notes"
+  ],
+  "title": "If I’ve got one more dollar to spend, do I put it into loyalty, retail media, or collab‑driven reach?",
+  "highlights": [
+    "Loyalty-targeted credits buy higher margin per visit; prioritize top-decile members for a $1 credit to protect contribution margin.",
+    "Collab activations drive new-buyer reach quickly but need an in-store capture (QR + loyalty link) to lift repeat rates.",
+    "Retail media amplifies reach for the collab SKU efficiently and reduces event CPA when creative and store media are tightly coordinated."
+  ],
+  "executive_summary": "You must decide whether one additional dollar goes to loyalty, retail media, or collab-driven reach to lift early-window foot traffic and lower event CPA in the Nov 18 – Dec 02, 2025 holiday window without deepening blanket discounts. This matters because the plan must deliver **10–15%** base foot-traffic uplift (stretch **≥25%**), move current early-window share from **12–15%** toward **20–30%**, and keep event CPA at or below **≤0.80×** baseline to justify spend [^7][^4]. Favor a collab-led holiday paired with a targeted loyalty microcredit: use the $1 to activate top-decile members while running a collab SKU with in-store capture so trial converts to repeat [^7][^4]. In the next 30 days, cross-functional teams must launch a two-week pilot (Nov 18–Dec 02), instrument daily incremental visits, incremental spend per visit, and contribution margin by treatment, and use foot-traffic uplift, early-window share, and event CPA as pass/fail metrics [^5].",
+  "top_operator_moves": [
+    "Deploy a **$1** loyalty credit to top-decile customers for Nov 18–Dec 02 and measure incremental visits and margin per visit.",
+    "Activate a collab SKU with in-store QR capture and tie redemptions to loyalty IDs; track QR redemptions as a share of footfall and repeat conversion.",
+    "Allocate the incremental retail media dollar to promote the collab SKU in geo-fenced, high-intent placements and measure event CPA daily."
+  ],
+  "statistics": {
+    "word_count": 4209,
+    "signal_count": 0,
+    "source_count": 9
+  },
+  "read_time_minutes": 21,
+  "length_label": "~21 min read",
+  "qa": {
+    "issues": [
+      "Source coverage under minimum thresholds",
+      "Signal count outside required band",
+      "Read time exceeds target"
+    ],
+    "coverage": 0.0,
+    "quant_support": 1.0,
+    "contradiction_penalty": 0.8,
+    "appendix_count": 10,
+    "scope": {
+      "topic": "If I’ve got one more dollar to spend, do I put it into loyalty, retail media, or collab‑driven reach?",
+      "time_window": {
+        "start": "2025-11-18",
+        "end": "2025-12-02",
+        "days": 14,
+        "label": "Nov 18 – Dec 02, 2025"
+      },
+      "target_region": "US",
+      "use_cases": [
+        "brand↔brand",
+        "brick&mortar↔brand"
+      ],
+      "must_answer": [
+        "When are the high-value windows",
+        "What changes discounting math"
+      ],
+      "approach_hints": [
+        "discount-heavy holiday",
+        "collab-led holiday",
+        "store-as-studio / media-led holiday"
+      ],
+      "unified_target_pack": {
+        "foot_traffic_uplift": {
+          "base": "10-15%",
+          "stretch": "≥25%"
+        },
+        "early_window_share": {
+          "current": "12-15%",
+          "goal": "20-30%"
+        },
+        "event_cpa": {
+          "ceiling": "≤0.80× baseline"
+        },
+        "qr_redemption": {
+          "floor": "≥5% of footfall"
+        },
+        "paired_metric": "Track buyer activity share vs promo intensity side by side"
+      },
+      "window_label": "Nov 18 – Dec 02, 2025",
+      "topic_kind": "collaboration",
+      "thin_evidence": true,
+      "operator_job_story": "How to spend one additional dollar on loyalty, retail media, or collab-driven reach to lift early-window foot traffic and lower event CPA in the Nov 18 – Dec 02, 2025 holiday window without deepening blanket discounts.",
+      "search_shaped_variants": [
+        "Test one-dollar allocation: loyalty credit vs retail media vs influencer collab for Nov18–Dec02 footfall",
+        "Increase early-window buyer share to 20–30% with minimal extra discounting",
+        "Run a 2-week pilot: collab SKU + in-store media — measure QR redemptions and event CPA",
+        "Use loyalty personalization to replace headline discounts for high-value customers this early holiday window"
+      ],
+      "evidence_regime": "directional",
+      "evidence_note": "Directional evidence: 9 sources • 9 domains • 9 in-window / 0 background • support coverage 0%",
+      "pilot_spec": {
+        "scenario": "one_dollar_channel_test",
+        "store_count": 1,
+        "store_type": "multi_market",
+        "duration_weeks": 2,
+        "window": "Nov 18 – Dec 02, 2025",
+        "primary_move": "Run a two-week per-dollar test comparing $1 loyalty credit, $1 retail-media reach, and $1 collab in-store activation to measure incremental early-window visits and event CPA without increasing blanket discounts.",
+        "owner_roles": [
+          "Head of Retail",
+          "Head of Marketing",
+          "Head of Partnerships",
+          "Finance"
+        ],
+        "location_radius_miles": 5,
+        "key_metrics": [
+          "incremental_early_window_visits_per_dollar",
+          "event_cpa_incremental",
+          "qr_redemption_rate_vs_footfall",
+          "foot_traffic_uplift_pct"
+        ],
+        "window_label": "Nov 18 – Dec 02, 2025"
+      },
+      "metric_spec": {
+        "incremental_early_window_visits_per_dollar": {
+          "label": "Incremental early-window visits per $1",
+          "target_range": [
+            1.0,
+            1.0
+          ],
+          "unit": "Visits Per Dollar",
+          "stage": "target",
+          "owner": "Growth",
+          "target_text": "Measure (Visits_treatment - Visits_control) / Spend_treatment for each $1 treatment arm using M1. No absolute per-dollar target provided; use relative ranking across arms.",
+          "notes": ""
+        },
+        "event_cpa_incremental": {
+          "label": "Event CPA (incremental)",
+          "target_range": [
+            0.8,
+            0.8
+          ],
+          "unit": "X Baseline",
+          "stage": "guardrail",
+          "owner": "Finance",
+          "target_text": "\u0010\u0010Ceiling: Event CPA should be",
+          "notes": ""
+        },
+        "qr_redemption_rate_vs_footfall": {
+          "label": "QR redemption rate vs footfall",
+          "target_range": [
+            5.0,
+            5.0
+          ],
+          "unit": "percent",
+          "stage": "guardrail",
+          "owner": "Retail Ops",
+          "target_text": "5 percent",
+          "notes": ""
+        },
+        "foot_traffic_uplift_pct": {
+          "label": "Foot traffic uplift vs baseline",
+          "target_range": [
+            10.0,
+            25.0
+          ],
+          "unit": "percent",
+          "stage": "target",
+          "owner": "Head of Retail",
+          "target_text": "Base goal 10 15% uplift; stretch 25% uplift per Unified Target Pack.",
+          "notes": ""
+        },
+        "early_window_buyer_share_pct": {
+          "label": "Early-window buyer share",
+          "target_range": [
+            20.0,
+            30.0
+          ],
+          "unit": "percent",
+          "stage": "target",
+          "owner": "Head of Marketing",
+          "target_text": "Increase early-window buyer share from ~12 15% current to 20 30% in the window.",
+          "notes": ""
+        }
+      },
+      "role_actions": {
+        "Head of Retail": [
+          "Confirm pilot store list and baseline foot-traffic for Nov 18 \u0013 Dec 02. Enable POS tagging for QR scans and linked buyer IDs. Deliver daily footfall and QR feed to Growth for metric Qr Redemption Rate Vs Footfall and Foot Traffic Uplift Pct."
+        ],
+        "Head of Marketing": [
+          "Deploy three tracked treatment arms: $1 loyalty credit, $1 retail-media equivalent, $1 collab reach. Apply unique tags and UTM/ACR attribution for each arm. Report Incremental Early Window Visits Per Dollar and Early Window Buyer Share Pct daily."
+        ],
+        "Head of Partnerships": [
+          "Lock collab terms and in-store creative. Provide scannable QR with partner code and comms to drive collab traffic. Confirm partner data handoff to measure QR redemptions and attribution to collab arm."
+        ],
+        "Finance": [
+          "Set spend caps per arm and calculate Event Cpa Incremental using M2. Stop any arm that breaches the CPA guardrail (>0.8x baseline) or forces overall CPA above that ceiling. Produce a mid-window readout for rapid reallocation."
+        ]
+      },
+      "pilot_spec_issues": [],
+      "spec_version": "v1",
+      "spec_ok": true,
+      "spec_notes": []
+    },
+    "read_time": 21,
+    "high_quality_signals": true,
+    "observed_quant": true,
+    "tier1_market_signals": true
+  },
+  "agent": "EnhancedSTIAgent",
+  "model": "gpt-5-mini-2025-08-07",
+  "source_stats": {
+    "total": 9,
+    "core": 0,
+    "support": 9,
+    "unique_domains": 9,
+    "domain_counts": {
+      "newstribune.com": 1,
+      "housingwire.com": 1,
+      "reuters.com": 1,
+      "foxbusiness.com": 1,
+      "csnews.com": 1,
+      "oregonlive.com": 1,
+      "businesswire.com": 1,
+      "eonline.com": 1,
+      "msn.com": 1
+    },
+    "data_heavy": 1,
+    "time_span_days": 0,
+    "tier_counts": {
+      "core": 9,
+      "context": 0
+    },
+    "dominant_ratio": 0.111,
+    "thin_evidence": true,
+    "thresholds": {
+      "total": true,
+      "core": false,
+      "domains": true,
+      "data": true,
+      "dominance": true,
+      "in_window": true,
+      "background": false,
+      "support_coverage": false
+    },
+    "support_coverage": 0.0,
+    "regime": "directional"
+  },
+  "renderers": [
+    "market_path_markdown",
+    "market_path_pdf",
+    "legacy_html"
+  ],
+  "artifact_paths": [
+    "sti_reports/sti_operator_output_20251202_134100_if_i_ve_got_one_more_dol/market_path_report.md",
+    "sti_reports/sti_operator_output_20251202_134100_if_i_ve_got_one_more_dol/market_path_report.pdf"
+  ],
+  "social_media_content": {
+    "confidence": 0.28,
+    "teaser_mode": true,
+    "sources_used": ""
+  }
+}

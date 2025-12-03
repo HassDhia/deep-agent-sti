@@ -1,0 +1,60 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Report",
+  "name": "Store as Studio: How retail stores are becoming content properties",
+  "about": "Store as Studio:\nHow retail stores are becoming content properties",
+  "abstract": "What is happening: operators are moving stores from pure retail to content-first holiday pilots that pair limited early-access windows with bundled offers, turning attention into measurable transactions [^1][^2]. Why it matters: the unified holiday target pack is explicit — detectable foot-traffic uplift **10–15%** (stretch **≥25%** in top markets), early-window transaction share **20–30%** (vs ~12–15% baseline), event CPA target **≤0.80×** baseline, and QR/scan redemption **≥5%** of footfall [^2][^7]. The A/B framing is essential: Arm A runs legacy markdowns and Arm B runs bundle+GWP+loyalty inside the same two-week window to isolate the lift signal and CPA compression [^6][^9]. What operators should do in the next 30 days: **assign a single owner**, lock a flagship pilot, instrument door counts and QR→POS link, configure A/B holdouts, and align marketing, store ops, data/CRM, and property on reporting cadence [^9][^7]. ### Quick Scanners",
+  "datePublished": "2025-11-27T18:07:00.873380",
+  "temporalCoverage": "2025-11-20/2025-11-27",
+  "hasPart": [
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://chicagoreader.com/music/city-of-win-music-chicago/stockboy-studios-jasir-bailey-streetwear-shop/",
+        "https://www.forbes.com/sites/amandalauren/2025/11/26/inside-splits59s-new-nyc-pop-up-a-first-look-at-the-activewear-brands-retail-debut/",
+        "https://www.bisnow.com/new-york/news/retail/retail-property-management-cushmanwakefield-studiob-131980",
+        "https://www.msn.com/en-us/movies/news/a24-barnes-noble-partner-on-branded-in-store-spaces-for-indie-studios-books-movies-merch/ar-AA1R7Fqi"
+      ],
+      "about": "Cultural"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.bisnow.com/new-york/news/retail/retail-property-management-cushmanwakefield-studiob-131980",
+        "https://www.bisnow.com/national/news/retail/vacant-retail-space-becomes-a-blank-canvas-for-artists-132069"
+      ],
+      "about": "Market"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.msn.com/en-us/movies/news/a24-barnes-noble-partner-on-branded-in-store-spaces-for-indie-studios-books-movies-merch/ar-AA1R7Fqi"
+      ],
+      "about": "Market"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.bisnow.com/national/news/retail/vacant-retail-space-becomes-a-blank-canvas-for-artists-132069",
+        "https://www.bisnow.com/new-york/news/retail/retail-property-management-cushmanwakefield-studiob-131980"
+      ],
+      "about": "Behavioral"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.forbes.com/councils/forbesbusinesscouncil/2025/11/25/how-agentic-commerce-is-reshaping-retail-and-cpg-strategy/"
+      ],
+      "about": "Technology"
+    }
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": 0.884
+  }
+}

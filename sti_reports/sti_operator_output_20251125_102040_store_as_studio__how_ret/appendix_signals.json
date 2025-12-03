@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Alo Yoga Shoes 'Studio to Street' (Gigwise)",
+    "reason": "Stylistic brand product story that is not a US retail operator signal and sits outside core store-as-studio proofs. Lower operational relevance for US retail partnerships within the window. (Source: [6])"
+  },
+  {
+    "name": "Family-Founded Home Stores Profile (MSN / Business of Home)",
+    "reason": "Local owner profile with long-form lessons but limited signal strength for brand-to-brand studio activations within the 7-day window. Operational tactics are too specific to single markets. (Source: [7])"
+  },
+  {
+    "category": "Behavioral",
+    "name": "Local Boutiques Convert To Community Studios",
+    "description": "Local boutiques are repackaging floorspace as community studios, adding workshops, maker nights and local curation to stabilize foot traffic and create repeatable content. Owners report that programming helps reduce reliance on markdowns.",
+    "operator_move": "Independent store owner (owner): run a 4-week community workshop series with partnered creators; KPI: membership signups and average order value uplift tracked weekly. (Support: [9])",
+    "strength": 0.78,
+    "US_fit": 0.9,
+    "operationality": 0.75,
+    "support": [
+      9
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "C",
+    "citations": [
+      9
+    ],
+    "id": "S5",
+    "bucket": "appendix"
+  }
+]

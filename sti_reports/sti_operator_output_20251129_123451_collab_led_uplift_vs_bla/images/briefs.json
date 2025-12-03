@@ -1,0 +1,71 @@
+{
+  "hero": {
+    "core_tension": "Trade short-term sitewide cuts for concentrated co-branded early windows. Show the decision tension between pulling buys forward and holding blended margin as a narrow timing choice.",
+    "setting": "Hybrid studio-store corner. Low 3/4 angle. Long raw-wood table, concrete floor, matte merch displays. Clean negative space to the right for copy or overlay.",
+    "persona": "Brand Partnerships lead and Store Ops manager, standing close, heads-down over physical mockups.",
+    "action": "One points at a stack of exclusive bundle boxes while the other peels a QR hang-tag. Exchange of a taped plan labeled 'S1'.",
+    "urgency_symbol": "A taut red thread looping through stacked boxes, suggesting a limited window without showing a clock.",
+    "props": [
+      "Co-branded early-exclusive boxes (S1)",
+      "Tiered bundle mockups",
+      "QR redemption hang-tags with visible target ≥5%",
+      "Labeled plan sheet: 'Early-window capture vs sitewide discount'"
+    ],
+    "lighting": "Polished editorial. Confident highlights on faces and product edges. Soft fill to keep negative space clean.",
+    "mood": "Precise. Decisive. Ready-to-test.",
+    "alt": "Brand partnerships lead and store ops align on co-branded early-window bundles."
+  },
+  "signal_map": {
+    "structure": "Concentric rings with an inner wedge. Outer ring = sitewide discount; inner wedge = early-window share.",
+    "elements": [
+      "Tokens for foot_traffic_uplift (spikes)",
+      "QR nodes (redemption points)",
+      "Event_CPA badges",
+      "Early_window_share wedge labeled S1/S4"
+    ],
+    "motion": "Animated pulse flowing from outer ring toward the inner wedge, showing buyer migration and concentrated volume.",
+    "palette": "Matte neutrals, steel gray, one accent cobalt for partner window, subtle metallic for QR nodes.",
+    "alt": "Abstract map shifting buyer activity from sitewide ring to early-window wedge; shows QR and CPA signals."
+  },
+  "case_studies": [
+    {
+      "scene": "Store activation corner. Overhead 45-degree angle. Pop-up demo table by the entrance. Materials: woven textiles, brass fittings, branded acrylic.",
+      "moment": "Weekend collab starts to fill. Staff tap QR signs and hand exclusive bundles to customers. A local marketing lead times a demo set labelled 'S2'.",
+      "persona": "Store Ops manager and local Marketing lead running three weekend activations (S2).",
+      "props": [
+        "Pop-up shelf with co-branded SKUs",
+        "QR redemption placards showing target ≥5%",
+        "Weekend activation banner labeled 'S2 — test 6 weeks'"
+      ],
+      "lighting": "Polished editorial with warm spotlights on demo table and clean shadow falloff.",
+      "mood": "Kinetic. Measurable. Test-ready.",
+      "alt": "Store ops and marketing run weekend collab activation; staff log QR redemptions."
+    },
+    {
+      "scene": "Pricing war room. Eye-level, tight crop on hands and printed price cards. Material: matte paper, glass whiteboard with magnets.",
+      "moment": "Merch and Pricing swap a sitewide 20% off card for tiered collab bundles. Team pins A/B boards labeled 'Control: sitewide' and 'Variant: S3 tiered bundles'.",
+      "persona": "Merch lead and Pricing analyst running a 6-week A/B test to keep blended margin neutral (S3).",
+      "props": [
+        "Tiered bundle mockups with SKU labels",
+        "A/B test boards and blended margin calculator",
+        "Sheet titled 'Early-window capture vs sitewide discount'"
+      ],
+      "lighting": "Cool, crisp editorial. High contrast on cards to emphasize numbers.",
+      "mood": "Analytical. Constraint-aware. Actionable.",
+      "alt": "Merch and pricing swap sitewide discount for tiered collab bundles, preparing A/B test."
+    },
+    {
+      "scene": "Store-as-studio shoot. 45-degree camera angle. Textured backdrop, aisle as shallow set, materials: matte product boxes, camera metal rig.",
+      "moment": "Producer cues a micro-influencer for a quick cut. Crew pins sticky notes: 'S4 ep1' and 'S5 high-news-day offer'.",
+      "persona": "Marketing producer with micro-influencer executing a 4-episode store-as-studio series (S4) and planning high-news-day offers (S5).",
+      "props": [
+        "Camera rig and slate marked 'S4'",
+        "Co-branded bundles staged for hero shots",
+        "Notepad labeled 'S5: concentrate offers on high-news days'"
+      ],
+      "lighting": "Polished editorial with strong rim highlights and clean negative space for compositing.",
+      "mood": "Rapid. Media-led. Time-sensitive.",
+      "alt": "Marketing runs store-as-studio shoot with micro-influencers to lift early-window share."
+    }
+  ]
+}

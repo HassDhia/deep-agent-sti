@@ -1,0 +1,99 @@
+{
+  "hero": {
+    "core_tension": "Choose inventory and marketing for a smaller, higher-value late-season window instead of matching early November discounts.",
+    "setting": "Retail operations war room, three-quarter angle on operator at table; matte paper planograms and metallic SKU mockups on the table; composition cue: subject centered, shallow depth, material contrast between paper and metal.",
+    "persona": "Head of Retail choosing a collab-led, store-as-studio approach with the CMO visible in the frame.",
+    "action": "Pinning a reserved inventory block and partnership slot on a focused third-week-of-December calendar; pointing at a test brief labeled \"exclusive + event\".",
+    "urgency_symbol": "A calendar page with the third-week highlighted and a visible, uncluttered reservation stamp to signal time-sensitive allocation.",
+    "props": [
+      "Exclusive SKU mockup box tied to the S3 pilot",
+      "QR signage mockup linked to the S2 giveaway",
+      "Compact partnership term sheet referencing retailer exclusives"
+    ],
+    "lighting": "Polished editorial lighting with confident highlights and clean negative space; warm key on faces, cool fill on plans.",
+    "mood": "Decisive, collaborative, margin-focused",
+    "anchor_section": "header",
+    "metric_focus": [
+      "footfall_lift",
+      "qr_redemption",
+      "conversion_rate"
+    ],
+    "alt": "Head of Retail reserves inventory and signs partnership to run a third-week December exclusive test."
+  },
+  "signal_map": {
+    "structure": "Concentric rings representing calendar blocks (early-Nov ring, mid-Nov ring, third-week-Dec ring) with radial nodes; include embedded numeric anchors showing footfall uplift targets and QR redemption floors within the geometry.",
+    "elements": [
+      "Tokens for exclusives (small discs) placed on the third-week ring",
+      "Arcs showing shopper flow from early-Nov rings into the third-week ring",
+      "Pins for events and SKU drops with micro-labels showing % uplift and QR floor"
+    ],
+    "motion": "Directional flow from multiple early-window nodes converging into a concentrated third-week node; arrows of increasing density indicate planned traffic consolidation and measurement spine.",
+    "palette": "Matte neutrals with a pop of retail blue and metallic accent on exclusive tokens; materials suggest paper, brushed metal, and acrylic for pins.",
+    "anchor_section": "signals_and_thesis",
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share",
+      "qr_redemption"
+    ],
+    "alt": "CMO studying a ring map plotting footfall uplift and QR redemption across weeks to plan exclusives."
+  },
+  "case_studies": [
+    {
+      "scene": "Small-format store counter during Nov 28 giveaway; three-quarter angle focused on register area and queue; materials: laminated QR cards, tempered glass counter.",
+      "moment": "A staff member scans a QR redemption on a tablet while a tablet graph shows a visible uptick in conversion versus baseline; symbolic tension shown by a half-full tally board marking margin versus volume.",
+      "persona": "Head of Retail with CMO running the S2 in-store exclusive giveaway.",
+      "props": [
+        "Laminated QR cards for the giveaway",
+        "Tablet displaying redemption and conversion delta",
+        "Tally board comparing baseline conversion and giveaway conversion"
+      ],
+      "lighting": "Directed editorial spotlight on the QR scan, soft ambient in background to isolate the action.",
+      "mood": "Precise, collaborative, measurement-first",
+      "anchor_section": "mini_case_story",
+      "metric_focus": [
+        "qr_redemption",
+        "conversion_rate",
+        "footfall_lift"
+      ],
+      "alt": "Head of Retail and CMO run Nov 28 in-store giveaway, measuring QR redemptions and conversion uplift."
+    },
+    {
+      "scene": "Back-of-store staging area where retailer-exclusive SKU pallets are unboxed; low-angle close crop on a planogram hand and an exclusive SKU label; composition cue: low-angle to emphasize shelf presence; material: corrugated cardboard and matte-finished product.",
+      "moment": "A retailer rep pins an exclusive SKU tag and a small sales tracker shows early footfall lift; the visual tension is the reserved inventory ledger partially filled, implying scarce supply.",
+      "persona": "Head of Brand Partnerships executing the S3 pilot of two retailer-exclusive SKUs for Dec 15–21.",
+      "props": [
+        "Retailer-exclusive SKU packaging",
+        "Planogram with exclusive tags",
+        "Compact sales tracker chart showing week-on-week footfall"
+      ],
+      "lighting": "Crisp studio light on product surfaces, cool fill for background to foreground exclusives.",
+      "mood": "Experimental, partnership-led, margin-aware",
+      "anchor_section": "mini_case_story",
+      "metric_focus": [
+        "footfall_lift",
+        "early_window_share",
+        "partner_value"
+      ],
+      "alt": "Head of Brand Partnerships launches retailer-exclusive SKU pilot Dec 15–21 to lift footfall and partner value."
+    },
+    {
+      "scene": "Store pop-up staged as a small media set during Dec 18–20; three-quarter angle that includes host, camera, and shoppers; material cues: polished riser, soft fabric backdrops.",
+      "moment": "A shopper checks in via QR to enter a media-day experience while a producer notes event CPA on a tablet; symbolic timing shown by a scoreboard tracking CPA versus baseline target.",
+      "persona": "Head of Retail running S5 pop-up media days to measure event CPA and capture owned content.",
+      "props": [
+        "QR-enabled check-in tablet",
+        "Compact camera and mic boom suggesting content capture",
+        "Signage reading \"Media Day\" with small metrics card showing CPA target"
+      ],
+      "lighting": "Editorial backlight with crisp key highlight on the check-in QR action to create focus and shareable stills.",
+      "mood": "Theatrical but controlled, media-first, test-oriented",
+      "anchor_section": "mini_case_story",
+      "metric_focus": [
+        "event_cpa",
+        "qr_redemption",
+        "conversion_rate"
+      ],
+      "alt": "Head of Retail runs pop-up media days Dec 18–20, testing event CPA and QR redemptions."
+    }
+  ]
+}

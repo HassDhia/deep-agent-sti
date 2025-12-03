@@ -1,0 +1,132 @@
+[
+  {
+    "type": "hero",
+    "slot": "hero",
+    "section": "Hero",
+    "anchor_section": "header",
+    "template": "hero_decision_window",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "scene": "retail operations war room three quarter angle operator",
+        "personas": "head retail choosing collab led store studio approach",
+        "action": "pinning reserved inventory block partnership slot focused third",
+        "symbolism": "calendar page third week highlighted visible uncluttered reservation",
+        "props": "exclusive sku mockup box tied s3 pilot qr",
+        "mood": "decisive collaborative margin focused",
+        "lighting": "Polished editorial lighting with confident highlights and clean negative space; warm key on faces, cool fill on plans.",
+        "focal_point": "pinning reserved inventory block partnership slot focused third"
+      },
+      "style": {
+        "framing": "three-quarter view from eye level",
+        "lighting": "cool high-contrast lighting with crisp edges",
+        "palette": "slate base with subtle brass highlights",
+        "geometry": "clean architectural facets",
+        "environment": "structured architectural backdrop"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "qr_redemption",
+        "conversion_rate"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "QR redemption",
+        "Conversion rate"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "qr_redemption",
+      "conversion_rate"
+    ],
+    "alt": "Head of Retail reserves inventory and signs partnership to run a third-week December exclusive test.",
+    "image": "images/hero_why_the_third_week_of_december.png"
+  },
+  {
+    "type": "section",
+    "section": "Signal Map",
+    "slot": "signal_map",
+    "anchor_section": "signals_and_thesis",
+    "template": "signal_map_concentric",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "context": "research shows promotions crowded late november which reduces",
+        "structure": "concentric rings representing calendar blocks early nov ring",
+        "elements": "tokens exclusives small discs placed third week ring",
+        "motion": "directional flow multiple early window nodes converging concentrated",
+        "direction": "research shows promotions crowded late november which reduces",
+        "palette": "matte neutrals pop retail blue metallic accent exclusive"
+      },
+      "style": {
+        "framing": "stacked elevation view",
+        "lighting": "half-toned studio wash",
+        "palette": "mist gray with electric blue pulses",
+        "geometry": "stacked line work",
+        "environment": "dark minimal background"
+      },
+      "metric_focus": [
+        "footfall_lift",
+        "early_window_share",
+        "qr_redemption"
+      ],
+      "metric_labels": [
+        "Foot-traffic uplift",
+        "Early-window share",
+        "QR redemption"
+      ]
+    },
+    "metric_focus": [
+      "footfall_lift",
+      "early_window_share",
+      "qr_redemption"
+    ],
+    "alt": "CMO studying a ring map plotting footfall uplift and QR redemption across weeks to plan exclusives.",
+    "image": "images/section_signal_map_why_the_third_week_of_december.png"
+  },
+  {
+    "type": "section",
+    "section": "Case Study 1",
+    "slot": "case_study_1",
+    "anchor_section": "mini_case_story",
+    "template": "case_play_activation",
+    "template_version": "2025-11-29.1",
+    "context": {
+      "tokens": {
+        "scene": "small format store counter during nov 28 giveaway",
+        "time": "staff member scans qr redemption tablet while tablet",
+        "moment": "staff member scans qr redemption tablet while tablet",
+        "personas": "head retail cmo running s2 store exclusive giveaway",
+        "mood": "precise collaborative measurement first",
+        "lighting": "Directed editorial spotlight on the QR scan, soft ambient in background to isolate the action.",
+        "props": "laminated qr cards giveaway tablet displaying redemption conversion",
+        "focal_point": "small format store counter during nov 28 giveaway"
+      },
+      "style": {
+        "framing": "tight medium shot on the collaboration moment",
+        "lighting": "diffused skylight with controlled highlights",
+        "palette": "graphite and steel with restrained teal",
+        "geometry": "minimal coaxial arcs",
+        "environment": "measured spatial grid"
+      },
+      "metric_focus": [
+        "qr_redemption",
+        "conversion_rate",
+        "footfall_lift"
+      ],
+      "metric_labels": [
+        "QR redemption",
+        "Conversion rate",
+        "Foot-traffic uplift"
+      ]
+    },
+    "metric_focus": [
+      "qr_redemption",
+      "conversion_rate",
+      "footfall_lift"
+    ],
+    "alt": "Head of Retail and CMO run Nov 28 in-store giveaway, measuring QR redemptions and conversion uplift.",
+    "image": "images/section_case_study_1_why_the_third_week_of_december.png"
+  }
+]

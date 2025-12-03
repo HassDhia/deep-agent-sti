@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>{{ display_title or title }} — {{ tagline }}</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #040507;
+            --surface: #090c13;
+            --surface-2: #101623;
+            --surface-3: #151d2f;
+            --surface-4: #1c2539;
+            --text: #f2f6ff;
+            --muted: #8892aa;
+            --heading: #ffffff;
+            --accent: #6fe2ff;
+            --accent-2: #8ca8ff;
+            --danger: #f87171;
+            --border: rgba(255, 255, 255, 0.08);
+            --chip: rgba(255, 255, 255, 0.05);
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+        }
+        body[data-view="leadership"] .operator-stack {
+            display: none;
+        }
+        body[data-view="operator"] .operator-stack {
+            display: block;
+        }
+        a { color: var(--accent); }
+        .skip-link {
+            position: absolute;
+            left: -999px;
+            top: auto;
+            background: var(--surface-3);
+            color: var(--text);
+            padding: 0.6rem 1rem;
+            border-radius: 0.5rem;
+        }
+        .skip-link:focus { left: 1rem; top: 1rem; z-index: 10; }
+        .page {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 48px 28px 120px;
+        }
+        .view-toggle {
+            display: inline-flex;
+            gap: 0.65rem;
+            margin: 12px 0 32px;
+            flex-wrap: wrap;
+        }
+        .view-toggle__btn {
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: var(--surface-2);
+            color: var(--text);
+            padding: 0.35rem 0.95rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        .view-toggle__btn.active {
+            background: var(--accent);
+            color: #041014;
+            border-color: var(--accent);
+        }
+        .poster {
+            margin-bottom: 48px;
+        }
+        .poster__brand-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            align-items: baseline;
+            font-size: 0.8rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .poster__logo {
+            font-weight: 700;
+            color: var(--heading);
+        }
+        .poster__meta {
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .poster h1 {
+            margin: 1.5rem 0 0.5rem;
+            font-size: clamp(2.8rem, 6vw, 4rem);
+            letter-spacing: 0.02em;
+            line-height: 1.1;
+            color: var(--heading);
+        }
+        .poster__subtitle {
+            font-size: 1.25rem;
+            color: var(--accent);
+            margin: 0 0 1.5rem;
+            max-width: 64ch;
+        }
+        .poster__spec-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+        .poster__spec-row span {
+            display: inline-flex;
+            gap: 0.35rem;
+        }
+        .poster__image {
+            margin-top: 1.5rem;
+            border-radius: 1.2rem;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+        }
+        .poster__image img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            max-height: 420px;
+        }
+        .leadership-band {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 1.4rem;
+            padding: 1.75rem 2rem;
+            margin-bottom: 32px;
+        }
+        .band__header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+        .forward-pill {
+            background: var(--surface-3);
+            padding: 0.4rem 0.8rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            font-size: 0.75rem;
+            display: inline-flex;
+            gap: 0.4rem;
+            align-items: center;
+        }
+        .forward-pill code {
+            background: transparent;
+            color: var(--text);
+            font-size: 0.75rem;
+        }
+        .band__tldr {
+            font-size: 1.1rem;
+            color: var(--heading);
+            margin: 1rem 0 1.5rem;
+        }
+        .band__grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+        }
+        .band__grid h3 {
+            margin: 0 0 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+        .band__grid ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .band__cta {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 0.5rem;
+        }
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            border: 1px solid var(--accent);
+            background: var(--accent);
+            color: #041014;
+            padding: 0.7rem 1.6rem;
+            font-weight: 600;
+            text-decoration: none;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .band__cta small {
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.7rem;
+        }
+        .overview-body {
+            margin-top: 1rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+        }
+        .overview-body article + article {
+            margin-top: 0.75rem;
+        }
+        .brief-grid {
+            margin-bottom: 28px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        .brief-card {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.1rem 1.2rem;
+        }
+        .brief-card h3 {
+            margin: 0 0 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+        .brief-card ul {
+            margin: 0;
+            padding-left: 1.1rem;
+        }
+        .play-meta {
+            display: block;
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-top: 0.2rem;
+        }
+        .risk-glance {
+            margin: 16px 0 48px;
+            padding: 1rem 1.2rem;
+            border-left: 4px solid var(--accent-2);
+            background: var(--surface-2);
+            border-radius: 0.75rem;
+            color: var(--heading);
+        }
+        .metrics-band {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.25rem 1.4rem;
+            margin-bottom: 28px;
+        }
+        .metrics-band h3 {
+            margin: 0 0 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+        }
+        .metrics-chip {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 0.8rem;
+            padding: 0.9rem 1rem;
+        }
+        .metrics-chip strong {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--heading);
+        }
+        .metrics-chip span {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--muted);
+        }
+        .signals-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.4rem 1.6rem;
+            margin-bottom: 32px;
+        }
+        .signals-panel__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+        .signals-panel__body {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-top: 1.2rem;
+            align-items: flex-end;
+        }
+        .signals-list {
+            flex: 1 1 220px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+        .signals-chip {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 0.8rem;
+            padding: 0.75rem 0.9rem;
+        }
+        .signals-chip strong {
+            display: block;
+            font-size: 1rem;
+            color: var(--heading);
+        }
+        .signals-chip span {
+            display: block;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .signals-chart__bars {
+            flex: 1 1 260px;
+            min-height: 140px;
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            padding: 0 0.5rem;
+        }
+        .signals-sparkline {
+            flex: 1 1 220px;
+        }
+        .signals-sparkline svg {
+            width: 100%;
+            height: 140px;
+        }
+        .signals-sparkline polyline {
+            fill: none;
+            stroke: var(--accent);
+            stroke-width: 2;
+        }
+        .signals-bar {
+            flex: 1;
+            position: relative;
+            background: var(--surface-3);
+            border-radius: 0.6rem 0.6rem 0 0;
+            overflow: hidden;
+        }
+        .signals-bar__fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--accent-2);
+        }
+        .signals-bar span {
+            position: absolute;
+            top: -1.5rem;
+            width: 100%;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+        .signals-bar label {
+            position: absolute;
+            bottom: -1.4rem;
+            width: 100%;
+            text-align: center;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .risk-glance span {
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+        .operator-stack header {
+            margin-bottom: 1rem;
+        }
+        .operator-stack header span {
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+        .operator-tag {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-right: 0.5rem;
+        }
+        details[data-collapsible] {
+            border: 1px solid var(--border);
+            border-radius: 1.1rem;
+            background: var(--surface);
+            padding: 0.4rem 1rem;
+            margin-bottom: 14px;
+        }
+        details[data-collapsible] summary {
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-size: 0.85rem;
+            color: var(--heading);
+        }
+        details[data-collapsible] summary::-webkit-details-marker { display: none; }
+        .section-card {
+            padding: 1.2rem 0.25rem 1.5rem;
+        }
+        .activation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .activation-visuals {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+        .activation-visuals figure {
+            margin: 0;
+            border: 1px solid var(--border);
+            border-radius: 0.9rem;
+            overflow: hidden;
+            background: var(--surface-3);
+        }
+        .activation-visuals img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            height: 160px;
+        }
+        .activation-visuals figcaption {
+            font-size: 0.7rem;
+            color: var(--muted);
+            padding: 0.4rem 0.6rem;
+        }
+        .activation-card {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1rem 1.2rem;
+        }
+        .activation-card__img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 0.8rem;
+            border: 1px solid var(--border);
+            margin-bottom: 0.75rem;
+        }
+        .activation-card h3 {
+            margin: 0 0 0.4rem;
+        }
+        .activation-card .meta {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+        .activation-card details {
+            margin-top: 0.8rem;
+        }
+        .activation-card details summary {
+            letter-spacing: 0.05em;
+            font-size: 0.85rem;
+            color: var(--muted);
+            cursor: pointer;
+        }
+        .signal-map, .dual-column {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+        }
+        .signal-card, .pattern-card, .risk-card, .outlook-card {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1rem 1.1rem;
+        }
+        .signal-card .category {
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+        .operator-label {
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--muted);
+            font-size: 0.75rem;
+            margin-bottom: 0.4rem;
+        }
+        .measurement-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+        .measurement-row {
+            background: var(--surface-2);
+            border-radius: 0.9rem;
+            padding: 0.9rem 1rem;
+            border: 1px solid var(--border);
+        }
+        .measurement-row summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            cursor: pointer;
+        }
+        .measurement-row summary strong { flex: 1; }
+        .badge, .data-chip {
+            background: var(--surface-3);
+            border-radius: 999px;
+            padding: 0.1rem 0.7rem;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+        .meta-note {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-top: 0.8rem;
+        }
+        ol {
+            padding-left: 1.4rem;
+        }
+        @media (max-width: 640px) {
+            .page { padding: 32px 18px 80px; }
+            .band__grid { grid-template-columns: 1fr; }
+            .poster__brand-row { letter-spacing: 0.16em; }
+            .signals-panel__body { flex-direction: column; }
+        }
+        @media print {
+            body { background: #ffffff; color: #000000; }
+            .page { padding: 24px 24px 48px; }
+            details[data-collapsible] { border-color: #cccccc; background: #ffffff; }
+        }
+    </style>
+</head>
+<body data-view="leadership">
+    <a href="#overview" class="skip-link">Skip to leadership summary</a>
+    <main class="page">
+        <section class="poster" id="top">
+            <div class="poster__brand-row">
+                <span class="poster__logo">STI</span>
+                <span class="poster__meta">{{ tagline }}</span>
+                {% if time_window_label %}
+                <span class="poster__meta">{{ time_window_label }}</span>
+                {% endif %}
+                <span class="poster__meta">Confidence {{ confidence.band or 'Medium' }}</span>
+                <span class="poster__meta">{{ region_label }}</span>
+            </div>
+            <h1>{{ display_title or title }}</h1>
+            {% if letter_subtitle or hook_line %}
+            <p class="poster__subtitle">{{ letter_subtitle or hook_line }}</p>
+            {% endif %}
+            <div class="poster__spec-row">
+                <span>Window <strong>{{ time_window_label or "Active window" }}</strong></span>
+                <span>Confidence <strong>{{ confidence.band or 'Medium' }}</strong></span>
+                <span>Region <strong>{{ region_label }}</strong></span>
+                <span>Read time <strong>~{{ read_time }} min</strong></span>
+            </div>
+            {% if images.hero %}
+            <div class="poster__image">
+                <img src="{{ images.hero }}" alt="{{ image_alts.hero }}" />
+            </div>
+            {% endif %}
+        </section>
+
+        <section class="leadership-band" id="overview">
+            <div class="band__header">
+                <span>Overview · For leadership</span>
+                {% if letter_email_subject %}
+                <span class="forward-pill">Forward subject <code>{{ letter_email_subject }}</code></span>
+                {% endif %}
+            </div>
+            {% if letter_tldr %}
+            <p class="band__tldr">{{ letter_tldr }}</p>
+            {% endif %}
+            {% set investable = letter_bullets.investable if letter_bullets.investable else investable_defaults %}
+            {% set target_bullets = letter_bullets.targets if letter_bullets.targets else target_defaults %}
+            <div class="band__grid">
+                <div>
+                    <h3>Why this window is investable</h3>
+                    <ul>
+                        {% for item in investable[:3] %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div>
+                    <h3>Targets</h3>
+                    <ul>
+                        {% for item in target_bullets[:3] %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="band__cta">
+                    <h3>Decision</h3>
+                    <a class="cta-button" href="{{ letter_primary_cta_link }}">{{ letter_primary_cta or "Approve focused two-week test" }}</a>
+                    <small>Locks window, sponsor, reporting cadence</small>
+                </div>
+            </div>
+            {% if executive_letter.sections %}
+            <details class="overview-body" data-collapsible>
+                <summary>View full letter</summary>
+                {% for block in executive_letter.sections %}
+                <article>
+                    <h3>{{ block.name }}</h3>
+                    <p>{{ block.body }}</p>
+                </article>
+                {% endfor %}
+            </details>
+            {% endif %}
+        </section>
+
+        <section class="brief-grid" aria-label="Executive quick reference">
+            <article class="brief-card">
+                <h3>Executive summary</h3>
+                {% set summary_cards = exec_summary_bullets if exec_summary_bullets else investable[:3] %}
+                <ul>
+                    {% for item in summary_cards %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </article>
+            <article class="brief-card">
+                <h3>Plays preview</h3>
+                <ul>
+                    {% for play in plays_preview %}
+                    <li>
+                        <strong>{{ play.label }}</strong> — {{ play.summary }}
+                        {% if play.meta %}<span class="play-meta">{{ play.meta }}</span>{% endif %}
+                    </li>
+                    {% endfor %}
+                    {% if plays_preview|length == 0 %}
+                    <li>Activation kit outlines three tightly scoped plays.</li>
+                    {% endif %}
+                </ul>
+            </article>
+            <article class="brief-card">
+                <h3>Signals</h3>
+                <ul>
+                    {% for sig in signals_preview %}
+                    <li><strong>{{ sig.label }}</strong> — {{ sig.text }}</li>
+                    {% endfor %}
+                    {% if signals_preview|length == 0 %}
+                    <li>Signal density outlined in operator detail.</li>
+                    {% endif %}
+                </ul>
+            </article>
+        </section>
+
+        {% if risk_glance %}
+        <section class="risk-glance" id="risks-teaser">
+            <span>Risks at a glance</span>
+            <p>{{ risk_glance }}</p>
+        </section>
+        {% endif %}
+
+        {% if headline_metrics %}
+        <section class="metrics-band">
+            <h3>Metrics spotlight</h3>
+            <div class="metrics-grid">
+                {% for metric in headline_metrics %}
+                <div class="metrics-chip">
+                    <strong>{{ metric.display or metric.value }}</strong>
+                    <span>{{ metric.label }}</span>
+                    {% if metric.owner %}<small class="meta-note">Owner {{ metric.owner }}</small>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <section class="view-toggle" aria-label="View selector">
+            <button type="button" class="view-toggle__btn active" data-view="leadership">Leadership view</button>
+            <button type="button" class="view-toggle__btn" data-view="operator">Full operator view</button>
+        </section>
+
+        {% if signals_chart %}
+        <section class="signals-panel">
+            <div class="signals-panel__header">
+                <h3>Behavioral signals</h3>
+                <span>Strength vs baseline</span>
+            </div>
+            <div class="signals-panel__body">
+                <div class="signals-list">
+                    {% for point in signals_chart %}
+                    <div class="signals-chip">
+                        <strong>{{ '%.2f'|format(point.value) }}</strong>
+                        <span>{{ point.label }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="signals-chart__bars">
+                    {% for point in signals_chart %}
+                    {% set height = (point.value / signals_chart_max * 100) | round(2) %}
+                    <div class="signals-bar">
+                        <div class="signals-bar__fill" style="height: {{ [height, 5]|max }}%;"></div>
+                        <span>{{ '%.1f'|format(point.value) }}</span>
+                        <label>{{ point.label }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if signals_sparkline %}
+                {% set spark_width = (signals_sparkline|length - 1) * 20 if signals_sparkline|length > 1 else 20 %}
+                <div class="signals-sparkline">
+                    <svg viewBox="0 0 {{ spark_width }} 100" preserveAspectRatio="none">
+                        <polyline points="{% for point in signals_sparkline %}{{ loop.index0 * 20 }} {{ 100 - point }} {% endfor %}" vector-effect="non-scaling-stroke" />
+                    </svg>
+                </div>
+                {% endif %}
+            </div>
+            {% if signals_commentary %}
+            <p class="meta-note">{{ signals_commentary }}</p>
+            {% endif %}
+        </section>
+        {% endif %}
+
+        <section class="operator-stack" id="operator-detail">
+            <header>
+                <span>For operators — expand to view runbooks</span>
+            </header>
+
+            {% if activation_kit %}
+            <details id="activation" data-collapsible>
+                <summary><span class="operator-tag">Operators</span><span>Activation plays</span></summary>
+                <div class="section-card">
+                    {% if images.case_studies %}
+                    <div class="activation-visuals">
+                        {% for case_img in images.case_studies[:2] %}
+                        {% if case_img is string %}
+                        {% set img_path = case_img %}
+                        {% set img_alt = 'Activation vignette' %}
+                        {% set img_attr = '' %}
+                        {% else %}
+                        {% set img_path = case_img.path %}
+                        {% set img_alt = case_img.alt %}
+                        {% set img_attr = case_img.attribution %}
+                        {% endif %}
+                        {% if img_path %}
+                        <figure>
+                            <img src="{{ img_path }}" alt="{{ img_alt or 'Activation vignette' }}">
+                            {% if img_attr %}<figcaption>{{ img_attr }}</figcaption>{% endif %}
+                        </figure>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="activation-grid">
+                        {% for play in activation_kit %}
+                        <article class="activation-card">
+                            <h3>{{ play.play_name }}</h3>
+                            {% set play_img = None %}
+                            {% if play.image_index is defined and play.image_index is not none %}
+                                {% set idx = play.image_index | int %}
+                                {% if idx >= 0 and idx < images.case_studies | length %}
+                                    {% set play_img = images.case_studies[idx] %}
+                                {% endif %}
+                            {% endif %}
+                            {% if play_img %}
+                                {% if play_img is string %}
+                                    <img class="activation-card__img" src="{{ play_img }}" alt="Activation visual" />
+                                {% else %}
+                                    <img class="activation-card__img" src="{{ play_img.path }}" alt="{{ play_img.alt or 'Activation visual' }}" />
+                                {% endif %}
+                            {% endif %}
+                            <p>{{ play.proof_point }}</p>
+                            <div class="meta">Owner: {{ play.operator_owner }} · Partner: {{ play.collaborator }} · Timing: {{ play.timing }}</div>
+                            <details>
+                                <summary>Operator playbook and outreach cadence</summary>
+                                {% if play.thresholds %}
+                                <div class="meta">Thresholds: {{ play.thresholds }}</div>
+                                {% endif %}
+                                {% if play.placement_options %}
+                                <div class="meta">Placement: {{ play.placement_options | join(' · ') }}</div>
+                                {% endif %}
+                                {% if play.prerequisites %}
+                                <div class="meta">Prereqs: {{ play.prerequisites | join(' · ') }}</div>
+                                {% endif %}
+                                {% if play.best_fit or play.not_for %}
+                                <div class="meta">Fit: {{ play.best_fit }}{% if play.not_for %} · Not for: {{ play.not_for }}{% endif %}</div>
+                                {% endif %}
+                                <div class="meta">Persona: {{ play.persona or 'Operator lead' }} · Collab: {{ play.collab_type or 'Brand↔operator' }} · Zero new SKUs: {{ 'Yes' if play.zero_new_sku else 'No' }} · Ops drag: {{ play.ops_drag or 'Medium' }}</div>
+                                {% if play.overflow_notes %}
+                                <div class="meta">Variants:</div>
+                                <ul>
+                                    {% for note in play.overflow_notes %}
+                                    <li>{{ note }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                                {% if play.target_map %}
+                                <div class="meta">Target map:</div>
+                                <ul>
+                                    {% for target in play.target_map %}
+                                    <li>{{ target.role }} ({{ target.org_type }}): {{ target.why_now }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                                {% if play.cadence %}
+                                <div class="meta">Outreach cadence:</div>
+                                <ul>
+                                    {% for touch in play.cadence %}
+                                    <li>Day {{ touch.day }} — {{ touch.subject }}: {{ touch.narrative }} (CTA: {{ touch.cta or 'Complete next-step handoff' }})</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </details>
+                        </article>
+                        {% endfor %}
+                    </div>
+                    <p class="meta-note">{{ ctas.activation }}</p>
+                </div>
+            </details>
+            {% endif %}
+
+            {% if measurement_plan %}
+            <details id="tests" data-collapsible>
+                <summary><span class="operator-tag">Operators</span><span>Metrics &amp; targets</span></summary>
+                <div class="section-card">
+                    {% set metric_line = letter_bullets.targets if letter_bullets.targets else target_defaults %}
+                    <p class="meta-note">{{ metric_line | join(' · ') }}</p>
+                    <div class="measurement-grid">
+                        {% for row in measurement_plan %}
+                        <details class="measurement-row">
+                            <summary>
+                                <strong>{{ row.metric }}</strong>
+                                {% if row.expression %}<span class="badge">{{ row.expression }}</span>{% endif %}
+                                <span class="badge">Owner {{ row.owner or 'TBD' }}</span>
+                                <span class="badge">Window {{ row.timeframe or 'Window' }}</span>
+                            </summary>
+                            <div class="measurement-body">
+                                <p><strong>Owner:</strong> {{ row.owner or 'TBD' }}</p>
+                                <p><strong>Timeframe:</strong> {{ row.timeframe or 'Window' }}</p>
+                                {% if row.status %}<p><strong>Status:</strong> {{ row.status }}</p>{% endif %}
+                                {% if row.notes %}<p><strong>Notes:</strong> {{ row.notes }}</p>{% endif %}
+                            </div>
+                        </details>
+                        {% endfor %}
+                    </div>
+                </div>
+            </details>
+            {% endif %}
+
+            {% if risk_radar %}
+            <details id="risks" data-collapsible>
+                <summary><span class="operator-tag">Operators</span><span>Risk radar</span></summary>
+                <div class="section-card">
+                    <div class="dual-column">
+                        {% for risk in risk_radar %}
+                        <article class="risk-card">
+                            <div class="operator-label">{{ risk.risk_name }}</div>
+                            <details>
+                                <summary>Trigger / Detection / Mitigation</summary>
+                                <p>Trigger: {{ risk.trigger }}</p>
+                                <p>Detection: {{ risk.detection }}</p>
+                                <div class="meta">Mitigation: {{ risk.mitigation }}</div>
+                            </details>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            </details>
+            {% endif %}
+
+            {% if signals %}
+            <details id="signals-detail" data-collapsible>
+                <summary><span class="operator-tag">Operators</span><span>Signals detail</span></summary>
+                <div class="section-card">
+                    <div class="signal-map">
+                        {% for signal in signals %}
+                        <article class="signal-card">
+                            <span class="category">{{ signal.category }}</span>
+                            <h3>{{ signal.name or signal.text }}</h3>
+                            <p>{{ signal.description or signal.text }}</p>
+                            {% if signal.operator_move %}<div class="operator-label">Operator move: {{ signal.operator_move }}</div>{% endif %}
+                            <div class="data-chip">Strength {{ '%.2f'|format(signal.strength or 0) }}</div>
+                            <div class="data-chip">US fit {{ '%.2f'|format(signal.US_fit or 0) }}</div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            </details>
+            {% endif %}
+
+            {% if deep_analysis.sections %}
+            <details id="context" data-collapsible>
+                <summary><span class="operator-tag">Operators</span><span>Operator context</span></summary>
+                <div class="section-card">
+                    <div class="dual-column">
+                        {% for block in deep_analysis.sections %}
+                        <article class="pattern-card">
+                            <strong>{{ block.title }}</strong>
+                            <p>{{ block.insight }}</p>
+                            <div class="meta">{{ block.operator_note }}</div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            </details>
+            {% endif %}
+
+            {% if pattern_matches %}
+            <details id="patterns" data-collapsible>
+                <summary><span class="operator-tag">Operators</span><span>Pattern fuel</span></summary>
+                <div class="section-card">
+                    <div class="dual-column">
+                        {% for pattern in pattern_matches %}
+                        <article class="pattern-card">
+                            <strong>{{ pattern.label }}</strong>
+                            <p>{{ pattern.summary }}</p>
+                            <div class="meta">Operator leap: {{ pattern.operator_leap }}</div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            </details>
+            {% endif %}
+
+            {% if brand_outcomes %}
+            <details id="outcomes" data-collapsible>
+                <summary><span class="operator-tag">Operators</span><span>Operator outcomes</span></summary>
+                <div class="section-card">
+                    <div class="dual-column">
+                        {% for outcome in brand_outcomes %}
+                        <article class="pattern-card">
+                            <strong>{{ outcome.title }}</strong>
+                            <p>{{ outcome.description }}</p>
+                            <div class="meta">Impact: {{ outcome.impact }}</div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            </details>
+            {% endif %}
+
+            {% if future_outlook %}
+            <details id="future" data-collapsible>
+                <summary><span class="operator-tag">Operators</span><span>Next horizons</span></summary>
+                <div class="section-card">
+                    <div class="dual-column">
+                        {% for horizon in future_outlook %}
+                        <article class="outlook-card">
+                            <strong>{{ horizon.horizon }} — {{ horizon.headline }}</strong>
+                            <p>{{ horizon.description }}</p>
+                            <div class="meta">Operator watch: {{ horizon.operator_watch }} · Upside: {{ horizon.collaboration_upside }}</div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            </details>
+            {% endif %}
+
+            {% if appendix_signals %}
+            <details id="appendix" data-collapsible>
+                <summary><span class="operator-tag">Operators</span><span>Appendix signals</span></summary>
+                <div class="section-card">
+                    <div class="dual-column">
+                        {% for appendix in appendix_signals %}
+                        <article class="pattern-card">
+                            <strong>{{ appendix.name or appendix.id }}</strong>
+                            <p>{{ appendix.description or 'Held for later cycle' }}</p>
+                            <div class="meta">Strength {{ '%.2f'|format(appendix.strength or 0) }} · Sources: {{ appendix.citations | join(', ') }}</div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            </details>
+            {% endif %}
+
+            {% if images.case_studies %}
+            <details id="case-studies" data-collapsible>
+                <summary><span class="operator-tag">Operators</span><span>Case study visuals</span></summary>
+                <div class="section-card">
+                    {% for case_img in images.case_studies %}
+                    <div class="poster__image" style="margin-top:0;">
+                        <img src="{{ case_img.path }}" alt="{{ case_img.alt or 'Case study visual' }}">
+                        {% if case_img.attribution %}<div class="meta-note">{{ case_img.attribution }}</div>{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </details>
+            {% endif %}
+
+            {% if images.signal_map %}
+            <details id="signal-map" data-collapsible>
+                <summary><span class="operator-tag">Operators</span><span>Signal map visual</span></summary>
+                <div class="section-card">
+                    <div class="poster__image" style="margin-top:0;">
+                        <img src="{{ images.signal_map }}" alt="{{ image_alts.signal_map }}">
+                    </div>
+                </div>
+            </details>
+            {% endif %}
+        </section>
+
+        <section id="sources" class="section-card" style="margin-top:32px;">
+            <h2>Sources</h2>
+            <ol>
+                {% for source in sources %}
+                <li>[{{ source.id }}] {{ source.publisher }} — {{ source.title }} ({{ source.date }}) — <a href="{{ source.url }}">{{ source.url }}</a></li>
+                {% endfor %}
+            </ol>
+            <p class="meta-note">{{ social_disclosure }}</p>
+            {% if confidence_note %}
+            <p class="meta-note">Confidence note: {{ confidence_note }}</p>
+            {% endif %}
+        </section>
+    </main>
+    <script>
+        (function(){
+            const bodyEl = document.body;
+            const viewButtons = document.querySelectorAll('.view-toggle__btn');
+            const viewKey = 'sti-report-view';
+            const params = new URLSearchParams(window.location.search);
+
+            const setView = (view, persist = true) => {
+                const next = view === 'operator' ? 'operator' : 'leadership';
+                bodyEl.dataset.view = next;
+                viewButtons.forEach((btn) => btn.classList.toggle('active', btn.dataset.view === next));
+                if (persist) {
+                    try { localStorage.setItem(viewKey, next); } catch (err) {}
+                }
+            };
+
+            const storedView = params.get('view') || (() => {
+                try { return localStorage.getItem(viewKey); } catch (err) { return null; }
+            })();
+            if (storedView) {
+                setView(storedView, false);
+            } else {
+                setView(bodyEl.dataset.view || 'leadership', false);
+            }
+
+            viewButtons.forEach((btn) => {
+                btn.addEventListener('click', () => setView(btn.dataset.view));
+            });
+
+            const collapsibles = document.querySelectorAll('details[data-collapsible]');
+            const openCollapsibles = () => {
+                collapsibles.forEach(detail => {
+                    detail.dataset.wasOpen = detail.open ? 'true' : 'false';
+                    detail.open = true;
+                });
+            };
+            const restoreCollapsibles = () => {
+                collapsibles.forEach(detail => {
+                    if (detail.dataset.wasOpen === 'false') {
+                        detail.open = false;
+                    }
+                });
+            };
+
+            let beforePrintView = bodyEl.dataset.view || 'leadership';
+            const beforePrint = () => {
+                beforePrintView = bodyEl.dataset.view || 'leadership';
+                setView('operator', false);
+                openCollapsibles();
+            };
+            const afterPrint = () => {
+                setView(beforePrintView, false);
+                restoreCollapsibles();
+            };
+            window.addEventListener('beforeprint', beforePrint);
+            window.addEventListener('afterprint', afterPrint);
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Report",
+  "name": "Holiday Flagship Early-Access & Pop-up Tests",
+  "about": "Store as Studio:\nHow retail stores are becoming content properties",
+  "abstract": "Run a concentrated holiday early-access plus pop-up experiment to hit the unified holiday target pack: detectable foot-traffic uplift **10–15%** (stretch **≥25%** in top markets), early-window transaction share **20–30%** (vs ~12–15% baseline), event CPA ≤**0.80×** baseline, and QR/scan redemption **≥5%** of footfall. Momentum lock. Frame the test as an A/B inside the same two-week window: Arm A legacy markdown versus Arm B bundle+GWP+loyalty to isolate lift and CPA. Brand, operations, analytics, property and data teams must align on the event calendar, door-count instrumentation, QR→POS links and an A/B holdout to deploy **within 30 days** [^2][^1][^3].",
+  "datePublished": "2025-11-25T18:42:16.472194",
+  "temporalCoverage": "2025-11-18/2025-11-25",
+  "hasPart": [
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.msn.com/en-us/movies/news/a24-barnes-noble-partner-on-branded-in-store-spaces-for-indie-studios-books-movies-merch/ar-AA1R7Fqi?ocid=BingNewsVerp",
+        "https://www.msn.com/en-us/movies/news/a24-barnes-noble-partner-on-branded-in-store-spaces-for-indie-studios-books-movies-merch/ar-AA1R7Fqi"
+      ],
+      "about": "Market"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.bisnow.com/new-york/news/retail/retail-property-management-cushmanwakefield-studiob-131980"
+      ],
+      "about": "Market"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.forbes.com/councils/forbesbusinesscouncil/2025/11/25/how-agentic-commerce-is-reshaping-retail-and-cpg-strategy/",
+        "https://www.forbes.com/sites/sap/2025/11/19/learn-how-agentic-ai-and-business-suites-put-the-perfect-store-within-reach/"
+      ],
+      "about": "Technology"
+    },
+    {
+      "@type": "AnalysisNewsArticle",
+      "headline": null,
+      "citation": [
+        "https://www.marketwatch.com/press-release/imagine-s-q4-trends-highlights-emotional-connections-in-retail-out-of-home-and-collectibles-34421084"
+      ],
+      "about": "Cultural"
+    }
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": 0.833
+  }
+}

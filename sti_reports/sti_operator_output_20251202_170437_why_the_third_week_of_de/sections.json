@@ -1,0 +1,749 @@
+{
+  "deep_analysis": {
+    "sections": [
+      {
+        "title": "Promo season frontloads and compresses November value",
+        "spine_position": "what",
+        "priority": 1,
+        "scan_line": "Promotions start earlier and lengthen, weakening November concentration.",
+        "insight": "Retailers are opening Black Friday deals well before the official weekend and stretching discounts through November, so peak bargain density no longer lives in a single weekend [^4][^5][^7]. That frontloading spreads shopper demand across more weeks and reduces the leverage of matching deep November promos, which erodes margin without reliably growing true late-season buyer share [^2][^8]. Practical result: the concentrated promotional pressure you felt in November is now a diluted background, leaving a later high-value window if you target it correctly [^4][^2].",
+        "operator_note": "Stop reflexively matching every early November discount. Map your promo depth by calendar week and stop any broad discount that does not beat your weekly margin-per-trip target. Reserve a share of inventory and marketing budget for the third week of December. Use exclusives and events there instead of lifting all SKUs.",
+        "instrument_next": "Instrument weekly promo share, margin per store visit, and buyer conversion by week so you can compare November versus third-week-of-December economics.",
+        "citations": [
+          4,
+          5,
+          7,
+          2,
+          8
+        ]
+      },
+      {
+        "title": "Exclusives lift conversion and preserve margin",
+        "spine_position": "so_what",
+        "priority": 1,
+        "scan_line": "In-store exclusives convert better than blanket discounts.",
+        "insight": "Retail winners in 2025 leaned on exclusive giveaways and retailer-only drops to pull customers into stores and convert them, not just spike traffic with shallow discounts [^6]. Exclusives create scarcity and a differentiated value proposition that raises conversion and average order value while protecting unit margin compared with undifferentiated price cuts [^6][^2]. Compared to discount-heavy approaches, exclusives trade peak footfall for higher quality visits and better post-event loyalty signals when paired with owned media activation [^6].",
+        "operator_note": "Design 1–2 limited-run exclusives per format and test them in a small cluster of stores. Price them to protect margin. Promote each exclusive with dedicated creative and a redemption mechanism (QR or barcode) that ties the in-store visit back to a marketing channel. Measure conversion and AOV per exclusive versus matched discount control stores.",
+        "instrument_next": "Instrument QR redemption rate, conversion rate, average order value, and margin per visit comparing exclusive-drop stores to matched discount-control stores.",
+        "citations": [
+          6,
+          2
+        ]
+      },
+      {
+        "title": "Discount depth versus collaboration tradeoffs",
+        "spine_position": "so_what",
+        "priority": 2,
+        "scan_line": "Heavy discounts drive traffic but compress margin; collaborations protect value.",
+        "insight": "Deep, broad discounts reliably lift foot traffic but they also lower margin per visit and train customers to wait, which undercuts late-season profitability [^2][^8]. Collaborative plays such as retailer-exclusive SKUs or brand drops limit price erosion, concentrate demand, and deliver higher-margin conversions though they may produce lower absolute footfall unless paired with event amplification [^6][^1]. Moving from discounts to collabs breaks assumptions around volume forecasting and requires tighter inventory controls and retailer alignment, but it preserves unit economics and media ROI when executed with event support [^6][^2].",
+        "operator_note": "Decide your axis: if you must buy volume, use targeted discounts on commodity SKUs only. If you care about profitable visits, allocate budget to collaborations, exclusives, and events. Build retailer SLAs for exclusives and holdback inventory to avoid dilution. Run one A/B test of discount-heavy vs collaboration-led promotions in matched markets during the third week of December.",
+        "instrument_next": "Instrument margin per trip, foot-traffic uplift, and media CPM-to-conversion ratio for discount-led stores versus collaboration-led stores over the same holiday week.",
+        "citations": [
+          2,
+          8,
+          6,
+          1
+        ]
+      },
+      {
+        "title": "Turn stores into owned media to lower CPA",
+        "spine_position": "now_what",
+        "priority": 2,
+        "scan_line": "Events and pop-ups convert paid media into owned moments with lower CPA.",
+        "insight": "In-store events and pop-up media days convert media spend into owned content and on-site urgency, which reduces paid acquisition cost per buyer when promoted properly [^6]. That channel move compresses CPA because the store acts as an earned-media amplifier: attendees create social proof and deliver higher buyer activity share post-event [^6][^1]. If you keep event CPA below 0.8× baseline and hit QR redemption floors, media value shifts from short-term clicks to repeatable store ROI [^6].",
+        "operator_note": "Shift a slice of digital and paid-social spend into event-driven creative promoting specific store dates. Book five pop-up days in week three of December in high-cap stores. Coordinate inventory and staffing to avoid stockouts. Track event attribution to media campaigns and push earned creative into paid follow-ups.",
+        "instrument_next": "Instrument event-level CPA, incremental sales per media dollar, QR redemption as percent of footfall, and post-event repeat rate versus baseline store weeks.",
+        "citations": [
+          6,
+          1
+        ]
+      }
+    ],
+    "summary": "Promotions have been pulled forward and stretched across November. That dilutes November's bargain density and opens a late-window — the third week of December — where you can capture higher-value visits without matching month-long discounting. Your operational choice is clear: stop reflexively matching broad discounts and shift inventory, creative, and media to exclusives, retailer collaborations, and store events in that late window. You need to instrument conversion, margin per trip, QR redemption, and event CPA now so you can prove whether collaboration-led plays beat discount-led traffic on profit per visit."
+  },
+  "pattern_matches": [
+    {
+      "label": "November dilution of Black Friday",
+      "then": "Retailers historically concentrated deep discounts on the Friday after Thanksgiving and captured most seasonal volume in a tight window.",
+      "now": "Retailers run deals across weeks — pre-Black Friday sales, Black Friday Week and month-long promos — which spreads traffic and leaves fewer late bargains.",
+      "operator_leap": "Shift 5% of November paid media to run identical creative Dec 15–21; measure CPA, buyer share and margin per buyer versus the original November run.",
+      "supports_approach": "discount-heavy holiday",
+      "citations": [
+        4,
+        8,
+        1
+      ]
+    },
+    {
+      "label": "Early openings normalize promotions",
+      "then": "Brands once relied on a single compressed event; stores opened earlier year over year to chase the same one-day surge.",
+      "now": "Retailers now launch pre-Black Friday and even October deals to smooth logistics and capture early demand, reducing the punch of any single date.",
+      "operator_leap": "Test a Nov 19–28 light-discount 'reserve online, pick up in-store' window versus a single deep-discount day; compare conversion rate, AOV and margin per buyer.",
+      "supports_approach": "discount-heavy holiday",
+      "citations": [
+        5,
+        7,
+        8
+      ]
+    },
+    {
+      "label": "In-store exclusives drive valuable footfall",
+      "then": "Doorbusters and store-only offers historically forced high-value in-store visits and incremental conversion on the sales floor.",
+      "now": "Retailers won this season with exclusive giveaways and in-store-only enticements that brought shoppers to stores even while online discounts were flat.",
+      "operator_leap": "Run an in-store exclusive giveaway on Nov 28 run by Retail + CMO; track QR-code redemptions aiming for ≥5% of footfall and measure conversion uplift versus matched stores.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        2,
+        6
+      ]
+    },
+    {
+      "label": "Retailer-exclusive SKUs as a conversion lever",
+      "then": "Brands and retailers used exclusive product drops to create scarcity and drive both traffic and higher conversion in stores.",
+      "now": "Exclusives and limited drops are back as a way to create differentiated demand when broad discounts are commoditized.",
+      "operator_leap": "Pilot two retailer-exclusive SKUs Dec 15–21 with Brand Partnerships; target a ≥25% foot-traffic lift in pilot stores and QR redemptions ≥5% of footfall.",
+      "supports_approach": "collab-led holiday",
+      "citations": [
+        6,
+        1
+      ]
+    },
+    {
+      "label": "Month-long discounting compresses late-season margin",
+      "then": "Concentrated discounting preserved negotiating leverage and margin late in the season.",
+      "now": "Extended November discounting has left fewer true bargains; shoppers find less differentiation and retailers face margin pressure in late-season windows.",
+      "operator_leap": "Run a margin-scenario model: compare a spread-discount November plan versus a concentrated Dec 15–21 promotional window and pick the plan with higher margin per buyer for a downstream test.",
+      "supports_approach": "discount-heavy holiday",
+      "citations": [
+        2,
+        4,
+        8
+      ]
+    },
+    {
+      "label": "Store pop-ups as owned media",
+      "then": "Holiday events and pop-ups historically concentrated high-intent shoppers into controlled experiences that drove higher conversion.",
+      "now": "Operators can turn stores into media venues with pop-up events and exclusive activations to capture late-season high-value purchases.",
+      "operator_leap": "Book five store pop-up media days Dec 18–20; measure event CPA ≤0.8× baseline and QR redemptions ≥5% of footfall to validate owned-media ROI.",
+      "supports_approach": "store-as-studio / media-led holiday",
+      "citations": [
+        6,
+        1
+      ]
+    }
+  ],
+  "brand_outcomes": [
+    {
+      "title": "Shift 20% of seasonal demand into Dec 15–21 without matching November discount depth",
+      "description": "Run a coordinated program of limited retailer-exclusive drops and in-store experiential moments in Dec 15–21 to pull high-value visits later in the season while avoiding month-long blanket discounts. Retailers that leaned on exclusives and in-store giveaways captured footfall without broad price erosion, so limit SKU depth and use scarcity instead of sitewide price cuts [^6][^2]. You will see the test succeed as a 20% shift of seasonal demand into the Dec 15–21 window, ≥25% foot-traffic uplift in test stores, and maintained margin per unit versus November baseline.",
+      "impact": "Throughput and incremental margin (capture high-intent visits while protecting ASP)",
+      "time_horizon": "Holiday 2025 pilot (Dec 15\t621)",
+      "owner": "Head of Retail + Head of Brand Partnerships",
+      "citations": [
+        6,
+        2
+      ]
+    },
+    {
+      "title": "Treat stores as local media studios to keep event CPA at-or-below baseline",
+      "description": "Reallocate media spend from blanket national discount messaging to hyperlocal paid social and in-store event promotion so CPAs fall below baseline while driving incremental footfall. Media-led store events and exclusive in-store offers have outperformed simple online discounting by creating reasons to visit physically, reducing reliance on deep online price cuts [^6][^4]. Track success by event CPA ≤0.8× baseline and a rise in buyer activity share versus promo intensity.",
+      "impact": "Event CPA reduction and loyalty (lower acquisition cost per store visit)",
+      "time_horizon": "Next 90 days to holiday 2025 execution",
+      "owner": "Head of Marketing / CRM + Retail Ops",
+      "citations": [
+        6,
+        4
+      ]
+    },
+    {
+      "title": "Pilot two retailer-exclusive SKUs to drive conversion, not just traffic",
+      "description": "Launch two limited-run SKUs sold only through partner stores in the late-season week to attract high-intent shoppers without broad discounting. Exclusive merchandise creates urgency and justifies in-store trips; winners during recent seasons used exclusives to convert visits into purchases rather than only generating traffic [^6][^1]. Measure a target of ≥25% foot-traffic uplift in pilot stores and QR redemption ≥5% of footfall to validate conversion versus mere curiosity.",
+      "impact": "Incremental margin and conversion (higher basket value, lower promo leakage)",
+      "time_horizon": "Holiday 2025 pilot (Dec 15\t621)",
+      "owner": "Head of Brand Partnerships",
+      "citations": [
+        6,
+        1
+      ]
+    },
+    {
+      "title": "Use short pop-up media days and QR redemption to quantify profitable late-season demand",
+      "description": "Run five store pop-up media days Dec 18–20 pairing local PR, short paid bursts, and QR-gated exclusives to measure true purchase intent and defend margin. Short, concentrated events reduce calendar-wide discount pressure and give a clean test of in-store conversion vs. November promo behavior observed in the market [^6][^2]. Success shows as QR redemptions ≥5% of footfall, event CPA ≤0.8× baseline, and a higher buyer activity share per promo intensity than November.",
+      "impact": "Paired metric tracking (buyer activity share vs promo intensity) and throughput",
+      "time_horizon": "Holiday 2025 (Dec 18\t620 test window)",
+      "owner": "Retail Ops + CRM",
+      "citations": [
+        6,
+        2
+      ]
+    }
+  ],
+  "operator_notes": "The research shows promotions are crowded in late November, which reduces the payoff of matching discounts early. Your highest-leverage moves are partnering with retailers for limited-sku exclusives and event-driven in-store media in mid-to-late December, while shifting spend and CRM to promote those moments. Competing approaches you will see: price-matching early November to chase volume, and broad sitewide discounts; both compress margin and reduce ability to buy differentiated attention. Prioritize tests that measure buyer activity share versus promo intensity, QR-based redemption tied to footfall, and event CPA relative to baseline; run each test under a single owner (Head of Partnerships or Head of Retail) and a fixed 7–14 day window for clear learnings.",
+  "quant": {
+    "spine_hook": "Success = Nov 19–Dec 03 test stores deliver ≥10% incremental footfall, early-window share moves toward 20–30%, event CPA ≤0.8× baseline and QR redemptions ≥5% of entries.",
+    "anchors": [
+      {
+        "id": "Q1",
+        "headline": "Current early-window share of season footfall",
+        "topic": "season timing",
+        "value_low": 12,
+        "value_high": 15,
+        "unit": "% of season footfall",
+        "status": "observed",
+        "band": "base",
+        "owner": "Head of Analytics",
+        "expression": "Share of total Nov 1–Dec 31 footfall that occurs during Nov 19–Dec 03",
+        "source_ids": [
+          4,
+          7,
+          8
+        ],
+        "applies_to_signals": [
+          "S3",
+          "S5"
+        ]
+      },
+      {
+        "id": "Q2",
+        "headline": "Target foot-traffic uplift in test stores",
+        "topic": "store visits",
+        "value_low": 10,
+        "value_high": 15,
+        "unit": "%",
+        "status": "target",
+        "band": "base",
+        "owner": "Head of Retail",
+        "expression": "Incremental footfall vs matched-control stores during Nov 19–Dec 03",
+        "source_ids": [
+          6,
+          1
+        ],
+        "applies_to_signals": [
+          "S3",
+          "S2",
+          "S5"
+        ]
+      },
+      {
+        "id": "Q3",
+        "headline": "Event CPA ceiling vs baseline",
+        "topic": "media efficiency",
+        "value_low": 0.0,
+        "value_high": 0.8,
+        "unit": "× baseline CPA",
+        "status": "target",
+        "band": "base",
+        "owner": "Head of Performance Marketing",
+        "expression": "Paid-media cost per in-store conversion during event period as a ratio to baseline CPA (October average)",
+        "source_ids": [
+          6,
+          2
+        ],
+        "applies_to_signals": [
+          "S5"
+        ]
+      },
+      {
+        "id": "Q4",
+        "headline": "QR redemption rate as percent of footfall",
+        "topic": "activation quality",
+        "value_low": 5,
+        "value_high": 15,
+        "unit": "% of footfall",
+        "status": "target",
+        "band": "base",
+        "owner": "Head of Retail Operations",
+        "expression": "Number of event QR redemptions divided by store entries during Nov 19–Dec 03",
+        "source_ids": [
+          2,
+          6
+        ],
+        "applies_to_signals": [
+          "S2",
+          "S3",
+          "S5"
+        ]
+      }
+    ],
+    "measurement_plan": [
+      {
+        "id": "M1",
+        "metric": "Incremental footfall uplift (%)",
+        "expression": "Test stores with exclusives/drops vs matched-control stores, normalized for weekday, weather, and baseline trends",
+        "owner": "Head of Retail",
+        "timeframe": "Nov 19–Dec 03 (14 days) with 7-day post window",
+        "status": "plan",
+        "why_it_matters": "Direct test of whether exclusives drive the 10–15% base uplift without broad price cuts."
+      },
+      {
+        "id": "M2",
+        "metric": "Early-window share (%)",
+        "expression": "Event-period footfall (Nov 19–Dec 03) / season footfall (Nov 1–Dec 31)",
+        "owner": "Head of Analytics",
+        "timeframe": "Daily measurement; cumulative report on Dec 04",
+        "status": "plan",
+        "why_it_matters": "Shows whether traffic is shifting into the late window to approach the 20–30% goal."
+      },
+      {
+        "id": "M3",
+        "metric": "Event CPA ratio",
+        "expression": "Paid-media $ allocated to event ÷ attributable in-store conversions during event, divided by baseline CPA (October avg)",
+        "owner": "Head of Performance Marketing",
+        "timeframe": "Campaign runtime + 7-day conversion attribution",
+        "status": "plan",
+        "why_it_matters": "Immediate guardrail on media spend. Pause or reallocate if ratio exceeds 0.8."
+      },
+      {
+        "id": "M4",
+        "metric": "QR redemption rate and buyer-activity share vs promo intensity",
+        "expression": "QR redemptions / store entries; buyer activity share = buyers from QR / total buyers; promo intensity = average advertised % discount on featured items",
+        "owner": "Head of Retail Operations / Head of Analytics",
+        "timeframe": "Measure daily; compare test vs control stores during Nov 19–Dec 03",
+        "status": "plan",
+        "why_it_matters": "Pairs conversion quality to promo depth so we drive buyers not bargain browsers. Use as go/no-go on broader discounting."
+      }
+    ],
+    "coverage": 0.9
+  },
+  "activation_kit": [
+    {
+      "display": {
+        "pillar": "Retail Activation",
+        "play_name": "Instant QR Giveaway",
+        "card_title": "One-day in-store giveaway to convert footfall with QR capture",
+        "persona": "Head of Retail, CMO",
+        "best_fit": "High-footfall stores with simple POS and available staff for a short promo",
+        "not_for": "Small-format stores without door counts or strict margin constraints",
+        "thresholds_summary": "Aim for QR redemptions ≥5% of footfall and event CPA ≤0.8× baseline; stop the play if QR redemption falls under 2% or CPA exceeds baseline.",
+        "why_now": "November promos are diluted by frontloading; a single focused date recaptures attention without heavy margin erosion.",
+        "proof_point": "Comparable quick-play pilots tracked QR redemption ≥5% of footfall when run as an in-store exclusive.",
+        "approach_name": "In-store giveaway to QR",
+        "time_horizon": "immediate",
+        "placement_options": [
+          "Entrance welcome table with staff + QR poster",
+          "Checkout island with branded collateral",
+          "Endcap display with QR-triggered offer"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Retail",
+        "collaborator": "CMO",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "cpa": "≤0.8× baseline",
+          "qr_redemption": "≥5% of footfall",
+          "stop_if_qr_redemption": "<2%"
+        },
+        "prerequisites": [
+          "Store-level door counts by hour",
+          "Baseline CPA and conversion per store",
+          "Printed QR assets and POS signage",
+          "Staff brief with simple redemption script",
+          "Allocated small inventory for the giveaway"
+        ],
+        "target_map": [
+          {
+            "org_type": "Retailer",
+            "role": "Head of Retail",
+            "why_now": "Runs and staff approvals; owns in-store operations and day-of execution"
+          },
+          {
+            "org_type": "Brand",
+            "role": "CMO",
+            "why_now": "Provides creative offer and campaign measurement targets"
+          },
+          {
+            "org_type": "Store",
+            "role": "Store Manager",
+            "why_now": "Executes setup, tracks redemptions, reports footfall"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Kickoff: giveaway brief",
+            "narrative": "Share objectives, store list, creative, and measurement plan in one page.",
+            "CTA": "Approve the store list and measurement sheet",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "2",
+            "subject": "Logistics reconfirm",
+            "narrative": "Confirm QR assets, staff schedule, and inventory per store.",
+            "CTA": "Share final POS photos and staff roster",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "5",
+            "subject": "Post-event close",
+            "narrative": "Collect redemptions, door counts, and CPA to compare against targets.",
+            "CTA": "Upload event metrics and sign off on next steps",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "low",
+        "strategy_tag": "In-store giveaway to QR"
+      },
+      "play_name": "Instant QR Giveaway",
+      "pillar": "Retail Activation"
+    },
+    {
+      "display": {
+        "pillar": "Retail Partnerships",
+        "play_name": "Retailer-Exclusive Drop",
+        "card_title": "Short-run exclusive SKUs or bundles in test stores",
+        "persona": "Head of Brand Partnerships, Head of Retail",
+        "best_fit": "Flagship or high-traffic stores with inventory segregation capabilities",
+        "not_for": "Stores lacking inventory control, barcode setup, or long lead-time supply",
+        "thresholds_summary": "Protect margin: margin per order should not fall below baseline minus 100 bps and 90‑day repeat must meet baseline; expect foot-traffic uplift ≥25% in test stores and QR redemption ≥5% of footfall during the drop.",
+        "why_now": "November discount frontloading reduces lift; mid-December exclusives capture concentrated high-value trips.",
+        "proof_point": "Market pilots show exclusive drops can lift store foot traffic by ~25% when targeted to high-pull locations.",
+        "approach_name": "Exclusive SKU drop",
+        "time_horizon": "pilot",
+        "placement_options": [
+          "Endcap exclusive block with brand callouts",
+          "Gondola island reserved for the drop",
+          "Dedicated shelf bay with exclusive POS"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Brand Partnerships",
+        "collaborator": "Head of Retail",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "margin_per_order": "≥ baseline − 100 bps",
+          "90_day_repeat": "≥ baseline",
+          "foot_traffic_uplift": "≥25% in test stores",
+          "qr_redemption": "≥5% of footfall"
+        },
+        "prerequisites": [
+          "Production run and unique SKU/barcode setup",
+          "Inventory allocated and segregated per test store",
+          "Baseline margin and repeat metrics by store",
+          "POS pricing configured and planogram assigned",
+          "Store-level staff brief and returns workflow"
+        ],
+        "target_map": [
+          {
+            "org_type": "Retailer",
+            "role": "Head of Retail",
+            "why_now": "Owns shelf allocation and in-store staffing for the drop"
+          },
+          {
+            "org_type": "Brand",
+            "role": "Head of Brand Partnerships",
+            "why_now": "Owns product, creative, and wholesale terms for exclusivity"
+          },
+          {
+            "org_type": "Merchandising",
+            "role": "Regional Merchandiser",
+            "why_now": "Implements planogram and ensures inventory flow"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Pilot kickoff and acceptance criteria",
+            "narrative": "Issue pilot plan with store list, metrics, and margin guardrails.",
+            "CTA": "Approve pilot plan and inventory allocations",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "7",
+            "subject": "Instrumentation check",
+            "narrative": "Confirm SKU scans, POS pricing, door counts, and QR tracking are live.",
+            "CTA": "Validate instrumentation and share test data",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "21",
+            "subject": "Pilot review and go/no-go",
+            "narrative": "Compare margin, foot-traffic uplift, and 90-day repeat projections to thresholds.",
+            "CTA": "Decide to scale, iterate, or stop",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": false,
+        "ops_drag": "high",
+        "strategy_tag": "Exclusive SKU drop"
+      },
+      "play_name": "Retailer-Exclusive Drop",
+      "pillar": "Retail Partnerships"
+    },
+    {
+      "display": {
+        "pillar": "Event-driven Conversion",
+        "play_name": "Mini-burst Pop-up Media Days",
+        "card_title": "Concentrated in-store pop-ups with media and demos",
+        "persona": "Head of Retail, Head of PR, CMO",
+        "best_fit": "Flagship stores or large-format locations with event space and local media reach",
+        "not_for": "Small footprints, locations without event permits, or where staffing cannot be expanded",
+        "thresholds_summary": "Target event CPA ≤0.8× baseline and QR redemptions ≥15% of footfall; pause if CPA exceeds baseline or redemption drops near single digits.",
+        "why_now": "With November promotions spread out, the third week of December concentrates higher-value shoppers—use media days to capture them.",
+        "proof_point": "Short pop-up windows around Dec 18–20 historically generate higher-value trips and PR pickup in comparable runs.",
+        "approach_name": "Mini-burst event",
+        "time_horizon": "6-week",
+        "placement_options": [
+          "Store atrium pop-up with demo stations",
+          "Weekend media day with influencer or press slots",
+          "Ticketed meet-and-greet zone inside a flagship"
+        ]
+      },
+      "ops": {
+        "operator_owner": "Head of Retail",
+        "collaborator": "Head of Partnerships and PR",
+        "collab_type": "brand↔operator",
+        "thresholds": {
+          "cpa": "≤0.8× baseline",
+          "qr_redemption": "≥15% of footfall",
+          "stop_if_cpa": "> baseline"
+        },
+        "prerequisites": [
+          "Event permits and landlord approvals where required",
+          "Door counts and time-stamped sales tracking enabled",
+          "Press and influencer invite list and RSVP flow",
+          "Ticketing or RSVP system and on-site check-in",
+          "On-site staff, demo units, and safety plan"
+        ],
+        "target_map": [
+          {
+            "org_type": "Retailer",
+            "role": "Head of Retail",
+            "why_now": "Approves event use of space, staffing, and operational permits"
+          },
+          {
+            "org_type": "Brand",
+            "role": "Head of Partnerships",
+            "why_now": "Owns talent, PR invites, and brand experience content"
+          },
+          {
+            "org_type": "Comms",
+            "role": "Head of PR",
+            "why_now": "Runs media outreach and measures earned coverage"
+          }
+        ],
+        "cadence": [
+          {
+            "day": "0",
+            "subject": "Event kickoff and operational plan",
+            "narrative": "Share run-of-show, staffing, safety plan, and measurement requirements.",
+            "CTA": "Confirm venue approvals and staffing",
+            "cta": "Send 1-page runbook to merchandising, store ops, and finance"
+          },
+          {
+            "day": "14",
+            "subject": "Logistics reconfirm",
+            "narrative": "Lock media list, RSVPs, POS setup, and ticketing status.",
+            "CTA": "Finalize guest list and POS placement",
+            "cta": "Book 30-minute readout with finance and ops to review guardrails"
+          },
+          {
+            "day": "28",
+            "subject": "Pre-event readiness review",
+            "narrative": "Run a dry-check on instrumentation, staff roles, and last-mile deliveries.",
+            "CTA": "Authorize event execution",
+            "cta": "Deliver scale/kill decision memo to executive sponsor"
+          }
+        ],
+        "zero_new_sku": true,
+        "ops_drag": "medium",
+        "strategy_tag": "Mini-burst event"
+      },
+      "play_name": "Mini-burst Pop-up Media Days",
+      "pillar": "Event-driven Conversion"
+    }
+  ],
+  "risk_radar": [
+    {
+      "risk_name": "November promo match destroys margin",
+      "scan_line": "Matching early-November deals erodes margin without net buyer gain.",
+      "trigger": "Retailers frontload and stretch November discounts, prompting reactive broad matching across assortment.",
+      "detection": "Track weekly promo share, margin per store visit, and buyer conversion by week; alert if margin-per-trip drops >10% vs baseline while buyer lift <5%.",
+      "mitigation": "Reserve inventory and marketing budget for the third week of December; stop any broad discount that fails to exceed the weekly margin-per-trip target; run week-by-week price experiments instead of blanket cuts.",
+      "severity": 3,
+      "likelihood": 3,
+      "approach_exposure": "Market",
+      "citations": [
+        4,
+        5,
+        7,
+        2,
+        8
+      ]
+    },
+    {
+      "risk_name": "Exclusive SKU cannibalizes base sales",
+      "scan_line": "In-store exclusives replace regular purchases instead of acquiring new buyers.",
+      "trigger": "Launching exclusives without matched controls or clear product differentiation.",
+      "detection": "Measure exclusive SKU sales against net store category sales and unique buyer counts; flag if exclusive sales account for >20% of uplift while unique buyers do not increase.",
+      "mitigation": "Require an A/B test with matched control stores for every exclusive; tag exclusives in POS and stop rollouts where cannibalization rate >40% after two weeks.",
+      "severity": 2,
+      "likelihood": 2,
+      "approach_exposure": "Behavioral",
+      "citations": [
+        6,
+        1,
+        2
+      ]
+    },
+    {
+      "risk_name": "Pop-up events miss CPA and footfall targets",
+      "scan_line": "Store events deliver higher acquisition cost than baseline and low engagement.",
+      "trigger": "Poor pre-registration, weak local promotion, or low QR redemption at events.",
+      "detection": "Monitor event CPA versus baseline CPA and QR redemption as a share of footfall; abort if CPA >1.0× baseline or QR redemption <5%.",
+      "mitigation": "Condition event spend on pre-registration and a ≥5% QR redemption forecast; cancel or scale back events that miss preregistration thresholds one week prior.",
+      "severity": 2,
+      "likelihood": 2,
+      "approach_exposure": "Cultural",
+      "citations": [
+        6,
+        1
+      ]
+    },
+    {
+      "risk_name": "Measurement leaks create false lift signals",
+      "scan_line": "Instrumentation gaps produce misleading comparison results and bad decisions.",
+      "trigger": "Mismatched attribution windows, missing UTMs, unsynced time zones, or POS integration errors during tests.",
+      "detection": "Compare POS, web analytics, and QR scan counts daily; flag divergences >8% or missing UTM rates >5%.",
+      "mitigation": "Standardize week definitions and attribution windows; run end-to-end instrumentation tests across three pilot stores and hold launches until a checklist passes.",
+      "severity": 3,
+      "likelihood": 2,
+      "approach_exposure": "all",
+      "citations": [
+        2,
+        4
+      ]
+    }
+  ],
+  "future_outlook": [
+    {
+      "horizon": "6-month",
+      "headline": "Exclusives and events reclaim late-season visits",
+      "scan_line": "If true, we will see QR redemptions ≥5% of footfall and a concentrated third-week December visit uplift within 6 months",
+      "description": "You wake up to a holiday where early-November discount noise is background and high-value store events drive late-season spikes [^4][^2]. Partner-exclusive SKUs, in-store giveaways, and pop-up media days concentrate demand, lift per-visit margin, and produce measurable QR redemptions you can track in real time [^6][^1]. If you run these tactics at scale you will celebrate profitable late-season visits; if you match broad discounts you will regret margin erosion and missed premium share [^2].",
+      "operator_watch": "QR redemptions as a percent of footfall (target ≥5%)",
+      "collaboration_upside": "Pilot retailer-exclusive SKUs plus five pop-up media days to drive a 25%+ foot‑traffic uplift in test stores while holding margin per visit",
+      "dominant_approach": "collab-led holiday",
+      "confidence": 0.75,
+      "citations": [
+        4,
+        2,
+        6,
+        1
+      ]
+    },
+    {
+      "horizon": "12-month",
+      "headline": "Stores become media hubs or margin defaults to prolonged discounting",
+      "scan_line": "If true, we will see partner-driven limited drops and repeat event calendars shift 25–30% of late-season visits to higher-margin formats within 12 months",
+      "description": "You wake up to a retail year where store performance is judged by exclusive drops and content days rather than who ran the deepest November discount [^4][^2]. Repeated retailer partnerships, scheduled media-pop days, and retailer-exclusive SKUs normalize higher conversion per visit and protect gross margin while non-partners default to margin-destroying blanket discounts [^6][^1][^2]. If you institutionalize the store-as-studio model you will celebrate differentiated late-season traffic and preserved margin; if you fail to, you will be forced into constant discounting and market share decline on price terms [^8][^2].",
+      "operator_watch": "Margin per store visit in week 51 (third week of December)",
+      "collaboration_upside": "Scale exclusive drops and media days across key retail partners to shift 25–30% of late-season visits to higher-margin events and maintain overall holiday gross margin",
+      "dominant_approach": "store-as-studio / media-led holiday",
+      "confidence": 0.65,
+      "citations": [
+        4,
+        2,
+        6,
+        1,
+        8
+      ]
+    }
+  ],
+  "comparison_map": {
+    "approach_map": [
+      {
+        "approach_name": "Paid-media shift to Dec 15-21 with scarcity messaging",
+        "who_it_is_for": "Head of Marketing or Media who can reallocate digital spend quickly.",
+        "strengths": "Shifts spend into a late window where competitors often stop deep promos and can capture higher-value visits; leverages existing creative with limited SKU changes to avoid margin erosion (pattern: November dilution of Black Friday). Supported by in-store offers to convert visits into purchases (S2).",
+        "failure_modes": "If competitors keep matching discounts your CPA will rise and margin per buyer falls (risk: November promo match destroys margin). Works poorly with no local activation to convert ad-driven footfall into purchases.",
+        "when_to_choose": "You can reallocate at least 5% of your November media budget into Dec 15-21 and run the same creative or light variants.",
+        "when_not_to_choose": "Do not choose when you cannot pair media with an in-store or retailer-exclusive trigger to close the loop on visits.",
+        "supporting_signals": [
+          "S2",
+          "S3"
+        ],
+        "key_risks": [
+          "November promo match destroys margin"
+        ],
+        "key_metrics": [
+          "Cost per acquisition versus November baseline",
+          "Buyer share during Dec 15-21",
+          "Margin per buyer"
+        ]
+      },
+      {
+        "approach_name": "Retailer-exclusive SKU drops Dec 15-21",
+        "who_it_is_for": "Head of Brand Partnerships and Head of Retail with access to retailer windows for limited SKUs.",
+        "strengths": "Retailer-exclusive drops drive measurable footfall without broad sitewide discounts and can deliver targeted high-value visits (S3). They scale retailer commitment because inventory and visibility are limited by design.",
+        "failure_modes": "Exclusives can cannibalize base sales if controls are missing (risk: Exclusive SKU cannibalizes base sales). They also fail if retailer staff or promotional placement is weak, producing low unique buyer conversion.",
+        "when_to_choose": "Retailers will commit to limited SKUs, merchandising space, and short-term promo support for Dec 15-21.",
+        "when_not_to_choose": "Avoid when you cannot run matched controls or cannot measure unique buyers versus shifted sales.",
+        "supporting_signals": [
+          "S3",
+          "S2"
+        ],
+        "key_risks": [
+          "Exclusive SKU cannibalizes base sales",
+          "November promo match destroys margin"
+        ],
+        "key_metrics": [
+          "Foot traffic uplift in test stores",
+          "QR redemptions as percent of footfall",
+          "Unique buyer count",
+          "Margin per unit / margin per trip"
+        ]
+      },
+      {
+        "approach_name": "Store-as-studio pop-up days with local media",
+        "who_it_is_for": "Head of Retail and CMO who can deploy store-level events and amplify locally.",
+        "strengths": "Pop-up media days create content and urgency that lower event CPA when paired with local paid social; prior pilots targeted CPA at or below 0.8x baseline and QR redemptions ≥5% of footfall (S5, S2).",
+        "failure_modes": "If event production or local amplification is weak, CPA rises and impressions do not convert. Over-indexing on events without SKU scarcity risks marginal visits that do not increase AOV.",
+        "when_to_choose": "You can staff 5+ stores for Dec 18-20 and run concentrated local media on those days.",
+        "when_not_to_choose": "Do not choose when stores lack staff, door-count capability, or local media budget to amplify the event.",
+        "supporting_signals": [
+          "S5",
+          "S2"
+        ],
+        "key_risks": [
+          "November promo match destroys margin",
+          "Exclusive SKU cannibalizes base sales"
+        ],
+        "key_metrics": [
+          "Event cost per acquisition versus baseline",
+          "QR redemptions as percent of footfall",
+          "Conversion uplift versus baseline",
+          "Media cost per store visit"
+        ]
+      }
+    ],
+    "buyer_guide": [
+      {
+        "option_name": "Performance media agency sprint",
+        "best_for": "Brands that need rapid reallocation of paid media and local paid social expertise.",
+        "not_for": "Brands that cannot change media buys on short notice or that lack linked store-level measurement.",
+        "commercial_shape": "Short sprint fee plus media spend; performance bonus tied to CPA or buyer share thresholds for the Dec 15-21 window.",
+        "proof_needed_before_scaling": "CPA at or below November baseline and measurable buyer share growth during the pilot window.",
+        "where_STI_fits": "STI provides the decision map, KPI thresholds, and the test design for shift size (eg move 5% of Nov spend). STI also validates CPA and margin detection rules."
+      },
+      {
+        "option_name": "In-house store-studio sprint",
+        "best_for": "Retailers with existing ops and creative teams that can run pop-ups and capture QR/redemption data.",
+        "not_for": "Brands without staff to run events or without instrumentation for door counts and QR tracking.",
+        "commercial_shape": "Internal labor and production costs per pop-up day; small fixed budget for local amplification. No retainer needed if scoped as a 1–2 week pilot.",
+        "proof_needed_before_scaling": "Event CPA ≤0.8× baseline and QR redemptions ≥5% of footfall in pilot stores.",
+        "where_STI_fits": "STI delivers the activation playbook, exact measurement thresholds, and the stop/go rules if cannibalization or margin erosion appears."
+      },
+      {
+        "option_name": "Revenue-share retailer collab (exclusive SKU + promo)",
+        "best_for": "Brands that need retailer placement and can offer limited-run SKUs or co-funded marketing.",
+        "not_for": "Brands that cannot protect margin or cannot deliver SKU differentiation quickly.",
+        "commercial_shape": "Co-funded marketing and a revenue-share or buyback agreement for limited runs; short term window (Dec 15-21) to limit inventory risk.",
+        "proof_needed_before_scaling": "25% foot traffic uplift in test stores, QR redemptions ≥5% of footfall, and increase in unique buyers without net decline in category sales.",
+        "where_STI_fits": "STI sets the measurement plan to detect cannibalization, defines thresholds, and designs the control vs treatment store set."
+      }
+    ]
+  },
+  "signal_map_notes": "The research shows promotions are crowded in late November, which reduces the payoff of matching discounts early. Your highest-leverage moves are partnering with retailers for limited-sku exclusives and event-driven in-store media in mid-to-late December, while shifting spend and CRM to promote those moments. Competing approaches you will see: price-matching early November to chase volume, and broad sitewide discounts; both compress margin and reduce ability to buy differentiated attention. Prioritize tests that measure buyer activity share versus promo intensity, QR-based redemption tied to footfall, and event CPA relative to baseline; run each test under a single owner (Head of Partnerships or Head of Retail) and a fixed 7–14 day window for clear learnings."
+}

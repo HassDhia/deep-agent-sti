@@ -1,0 +1,90 @@
+[
+  {
+    "category": "Market",
+    "name": "Tariff Clarity Lowers Cost Shock",
+    "description": "Companies are signaling fewer near-term price hikes as tariff uncertainty eases. That reduces immediate input-cost pressure and gives retailers room to favor partnership-funded or experiential promotions over blanket markdowns.",
+    "operator_move": "Head of Retail run a 6-week pilot replacing one weekend 20% storewide discount with a co-branded in-store activation in 12 pilot stores and measure foot_traffic_uplift and buyer activity share.",
+    "operator_scan": "Compare foot traffic and buyer share between collab activation and storewide discount.",
+    "spine_hook": "Tariff clarity reduces need for blanket discounts.",
+    "time_horizon": "6-week",
+    "strength": 0.86,
+    "US_fit": 0.95,
+    "operationality": 0.9,
+    "support": [
+      1
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      1
+    ],
+    "id": "S1"
+  },
+  {
+    "category": "Behavioral",
+    "name": "Early-Window Capture From Exclusive Drops",
+    "description": "Exclusive collaboration drops concentrate purchase intent early in a campaign and shift buyer timing forward. Brands that execute limited collabs can increase early-window share versus running blanket promotions across the season.",
+    "operator_move": "Head of Partnerships run a 4-week test: launch a week-one exclusive collab product drop in 15 high-traffic stores and measure early_window_share versus last-year baseline.",
+    "operator_scan": "Measure share of purchases in week one for collab versus sitewide promo.",
+    "spine_hook": "Exclusives concentrate demand early.",
+    "time_horizon": "now",
+    "strength": 0.8,
+    "US_fit": 0.9,
+    "operationality": 0.82,
+    "support": [
+      1
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      1
+    ],
+    "id": "S2"
+  },
+  {
+    "category": "Market",
+    "name": "Discounting Math Shifts Favor Partnership Funding",
+    "description": "Eased input-cost volatility lets finance teams reallocate margin protection toward partner contributions. That changes the P&L calculus and can make co-funded or revenue-share collabs more cost-effective than blanket discounts for the same traffic lift.",
+    "operator_move": "CFO and Head of Partnerships run a 3-week finance model comparing P&L outcomes of a 20% blanket discount versus a co-funded 15% collaboration, targeting event_cpa ≤0.80x baseline.",
+    "operator_scan": "Model P&L and event CPA for blanket discount versus co-funded collaboration.",
+    "spine_hook": "Tariff clarity makes partner-funded promotions financially viable.",
+    "time_horizon": "6-week",
+    "strength": 0.84,
+    "US_fit": 0.92,
+    "operationality": 0.88,
+    "support": [
+      1
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      1
+    ],
+    "id": "S3"
+  },
+  {
+    "category": "Cultural",
+    "name": "Store-As-Studio Converts Marketing Spend Into Footfall",
+    "description": "When immediate price pressure eases, brands can repurpose promotional dollars into in-store media and editorial-style drop experiences that drive attention. These investments tend to lift buyer activity share more efficiently than blanket markdowns during holiday windows.",
+    "operator_move": "Head of Property run a 2-week store-as-studio pop-up in 8 flagship locations during the next holiday weekend and track the paired_metric: buyer activity share versus promo intensity.",
+    "operator_scan": "Track buyer activity share versus promo intensity during the pop-up.",
+    "spine_hook": "In-store media trades discounts for attention and activity.",
+    "time_horizon": "6-week",
+    "strength": 0.78,
+    "US_fit": 0.85,
+    "operationality": 0.8,
+    "support": [
+      1
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      1
+    ],
+    "id": "S4"
+  }
+]

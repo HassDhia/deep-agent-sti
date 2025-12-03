@@ -1,0 +1,126 @@
+[
+  {
+    "name": "Hotel Loyalty APAC (Skift)",
+    "reason": "non-US focus; strength < 0.78 for US retail thesis (source 2)"
+  },
+  {
+    "name": "Hilton Analyst Note",
+    "reason": "single-company analyst piece with limited tactical relevance to US retail collabs; strength < 0.78 (source 4)"
+  },
+  {
+    "name": "Secondhand/Thrift Features",
+    "reason": "local interest stories without testable signals for brand↔brand or brick&mortar↔brand collabs (sources 6,7)"
+  },
+  {
+    "name": "Community Revitalization Plan",
+    "reason": "long-term civic plan; limited short-window operational relevance to holiday event testing (source 8)"
+  },
+  {
+    "name": "Tokenomics/Crypto Piece",
+    "reason": "non-retail, non-US investor tokenomics framing — off thesis (source 9)"
+  },
+  {
+    "name": "Opinion / Low-quality Blog",
+    "reason": "not actionable or credible for operator tests (source 5)"
+  },
+  {
+    "category": "Market",
+    "name": "Holiday Footfall Largely Event-Driven",
+    "description": "Black Friday weekend delivered solid footfall and transactions, but retailers remain uncertain about the season ahead. Early signals show localized events and in-store experiences produce immediate traffic lifts more reliably than loyalty pushes during heavy discount windows.",
+    "operator_move": "Operator move: Head of Retail to run a partnered 2-day community event in the next 6-week window, targeting +15% foot_traffic_uplift and QR redemption ≥5% on event days.",
+    "operator_scan": "Measure net footfall lift, QR redemptions, and ticket-per-visit during event days",
+    "spine_hook": "Events produce reliable short-term footfall in discount weeks",
+    "time_horizon": "6-week",
+    "strength": 0.88,
+    "US_fit": 1.0,
+    "operationality": 0.9,
+    "support": [
+      1,
+      3
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      1,
+      3
+    ],
+    "id": "S1",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Behavioral",
+    "name": "Experience Trumps Points During Rapid Switching",
+    "description": "When experience falters, members churn fast and points offer weak retention. Low switching costs mean loyalty math collapses unless events or store experiences are meaningfully differentiated.",
+    "operator_move": "Operator move: Head of CX to A/B test two event experience designs in the next 6-week window, aiming to cut 30-day post-event churn among attendees by 10 percentage points.",
+    "operator_scan": "Track post-event repeat purchase rate and 30-day membership churn",
+    "spine_hook": "Experience quality determines loyalty retention in high-promo periods",
+    "time_horizon": "6-week",
+    "strength": 0.85,
+    "US_fit": 0.95,
+    "operationality": 0.85,
+    "support": [
+      3
+    ],
+    "on_spine": true,
+    "quant_support": "none",
+    "source_grade": "B",
+    "citations": [
+      3
+    ],
+    "id": "S2",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Market",
+    "name": "Heavy Discounting Compresses Loyalty Premiums",
+    "description": "Black Friday–level discounts drive conversions but compress the economic value of loyalty offers and margins. That shifts the ROI calculus toward event-driven acquisition and one-off collabs unless loyalty redemptions are re-priced.",
+    "operator_move": "Operator move: Head of Finance to run a two-week margin sensitivity model testing scenarios with loyalty redemption up 20% and promo depth up 10%, then publish break-even CPA per channel.",
+    "operator_scan": "Model margin impact and break-even CPA across promo intensity scenarios",
+    "spine_hook": "Deep discounts erode the economic advantage of loyalty offers",
+    "time_horizon": "now",
+    "strength": 0.8,
+    "US_fit": 1.0,
+    "operationality": 0.9,
+    "support": [
+      1
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "A",
+    "citations": [
+      1
+    ],
+    "id": "S3",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  },
+  {
+    "category": "Cultural",
+    "name": "Store-as-Studio Events Multiply Discovery vs Points",
+    "description": "Brands using stores as content studios for collabs convert in-store audiences into broader reach and earlier purchases. Media-led events lift buyer activity share more than routine loyalty campaigns during short holiday windows.",
+    "operator_move": "Operator move: Head of Partnerships to run one media-led store-as-studio collab in the next quarter, targeting early_window_share ≥20% and event CPA ≤0.8x baseline.",
+    "operator_scan": "Measure early-window buyer share and media reach per event dollar",
+    "spine_hook": "Store-as-studio events amplify discovery and early-window conversions",
+    "time_horizon": "quarter",
+    "strength": 0.83,
+    "US_fit": 0.95,
+    "operationality": 0.82,
+    "support": [
+      1,
+      3
+    ],
+    "on_spine": true,
+    "quant_support": "light",
+    "source_grade": "B",
+    "citations": [
+      1,
+      3
+    ],
+    "id": "S4",
+    "bucket": "appendix",
+    "demotion_reason": "insufficient_support"
+  }
+]

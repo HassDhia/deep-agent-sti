@@ -1,0 +1,25 @@
+[
+  {
+    "type": "hero",
+    "query": "Store as Studio:\nHow retail stores are becoming content properties",
+    "intent": "market",
+    "prompt": "Scene: wide spare flagship interior low fixtures clean negative. Personas: brand marketing director creative producer rehearsal both standing. Action: staging branded content session setup one operator adjusts. Symbolism: band confident light across floor arcs toward entry. Key objects: schedule board labeled '6 week flagship pilot' s1. Mood: precise collaborative assured leverage point sits here. Lighting: Polished editorial lighting with confident highlights and deep but clean shadows. High-key on subjects. Soft falloff to negative space. styled as cool high-contrast lighting with crisp edges. Composition: tight medium shot on the collaboration moment with generous negative space, focus on staging branded content session setup one operator adjusts. Palette: dark neutrals with electric blue accents with subtle ribbon-like contours in a open negative-space retail bay. polished editorial photography, cinematic but minimal, deep contrast, subtle cool-tone grading, generous negative space, modern materials, natural poses, realistic lighting, no text, no logos, no UI, no charts, no infographics, no collage, no poster layout, single clear focal area",
+    "image": "images/hero_store_as_studio_how_retail_sto.png"
+  },
+  {
+    "type": "section",
+    "query": "Store as Studio:\nHow retail stores are becoming content properties",
+    "intent": "market",
+    "section": "Signal Map",
+    "prompt": "Abstract structure: concentric rings radiating central flagship node inner ring representing mechanism simple high value windows concentrated event times. Motion: arrows flow clockwise attention earned media partner conversions that suggests mechanism simple high value windows concentrated event times. Visual elements: tokens s1 s2 s3 s4 s5 pathways showing. Mood: analytical, calm, precise. Lighting: calm perimeter glow with subtle reflections on a architectural plinth. Composition: gentle isometric framing with a centered form and generous negative space. Color: dark neutrals with matte stone neutrals single punch accent warm gold and graphite base with cyan sparks accents. Never literal dashboards, axes, or labels. polished editorial photography, cinematic but minimal, deep contrast, subtle cool-tone grading, generous negative space, modern materials, natural poses, realistic lighting, no text, no logos, no UI, no charts, no infographics, no collage, no poster layout, single clear focal area",
+    "image": "images/section_signal_map_store_as_studio_how_retail_sto.png"
+  },
+  {
+    "type": "section",
+    "query": "Store as Studio:\nHow retail stores are becoming content properties",
+    "intent": "market",
+    "section": "Case Study 1",
+    "prompt": "Scene: vacant storefront turned artist residency during property manager reviews tenant inquiries next artist setting. Moment: property manager reviews tenant inquiries next artist setting. Personas: property manager local artist framed three quarter profile. Mood: practical opportunistic civic minded changes one thing about. Lighting: Polished editorial side light. Soft rim on subjects. Clean negative foreground. styled as polished editorial lighting with soft shadows. Props: site plan '8 week' annotation stackable plinths gallery. Composition: grounded eye-level framing focused on the active bay with clear view of vacant storefront turned artist residency and minimal background distractions. polished editorial photography, cinematic but minimal, deep contrast, subtle cool-tone grading, generous negative space, modern materials, natural poses, realistic lighting, no text, no logos, no UI, no charts, no infographics, no collage, no poster layout, single clear focal area",
+    "image": "images/section_case_study_1_store_as_studio_how_retail_sto.png"
+  }
+]
