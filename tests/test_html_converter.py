@@ -7,19 +7,65 @@ from pathlib import Path
 import pytest
 
 os.environ.setdefault("OPENAI_API_KEY", "test-key")
+os.environ.setdefault("STI_DETERMINISTIC", "1")
 
 from enhanced_mcp_agent import EnhancedSTIAgent, SourceRecord
 from html_converter_agent import HTMLConverterAgent
 from image_generator import TEMPLATE_VERSION
-from renderers.context import build_market_path_context
-from renderers.market_path_markdown import MarketPathMarkdownRenderer
-from renderers.market_path_pdf import MarketPathPDFRenderer
+from renderers.executive_letter_markdown import ExecutiveLetterMarkdownRenderer
+from renderers.executive_letter_pdf import ExecutiveLetterPDFRenderer
 from renderers.legacy_html import LegacyHTMLRenderer
 from metrics import known_metric_ids
 from visual_lint import lint_visual_stats
 
 
+def _sample_letter_payload():
+    letter = {
+        "title": "Holiday windows behave like drop math",
+        "subtitle": "Turning holiday experiments into loyalty gains",
+        "tldr": "We can trade one markdown window for a loyalty-rich pop-up sprint if we approve a two-week test now.",
+        "sections": [
+            {
+                "name": "What we are seeing",
+                "body": "Retailers are compressing holiday demand into two precise windows and measuring footfall daily.\n\nLoyalty enrollments spike when pop-ups add instant digital rewards.",
+            },
+            {
+                "name": "The move",
+                "body": "Run an early-access A/B plus a pop-up loyalty funnel backed by BNPL and instant rewards.\n\nKeep the test tight with daily readouts and predefined kill switches.",
+            },
+            {
+                "name": "Size of prize",
+                "body": "Targets stay disciplined: **10–15%** footfall lift (stretch ≥ **25%**), **20–30%** early-window share, event CPA ≤ **0.8×** baseline, QR redemption ≥ **5%** of footfall within 30 days.",
+            },
+            {
+                "name": "Risks",
+                "body": "Noise from short windows, reward system failures, or negative BNPL economics.\n\nWe mitigate with holdouts, canary tech rollouts, and net-contrib monitoring.",
+            },
+            {
+                "name": "Decision requested",
+                "body": "Approve the two-week test, assign a single sponsor across Retail/Marketing/Finance, and authorize Brand Collab Lab plus analytics to instrument and report daily.",
+            },
+        ],
+        "bullets_investable": [
+            "Holiday demand is compressing into two measurable windows!",
+            "Pop-ups beat permanent markdowns for loyalty acquisition",
+            "Instant rewards plus BNPL let us defend margin",
+        ],
+        "bullets_targets": [
+            "Footfall +10–15% (stretch ≥25%) during the two-week window",
+            "Early-window share from 12–15% baseline to 20–30% of transactions",
+            "Event CPA ≤0.80× baseline with QR/instant rewards ≥5% within 30 days",
+        ],
+        "primary_cta": "approve the focused holiday test with a single sponsor and daily instrumentation.",
+        "email_subject": "Proposal: Holiday pop-up test to trade markdowns for loyalty and better unit economics",
+    }
+    agent = EnhancedSTIAgent("test-key")
+    markdown = agent._render_executive_letter_markdown(letter)
+    return letter, markdown
+
+
 def sample_report_bundle():
+    letter, letter_markdown = _sample_letter_payload()
     return {
         "title": "Signal Report — Retail Collabs",
         "query": "retail collaborations",
@@ -184,39 +230,47 @@ def sample_report_bundle():
             "\n"
             "> We can trade one markdown window for a loyalty-rich pop-up sprint if we approve a two-week test now.\n"
             "\n"
-            "## What we are seeing\n"
             "Retailers are compressing holiday demand into two precise windows and measuring footfall daily. Loyalty enrollments spike when pop-ups add instant digital rewards.\n"
             "\n"
-            "## The move\n"
             "Run an early-access A/B plus a pop-up loyalty funnel backed by BNPL and instant rewards. Keep the test tight with daily readouts and predefined kill switches.\n"
             "\n"
-            "## Size of prize\n"
             "Targets stay disciplined: **10–15%** footfall lift (stretch ≥ **25%**), **20–30%** early-window share, event CPA ≤ **0.8×** baseline, QR redemption ≥ **5%** of footfall within 30 days.\n"
             "\n"
-            "## Risks\n"
             "Noise from short windows, reward system failures, or negative BNPL economics. We mitigate with holdouts, canary tech rollouts, and net-contrib monitoring.\n"
             "\n"
-            "## Decision requested\n"
             "Approve the two-week test, assign a single sponsor across Retail/Marketing/Finance, and authorize Brand Collab Lab plus analytics to instrument and report daily.\n"
             "\n"
-            "### Why this window matters\n"
-            "- Holiday demand is compressing into two short windows with measurable lift\n"
-            "- Pop-ups now outperform permanent markdowns for loyalty acquisition\n"
-            "- Instant rewards plus BNPL let us hold margin while growing members\n"
+            "Why this window matters: Holiday demand is compressing into two short windows with measurable lift Pop-ups now outperform permanent markdowns for loyalty acquisition Instant rewards plus BNPL let us hold margin while growing members\n"
+            "Targets to watch: Footfall +10–15% (stretch ≥25%) during the two-week window; Early-window share from 12–15% baseline to 20–30% of transactions; Event CPA ≤0.80× baseline with QR/instant rewards ≥5% within 30 days.\n"
+            "Decision requested: Approve the focused holiday test with a single sponsor and daily instrumentation.\n"
             "\n"
-            "### Targets for this pilot\n"
-            "- Footfall +10–15% (stretch ≥25%) during the two-week window\n"
-            "- Early-window share from 12–15% baseline to 20–30% of transactions\n"
-            "- Event CPA ≤0.80× baseline with QR/instant rewards ≥5% within 30 days\n"
+            "_Forward with subject: Proposal: Holiday pop-up test to trade markdowns for loyalty and better unit economics_"
+        ),
+        "public_markdown": (
+            "# Holiday windows behave like drop math\n"
+            "_Turning holiday experiments into loyalty gains_\n"
             "\n"
-            "### Decision requested\n"
-            "Approve the focused holiday test with a single sponsor and daily instrumentation.\n"
+            "> We can trade one markdown window for a loyalty-rich pop-up sprint if we approve a two-week test now.\n"
+            "\n"
+            "Retailers are compressing holiday demand into two precise windows and measuring footfall daily. Loyalty enrollments spike when pop-ups add instant digital rewards.\n"
+            "\n"
+            "Run an early-access A/B plus a pop-up loyalty funnel backed by BNPL and instant rewards. Keep the test tight with daily readouts and predefined kill switches.\n"
+            "\n"
+            "Targets stay disciplined: **10–15%** footfall lift (stretch ≥ **25%**), **20–30%** early-window share, event CPA ≤ **0.8×** baseline, QR redemption ≥ **5%** of footfall within 30 days.\n"
+            "\n"
+            "Noise from short windows, reward system failures, or negative BNPL economics. We mitigate with holdouts, canary tech rollouts, and net-contrib monitoring.\n"
+            "\n"
+            "Approve the two-week test, assign a single sponsor across Retail/Marketing/Finance, and authorize Brand Collab Lab plus analytics to instrument and report daily.\n"
+            "\n"
+            "This window matters because holiday demand is compressing into two short windows, pop-ups outperform permanent markdowns for loyalty acquisition, and instant rewards plus BNPL let us hold margin while growing members.\n"
+            "The numbers I would watch: Footfall +10–15% (stretch ≥25%) during the two-week window; Early-window share from 12–15% baseline to 20–30% of transactions; Event CPA ≤0.80× baseline with QR/instant rewards ≥5% within 30 days.\n"
+            "If you agree, approve the focused holiday test with a single sponsor and daily instrumentation.\n"
             "\n"
             "_Forward with subject: Proposal: Holiday pop-up test to trade markdowns for loyalty and better unit economics_"
         ),
         "letter_bullets": {
             "investable": [
-                "Holiday demand is compressing into two measurable windows",
+                "Holiday demand is compressing into two measurable windows!",
                 "Pop-ups beat permanent markdowns for loyalty acquisition",
                 "Instant rewards plus BNPL let us defend margin"
             ],
@@ -321,24 +375,27 @@ def sample_report_bundle():
         "markdown": "# mock markdown",
         "json_ld": {"@context": "https://schema.org"},
         "image_briefs": {"hero": "Moody lobby scene", "signal_map": "Neon nodes", "case_studies": ["Studio residency", "Hospitality drop"]},
+        "executive_letter": letter,
+        "executive_letter_markdown": letter_markdown,
+        "public_markdown": letter_markdown,
     }
 
 
-def test_market_path_markdown_renderer(tmp_path):
+def test_executive_letter_markdown_renderer(tmp_path):
     bundle = sample_report_bundle()
     (tmp_path / "intelligence_report.html").write_text("<html></html>", encoding="utf-8")
-    renderer = MarketPathMarkdownRenderer()
+    renderer = ExecutiveLetterMarkdownRenderer()
     files = renderer.render(bundle, str(tmp_path))
-    assert files
-    output = Path(files[0]).read_text(encoding="utf-8")
-    expected_letter = bundle["executive_letter_markdown"].strip()
-    assert output.strip() == expected_letter
+    assert files == [str(tmp_path / "executive_letter.md")]
+    output_path = Path(files[0])
+    output = output_path.read_text(encoding="utf-8")
     assert output.startswith("# Holiday windows behave like drop math")
-    assert "## What we are seeing" in output
-    assert "## The move" in output
-    assert "### Why this window matters" in output
-    assert "### Targets for this pilot" in output
+    assert "##" not in output
+    assert "###" not in output
     assert "_Forward with subject: Proposal: Holiday pop-up test to trade markdowns for loyalty and better unit economics_" in output
+    assert ">" in output
+    assert any(char.isdigit() for char in output)
+    assert "!." not in output and "?." not in output
     banned_tokens = [
         "foot_traffic_uplift",
         "early_window_share",
@@ -356,31 +413,46 @@ def test_market_path_markdown_renderer(tmp_path):
         "Event CPA Ratio",
         "Redemption percent",
         " 1 2 ",
+        "Why this window matters:",
+        "Targets to watch:",
+        "Decision requested:",
     ]
     banned_tokens.extend(sorted(known_metric_ids()))
     for token in banned_tokens:
         assert token not in output
+    alias_md = (tmp_path / "market_path_report.md").read_text(encoding="utf-8")
+    assert alias_md.strip() == output.strip()
 
 
-def test_market_path_pdf_renderer(tmp_path):
+def test_render_letter_punctuation_guard():
+    agent = EnhancedSTIAgent("test-key")
+    letter, _ = _sample_letter_payload()
+    output = agent._render_executive_letter_markdown(letter)
+    assert "!." not in output
+    assert "?." not in output
+
+
+def test_executive_letter_pdf_renderer(tmp_path):
     bundle = sample_report_bundle()
     (tmp_path / "intelligence_report.html").write_text("<html></html>", encoding="utf-8")
-    renderer = MarketPathPDFRenderer()
+    renderer = ExecutiveLetterPDFRenderer()
     files = renderer.render(bundle, str(tmp_path))
     pdf_path = Path(files[0])
     assert pdf_path.exists()
     header = pdf_path.read_bytes()[:4]
     assert header == b"%PDF"
+    alias_path = tmp_path / "market_path_report.pdf"
+    assert alias_path.exists()
 
 
 def test_markdown_html_renderer_outputs_both_files(tmp_path):
     bundle = sample_report_bundle()
     intel_md_path = tmp_path / "intelligence_report.md"
-    market_md_path = tmp_path / "market_path_report.md"
+    letter_md_path = tmp_path / "executive_letter.md"
     intel_md_original = "# Retail Signal\n\n## Signal Map\n\nContent."
-    market_md_original = "# Market Path Brief\n\n## Signal Map\n\nMore content."
+    letter_md_original = "# Executive Letter\n\n## Signal Map\n\nMore content."
     intel_md_path.write_text(intel_md_original, encoding="utf-8")
-    market_md_path.write_text(market_md_original, encoding="utf-8")
+    letter_md_path.write_text(letter_md_original, encoding="utf-8")
     images_dir = tmp_path / "images"
     images_dir.mkdir()
     manifest = [
@@ -397,12 +469,14 @@ def test_markdown_html_renderer_outputs_both_files(tmp_path):
     (images_dir / "briefs.json").write_text(json.dumps(briefs), encoding="utf-8")
     renderer = LegacyHTMLRenderer()
     files = renderer.render(bundle, str(tmp_path))
-    assert len(files) == 2
+    expected_outputs = {str(tmp_path / "intelligence_report.html"), str(tmp_path / "executive_letter.html")}
+    assert set(files) == expected_outputs
     intel_html_path = Path(tmp_path / "intelligence_report.html")
-    market_html = Path(tmp_path / "market_path_report.html")
-    assert intel_html_path.exists() and market_html.exists()
-    html_output = market_html.read_text(encoding="utf-8")
-    assert "Market-Path collaboration brief" in html_output
+    letter_html_path = Path(tmp_path / "executive_letter.html")
+    legacy_letter_html = Path(tmp_path / "market_path_report.html")
+    assert intel_html_path.exists() and letter_html_path.exists() and legacy_letter_html.exists()
+    html_output = letter_html_path.read_text(encoding="utf-8")
+    assert bundle["letter_subtitle"] in html_output
     assert "Visual Notes" in html_output
     assert "images/hero.png" in html_output
     assert "Signal alt" in html_output
@@ -429,7 +503,7 @@ def test_markdown_html_renderer_outputs_both_files(tmp_path):
     for token in banned_tokens:
         assert token not in intel_html_output
     assert intel_md_path.read_text(encoding="utf-8") == intel_md_original
-    assert market_md_path.read_text(encoding="utf-8") == market_md_original
+    assert letter_md_path.read_text(encoding="utf-8") == letter_md_original
     stats_path = tmp_path / "visual_stats.json"
     assert stats_path.exists()
     stats_payload = json.loads(stats_path.read_text(encoding="utf-8"))
@@ -445,8 +519,8 @@ def test_html_renderer_renders_gallery_with_single_section_image(tmp_path):
     bundle = sample_report_bundle()
     intel_md_path = tmp_path / "intelligence_report.md"
     intel_md_path.write_text("# Retail Signal\n\n## Signal Map\n\nContent.\n\n### Case Moves\n\nBody text.", encoding="utf-8")
-    market_md_path = tmp_path / "market_path_report.md"
-    market_md_path.write_text("# Market Path\n\n## Signal Map\n\nContent.", encoding="utf-8")
+    letter_md_path = tmp_path / "executive_letter.md"
+    letter_md_path.write_text("# Executive Letter\n\n## Signal Map\n\nContent.", encoding="utf-8")
     images_dir = tmp_path / "images"
     images_dir.mkdir()
     manifest = [
@@ -477,8 +551,8 @@ def test_html_renderer_inlines_figures_for_anchors(tmp_path):
         "<!-- image:case_study_1 -->\n\nClosing thoughts.",
         encoding="utf-8",
     )
-    market_md_path = tmp_path / "market_path_report.md"
-    market_md_path.write_text("# Market Path\n\n## Signal Map\n\nContent.", encoding="utf-8")
+    letter_md_path = tmp_path / "executive_letter.md"
+    letter_md_path.write_text("# Executive Letter\n\n## Signal Map\n\nContent.", encoding="utf-8")
     images_dir = tmp_path / "images"
     images_dir.mkdir()
     manifest = [
@@ -510,41 +584,6 @@ def test_html_renderer_inlines_figures_for_anchors(tmp_path):
     assert "Foot-traffic uplift" in intel_html
     assert "Focus: Foot-traffic uplift" in intel_html
     assert "Signal Map" in intel_html
-
-
-def test_market_path_context_includes_typst_visuals(tmp_path):
-    bundle = sample_report_bundle()
-    images_dir = tmp_path / "images"
-    images_dir.mkdir()
-    manifest = [
-        {"type": "hero", "image": "images/hero.png", "prompt": "Hero prompt."},
-        {"type": "section", "section": "Signal Map", "image": "images/signal.png", "prompt": "Signal prompt."},
-        {"type": "section", "section": "Case Study 1", "image": "images/case1.png", "prompt": "Case prompt."},
-    ]
-    briefs = {
-        "hero": {"alt": "Hero alt", "core_tension": "Hero caption", "anchor_section": "header"},
-        "signal_map": {
-            "alt": "Signal alt",
-            "structure": "Concentric layout",
-            "metric_focus": ["footfall_lift"],
-            "anchor_section": "signals_and_thesis",
-        },
-        "case_studies": [
-            {
-                "alt": "Case alt",
-                "scene": "Case scene",
-                "anchor_section": "mini_case_story",
-                "metric_focus": ["event_cpa"],
-            }
-        ],
-    }
-    (images_dir / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
-    (images_dir / "briefs.json").write_text(json.dumps(briefs), encoding="utf-8")
-    context = build_market_path_context(bundle, report_dir=str(tmp_path))
-    visuals = context.get("typst_visuals", {})
-    assert "signals_and_thesis" in visuals
-    assert "Foot-traffic uplift" in visuals["signals_and_thesis"]
-    assert "image(" in visuals["signals_and_thesis"]
 
 
 def test_visual_lint_passes_when_all_required_slots_render(tmp_path):
@@ -671,48 +710,6 @@ def test_visual_template_audit_cli(tmp_path):
     assert "ERROR" in bad.stdout
 
 
-def test_market_path_context_uses_metric_spec():
-    bundle = sample_report_bundle()
-    context = build_market_path_context(bundle)
-    anchors = context["measurement"].get("anchors")
-    assert anchors
-    assert anchors[0]["metric"] == "Local Flagship Footfall"
-    assert "10" in anchors[0]["value"]
-
-
-def test_market_path_context_directional_evidence_line():
-    bundle = sample_report_bundle()
-    bundle["evidence_note"] = "Evidence leans on coverage."
-    bundle["evidence_regime"] = "directional"
-    context = build_market_path_context(bundle)
-    assert context["narrative"].get("evidence_line", "") == "Treat this as a directional read."
-    bundle["evidence_regime"] = "healthy"
-    context = build_market_path_context(bundle)
-    evidence_line = context["narrative"].get("evidence_line", "")
-    assert evidence_line == ""
-
-
-def test_spec_notes_stored_outside_public_copy():
-    bundle = sample_report_bundle()
-    bundle["spec_notes"] = ["key_metric event_cpa missing from metric_spec"]
-    context = build_market_path_context(bundle)
-    assert "Spec still" not in context["narrative"].get("standfirst", "")
-    assert "key_metric event_cpa" in context.get("spec_note", "")
-
-
-def test_spec_version_guard():
-    bundle = sample_report_bundle()
-    bundle["spec_version"] = "v2"
-    with pytest.raises(ValueError):
-        build_market_path_context(bundle)
-
-
-def test_context_exposes_spec_ok_flag():
-    bundle = sample_report_bundle()
-    context = build_market_path_context(bundle)
-    assert context.get("spec_ok") is True
-
-
 def test_agent_strips_arrow_scaffolding():
     agent = EnhancedSTIAgent("test")
     messy = "Headline -> tracks early_window_share -> Mandate instrumentation"
@@ -742,6 +739,26 @@ def test_pilot_spec_coherence_flags_unknown_roles():
     role_actions = {"Chief of Staff": "Run the pilot"}
     issues = agent._pilot_spec_coherence(pilot_spec, metric_spec, role_actions)
     assert any("role_action Chief of Staff" in issue for issue in issues)
+
+
+def test_fallback_letter_payload_produces_sections():
+    agent = EnhancedSTIAgent("test")
+    bundle = sample_report_bundle()
+    fallback = agent._fallback_letter_payload(
+        title=bundle["title"],
+        hook_line=bundle["spine"]["what"],
+        exec_summary=bundle["executive_summary"],
+        highlights=bundle["highlights"],
+        top_moves=bundle["top_operator_moves"],
+        quant_payload=bundle["quant"],
+        scope={"operator_job_story": "How to defend holiday margin without blunt markdowns."},
+        sections=bundle["sections"],
+        metric_spec=bundle["metric_spec"],
+    )
+    assert len(fallback["sections"]) == 5
+    assert fallback["bullets_investable"]
+    assert fallback["bullets_targets"]
+    assert fallback["primary_cta"]
 
 
 def test_agent_markdown_rewrites_schema_tokens():

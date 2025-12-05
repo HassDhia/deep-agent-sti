@@ -1,66 +1,37 @@
-"""Market-Path PDF renderer (Typst + fallback)."""
+"""Executive letter PDF renderer."""
 
 from __future__ import annotations
 
 import logging
-import shutil
-import subprocess
-import tempfile
 import textwrap
 from pathlib import Path
 from typing import Any, Dict, List
 
 from .base import BaseRenderer
-from .context import build_market_path_context
-from .templates import render_markdown, render_typst
 
 LOGGER = logging.getLogger(__name__)
 
 
-class MarketPathPDFRenderer(BaseRenderer):
-    """Render Market-Path dossier as a PDF."""
+class ExecutiveLetterPDFRenderer(BaseRenderer):
+    """Render the executive letter markdown into a lightweight PDF."""
 
-    name = "market_path_pdf"
+    name = "executive_letter_pdf"
 
     def render(self, report_bundle: Dict[str, Any], report_dir: str) -> List[str]:
-        deep_link = None
-        html_candidate = Path(report_dir) / "intelligence_report.html"
-        if html_candidate.exists():
-            deep_link = html_candidate.name
-        pdf_path = Path(report_dir) / "market_path_report.pdf"
-        letter_markdown = (report_bundle.get("executive_letter_markdown") or "").strip()
-        if letter_markdown:
-            LOGGER.info("Rendering Market-Path PDF from executive letter markdown.")
-            self._write_pdf_from_markdown(letter_markdown, pdf_path)
-            return [str(pdf_path)]
-        context = build_market_path_context(report_bundle, deep_link=deep_link, report_dir=report_dir)
-        if not self._render_with_typst(context, pdf_path):
-            LOGGER.info("Typst not available. Falling back to inline PDF writer.")
-            self._render_fallback_pdf(context, pdf_path)
-        return [str(pdf_path)]
-
-    def _render_with_typst(self, context: Dict[str, Any], output_path: Path) -> bool:
-        typst_bin = shutil.which("typst")
-        if not typst_bin:
-            return False
-        typst_source = render_typst(context)
-        try:
-            with tempfile.TemporaryDirectory() as tmpdir:
-                typst_file = Path(tmpdir) / "market_path_report.typ"
-                typst_file.write_text(typst_source, encoding="utf-8")
-                subprocess.run(
-                    [typst_bin, "compile", str(typst_file), str(output_path)],
-                    check=True,
-                    capture_output=True,
-                )
-            return output_path.exists()
-        except (subprocess.CalledProcessError, FileNotFoundError) as exc:
-            LOGGER.warning("Typst rendering failed: %s", exc)
-            return False
-
-    def _render_fallback_pdf(self, context: Dict[str, Any], output_path: Path) -> None:
-        markdown = render_markdown(context)
+        markdown = (report_bundle.get("public_markdown") or report_bundle.get("executive_letter_markdown") or "").strip()
+        if not markdown:
+            raise ValueError("Executive letter markdown missing from report bundle.")
+        base = Path(report_dir)
+        output_path = base / "executive_letter.pdf"
         self._write_pdf_from_markdown(markdown, output_path)
+
+        alias_path = base / "market_path_report.pdf"
+        try:
+            alias_path.write_bytes(output_path.read_bytes())
+        except Exception:
+            LOGGER.warning("Could not write Market-Path alias PDF", exc_info=True)
+
+        return [str(output_path)]
 
     def _write_pdf_from_markdown(self, markdown: str, output_path: Path) -> None:
         lines: List[str] = []
@@ -70,11 +41,12 @@ class MarketPathPDFRenderer(BaseRenderer):
                 lines.append("")
                 continue
             wrapped = textwrap.wrap(cleaned, width=90)
-            if wrapped:
-                lines.extend(wrapped)
-            else:
-                lines.append(cleaned)
-        _write_simple_pdf(lines or ["Market-Path dossier"], output_path)
+            lines.extend(wrapped or [cleaned])
+        _write_simple_pdf(lines or ["Executive letter"], output_path)
+
+
+def _sanitize_line(text: str) -> str:
+    return text.encode("latin-1", "ignore").decode("latin-1")
 
 
 def _pdf_escape_text(text: str) -> str:
@@ -158,7 +130,3 @@ def _write_simple_pdf(lines: List[str], output_path: Path) -> None:
     append_piece(f"<< /Size {len(objects) + 1} /Root {catalog_id} 0 R >>\nstartxref\n{xref_start}\n%%EOF")
 
     output_path.write_bytes(b"".join(pieces))
-
-
-def _sanitize_line(text: str) -> str:
-    return text.encode("latin-1", "ignore").decode("latin-1")

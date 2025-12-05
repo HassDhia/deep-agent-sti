@@ -29,7 +29,8 @@ class LegacyHTMLRenderer(BaseRenderer):
         outputs: List[str] = []
         base = Path(report_dir)
         intel_path = base / "intelligence_report.md"
-        market_path = base / "market_path_report.md"
+        letter_path = base / "executive_letter.md"
+        legacy_letter_path = base / "market_path_report.md"
         shared_meta = self._build_metadata(report_bundle)
         image_context = self.converter.build_image_context(report_dir, shared_meta)
 
@@ -79,22 +80,32 @@ class LegacyHTMLRenderer(BaseRenderer):
             intel_output = intel_path.with_suffix(".html")
             intel_output.write_text(html, encoding="utf-8")
             outputs.append(str(intel_output))
-        if market_path.exists():
-            market_text = market_path.read_text(encoding="utf-8")
-            market_text = insert_image_anchors(market_text, sections)
-            market_title = self.converter._first_heading(market_text) or "Market-Path Dossier"
-            market_meta = {**shared_meta, "report_label": "Market-Path Dossier"}
+        letter_source = letter_path if letter_path.exists() else None
+        if not letter_source and legacy_letter_path.exists():
+            letter_source = legacy_letter_path
+        if letter_source:
+            letter_text = letter_source.read_text(encoding="utf-8")
+            letter_text = insert_image_anchors(letter_text, sections)
+            letter_title = self.converter._first_heading(letter_text) or report_bundle.get("title") or "Executive Letter"
+            letter_meta = {**shared_meta, "report_label": "Executive Letter"}
+            subtitle = (
+                report_bundle.get("letter_subtitle")
+                or report_bundle.get("hook_line")
+                or "Operator letter for the current window"
+            )
             html = self.converter.convert_markdown_article(
-                market_text,
-                title=market_title,
-                metadata=market_meta,
-                subtitle="Market-Path collaboration brief",
+                letter_text,
+                title=letter_title,
+                metadata=letter_meta,
+                subtitle=subtitle,
                 images=image_context,
             )
-            _enforce_visuals("market_path_report.html")
-            market_output = market_path.with_suffix(".html")
-            market_output.write_text(html, encoding="utf-8")
-            outputs.append(str(market_output))
+            _enforce_visuals("executive_letter.html")
+            letter_output = base / "executive_letter.html"
+            letter_output.write_text(html, encoding="utf-8")
+            outputs.append(str(letter_output))
+            legacy_output = base / "market_path_report.html"
+            legacy_output.write_text(html, encoding="utf-8")
 
         return outputs
 

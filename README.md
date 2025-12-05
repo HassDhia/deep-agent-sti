@@ -6,8 +6,8 @@ Focused, signal-driven intelligence for the Brand Collab Lab. The system ingests
 
 - **Single operator path.** No more thesis routing or academic scaffolding—every run centers on market-path collaboration outcomes.
 - **Signal-first flow.** Search → Signal Map → Deep Analysis → Pattern Matches → Operator Outcomes → Activation Kit → Risk Radar → Future Outlook.
-- **Market-Path dossier.** The default outputs are a memo-grade Markdown brief, a print-ready PDF, and a simplified McKinsey-style HTML report; the previous dark-mode dashboard lives on as an optional legacy renderer.
-- **Minimal artifacts.** Each run saves the operator Markdown (`market_path_report.md`), the PDF dossier, raw Markdown, JSON-LD, `sources.json`, `signals.json`, `sections.json`, `metadata.json`, `images/briefs.json`, optional social content, and minimalist HTML companions for both Markdown reports.
+- **Executive letter = Market-Path.** The default outputs are the Paul Graham-style executive letter (Markdown + PDF) plus the simplified McKinsey-style HTML companion; the previous dark-mode dashboard lives on as an optional legacy renderer. Any `market_path_*` filenames are just aliases for that letter.
+- **Minimal artifacts.** Each run saves the operator Markdown (`intelligence_report.md`), the executive letter (`executive_letter.md` + `.pdf`), raw Markdown, JSON-LD, `sources.json`, `signals.json`, `sections.json`, `metadata.json`, `images/briefs.json`, optional social content, and minimalist HTML companions for both Markdown reports. The bundle also exposes `public_markdown`, which is the essay-style Paul Graham letter every downstream surface should prefer.
 
 ## Key Components
 
@@ -15,8 +15,8 @@ Focused, signal-driven intelligence for the Brand Collab Lab. The system ingests
 | --- | --- |
 | `enhanced_mcp_agent.py` | Collect sources via SearXNG, call MCP analysis tools, assemble the structured report bundle. |
 | `servers/analysis_server.py` | FastMCP server with tools for signal map, deep analysis, activation kit, risk radar, future outlook, etc. |
-| `renderers/market_path_markdown.py` | Builds the Market-Path Markdown dossier from the structured bundle. |
-| `renderers/market_path_pdf.py` | Mirrors the same context into a Typst (or fallback) PDF for export. |
+| `renderers/executive_letter_markdown.py` | Writes the essay-style executive letter Markdown (and maintains the legacy `market_path_report.md` alias). |
+| `renderers/executive_letter_pdf.py` | Converts the same letter Markdown into a lightweight PDF (plus the alias). |
 | `templates/article_minimal.html` + `html_converter_agent.py` | Render minimalist journalism-style HTML companions from the Markdown dossiers. |
 | `file_utils.py` | Dispatches to the configured renderers, writes JSON dumps, and handles social content persistence. |
 | `social_media_agent.py` | Produces LinkedIn/Twitter/Substack-ready copy using the signal map for provenance. |
@@ -63,9 +63,9 @@ Outputs land in `sti_reports/sti_operator_output_<timestamp>_<query>/`.
 ## Configuration Highlights (`config.py`)
 
 - `REPORT_STRUCTURE` defines the section order.
-- `SIGNAL_FAMILIES` + `ACTIVATION_PILLARS` feed prompts and Market-Path labels.
+- `SIGNAL_FAMILIES` + `ACTIVATION_PILLARS` feed prompts and letter labels/headlines.
 - `SOURCE_DOMAIN_WEIGHTS` keep the confidence score grounded in publisher diversity.
-- `REPORT_RENDERERS` toggles which renderers run (default `market_path_markdown,market_path_pdf`; append `legacy_html` for the minimalist HTML companions).
+- `REPORT_RENDERERS` toggles which renderers run (default `executive_letter_markdown,executive_letter_pdf`; append `legacy_html` for the minimalist HTML companions).
 - `MARKDOWN_HTML_TEMPLATE` points to the minimal article shell used for both Markdown renderings.
 - `IMAGE_BRIEF_TARGETS` instruct the image generator which vignettes to create (hero, signal map, case studies).
 
@@ -78,11 +78,11 @@ Outputs land in `sti_reports/sti_operator_output_<timestamp>_<query>/`.
 - `quant_support` based on the anchors/measurement plan (0.2 weight)
 - `contradiction_penalty` from QA/red-team flags (0.1 weight)
 
-The Market-Path dossier still surfaces a banded verdict (“Confidence: High — strength high, coverage full, quant strong, consistency high”) instead of a raw decimal.
+The executive letter still surfaces a banded verdict (“Confidence: High — strength high, coverage full, quant strong, consistency high”) instead of a raw decimal.
 
 ## Testing
 
-`pytest` exercises confidence math, social media formatting, and the Market-Path renderers using fixture data. Tests were trimmed to match the new operator scope.
+`pytest` exercises confidence math, social media formatting, and the executive letter renderers using fixture data. Tests were trimmed to match the new operator scope.
 
 ## Visual QA
 

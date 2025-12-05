@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, List
+from typing import List
 
 from .base import BaseRenderer
 
@@ -13,14 +13,14 @@ def _normalized(name: str) -> str:
 
 def get_renderer(name: str) -> BaseRenderer:
     normalized = _normalized(name)
-    if normalized == "market_path_markdown":
-        from .market_path_markdown import MarketPathMarkdownRenderer
+    if normalized in {"executive_letter_markdown", "market_path_markdown"}:
+        from .executive_letter_markdown import ExecutiveLetterMarkdownRenderer
 
-        return MarketPathMarkdownRenderer()
-    if normalized == "market_path_pdf":
-        from .market_path_pdf import MarketPathPDFRenderer
+        return ExecutiveLetterMarkdownRenderer()
+    if normalized in {"executive_letter_pdf", "market_path_pdf"}:
+        from .executive_letter_pdf import ExecutiveLetterPDFRenderer
 
-        return MarketPathPDFRenderer()
+        return ExecutiveLetterPDFRenderer()
     if normalized in {"legacy_html", "html"}:
         from .legacy_html import LegacyHTMLRenderer
 
@@ -29,4 +29,4 @@ def get_renderer(name: str) -> BaseRenderer:
 
 
 def available_renderers() -> List[str]:
-    return ["market_path_markdown", "market_path_pdf", "legacy_html"]
+    return ["executive_letter_markdown", "executive_letter_pdf", "legacy_html"]

@@ -8,10 +8,12 @@ without thesis routing or academic infrastructure.
 from __future__ import annotations
 
 import dataclasses
+import hashlib
 import json
 import logging
 import math
 import os
+import random
 import re
 from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
@@ -34,6 +36,7 @@ from servers.analysis_server import (
     generate_comparison_map,
     generate_deep_analysis,
     generate_future_outlook,
+    generate_image_prompt_bundle,
     generate_quant_blocks,
     generate_operator_specs,
     generate_image_briefs,
@@ -86,6 +89,9 @@ class EnhancedSTIAgent:
         self.model_name = model_name or STIConfig.DEFAULT_MODEL
         self.trace_mode = trace_mode
 
+    def _strict_contracts(self) -> bool:
+        return os.getenv("STI_STRICT_CONTRACTS", "0").strip() == "1"
+
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
@@ -96,6 +102,8 @@ class EnhancedSTIAgent:
         sources = self._collect_sources(query, days_back, scope)
         if not sources:
             raise RuntimeError("No sources found for query. Adjust the query or ensure search backend is running.")
+        time_window = self._time_window(days_back)
+        title = self._query_title(query)
         source_stats = self._source_statistics(sources)
         scope["thin_evidence"] = False
 
@@ -129,10 +137,19 @@ class EnhancedSTIAgent:
         scope["evidence_regime"] = regime
         scope["thin_evidence"] = regime != "healthy"
         source_stats["thin_evidence"] = scope["thin_evidence"]
-        if regime == "starved":
-            raise RuntimeError("Evidence starved after harvest. Broaden the query or window.")
         evidence_note = self._evidence_note(source_stats)
         scope["evidence_note"] = evidence_note
+        if regime == "starved":
+            return self._build_starved_report_bundle(
+                query=query,
+                title=title,
+                time_window=time_window,
+                scope=scope,
+                sources=sources,
+                source_stats=source_stats,
+                days_back=days_back,
+                signals=signals,
+            )
 
         quant_payload = self._tool_json(
             generate_quant_blocks(
@@ -143,10 +160,16 @@ class EnhancedSTIAgent:
         )
         quant_payload = normalize_quant_blocks_payload(quant_payload or {})
         quant_errors = lint_quant_blocks(quant_payload or {})
+        quant_status = "ok"
         if quant_errors:
             error_message = "; ".join(quant_errors)
             self._trace("quant_blocks:contract_error", error_message)
-            raise ValueError(f"Quant blocks contract failed: {error_message}")
+            if self._strict_contracts():
+                raise ValueError(f"Quant blocks contract failed: {error_message}")
+            quant_status = "invalid_fallback"
+            scope.setdefault("spec_notes", []).append(f"quant_contract: {error_message}")
+            scope.setdefault("pilot_spec_issues", []).append("quant_contract_failed")
+            quant_payload = self._fallback_quant_payload(scope, signals, time_window)
 
         sections = self._build_sections(
             sources_payload,
@@ -189,19 +212,23 @@ class EnhancedSTIAgent:
             "sections": ["executive_summary", "highlights", "top_operator_moves", "play_summary"],
         }
         fast_stack = exec_data.get("fast_stack") or {}
-        time_window = self._time_window(days_back)
         generated_at = datetime.now()
-        title = self._query_title(query)
         deep_sections = (sections.get("deep_analysis", {}) or {}).get("sections", [])
         spine = self._build_spine(signals, quant_payload, deep_sections or [], top_moves)
 
         spec_bundle = self._build_operator_specs(signals, quant_payload, sections, scope)
         spec_bundle = normalize_operator_specs(spec_bundle or {})
         spec_errors = lint_operator_specs(spec_bundle or {})
+        spec_status = "ok"
         if spec_errors:
             spec_error_msg = "; ".join(spec_errors)
             self._trace("operator_specs:contract_error", spec_error_msg)
-            raise ValueError(f"Operator specs contract failed: {spec_error_msg}")
+            if self._strict_contracts():
+                raise ValueError(f"Operator specs contract failed: {spec_error_msg}")
+            spec_status = "invalid_repaired"
+            scope.setdefault("spec_notes", []).append(f"operator_specs_contract: {spec_error_msg}")
+            spec_bundle = self._repair_operator_specs(spec_bundle, scope, quant_payload, sections)
+            spec_bundle = normalize_operator_specs(spec_bundle or {})
         self._apply_window_label(spec_bundle, scope.get("window_label") or time_window.get("label"))
         spec_bundle["version"] = "v1"
         pilot_spec = spec_bundle.get("pilot_spec") or {}
@@ -220,11 +247,7 @@ class EnhancedSTIAgent:
 
         letter_data = None
         letter_markdown = ""
-        letter_bullets = {"investable": [], "targets": []}
-        letter_primary_cta = ""
-        letter_email_subject = ""
-        letter_subtitle = ""
-        letter_tldr = ""
+        letter_status = "generated"
         letter_context = self._build_letter_context(
             exec_summary,
             quant_payload,
@@ -236,7 +259,6 @@ class EnhancedSTIAgent:
             role_actions,
         )
         regime = scope.get("evidence_regime", "healthy")
-        letter_status = "generated"
         if regime == "starved":
             self._trace(
                 "executive_letter:skipped",
@@ -250,12 +272,6 @@ class EnhancedSTIAgent:
                 )
                 if isinstance(letter_response, dict) and self._validate_executive_letter(letter_response):
                     letter_data = letter_response
-                    letter_bullets["investable"] = letter_response.get("bullets_investable") or []
-                    letter_bullets["targets"] = letter_response.get("bullets_targets") or []
-                    letter_primary_cta = letter_response.get("primary_cta") or ""
-                    letter_email_subject = letter_response.get("email_subject") or ""
-                    letter_subtitle = letter_response.get("subtitle") or ""
-                    letter_tldr = letter_response.get("tldr") or ""
                 else:
                     self._trace("executive_letter:error", "validation_failed")
             except Exception as exec_letter_error:
@@ -263,8 +279,31 @@ class EnhancedSTIAgent:
                 letter_status = "error"
         else:
             letter_status = "skipped_no_context"
-        if letter_data:
-            letter_markdown = self._render_executive_letter_markdown(letter_data)
+        if not letter_data:
+            letter_data = self._fallback_letter_payload(
+                title=title,
+                hook_line=hook_line,
+                exec_summary=exec_summary,
+                highlights=highlights,
+                top_moves=top_moves,
+                quant_payload=quant_payload,
+                scope=scope,
+                sections=sections,
+                metric_spec=metric_spec,
+            )
+            if letter_status and letter_status not in {"generated", "fallback"}:
+                letter_status = f"{letter_status}_fallback"
+            else:
+                letter_status = "fallback"
+        letter_markdown = self._render_executive_letter_markdown(letter_data)
+        letter_bullets = {
+            "investable": letter_data.get("bullets_investable") or [],
+            "targets": letter_data.get("bullets_targets") or [],
+        }
+        letter_primary_cta = letter_data.get("primary_cta") or ""
+        letter_email_subject = letter_data.get("email_subject") or ""
+        letter_subtitle = letter_data.get("subtitle") or ""
+        letter_tldr = letter_data.get("tldr") or ""
 
         markdown = self._build_markdown(
             query,
@@ -306,6 +345,12 @@ class EnhancedSTIAgent:
         if scope.get("thin_evidence"):
             confidence_band = "Directional"
         confidence_note = " ".join(part for part in confidence_note_parts if part).strip()
+        contract_status = {
+            "quant": quant_status,
+            "operator_specs": spec_status,
+            "executive_letter": letter_status,
+            "evidence_regime": scope.get("evidence_regime", "healthy"),
+        }
         report = {
             "query": query,
             "title": title,
@@ -335,6 +380,7 @@ class EnhancedSTIAgent:
             "letter_email_subject": letter_email_subject,
             "letter_subtitle": letter_subtitle,
             "letter_tldr": letter_tldr,
+            "public_markdown": letter_markdown,
             "fast_path": fast_path,
             "fast_stack": fast_stack,
             "spine": spine,
@@ -367,6 +413,7 @@ class EnhancedSTIAgent:
                 "model": self.model_name,
                 "generated_at": generated_at.isoformat(),
             },
+            "contract_status": contract_status,
         }
         try:
             prompt_response = self._tool_json(
@@ -1346,6 +1393,41 @@ class EnhancedSTIAgent:
             "spec_ok": not spec_notes,
         }
 
+    def _repair_operator_specs(
+        self,
+        spec_bundle: Dict[str, Any],
+        scope: Dict[str, Any],
+        quant_payload: Dict[str, Any],
+        sections: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        spec_bundle = spec_bundle or {}
+        metric_spec = self._normalize_metric_spec(
+            spec_bundle.get("metric_spec") or self._fallback_metric_spec(quant_payload, scope)
+        )
+        pilot_spec = self._normalize_pilot_spec(
+            spec_bundle.get("pilot_spec") or self._fallback_pilot_spec(scope, metric_spec),
+            scope,
+            metric_spec,
+        )
+        role_actions = self._normalize_role_actions(
+            spec_bundle.get("role_actions") or self._fallback_role_actions(pilot_spec, metric_spec),
+            pilot_spec,
+            metric_spec,
+        )
+        coherence = self._pilot_spec_coherence(pilot_spec, metric_spec, role_actions)
+        coherence.extend(self._instrument_metric_issues(sections or {}, metric_spec))
+        serious_tokens = ("store_count", "duration_weeks", "key_metric", "role_action")
+        spec_notes = [issue for issue in coherence if issue.startswith(serious_tokens)]
+        return {
+            "pilot_spec": pilot_spec,
+            "metric_spec": metric_spec,
+            "role_actions": role_actions,
+            "coherence_issues": coherence,
+            "spec_notes": spec_notes,
+            "spec_ok": False,
+            "version": spec_bundle.get("version") or "v1",
+        }
+
     def _normalize_metric_spec(self, metric_spec_raw: Any) -> Dict[str, Dict[str, Any]]:
         normalized: Dict[str, Dict[str, Any]] = {}
         if isinstance(metric_spec_raw, dict):
@@ -1490,6 +1572,68 @@ class EnhancedSTIAgent:
         if number.is_integer():
             return str(int(number))
         return f"{number:.2f}".rstrip("0").rstrip(".")
+
+    def _fallback_quant_payload(
+        self,
+        scope: Dict[str, Any],
+        signals: List[Dict[str, Any]],
+        time_window: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        scope = scope or {}
+        anchors: List[Dict[str, Any]] = []
+        pack = scope.get("unified_target_pack") or {}
+        window_label = scope.get("window_label") or time_window.get("label") or ""
+        signal_ids = [signal.get("id") for signal in (signals or []) if signal.get("id")]
+        for metric_id, spec in pack.items():
+            if not isinstance(spec, dict):
+                continue
+            label = friendly_metric_label(metric_id)
+            expression = spec.get("goal") or spec.get("base") or spec.get("ceiling") or spec.get("floor") or "Target TBD"
+            anchors.append(
+                {
+                    "label": label,
+                    "topic": metric_id,
+                    "expression": str(expression),
+                    "status": "target",
+                    "band": "default",
+                    "owner": spec.get("owner") or "Owner TBD",
+                    "source_ids": [],
+                    "applies_to_signals": signal_ids[:2],
+                }
+            )
+            if len(anchors) >= 3:
+                break
+        if not anchors:
+            anchors.append(
+                {
+                    "label": "Fallback measurement",
+                    "topic": "fallback_metric",
+                    "expression": "Hold measurement steady until quant agent recovers",
+                    "status": "target",
+                    "band": "default",
+                    "owner": "Owner TBD",
+                    "source_ids": [],
+                    "applies_to_signals": signal_ids[:1],
+                }
+            )
+        measurement_plan = [
+            {
+                "metric": anchor.get("label"),
+                "expression": anchor.get("expression"),
+                "owner": anchor.get("owner") or "Owner TBD",
+                "timeframe": window_label,
+                "why_it_matters": "Fallback targets because quant contract failed.",
+            }
+            for anchor in anchors
+        ]
+        return normalize_quant_blocks_payload(
+            {
+                "anchors": anchors,
+                "measurement_plan": measurement_plan[:3],
+                "coverage": 0.0,
+                "spine_hook": "",
+            }
+        )
 
     def _fallback_metric_spec(self, quant_payload: Dict[str, Any], scope: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         spec: Dict[str, Dict[str, Any]] = {}
@@ -1770,9 +1914,37 @@ class EnhancedSTIAgent:
         return targets
 
     def _render_executive_letter_markdown(self, letter: Dict[str, Any]) -> str:
-        """Render the executive letter JSON into markdown for Market-Path outputs."""
+        """Render the executive letter JSON into markdown for downstream outputs."""
         if not letter:
             return ""
+
+        def _split_paragraphs(text: str) -> List[str]:
+            if not text:
+                return []
+            chunks = re.split(r"\n\s*\n+", text.strip())
+            cleaned: List[str] = []
+            for chunk in chunks:
+                lines = []
+                for line in chunk.splitlines():
+                    stripped = line.lstrip()
+                    if stripped.startswith("#"):
+                        continue
+                    lines.append(line)
+                raw = "\n".join(lines).strip()
+                chunk_clean = self._sanitize_text(raw)
+                if chunk_clean:
+                    cleaned.append(chunk_clean)
+            return cleaned
+
+        def _sentence_join(items: List[str]) -> str:
+            parts = [item for item in items if item]
+            if not parts:
+                return ""
+            if len(parts) == 1:
+                return parts[0]
+            if len(parts) == 2:
+                return f"{parts[0]} and {parts[1]}"
+            return f"{', '.join(parts[:-1])}, and {parts[-1]}"
 
         lines: List[str] = []
         title = self._sanitize_text(letter.get("title") or "")
@@ -1788,38 +1960,69 @@ class EnhancedSTIAgent:
             lines.append(f"> {tldr}")
             lines.append("")
 
+        paragraphs: List[str] = []
+        section_paragraphs: List[str] = []
         for section in letter.get("sections") or []:
-            name = self._sanitize_text(section.get("name") or "")
-            body = self._sanitize_text(section.get("body") or "")
-            if not body:
-                continue
-            if name:
-                lines.append(f"## {name}")
-            lines.append(body)
-            lines.append("")
+            body_paras = _split_paragraphs(section.get("body"))
+            section_paragraphs.extend(body_paras)
+        paragraphs.extend(section_paragraphs)
 
-        bullets_investable = letter.get("bullets_investable") or []
+        phrase_seed = (
+            (letter.get("title") or "")
+            + (letter.get("subtitle") or "")
+            + (letter.get("tldr") or "")
+            + (letter.get("email_subject") or "")
+        )
+        deterministic = os.getenv("STI_DETERMINISTIC", "0").strip() == "1"
+        if deterministic:
+            seed = int(hashlib.sha256(phrase_seed.encode("utf-8")).hexdigest(), 16)
+            rng = random.Random(seed)
+        else:
+            rng = random.Random()
+
+        bullets_investable: List[str] = []
+        for item in letter.get("bullets_investable") or []:
+            clean_item = self._sanitize_text(item)
+            if clean_item:
+                bullets_investable.append(clean_item)
         if bullets_investable:
-            lines.append("### Why this window matters")
-            for item in bullets_investable:
-                clean_item = self._sanitize_text(item)
-                if clean_item:
-                    lines.append(f"- {clean_item}")
-            lines.append("")
+            join_text = _sentence_join(bullets_investable).rstrip(".!?")
+            window_templates = [
+                "This window matters because {payload}.",
+                "What matters in this window is {payload}.",
+                "The window is urgent because {payload}.",
+            ]
+            template = rng.choice(window_templates)
+            paragraphs.append(template.format(payload=join_text))
 
-        bullets_targets = letter.get("bullets_targets") or []
+        bullets_targets: List[str] = []
+        for item in letter.get("bullets_targets") or []:
+            clean_item = self._sanitize_text(item)
+            if clean_item:
+                bullets_targets.append(clean_item)
         if bullets_targets:
-            lines.append("### Targets for this pilot")
-            for item in bullets_targets:
-                clean_item = self._sanitize_text(item)
-                if clean_item:
-                    lines.append(f"- {clean_item}")
-            lines.append("")
+            join_text = "; ".join(bullets_targets).rstrip(".!?")
+            target_templates = [
+                "The numbers I would watch: {targets}.",
+                "Metrics to watch: {targets}.",
+                "Keep an eye on: {targets}.",
+            ]
+            template = rng.choice(target_templates)
+            paragraphs.append(template.format(targets=join_text))
 
         primary_cta = self._sanitize_text(letter.get("primary_cta") or "")
         if primary_cta:
-            lines.append("### Decision requested")
-            lines.append(primary_cta)
+            cta_templates = [
+                "If you agree, {cta}",
+                "If that resonates, {cta}",
+                "If you're aligned, {cta}",
+            ]
+            template = rng.choice(cta_templates)
+            trimmed_cta = primary_cta.rstrip(".!?")
+            paragraphs.append(template.format(cta=trimmed_cta) + ".")
+
+        for paragraph in paragraphs:
+            lines.append(paragraph)
             lines.append("")
 
         email_subject = self._sanitize_text(letter.get("email_subject") or "")
@@ -1827,7 +2030,7 @@ class EnhancedSTIAgent:
             lines.append(f"_Forward with subject: {email_subject}_")
             lines.append("")
 
-        return "\n".join(lines).strip()
+        return "\n".join(line for line in lines if line is not None).strip()
 
     def _build_letter_context(
         self,
@@ -1927,6 +2130,180 @@ class EnhancedSTIAgent:
             "role_actions": role_actions or {},
         }
 
+    def _fallback_letter_payload(
+        self,
+        title: str,
+        hook_line: str,
+        exec_summary: str,
+        highlights: List[str],
+        top_moves: List[str],
+        quant_payload: Dict[str, Any],
+        scope: Dict[str, Any],
+        sections: Dict[str, Any],
+        metric_spec: Dict[str, Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        scope = scope or {}
+        sections = sections or {}
+        quant_payload = quant_payload or {}
+        highlights = highlights or []
+        top_moves = [self._sanitize_text(move) for move in (top_moves or []) if self._sanitize_text(move)]
+
+        def _paragraph(parts: List[str], default_sentence: str, reinforcement: str) -> str:
+            sanitized = [self._sanitize_text(part) for part in parts if self._sanitize_text(part)]
+            text = " ".join(sanitized).strip()
+            if not text:
+                text = default_sentence
+            if not text.endswith("."):
+                text = f"{text}."
+            sentences = [chunk.strip() for chunk in re.split(r"(?<=[.!?])\s+", text) if chunk.strip()]
+            if len(sentences) < 2:
+                sentences.append(reinforcement)
+            return " ".join(sentences[:4])
+
+        def _first_sentence(text: str) -> str:
+            cleaned = self._strip_headings(text)
+            if not cleaned:
+                return ""
+            sentences = [chunk.strip() for chunk in re.split(r"(?<=[.!?])\s+", cleaned) if chunk.strip()]
+            return sentences[0] if sentences else cleaned.strip()
+
+        def _measurement_lines() -> List[str]:
+            lines: List[str] = []
+            for entry in quant_payload.get("measurement_plan") or []:
+                metric = self._sanitize_text(entry.get("metric"))
+                expression = self._sanitize_text(entry.get("expression") or entry.get("value"))
+                timeframe = self._sanitize_text(entry.get("timeframe"))
+                if not metric:
+                    continue
+                parts = [metric]
+                if expression:
+                    parts.append(expression)
+                if timeframe:
+                    parts.append(f"within {timeframe}")
+                line = " — ".join(part for part in parts if part)
+                if line:
+                    lines.append(line)
+            if lines:
+                return lines
+            for anchor in quant_payload.get("anchors") or []:
+                topic = self._sanitize_text(anchor.get("headline") or anchor.get("topic") or anchor.get("label"))
+                expression = self._sanitize_text(
+                    anchor.get("expression")
+                    or anchor.get("value")
+                    or anchor.get("value_high")
+                    or anchor.get("value_low")
+                )
+                if topic:
+                    lines.append(": ".join(part for part in [topic, expression] if part))
+            return lines
+
+        def _ensure_three(items: List[str], default_bank: List[str]) -> List[str]:
+            sanitized = [self._sanitize_text(item) for item in items if self._sanitize_text(item)]
+            bank_iter = iter(default_bank)
+            while len(sanitized) < 3:
+                try:
+                    sanitized.append(next(bank_iter))
+                except StopIteration:
+                    sanitized.append("Keep the measurement window honest and report daily.")
+            return sanitized[:3]
+
+        safe_title = self._sanitize_text(title) or "Executive Letter"
+        job_story = self._sanitize_text(scope.get("operator_job_story", ""))
+        subtitle = job_story or self._sanitize_text(hook_line) or self._sanitize_text(highlights[0] if highlights else "")
+        evidence_note = self._sanitize_text(scope.get("evidence_note", ""))
+        observation_lines = [
+            _first_sentence(exec_summary),
+            evidence_note,
+            " ".join(self._sanitize_text(h) for h in highlights[:1] if self._sanitize_text(h)),
+        ]
+        move_hint = top_moves[0] if top_moves else ""
+        approach_hint = self._sanitize_text((scope.get("approach_hints") or [None])[0])
+        size_lines = _measurement_lines()
+        risk_lines = [
+            self._sanitize_text(risk.get("risk_name") or risk.get("description"))
+            for risk in sections.get("risk_radar") or []
+            if self._sanitize_text(risk.get("risk_name") or risk.get("description"))
+        ]
+        if not risk_lines:
+            for note in scope.get("pilot_spec_issues") or []:
+                risk_lines.append(self._sanitize_text(note))
+        decision_lines = [
+            move_hint,
+            self._sanitize_text(scope.get("letter_primary_cta") or scope.get("letter_tldr")),
+        ]
+
+        observation_section = _paragraph(
+            observation_lines,
+            "Operators are watching demand compress into a two-week sprint that needs disciplined measurement.",
+            "That shift is why we are surfacing this letter now.",
+        )
+        move_section = _paragraph(
+            [
+                f"We are asking you to {move_hint}" if move_hint else "",
+                approach_hint,
+                self._sanitize_text(scope.get("operator_notes")),
+            ],
+            "The move is to run a single, well-instrumented pilot with a cross-functional owner.",
+            "Doing so lets us prove the mechanism quickly and ship the instrumentation playbook.",
+        )
+        size_section = _paragraph(
+            size_lines,
+            "If we deliver the pilot, we defend margin and membership with measurable upside.",
+            "Those targets keep the window investable.",
+        )
+        risk_section = _paragraph(
+            risk_lines,
+            "The only way this breaks is if we under-staff the test or let instrumentation lag.",
+            "We can mitigate by assigning a single accountable owner and publishing daily reads.",
+        )
+        decision_section = _paragraph(
+            decision_lines,
+            move_hint or "Approve the focused pilot so the team can lock partners and measurement this sprint.",
+            "Once approved we will ship daily signal and quant reads so you can hold us accountable.",
+        )
+
+        investable_defaults = [
+            "Demand is moving into compressed, high-velocity windows.",
+            "Brand partners are ready to co-fund if we run the pilot on time.",
+            "Holding instrumentation tight lets us defend margin instead of leaning on markdowns.",
+        ]
+        investable_bullets = highlights[:3]
+        if job_story:
+            investable_bullets.insert(0, job_story)
+        investable = _ensure_three(investable_bullets, investable_defaults)
+
+        target_defaults = [
+            "Hit measurable uplift inside the next 2–4 weeks.",
+            "Hold gross margin flat while we grow visits.",
+            "Publish daily instrumentation so Finance and Retail can audit the lift.",
+        ]
+        target_lines = self._metric_targets_from_spec(metric_spec) if metric_spec else []
+        if not target_lines:
+            target_lines = _measurement_lines()
+        targets = _ensure_three(target_lines, target_defaults)
+
+        primary_cta = move_hint or "Approve the focused pilot and instrumentation run."
+        primary_cta = primary_cta if primary_cta.endswith(".") else f"{primary_cta}."
+        tldr = self._sanitize_text(highlights[0] if highlights else "") or _first_sentence(exec_summary)
+        email_subject = f"{safe_title} — Executive letter"
+
+        return {
+            "title": safe_title,
+            "subtitle": subtitle or "Operator mandate: act within the current window",
+            "tldr": tldr,
+            "sections": [
+                {"name": "What we are seeing", "body": observation_section},
+                {"name": "The move", "body": move_section},
+                {"name": "Size of prize", "body": size_section},
+                {"name": "Risks", "body": risk_section},
+                {"name": "Decision requested", "body": decision_section},
+            ],
+            "bullets_investable": investable,
+            "bullets_targets": targets,
+            "primary_cta": primary_cta,
+            "email_subject": email_subject,
+        }
+
     def _validate_executive_letter(self, letter: Dict[str, Any]) -> bool:
         sections = letter.get("sections")
         if not isinstance(sections, list) or len(sections) != 5:
@@ -1935,6 +2312,12 @@ class EnhancedSTIAgent:
         for block in sections:
             body = (block.get("body") or "").strip()
             if not body:
+                return False
+            lines = body.splitlines()
+            if any(line.lstrip().startswith("#") for line in lines):
+                return False
+            forbidden_labels = ["Why this window matters:", "Targets to watch:", "Decision requested:"]
+            if any(label in body for label in forbidden_labels):
                 return False
             sentence_count = len(re.findall(r"[.!?]", body))
             if sentence_count < 2 or sentence_count > 4:
@@ -2638,6 +3021,157 @@ class EnhancedSTIAgent:
                     f"- {signal.get('name', signal.get('id'))}: held for later window (strength {signal.get('strength', 0):.2f}) {cites}"
                 )
         return "\n".join(line for line in lines if line is not None)
+
+    def _build_starved_report_bundle(
+        self,
+        query: str,
+        title: str,
+        time_window: Dict[str, Any],
+        scope: Dict[str, Any],
+        sources: List[SourceRecord],
+        source_stats: Dict[str, Any],
+        days_back: int,
+        signals: List[Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        scope = scope or {}
+        scope["thin_evidence"] = True
+        scope["evidence_regime"] = "starved"
+        exec_summary = (
+            "Evidence was too thin to meet operator-grade thresholds. Treat this as a scouting note and broaden the window."
+        )
+        highlights: List[str] = []
+        top_moves: List[str] = []
+        play_summary: List[Dict[str, Any]] = []
+        fast_path = {"sections": ["executive_summary"]}
+        fast_stack: Dict[str, Any] = {}
+        spine = {"what": "", "so_what": "", "now_what": ""}
+        fallback_sections = {
+            "deep_analysis": {"sections": [], "summary": ""},
+            "pattern_matches": [],
+            "brand_outcomes": [],
+            "activation_kit": [],
+            "risk_radar": [],
+            "future_outlook": [],
+            "comparison_map": {},
+            "signal_map_notes": "",
+        }
+        quant_payload = self._fallback_quant_payload(scope, signals, time_window)
+        letter_data = self._fallback_letter_payload(
+            title=title,
+            hook_line="",
+            exec_summary=exec_summary,
+            highlights=highlights,
+            top_moves=top_moves,
+            quant_payload=quant_payload,
+            scope=scope,
+            sections=fallback_sections,
+            metric_spec={},
+        )
+        letter_markdown = self._render_executive_letter_markdown(letter_data)
+        markdown = self._build_markdown(
+            query=query,
+            title=title,
+            exec_summary=exec_summary,
+            highlights=highlights,
+            top_moves=top_moves,
+            play_summary=play_summary,
+            fast_path=fast_path,
+            fast_stack=fast_stack,
+            spine=spine,
+            signals=[],
+            sections=fallback_sections,
+            sources=sources,
+            quant_payload=quant_payload,
+            appendix=[],
+            pilot_spec={},
+            metric_spec={},
+            role_actions={},
+        )
+        word_count = len(markdown.split())
+        read_time_minutes = max(1, math.ceil(word_count / 200))
+        qa_report = self._qa_report([], fallback_sections, [], scope, quant_payload, [], read_time_minutes)
+        confidence = self._compute_confidence([], qa_report, quant_payload)
+        raw_confidence_score = confidence_headline(confidence)
+        confidence_score = self._apply_source_caps(raw_confidence_score, source_stats)
+        confidence_band, display_score, dials = self._confidence_meta(confidence_score, confidence, qa_report)
+        confidence_band = "Directional"
+        json_ld = self._build_json_ld(query, title, exec_summary, sources, [], days_back, confidence_score)
+        generated_at = datetime.now()
+        evidence_note = scope.get("evidence_note") or "Evidence was below the minimum viable threshold."
+        contract_status = {
+            "quant": "skipped_starved",
+            "operator_specs": "skipped_starved",
+            "executive_letter": "fallback_starved",
+            "evidence_regime": "starved",
+        }
+        return {
+            "query": query,
+            "title": title,
+            "hook_line": "",
+            "time_window": time_window,
+            "operator_job_story": scope.get("operator_job_story", ""),
+            "search_shaped_variants": scope.get("search_shaped_variants", []),
+            "approach_hints": scope.get("approach_hints", []),
+            "unified_target_pack": scope.get("unified_target_pack", {}),
+            "executive_summary": exec_summary,
+            "highlights": highlights,
+            "top_operator_moves": top_moves,
+            "play_summary": play_summary,
+            "signals": [],
+            "appendix_signals": [],
+            "sources": [asdict(src) for src in sources],
+            "source_stats": source_stats,
+            "sections": fallback_sections,
+            "image_briefs": {},
+            "quant": quant_payload,
+            "comparison_map": {},
+            "executive_letter": letter_data,
+            "executive_letter_markdown": letter_markdown,
+            "letter_status": "fallback_starved",
+            "letter_bullets": {
+                "investable": letter_data.get("bullets_investable") or [],
+                "targets": letter_data.get("bullets_targets") or [],
+            },
+            "letter_primary_cta": letter_data.get("primary_cta") or "",
+            "letter_email_subject": letter_data.get("email_subject") or "",
+            "letter_subtitle": letter_data.get("subtitle") or "",
+            "letter_tldr": letter_data.get("tldr") or "",
+            "public_markdown": letter_markdown,
+            "fast_path": fast_path,
+            "fast_stack": fast_stack,
+            "spine": spine,
+            "qa": qa_report,
+            "markdown": markdown,
+            "json_ld": json_ld,
+            "pilot_spec": {},
+            "metric_spec": {},
+            "role_actions": {},
+            "pilot_coherence_issues": [],
+            "spec_version": "v1",
+            "spec_notes": scope.get("spec_notes", []),
+            "spec_ok": False,
+            "confidence": {
+                "score": confidence_score,
+                "display": display_score,
+                "band": confidence_band,
+                "dials": dials,
+                "breakdown": dataclasses.asdict(confidence),
+                "note": evidence_note,
+            },
+            "read_time_minutes": read_time_minutes,
+            "word_count": word_count,
+            "region": scope.get("target_region", "US"),
+            "thin_evidence": True,
+            "evidence_regime": "starved",
+            "evidence_note": evidence_note,
+            "metadata": {
+                "agent": "EnhancedSTIAgent",
+                "model": self.model_name,
+                "generated_at": generated_at.isoformat(),
+            },
+            "contract_status": contract_status,
+            "image_prompts": [],
+        }
 
     def _build_json_ld(
         self,

@@ -122,7 +122,7 @@ class STIConfig:
     REPORT_RENDERERS = [
         renderer.strip()
         for renderer in os.getenv(
-            "STI_REPORT_RENDERERS", "market_path_markdown,market_path_pdf"
+            "STI_REPORT_RENDERERS", "executive_letter_markdown,executive_letter_pdf"
         ).split(",")
         if renderer.strip()
     ]
@@ -288,8 +288,8 @@ class STIConfig:
 
     OUTPUT_FILES = [
         "intelligence_report.md",
-        "market_path_report.md",
-        "market_path_report.pdf",
+        "executive_letter.md",
+        "executive_letter.pdf",
         "intelligence_report.jsonld",
         "metadata.json",
     ]
