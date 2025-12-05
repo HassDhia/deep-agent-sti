@@ -84,6 +84,8 @@ The executive letter still surfaces a banded verdict (“Confidence: High — st
 
 `pytest` exercises confidence math, social media formatting, and the executive letter renderers using fixture data. Tests were trimmed to match the new operator scope.
 
+Set `STI_DETERMINISTIC=1` when running locally if you want deterministic essay phrasing (the renderer uses a small phrase bank that is otherwise intentionally stochastic in production).
+
 ## Visual QA
 
 Images are treated as first-class artifacts. Run the combined lint before committing regenerated reports:
